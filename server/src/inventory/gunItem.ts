@@ -204,7 +204,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
         }
 
         if (
-            (definition.fireMode !== FireMode.Single || owner.isMobile)
+            (definition.fireMode !== FireMode.Single || owner.isMobile || owner.isNpc)
             && owner.activeItem === this
         ) {
             clearTimeout(this._autoFireTimeout);

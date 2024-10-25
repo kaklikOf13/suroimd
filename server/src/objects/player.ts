@@ -1143,7 +1143,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         //NPC Ai
         this.rotation+=0.01
         if (this.rotation > 3.1415) this.rotation = -3.1415 + (this.rotation - 3.1415);
-        this.turning=true
+        this.processInputs({attacking:!this.attacking,actions:[],rotation:this.rotation,turning:true,isMobile:false,distanceToMouse:30,movement:{down:false,left:false,right:false,up:false}})
     }
 
     /**
@@ -1666,6 +1666,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.sendEmote(this.loadout.emotes[5]);
 
         this.game.livingPlayers.delete(this);
+        if(this.isNpc){
+            this.game.livingNpcs.delete(this);
+        }
         this.game.updateGameData({ aliveCount: this.game.aliveCount });
         this.game.fullDirtyObjects.add(this);
         removeFrom(this.game.spectatablePlayers, this);

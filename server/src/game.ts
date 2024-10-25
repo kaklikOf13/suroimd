@@ -48,7 +48,7 @@ import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { cleanUsername, Logger, removeFrom } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
-import { SkinDefinition, Skins } from "@common/definitions";
+import { Backpacks, Guns, SkinDefinition, Skins } from "@common/definitions";
 
 /*
     eslint-disable
@@ -191,7 +191,7 @@ export class Game implements GameData {
     over = false;
     stopped = false;
     get aliveCount(): number {
-        return Math.max(this.livingPlayers.size-this.livingNpcs.size,0 );
+        return Math.max(this.livingPlayers.size-this.livingNpcs.size,0);
     }
 
     // #endregion
@@ -832,7 +832,7 @@ export class Game implements GameData {
             return;
         }
 
-        if (packet.protocolVersion !== GameConstants.protocolVersion) {
+        if (packet.protocolVersion !== GameConstants.protocolVersion&&!player.isNpc) {
             player.disconnect(`Invalid game version (expected ${GameConstants.protocolVersion}, was ${packet.protocolVersion})`);
             return;
         }
@@ -883,9 +883,6 @@ export class Game implements GameData {
             this.livingNpcs.add(player)
         }else{
             this.connectingPlayers.delete(player);
-            setTimeout(()=>{
-                const npc=this.addNpc(player.position,{isMobile:false,emotes:[undefined,undefined,undefined,undefined,undefined,undefined],name:"Bot",protocolVersion:GameConstants.protocolVersion,skin:Skins.fromString(GameConstants.player.defaultSkin)},player.layer);
-            },1000)
         }
 
         this.addTimeout(() => { player.disableInvulnerability(); }, 5000);
@@ -899,6 +896,8 @@ export class Game implements GameData {
                 this._started = true;
                 this.setGameData({ startedTime: this.now });
                 this.gas.advanceGasStage();
+
+                this.map.generate_after_start()
 
                 this.addTimeout(() => {
                     parentPort?.postMessage({ type: WorkerMessages.CreateNewGame });

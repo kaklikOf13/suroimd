@@ -1,4 +1,5 @@
 import { Layers, ZIndexes } from "../constants";
+import { JoinPacketData } from "../packets";
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type DeepPartial } from "../utils/misc";
@@ -6,7 +7,9 @@ import { MapObjectSpawnMode, NullString, ObjectDefinitions, type ObjectDefinitio
 import { randomSign, randomVector } from "../utils/random";
 import { FloorNames } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
+import { Badges } from "./badges";
 import { FlyoverPref, Materials, RotationMode, type ObstacleDefinition } from "./obstacles";
+import { Skins } from "./skins";
 
 interface BuildingObstacle {
     readonly idString: ReferenceOrRandom<ObstacleDefinition>
@@ -20,6 +23,19 @@ interface BuildingObstacle {
     readonly puzzlePiece?: string | boolean
     readonly locked?: boolean
     readonly activated?: boolean
+}
+
+interface BuildingNpcs{
+    readonly data:JoinPacketData,
+    readonly position:Vector
+    readonly layer?:number
+    readonly weapons?:Record<number,string>
+    readonly equips?:{
+        readonly backpack?:string
+        readonly vest?:string
+        readonly helmet?:string
+    }
+    readonly items?:Record<string,number>
 }
 
 interface LootSpawner {
@@ -61,6 +77,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     }
 
     readonly obstacles: readonly BuildingObstacle[]
+    readonly npcs?:readonly BuildingNpcs[]
     readonly lootSpawners: readonly LootSpawner[]
     readonly subBuildings: readonly SubBuilding[]
 
@@ -150,6 +167,37 @@ export interface BuildingDefinition extends ObjectDefinition {
     }>
 
     readonly rotationMode: RotationMode.Limited | RotationMode.Binary | RotationMode.None
+}
+
+const npcsGenerators={
+    aegis_soldier:function(position:Vector):BuildingNpcs{
+        return {
+            data:{
+                badge:Badges.fromStringSafe("aegis_logo"),
+                name:"AEGIS Soldier",
+                emotes:[undefined,undefined,undefined,undefined,undefined,undefined],
+                isMobile:false,
+                protocolVersion:0,
+                skin:Skins.fromString("forest_camo"),
+            },
+            position:position,
+            layer:0,
+            equips:{
+                backpack:"regular_pack",
+                vest:"basic_vest",
+                helmet:"regular_helmet"
+            },
+            items:{
+                "medikit":1,
+                "762mm":100,
+                "12g":20,
+            },
+            weapons:{
+                0:"model_37",
+                1:"ak47"
+            }
+        }
+    }
 }
 
 const randomContainer1 = {
@@ -3929,6 +3977,10 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "headquarters_vault", position: Vec.create(-58.8, -9.4) },
                     { idString: "detector", position: Vec.create(-35, 25.5) },
                     { idString: "detector", position: Vec.create(-25, 25.5) }
+                ],
+                npcs:[
+                    npcsGenerators.aegis_soldier(Vec.create(-35, 22)),
+                    npcsGenerators.aegis_soldier(Vec.create(-25, 22))
                 ]
             },
             {

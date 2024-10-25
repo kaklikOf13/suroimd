@@ -19,6 +19,15 @@ import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Obstacle } from "./objects/obstacle";
 import { CARDINAL_DIRECTIONS, Logger, getLootTableLoot, getRandomIDString } from "./utils/misc";
+import { GunItem } from "./inventory/gunItem";
+import { Armors, Backpacks } from "@common/definitions";
+
+export interface MapBuild{
+    position:Vector
+    orientation:Orientation
+    defs:BuildingDefinition
+    layer:number
+}
 
 export class GameMap {
     readonly game: Game;
@@ -26,6 +35,7 @@ export class GameMap {
     private readonly mapDef: MapDefinition;
     private readonly quadBuildings: { [key in 1 | 2 | 3 | 4]: string[] } = { 1: [], 2: [], 3: [], 4: [] };
     private readonly quadMajorBuildings: Array<1 | 2 | 3 | 4> = [];
+    private readonly buildings:MapBuild[]=[]
     private readonly majorBuildingPositions: Vector[] = [];
 
     private readonly occupiedBridgePositions: Vector[] = [];
@@ -446,6 +456,8 @@ export class GameMap {
         orientation ??= GameMap.getRandomBuildingOrientation(definition.rotationMode);
         layer ??= 0;
 
+        this.buildings.push({defs:definition,orientation,layer,position})
+
         if (
             this.game.pluginManager.emit(
                 "building_will_generate",
@@ -549,6 +561,44 @@ export class GameMap {
         this.game.pluginManager.emit("building_did_generate", building);
 
         return building;
+    }
+
+    generate_after_start(){
+        for(const b of this.buildings){
+            const definition=b.defs
+            if(definition.npcs){
+                for(const npcData of definition.npcs){
+                    const npc=this.game.addNpc(
+                        Vec.addAdjust(b.position, npcData.position, b.orientation),
+                        npcData.data,npcData.layer??b.layer)
+                    if(npcData.items){
+                        for(const item of Object.getOwnPropertyNames(npcData.items)){
+                            npc.inventory.items.setItem(item,npcData.items[item])
+                        }
+                    }
+                    if(npcData.weapons){
+                        for(const weapon of Object.keys(npcData.weapons).map(key => Number(key))){
+                            npc.inventory.addOrReplaceWeapon(weapon,npcData.weapons[weapon])
+                            const w=npc.inventory.getWeapon(weapon)
+                            if(w instanceof GunItem){
+                                w.ammo=w.definition.capacity
+                            }
+                        }
+                    }
+                    if(npcData.equips){
+                        if(npcData.equips.helmet){
+                            npc.inventory.helmet=Armors.fromStringSafe(npcData.equips.helmet)
+                        }
+                        if(npcData.equips.vest){
+                            npc.inventory.vest=Armors.fromStringSafe(npcData.equips.vest)
+                        }
+                        if(npcData.equips.backpack){
+                            npc.inventory.backpack=Backpacks.fromString(npcData.equips.backpack)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private _generateObstacles(definition: ReifiableDef<ObstacleDefinition>, count: number): void {
