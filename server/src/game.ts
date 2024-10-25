@@ -48,6 +48,7 @@ import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { cleanUsername, Logger, removeFrom } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
+import { SkinDefinition, Skins } from "@common/definitions";
 
 /*
     eslint-disable
@@ -80,6 +81,7 @@ export class Game implements GameData {
     updateObjects = false;
 
     readonly livingPlayers = new Set<Player>();
+    readonly livingNpcs=new Set<Player>();
     /**
      * Players that have connected but haven't sent a JoinPacket yet
      */
@@ -189,7 +191,7 @@ export class Game implements GameData {
     over = false;
     stopped = false;
     get aliveCount(): number {
-        return this.livingPlayers.size;
+        return Math.max(this.livingPlayers.size-this.livingNpcs.size,0 );
     }
 
     // #endregion
@@ -555,6 +557,11 @@ export class Game implements GameData {
             player.secondUpdate();
         }
 
+        //NPCS AI
+        for(const npc of this.livingNpcs){
+            npc.AI()
+        }
+
         // Third loop over players: clean up after all packets have been sent
         for (const player of this.connectedPlayers) {
             if (!player.joined) continue;
@@ -589,6 +596,7 @@ export class Game implements GameData {
             )
         ) {
             for (const player of this.livingPlayers) {
+                if(player.isNpc)continue
                 const { movement } = player;
                 movement.up = movement.down = movement.left = movement.right = false;
                 player.attacking = false;
@@ -849,7 +857,6 @@ export class Game implements GameData {
 
         this.livingPlayers.add(player);
         this.spectatablePlayers.push(player);
-        this.connectingPlayers.delete(player);
         this.connectedPlayers.add(player);
         this.newPlayers.push(player);
         this.grid.addObject(player);
@@ -871,6 +878,15 @@ export class Game implements GameData {
         );
 
         player.sendData(this.map.buffer);
+
+        if(player.isNpc){
+            this.livingNpcs.add(player)
+        }else{
+            this.connectingPlayers.delete(player);
+            setTimeout(()=>{
+                const npc=this.addNpc(player.position,{isMobile:false,emotes:[undefined,undefined,undefined,undefined,undefined,undefined],name:"Bot",protocolVersion:GameConstants.protocolVersion,skin:Skins.fromString(GameConstants.player.defaultSkin)},player.layer);
+            },1000)
+        }
 
         this.addTimeout(() => { player.disableInvulnerability(); }, 5000);
 
@@ -908,6 +924,9 @@ export class Game implements GameData {
 
         if (player.canDespawn) {
             this.livingPlayers.delete(player);
+            if(player.isNpc){
+                this.livingNpcs.delete(player);
+            }
             this.removeObject(player);
             this.deletedPlayers.push(player.id);
             removeFrom(this.spectatablePlayers, player);
@@ -943,14 +962,23 @@ export class Game implements GameData {
             this.startTimeout = undefined;
         }
 
-        try {
-            player.socket.close();
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (_) {
-            /* not a really big deal if we can't close the socket */
-            // when does this ever fail?
+        if(!player.isNpc){
+            try {
+                player.socket?.close();
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            } catch (_) {
+                /* not a really big deal if we can't close the socket */
+                // when does this ever fail?
+            }
         }
         this.pluginManager.emit("player_disconnect", player);
+    }
+
+    addNpc(position:Vector,join:JoinPacketData,layer:number,team?:Team):Player{
+        const npc=new Player(this,undefined,position,layer,team)
+        npc.isNpc=true
+        this.activatePlayer(npc,join)
+        return npc
     }
 
     /**

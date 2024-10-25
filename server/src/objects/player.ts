@@ -8,7 +8,7 @@ import { Collision, Geometry, Numeric } from "@common/utils/math";
 import { ExtendedMap, type SDeepMutable, type SMutable, type Timeout } from "@common/utils/misc";
 import { ItemType, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
-import { pickRandomInArray } from "@common/utils/random";
+import { pickRandomInArray, random, randomSign } from "@common/utils/random";
 import { SuroiBitStream } from "@common/utils/suroiBitStream";
 import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
@@ -59,6 +59,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     joined = false;
     disconnected = false;
+    isNpc=false;
 
     private _team?: Team;
     get team(): Team | undefined { return this._team; }
@@ -278,7 +279,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     get zoom(): number { return this._scope.zoomLevel; }
 
-    readonly socket: WebSocket<PlayerContainer>;
+    readonly socket?: WebSocket<PlayerContainer>;
 
     private readonly _action: { type?: Action, dirty: boolean } = {
         type: undefined,
@@ -365,7 +366,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     c4s: ThrowableProjectile[] = [];
 
-    constructor(game: Game, socket: WebSocket<PlayerContainer>, position: Vector, layer?: Layer, team?: Team) {
+    constructor(game: Game, socket: WebSocket<PlayerContainer>|undefined, position: Vector, layer?: Layer, team?: Team) {
         super(game, position);
 
         if (layer !== undefined) {
@@ -380,15 +381,22 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             team.setDirty();
         }
 
-        const userData = socket.getUserData();
-        this.socket = socket;
         this.name = GameConstants.player.defaultName;
-        this.ip = userData.ip;
-        this.role = userData.role;
-        this.isDev = userData.isDev;
-        this.nameColor = userData.nameColor ?? 0;
-        this.hasColor = userData.nameColor !== undefined;
-
+        if(socket){
+            const userData = socket.getUserData();
+            this.socket = socket;
+            this.ip = userData.ip;
+            this.role = userData.role;
+            this.isDev = userData.isDev;
+            this.nameColor = userData.nameColor ?? 0;
+            this.hasColor = userData.nameColor !== undefined;
+        }else{
+            this.ip="0.0.0.0"
+            this.role=undefined
+            this.isDev=false
+            this.hasColor=false
+            this.nameColor=0
+        }
         this.loadout = {
             skin: Loots.fromString("hazel_jumpsuit"),
             emotes: [
@@ -410,65 +418,68 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.inventory.scope = "1x_scope";
         this.effectiveScope = DEFAULT_SCOPE;
 
-        const specialFunnies = this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing;
-        // Inventory preset
-        if (specialFunnies) {
-            const [
-                weaponA, weaponB, melee,
-                killsA, killB, killsM
-            ] = userData.weaponPreset.split(" ");
+        if(socket){
+            const userData = socket.getUserData();
+            const specialFunnies = this.isDev && userData.lobbyClearing && !Config.disableLobbyClearing;
+            // Inventory preset
+            if (specialFunnies) {
+                const [
+                    weaponA, weaponB, melee,
+                    killsA, killB, killsM
+                ] = userData.weaponPreset.split(" ");
 
-            const backpack = this.inventory.backpack;
-            const determinePreset = (
-                slot: 0 | 1 | 2,
-                weaponName: ReferenceTo<GunDefinition | MeleeDefinition>,
-                kills?: string
-            ): void => {
-                const weaponDef = Loots.fromStringSafe<GunDefinition | MeleeDefinition>(weaponName);
-                let itemType: ItemType;
+                const backpack = this.inventory.backpack;
+                const determinePreset = (
+                    slot: 0 | 1 | 2,
+                    weaponName: ReferenceTo<GunDefinition | MeleeDefinition>,
+                    kills?: string
+                ): void => {
+                    const weaponDef = Loots.fromStringSafe<GunDefinition | MeleeDefinition>(weaponName);
+                    let itemType: ItemType;
 
-                if (
-                    weaponDef === undefined // no such item
-                    || ![ItemType.Gun, ItemType.Melee].includes(itemType = weaponDef.itemType) // neither gun nor melee
-                    || GameConstants.player.inventorySlotTypings[slot] !== itemType // invalid type
-                ) return;
+                    if (
+                        weaponDef === undefined // no such item
+                        || ![ItemType.Gun, ItemType.Melee].includes(itemType = weaponDef.itemType) // neither gun nor melee
+                        || GameConstants.player.inventorySlotTypings[slot] !== itemType // invalid type
+                    ) return;
 
-                this.inventory.addOrReplaceWeapon(slot, weaponDef);
-                const weapon = this.inventory.getWeapon(slot) as GunItem | MeleeItem;
+                    this.inventory.addOrReplaceWeapon(slot, weaponDef);
+                    const weapon = this.inventory.getWeapon(slot) as GunItem | MeleeItem;
 
-                let killCount: number;
-                if (!Number.isNaN(killCount = parseInt(kills ?? "", 10))) {
-                    weapon.stats.kills = killCount;
-                    weapon.refreshModifiers();
+                    let killCount: number;
+                    if (!Number.isNaN(killCount = parseInt(kills ?? "", 10))) {
+                        weapon.stats.kills = killCount;
+                        weapon.refreshModifiers();
+                    }
+
+                    if (!(weapon instanceof GunItem)) return;
+
+                    weapon.ammo = (weaponDef as GunDefinition).capacity;
+                    const ammoPtr = (weaponDef as GunDefinition).ammoType;
+                    const ammoType = Ammos.fromString(ammoPtr);
+
+                    if (ammoType.ephemeral) return;
+                    this.inventory.items.setItem(ammoPtr, backpack.maxCapacity[ammoPtr]);
+                };
+
+                this.inventory.backpack = Loots.fromString("tactical_pack");
+                this.inventory.vest = Loots.fromString("developr_vest");
+                this.inventory.helmet = Loots.fromString("tactical_helmet");
+
+                for (const { idString: item } of [...HealingItems, ...Scopes]) {
+                    this.inventory.items.setItem(item, backpack.maxCapacity[item]);
                 }
 
-                if (!(weapon instanceof GunItem)) return;
+                this.inventory.scope = "8x_scope";
 
-                weapon.ammo = (weaponDef as GunDefinition).capacity;
-                const ammoPtr = (weaponDef as GunDefinition).ammoType;
-                const ammoType = Ammos.fromString(ammoPtr);
+                for (const scopeDef of Scopes.definitions) {
+                    this.inventory.items.setItem(scopeDef.idString, 1);
+                }
 
-                if (ammoType.ephemeral) return;
-                this.inventory.items.setItem(ammoPtr, backpack.maxCapacity[ammoPtr]);
-            };
-
-            this.inventory.backpack = Loots.fromString("tactical_pack");
-            this.inventory.vest = Loots.fromString("developr_vest");
-            this.inventory.helmet = Loots.fromString("tactical_helmet");
-
-            for (const { idString: item } of [...HealingItems, ...Scopes]) {
-                this.inventory.items.setItem(item, backpack.maxCapacity[item]);
+                determinePreset(0, weaponA, killsA);
+                determinePreset(1, weaponB, killB);
+                determinePreset(2, melee, killsM);
             }
-
-            this.inventory.scope = "8x_scope";
-
-            for (const scopeDef of Scopes.definitions) {
-                this.inventory.items.setItem(scopeDef.idString, 1);
-            }
-
-            determinePreset(0, weaponA, killsA);
-            determinePreset(1, weaponB, killB);
-            determinePreset(2, melee, killsM);
         }
 
         this.updateAndApplyModifiers();
@@ -854,276 +865,285 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
      * Calculate visible objects, check team, and send packets
      */
     secondUpdate(): void {
-        const packet: SMutable<Partial<UpdatePacketDataIn>> = {};
+        if(!this.isNpc){
+            const packet: SMutable<Partial<UpdatePacketDataIn>> = {};
 
-        const player = this.spectating ?? this;
-        if (this.spectating) {
-            this.layer = this.spectating.layer;
-        }
-        const game = this.game;
+            const player = this.spectating ?? this;
+            if (this.spectating) {
+                this.layer = this.spectating.layer;
+            }
+            const game = this.game;
 
-        const fullObjects = new Set<BaseGameObject>();
+            const fullObjects = new Set<BaseGameObject>();
 
-        // Calculate visible objects
-        this.ticksSinceLastUpdate++;
-        if (this.ticksSinceLastUpdate > 8 || game.updateObjects || this.updateObjects) {
-            this.ticksSinceLastUpdate = 0;
-            this.updateObjects = false;
+            // Calculate visible objects
+            this.ticksSinceLastUpdate++;
+            if (this.ticksSinceLastUpdate > 8 || game.updateObjects || this.updateObjects) {
+                this.ticksSinceLastUpdate = 0;
+                this.updateObjects = false;
 
-            const dim = player.zoom * 2 + 8;
-            this.screenHitbox = RectangleHitbox.fromRect(
-                dim,
-                dim,
-                player.position
-            );
+                const dim = player.zoom * 2 + 8;
+                this.screenHitbox = RectangleHitbox.fromRect(
+                    dim,
+                    dim,
+                    player.position
+                );
 
-            const visCache = new ExtendedMap<GameObject, boolean>();
-            const newVisibleObjects = game.grid.intersectsHitbox(this.screenHitbox);
+                const visCache = new ExtendedMap<GameObject, boolean>();
+                const newVisibleObjects = game.grid.intersectsHitbox(this.screenHitbox);
 
-            packet.deletedObjects = [...this.visibleObjects]
-                .filter(
-                    object => (
-                        (
-                            !newVisibleObjects.has(object)
-                            || !isVisibleFromLayer(this.layer, object, object?.hitbox && [...game.grid.intersectsHitbox(object.hitbox)])
-                        )
-                        && (this.visibleObjects.delete(object), true)
-                        && (!object.isObstacle || !object.definition.isStair)
-                    )
-                )
-                .map(({ id }) => id);
-
-            newVisibleObjects
-                .forEach(
-                    object => {
-                        if (
+                packet.deletedObjects = [...this.visibleObjects]
+                    .filter(
+                        object => (
                             (
-                                this.visibleObjects.has(object)
-                                || !(
-                                    visCache.getAndGetDefaultIfAbsent(
-                                        object,
-                                        () => isVisibleFromLayer(this.layer, object, object?.hitbox && [...game.grid.intersectsHitbox(object.hitbox)])
+                                !newVisibleObjects.has(object)
+                                || !isVisibleFromLayer(this.layer, object, object?.hitbox && [...game.grid.intersectsHitbox(object.hitbox)])
+                            )
+                            && (this.visibleObjects.delete(object), true)
+                            && (!object.isObstacle || !object.definition.isStair)
+                        )
+                    )
+                    .map(({ id }) => id);
+
+                newVisibleObjects
+                    .forEach(
+                        object => {
+                            if (
+                                (
+                                    this.visibleObjects.has(object)
+                                    || !(
+                                        visCache.getAndGetDefaultIfAbsent(
+                                            object,
+                                            () => isVisibleFromLayer(this.layer, object, object?.hitbox && [...game.grid.intersectsHitbox(object.hitbox)])
+                                        )
                                     )
                                 )
-                            )
-                            && (!object.isObstacle || !object.definition.isStair)
-                        ) return;
+                                && (!object.isObstacle || !object.definition.isStair)
+                            ) return;
 
-                        this.visibleObjects.add(object);
+                            this.visibleObjects.add(object);
+                            fullObjects.add(object);
+                        }
+                    );
+            }
+
+            game.fullDirtyObjects
+                .forEach(
+                    object => {
+                        if (!this.visibleObjects.has(object as GameObject)) return;
                         fullObjects.add(object);
                     }
                 );
-        }
 
-        game.fullDirtyObjects
-            .forEach(
-                object => {
-                    if (!this.visibleObjects.has(object as GameObject)) return;
-                    fullObjects.add(object);
-                }
-            );
+            packet.partialObjectsCache = [...game.partialDirtyObjects]
+                .filter(
+                    object => {
+                        return this.visibleObjects.has(object as GameObject) && !fullObjects.has(object);
+                    }
+                );
 
-        packet.partialObjectsCache = [...game.partialDirtyObjects]
-            .filter(
-                object => {
-                    return this.visibleObjects.has(object as GameObject) && !fullObjects.has(object);
-                }
-            );
+            const inventory = player.inventory;
+            let forceInclude = false;
 
-        const inventory = player.inventory;
-        let forceInclude = false;
+            if (this.startedSpectating && this.spectating) {
+                forceInclude = true;
 
-        if (this.startedSpectating && this.spectating) {
-            forceInclude = true;
-
-            // this line probably doesn't do anything
-            // packet.fullObjectsCache.push(this.spectating);
-            this.startedSpectating = false;
-        }
-
-        packet.playerData = {
-            ...(
-                player.dirty.maxMinStats || forceInclude
-                    ? { minMax: {
-                        maxHealth: player.maxHealth,
-                        minAdrenaline: player.minAdrenaline,
-                        maxAdrenaline: player.maxAdrenaline
-                    } }
-                    : {}
-            ),
-            ...(
-                player.dirty.health || forceInclude
-                    ? { health: player._normalizedHealth }
-                    : {}
-            ),
-            ...(
-                player.dirty.adrenaline || forceInclude
-                    ? { adrenaline: player._normalizedAdrenaline }
-                    : {}
-            ),
-            ...(
-                player.dirty.zoom || forceInclude
-                    ? { zoom: player._scope.zoomLevel }
-                    : {}
-            ),
-            ...(
-                player.dirty.id || forceInclude
-                    ? { id: {
-                        id: player.id,
-                        spectating: this.spectating !== undefined
-                    } }
-                    : {}
-            ),
-            ...(
-                player.dirty.teammates || forceInclude
-                    ? { teammates: player._team?.players.filter(p => p.id !== player.id) ?? [] }
-                    : {}
-            ),
-            ...(
-                player.dirty.weapons || forceInclude
-                    ? { inventory: {
-                        activeWeaponIndex: inventory.activeWeaponIndex,
-                        weapons: inventory.weapons.map(slot => {
-                            const item = slot;
-
-                            return (item && {
-                                definition: item.definition,
-                                count: item instanceof GunItem
-                                    ? item.ammo
-                                    : item instanceof CountableInventoryItem
-                                        ? item.count
-                                        : undefined,
-                                stats: item.stats
-                            }) satisfies ((PlayerData["inventory"] & object)["weapons"] & object)[number];
-                        })
-                    } }
-                    : {}
-            ),
-            ...(
-                player.dirty.slotLocks || forceInclude
-                    ? { lockedSlots: player.inventory.lockedSlots }
-                    : {}
-            ),
-            ...(
-                player.dirty.items || forceInclude
-                    ? { items: {
-                        items: inventory.items.asRecord(),
-                        scope: inventory.scope
-                    } }
-                    : {}
-            ),
-            ...(
-                player.dirty.layer || forceInclude
-                    ? { layer: player.layer }
-                    : {}
-            ),
-            ...(
-                player.dirty.activeC4s || forceInclude
-                    ? { activeC4s: this.c4s.length > 0 }
-                    : {}
-            )
-        };
-
-        // Cull bullets
-        /*
-            oversight: this works by checking if the bullet's trajectory overlaps the player's
-                       viewing port; if it does, the player will eventually see the bullet,
-                       and we should thus send it. however, it overlooks the fact that the
-                       viewing port can move as the bullet travels. this causes a potential
-                       for ghost bullets, but since most projectiles travel their range within
-                       well under a second (usually between 0.3–0.8 seconds), the chance of this
-                       happening is quite low (except with slow-projectile weapons like the radio
-                       and firework launcher).
-
-                       fixing this is therefore not worth the performance penalty
-        */
-        packet.bullets = game.newBullets.filter(
-            ({ initialPosition, finalPosition }) => Collision.lineIntersectsRectTest(
-                initialPosition,
-                finalPosition,
-                this.screenHitbox.min,
-                this.screenHitbox.max
-            )
-        );
-
-        /**
-         * It's in times like these where `inline constexpr`
-         * would be very cool.
-         */
-        const maxDistSquared = 128 ** 2;
-
-        // Cull explosions
-        packet.explosions = game.explosions.filter(
-            ({ position }) => this.screenHitbox.isPointInside(position)
-                || Geometry.distanceSquared(position, this.position) < maxDistSquared
-        );
-
-        // Emotes
-        packet.emotes = game.emotes.filter(({ player }) => this.visibleObjects.has(player));
-
-        const gas = game.gas;
-
-        packet.gas = gas.dirty || this._firstPacket ? { ...gas } : undefined;
-        packet.gasProgress = gas.completionRatioDirty || this._firstPacket ? gas.completionRatio : undefined;
-
-        const newPlayers = this._firstPacket
-            ? [...game.grid.pool.getCategory(ObjectCategory.Player)]
-            : game.newPlayers;
-
-        // new and deleted players
-        packet.newPlayers = newPlayers.map(({ id, name, hasColor, nameColor, loadout: { badge } }) => ({
-            id,
-            name,
-            hasColor,
-            nameColor: hasColor ? nameColor : undefined,
-            badge
-        } as (UpdatePacketDataCommon["newPlayers"] & object)[number]));
-
-        if (this.game.teamMode) {
-            for (const teammate of newPlayers.filter(({ teamID }) => teamID === player.teamID)) {
-                fullObjects.add(teammate);
+                // this line probably doesn't do anything
+                // packet.fullObjectsCache.push(this.spectating);
+                this.startedSpectating = false;
             }
+
+            packet.playerData = {
+                ...(
+                    player.dirty.maxMinStats || forceInclude
+                        ? { minMax: {
+                            maxHealth: player.maxHealth,
+                            minAdrenaline: player.minAdrenaline,
+                            maxAdrenaline: player.maxAdrenaline
+                        } }
+                        : {}
+                ),
+                ...(
+                    player.dirty.health || forceInclude
+                        ? { health: player._normalizedHealth }
+                        : {}
+                ),
+                ...(
+                    player.dirty.adrenaline || forceInclude
+                        ? { adrenaline: player._normalizedAdrenaline }
+                        : {}
+                ),
+                ...(
+                    player.dirty.zoom || forceInclude
+                        ? { zoom: player._scope.zoomLevel }
+                        : {}
+                ),
+                ...(
+                    player.dirty.id || forceInclude
+                        ? { id: {
+                            id: player.id,
+                            spectating: this.spectating !== undefined
+                        } }
+                        : {}
+                ),
+                ...(
+                    player.dirty.teammates || forceInclude
+                        ? { teammates: player._team?.players.filter(p => p.id !== player.id) ?? [] }
+                        : {}
+                ),
+                ...(
+                    player.dirty.weapons || forceInclude
+                        ? { inventory: {
+                            activeWeaponIndex: inventory.activeWeaponIndex,
+                            weapons: inventory.weapons.map(slot => {
+                                const item = slot;
+
+                                return (item && {
+                                    definition: item.definition,
+                                    count: item instanceof GunItem
+                                        ? item.ammo
+                                        : item instanceof CountableInventoryItem
+                                            ? item.count
+                                            : undefined,
+                                    stats: item.stats
+                                }) satisfies ((PlayerData["inventory"] & object)["weapons"] & object)[number];
+                            })
+                        } }
+                        : {}
+                ),
+                ...(
+                    player.dirty.slotLocks || forceInclude
+                        ? { lockedSlots: player.inventory.lockedSlots }
+                        : {}
+                ),
+                ...(
+                    player.dirty.items || forceInclude
+                        ? { items: {
+                            items: inventory.items.asRecord(),
+                            scope: inventory.scope
+                        } }
+                        : {}
+                ),
+                ...(
+                    player.dirty.layer || forceInclude
+                        ? { layer: player.layer }
+                        : {}
+                ),
+                ...(
+                    player.dirty.activeC4s || forceInclude
+                        ? { activeC4s: this.c4s.length > 0 }
+                        : {}
+                )
+            };
+
+            // Cull bullets
+            /*
+                oversight: this works by checking if the bullet's trajectory overlaps the player's
+                        viewing port; if it does, the player will eventually see the bullet,
+                        and we should thus send it. however, it overlooks the fact that the
+                        viewing port can move as the bullet travels. this causes a potential
+                        for ghost bullets, but since most projectiles travel their range within
+                        well under a second (usually between 0.3–0.8 seconds), the chance of this
+                        happening is quite low (except with slow-projectile weapons like the radio
+                        and firework launcher).
+
+                        fixing this is therefore not worth the performance penalty
+            */
+            packet.bullets = game.newBullets.filter(
+                ({ initialPosition, finalPosition }) => Collision.lineIntersectsRectTest(
+                    initialPosition,
+                    finalPosition,
+                    this.screenHitbox.min,
+                    this.screenHitbox.max
+                )
+            );
+
+            /**
+             * It's in times like these where `inline constexpr`
+             * would be very cool.
+             */
+            const maxDistSquared = 128 ** 2;
+
+            // Cull explosions
+            packet.explosions = game.explosions.filter(
+                ({ position }) => this.screenHitbox.isPointInside(position)
+                    || Geometry.distanceSquared(position, this.position) < maxDistSquared
+            );
+
+            // Emotes
+            packet.emotes = game.emotes.filter(({ player }) => this.visibleObjects.has(player));
+
+            const gas = game.gas;
+
+            packet.gas = gas.dirty || this._firstPacket ? { ...gas } : undefined;
+            packet.gasProgress = gas.completionRatioDirty || this._firstPacket ? gas.completionRatio : undefined;
+
+            const newPlayers = this._firstPacket
+                ? [...game.grid.pool.getCategory(ObjectCategory.Player)]
+                : game.newPlayers;
+
+            // new and deleted players
+            packet.newPlayers = newPlayers.map(({ id, name, hasColor, nameColor, loadout: { badge } }) => ({
+                id,
+                name,
+                hasColor,
+                nameColor: hasColor ? nameColor : undefined,
+                badge
+            } as (UpdatePacketDataCommon["newPlayers"] & object)[number]));
+
+            if (this.game.teamMode) {
+                for (const teammate of newPlayers.filter(({ teamID }) => teamID === player.teamID)) {
+                    fullObjects.add(teammate);
+                }
+            }
+
+            packet.fullObjectsCache = [...fullObjects];
+
+            packet.deletedPlayers = game.deletedPlayers;
+
+            // alive count
+            packet.aliveCount = game.aliveCountDirty || this._firstPacket ? game.aliveCount : undefined;
+
+            // killfeed messages
+            const killLeader = game.killLeader;
+
+            packet.planes = game.planes;
+            packet.mapPings = [...game.mapPings, ...this._mapPings];
+            this._mapPings.length = 0;
+
+            // serialize and send update packet
+            this.sendPacket(UpdatePacket.create(packet as UpdatePacketDataIn));
+
+            if (this._firstPacket && killLeader) {
+                this._packets.push(KillFeedPacket.create({
+                    messageType: KillfeedMessageType.KillLeaderAssigned,
+                    victimId: killLeader.id,
+                    attackerKills: killLeader.kills,
+                    hideFromKillfeed: true
+                }));
+            }
+
+            this._firstPacket = false;
+
+            this._packetStream.stream.index = 0;
+            for (const packet of this._packets) {
+                this._packetStream.serializeServerPacket(packet);
+            }
+
+            for (const packet of this.game.packets) {
+                this._packetStream.serializeServerPacket(packet);
+            }
+
+            this._packets.length = 0;
+            this.sendData(this._packetStream.getBuffer());
         }
+    }
 
-        packet.fullObjectsCache = [...fullObjects];
-
-        packet.deletedPlayers = game.deletedPlayers;
-
-        // alive count
-        packet.aliveCount = game.aliveCountDirty || this._firstPacket ? game.aliveCount : undefined;
-
-        // killfeed messages
-        const killLeader = game.killLeader;
-
-        packet.planes = game.planes;
-        packet.mapPings = [...game.mapPings, ...this._mapPings];
-        this._mapPings.length = 0;
-
-        // serialize and send update packet
-        this.sendPacket(UpdatePacket.create(packet as UpdatePacketDataIn));
-
-        if (this._firstPacket && killLeader) {
-            this._packets.push(KillFeedPacket.create({
-                messageType: KillfeedMessageType.KillLeaderAssigned,
-                victimId: killLeader.id,
-                attackerKills: killLeader.kills,
-                hideFromKillfeed: true
-            }));
-        }
-
-        this._firstPacket = false;
-
-        this._packetStream.stream.index = 0;
-        for (const packet of this._packets) {
-            this._packetStream.serializeServerPacket(packet);
-        }
-
-        for (const packet of this.game.packets) {
-            this._packetStream.serializeServerPacket(packet);
-        }
-
-        this._packets.length = 0;
-        this.sendData(this._packetStream.getBuffer());
+    AI(){
+        //NPC Ai
+        this.rotation+=0.01
+        if (this.rotation > 3.1415) this.rotation = -3.1415 + (this.rotation - 3.1415);
+        this.turning=true
     }
 
     /**
@@ -1283,10 +1303,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     sendData(buffer: ArrayBuffer): void {
-        try {
-            this.socket.send(buffer, true, false);
-        } catch (e) {
-            console.warn("Error sending packet. Details:", e);
+        if(!this.isNpc){
+            try {
+                this.socket?.send(buffer, true, false);
+            } catch (e) {
+                console.warn("Error sending packet. Details:", e);
+            }
         }
     }
 

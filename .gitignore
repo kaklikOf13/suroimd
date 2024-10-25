@@ -32,3 +32,7 @@ build/
 
 # try to prevent error moments from happening (no pun intended)
 .env
+
+#privates
+private/
+privates/
