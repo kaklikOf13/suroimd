@@ -48,7 +48,7 @@ import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { cleanUsername, Logger, removeFrom } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
-import { Backpacks, Guns, SkinDefinition, Skins } from "@common/definitions";
+import { Backpacks, Guns, Melees, SkinDefinition, Skins } from "@common/definitions";
 
 /*
     eslint-disable
@@ -854,6 +854,22 @@ export class Game implements GameData {
             player.loadout.badge = badge;
         }
         player.loadout.emotes = packet.emotes;
+        
+        if(this.map.mapDef.gamemode?.weaponsSelect){
+            if(packet.gun1&&Guns.fromStringSafe(packet.gun1)){
+                player.inventory.addOrReplaceWeapon(0,Guns.fromString(packet.gun1))
+                const w=player.inventory.getWeapon(0) as GunItem
+                w.ammo=w.definition.capacity
+            }
+            if(packet.gun2&&Guns.fromStringSafe(packet.gun2)){
+                player.inventory.addOrReplaceWeapon(1,Guns.fromString(packet.gun2))
+                const w=player.inventory.getWeapon(1) as GunItem
+                w.ammo=w.definition.capacity
+            }
+            if(packet.melee&&Melees.fromStringSafe(packet.melee)){
+                player.inventory.addOrReplaceWeapon(2,Melees.fromString(packet.melee))
+            }
+        }
 
         this.livingPlayers.add(player);
         this.spectatablePlayers.push(player);

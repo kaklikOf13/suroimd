@@ -13,7 +13,11 @@ export type JoinPacketData = {
     readonly skin: SkinDefinition
     readonly badge?: BadgeDefinition
 
-    readonly emotes: ReadonlyArray<EmoteDefinition | undefined>
+    readonly emotes: ReadonlyArray<EmoteDefinition | undefined>,
+
+    gun1?:string,
+    gun2?:string,
+    melee?:string
 };
 
 // protocol version is automatically set; use this type when
@@ -32,10 +36,31 @@ export const JoinPacket = createPacket("JoinPacket")<JoinPacketCreation, JoinPac
         for (const emote of data.emotes) {
             Emotes.writeOptional(stream, emote);
         }
+
+        stream.writeBoolean(data.gun1!==undefined)
+
+        if(data.gun1){
+            stream.writeUint16(data.gun1.length)
+            stream.writeASCIIString(data.gun1,data.gun1.length)
+        }
+
+        stream.writeBoolean(data.gun2!==undefined)
+
+        if(data.gun2){
+            stream.writeUint16(data.gun2.length)
+            stream.writeASCIIString(data.gun2,data.gun2.length)
+        }
+
+        stream.writeBoolean(data.melee!==undefined)
+
+        if(data.melee){
+            stream.writeUint16(data.melee.length)
+            stream.writeASCIIString(data.melee,data.melee.length)
+        }
     },
 
     deserialize(stream) {
-        return {
+        const ret:JoinPacketData={
             protocolVersion: stream.readUint16(),
             name: stream.readPlayerName().replaceAll(/<[^>]+>/g, "").trim(), // Regex strips out HTML
             isMobile: stream.readBoolean(),
@@ -43,7 +68,20 @@ export const JoinPacket = createPacket("JoinPacket")<JoinPacketCreation, JoinPac
             skin: Loots.readFromStream(stream),
             badge: Badges.readOptional(stream),
 
-            emotes: Array.from({ length: 6 }, () => Emotes.readOptional(stream))
+            emotes: Array.from({ length: 6 }, () => Emotes.readOptional(stream)),
         };
+        if(stream.readBoolean()){
+            const ss=stream.readUint16()
+            ret.gun1=stream.readASCIIString(ss)
+        }
+        if(stream.readBoolean()){
+            const ss=stream.readUint16()
+            ret.gun2=stream.readASCIIString(ss)
+        }
+        if(stream.readBoolean()){
+            const ss=stream.readUint16()
+            ret.melee=stream.readASCIIString(ss)
+        }
+        return ret
     }
 });

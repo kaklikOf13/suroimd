@@ -938,6 +938,7 @@
       <div class="tab-bar" id="customize-tab-bar">
         <button class="tab active" id="tab-skins"><i class="fa-solid fa-shirt"></i><span translation="loadout_skins"></span></button>
         <button class="tab" id="tab-emotes"><img src="./img/misc/emotes_icon.svg"><span translation="loadout_emotes"></span></button>
+        <button class="tab" id="tab-weapons"><img src="./img/misc/m3k.svg"><span translation="loadout_weapons"></span></button>
         <button class="tab" id="tab-crosshairs"><img src="./img/misc/crosshair_icon.svg"><span translation="loadout_crosshairs"></span></button>
         <button class="tab" id="tab-badges" style="display: none"><i class="fa-solid fa-certificate"></i><span translation="loadout_badges"></span></button>
         <button class="tab" id="tab-special" style="display: none"><i class="fa-solid fa-code"></i><span translation="loadout_special"></span></button>
@@ -966,6 +967,32 @@
             </div>
           </div>
           <div id="emotes-list"></div>
+        </div>
+        <div class="tab-content" id="tab-weapons-content" style="display: none">
+          <div id="weapons-customize-container">
+            <span class="weapons-header" translation="weapon_gun_tp"></span>
+            <div id="weapons-customize-vals">
+              <div id="weapons-gun1" class="weapons-item-container weapon-gun">
+                <span class="weapons-name"></span>
+                <div class="weapons-item"></div>
+                <i class="remove-weapon-btn fa-solid fa-trash" title="Remove Weapon"></i>
+              </div>
+
+              <div id="weapons-gun2" class="weapons-item-container weapon-gun">
+                <span class="weapons-name"></span>
+                <div class="weapons-item"></div>
+                <i class="remove-weapon-btn fa-solid fa-trash" title="Remove Weapon"></i>
+              </div>
+
+              <span class="weapons-header" translation="weapon_melee_tp"></span>
+              <div id="weapons-melee" class="weapons-item-container weapon-melee">
+                <span class="weapons-name"></span>
+                <div class="weapons-item"></div>
+                <i class="remove-weapon-btn fa-solid fa-trash" title="Remove Weapon"></i>
+              </div>
+            </div>
+          </div>
+          <div id="weapons-list"></div>
         </div>
         <div class="tab-content" id="tab-crosshairs-content" style="display: none;">
           <div id="crosshair-customize">

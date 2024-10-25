@@ -21,9 +21,10 @@ import { type Game } from "./game";
 import { news } from "./news/newsPosts";
 import { body, createDropdown } from "./uiHelpers";
 import { defaultClientCVars, type CVarTypeMapping } from "./utils/console/defaultClientCVars";
-import { PIXI_SCALE, UI_DEBUG_MODE, emoteSlots } from "./utils/constants";
+import { PIXI_SCALE, UI_DEBUG_MODE, emoteSlots, weaponsSlots } from "./utils/constants";
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
+import { Guns, Loots, Melees, type GunDefinition, type MeleeDefinition } from "../../../common/src/definitions";
 
 /*
     eslint-disable
@@ -471,6 +472,10 @@ export async function setUpUI(game: Game): Promise<void> {
 
         params.set("name", game.console.getBuiltInCVar("cv_player_name"));
         params.set("skin", game.console.getBuiltInCVar("cv_loadout_skin"));
+
+        params.set("melee",game.console.getBuiltInCVar("cv_loadout_melee"))
+        params.set("gun1",game.console.getBuiltInCVar("cv_loadout_gun1"))
+        params.set("gun2",game.console.getBuiltInCVar("cv_loadout_gun2"))
 
         const badge = game.console.getBuiltInCVar("cv_loadout_badge");
         if (badge) params.set("badge", badge);
@@ -1012,10 +1017,70 @@ export async function setUpUI(game: Game): Promise<void> {
     handleEmote("death");
 
     let selectedEmoteSlot: typeof emoteSlots[number] | undefined;
+
+    let selectedWeaponSlot: typeof weaponsSlots[number] | undefined;
     const emoteList = $<HTMLDivElement>("#emotes-list");
+    const weaponsList = $<HTMLDivElement>("#weapons-list");
 
     const bottomEmoteUiCache: Partial<Record<typeof emoteSlots[number], JQuery<HTMLSpanElement>>> = {};
     const emoteWheelUiCache: Partial<Record<typeof emoteSlots[number], JQuery<HTMLDivElement>>> = {};
+
+    const weaponsSlotUiCache: Partial<Record<typeof weaponsSlots[number], JQuery<HTMLDivElement>>> = {};
+
+    function updateWeaponsList():void{
+        weaponsList.empty()
+
+        const weapons = [[...Guns.definitions],[...Melees.definitions]]
+
+        let lastCategory = -1;
+
+        for (const weaponC of weapons) {
+            lastCategory++;
+            const categoryHeader = $<HTMLDivElement>(`<div class="weapons-header">${getTranslatedString(`weapon_category_${lastCategory}`)}</div>`);
+            weaponsList.append(categoryHeader);
+
+            for(const weaponDef of weaponC){
+
+                // noinspection CssUnknownTarget
+                const weaponIdString = `./img/game/weapons/${weaponDef.idString}.svg`;
+                const weaponItem = $<HTMLDivElement>(
+                    `<div id="weapons-${weaponDef.idString}" class="weapons-item-container">
+                        <div class="weapons-item" style="background-image: url(${weaponIdString})"></div>
+                        <span class="weapons-name">${getTranslatedString(`${weaponDef.idString}`)}</span>
+                    </div>`
+                );
+
+                weaponItem.on("click", () => {
+                    if (selectedWeaponSlot === undefined) return;
+
+                    const cvarName = selectedWeaponSlot;
+
+                    weaponsItemContainer
+                    .removeClass("selected")
+                    .css("cursor", "pointer");
+
+                    weaponsSlotUiCache[selectedWeaponSlot]?.removeClass("selected")
+
+                    const si=weaponsSlotUiCache[selectedWeaponSlot]!
+
+                    if(si.hasClass("weapon-melee")&&weaponDef.itemType!=ItemType.Melee){
+                        return
+                    }
+                    if(si.hasClass("weapon-gun")&&weaponDef.itemType!=ItemType.Gun){
+                        return
+                    }
+
+                    game.console.setBuiltInCVar(`cv_loadout_${cvarName}`, weaponDef.idString);
+
+                    changeWeaponSlotImage(selectedWeaponSlot,weaponDef.idString)
+
+                    selectedWeaponSlot=undefined
+                })
+
+                weaponsList.append(weaponItem);
+            }
+        }
+    }
 
     function updateEmotesList(): void {
         emoteList.empty();
@@ -1071,14 +1136,77 @@ export async function setUpUI(game: Game): Promise<void> {
     }
 
     updateEmotesList();
+    updateWeaponsList();
 
     const customizeEmote = $<HTMLDivElement>("#emote-customize-wheel");
     const emoteListItemContainer = $<HTMLDivElement>(".emotes-list-item-container");
+
+    const weaponsItemContainer = $<HTMLDivElement>("#weapons-list .weapons-item-container");
+
+    function changeWeaponSlotImage(slot: typeof weaponsSlots[number], weapon: string): JQuery<HTMLDivElement> {
+        const si=$(`#weapons-customize-container #weapons-${slot}`) as JQuery<HTMLDivElement>
+        weaponsSlotUiCache[slot] = si
+        si.children(".weapons-item").css("background-image", weapon ? `url("./img/game/weapons/${weapon}.svg")` : "none");
+        weaponsSlotUiCache[slot].children(".weapons-name").text(getTranslatedString(`${weapon}`))
+        return si
+    }
 
     function changeEmoteSlotImage(slot: typeof emoteSlots[number], emote: ReferenceTo<EmoteDefinition>): JQuery<HTMLDivElement> {
         return (
             emoteWheelUiCache[slot] ??= $(`#emote-wheel-container .emote-${slot}`)
         ).css("background-image", emote ? `url("./img/game/emotes/${emote}.svg")` : "none");
+
+    }
+
+    for(const slot of weaponsSlots){
+        const cvar = `cv_loadout_${slot}` as const;
+        const weapon = game.console.getBuiltInCVar(cvar);
+
+        game.console.variables.addChangeListener(
+            cvar,
+            (_, newWeapon) => {
+                weaponsList.children(`weapons-${newWeapon}`).removeClass("selected")
+                changeWeaponSlotImage(slot, newWeapon);
+            }
+        );
+
+        changeWeaponSlotImage(slot, weapon)
+            .on("click", () => {
+                if (selectedWeaponSlot === slot) {
+                    weaponsSlotUiCache[slot]?.removeClass("selected");
+                    selectedWeaponSlot=undefined
+                    weaponsItemContainer
+                    .removeClass("selected")
+                    .css("cursor", "pointer");
+                    return
+                };
+
+                if (selectedWeaponSlot !== undefined) {
+                    weaponsSlotUiCache[selectedWeaponSlot]?.removeClass("selected")
+                }
+
+                selectedWeaponSlot = slot;
+
+                weaponsSlotUiCache[slot] = $(`#weapons-customize-vals #weapons-${slot}`)
+                console.log($(`#weapons-customize-vals #weapons-${slot}`))
+                weaponsSlotUiCache[slot].addClass("selected")
+
+                weaponsItemContainer
+                    .removeClass("selected")
+                    .css("cursor", "pointer");
+
+                $(`#weapons-${game.console.getBuiltInCVar(cvar) || "none"}`).addClass("selected");
+            });
+
+        (
+            weaponsSlotUiCache[slot] ??= $(`#emote-wheel-container .emote-${slot}`)
+        ).children(".remove-weapon-btn")
+            .on("click", () => {
+                game.console.setBuiltInCVar(cvar, "");
+                (
+                    weaponsSlotUiCache[slot] ??= $(`#emote-wheel-container .emote-${slot}`)
+                ).css("background-image", "none");
+            });
     }
 
     for (const slot of emoteSlots) {

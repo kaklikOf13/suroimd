@@ -24,6 +24,9 @@ export const CVarCasters = Object.freeze({
 
     cv_loadout_skin: Casters.toString,
     cv_loadout_badge: Casters.toString,
+    cv_loadout_melee:Casters.toString,
+    cv_loadout_gun1:Casters.toString,
+    cv_loadout_gun2:Casters.toString,
     cv_loadout_crosshair: Casters.toInt,
     cv_loadout_top_emote: Casters.toString,
     cv_loadout_right_emote: Casters.toString,
@@ -132,6 +135,9 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
 
     cv_loadout_skin: GameConstants.player.defaultSkin,
     cv_loadout_badge: "",
+    cv_loadout_melee:"",
+    cv_loadout_gun1:"",
+    cv_loadout_gun2:"",
     cv_loadout_crosshair: 0,
     cv_loadout_top_emote: "happy_face",
     cv_loadout_right_emote: "thumbs_up",

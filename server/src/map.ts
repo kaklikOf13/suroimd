@@ -32,7 +32,7 @@ export interface MapBuild{
 export class GameMap {
     readonly game: Game;
 
-    private readonly mapDef: MapDefinition;
+    readonly mapDef: MapDefinition;
     private readonly quadBuildings: { [key in 1 | 2 | 3 | 4]: string[] } = { 1: [], 2: [], 3: [], 4: [] };
     private readonly quadMajorBuildings: Array<1 | 2 | 3 | 4> = [];
     private readonly buildings:MapBuild[]=[]

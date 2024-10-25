@@ -299,7 +299,10 @@ export class Game {
                 badge: Badges.fromStringSafe(this.console.getBuiltInCVar("cv_loadout_badge")),
                 emotes: emoteSlots.map(
                     slot => Emotes.fromStringSafe(this.console.getBuiltInCVar(`cv_loadout_${slot}_emote`))
-                )
+                ),
+                gun1:this.console.getBuiltInCVar("cv_loadout_gun1"),
+                gun2:this.console.getBuiltInCVar("cv_loadout_gun2"),
+                melee:this.console.getBuiltInCVar("cv_loadout_melee"),
             };
 
             this.sendPacket(JoinPacket.create(joinPacket));

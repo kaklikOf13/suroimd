@@ -94,6 +94,7 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
 
     "loadout_skins": "Skins",
     "loadout_emotes": "Emotes",
+    "loadout_weapons": "Weapons",
     "loadout_crosshairs": "Crosshairs",
     "loadout_badges": "Badges",
     "loadout_special": "Special",
@@ -102,6 +103,12 @@ export const ENGLISH_TRANSLATIONS: TranslationMap = {
     "loadout_crosshairs_color": "Color:",
     "loadout_crosshairs_stroke_size": "Stroke Size:",
     "loadout_crosshairs_stroke_color": "Stroke Color:",
+
+    "weapon_melee_tp":"Melee",
+    "weapon_gun_tp":"Guns",
+
+    "weapon_category_0":"Guns",
+    "weapon_category_1":"Melees",
 
     "emotes_category_People": "People",
     "emotes_category_Text": "Text",

@@ -347,6 +347,78 @@
         gap: 10px;
         height: 100%;
     }
+    #tab-weapons-content {
+        display: flex;
+        gap: 10px;
+        height: 100%;
+
+        .weapons-item-container {
+            display: flex;
+            flex-direction: column;
+            width: 120px;
+            height: 150px;
+            align-items: center;
+            border: 5px solid transparent;
+            border-radius: 10px;
+            padding: 5px;
+            background-color: $transparent_bg;
+            justify-content: center;
+
+            &.selected {
+                border-color: $orange;
+            }
+        }
+
+        .weapons-item {
+            margin-top: auto;
+            width: 84px;
+            height: 84px;
+            flex-shrink: 0;
+            background-size: 80% 80%; /* Scale to 50% of the element's width and height */
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .weapons-name {
+            text-align: center;
+            font-weight: bold;
+            @include text-shadow;
+        }
+
+        #weapons- {
+            justify-content: flex-end;
+        }
+
+        .weapons-header {
+            font-size: 2em;
+            font-weight: bold;
+            width: 100%;
+            @include text-shadow;
+        }
+
+        .remove-weapon-btn {
+            margin-left: auto;
+            height: 1em;
+            padding: 2px;
+            transform-origin: center;
+            &:hover {
+                transform: scale(1.1)
+            }
+        }
+    }
+
+    
+    #weapons-customize-vals{
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* Two equal-width columns */
+        gap: 10px;
+
+        position: relative;
+        align-self: center;
+        flex-shrink: 0;
+        transform: none;
+        gap: 5px;
+    }
 
     #emote-customize-wheel {
         position: relative;
@@ -458,6 +530,18 @@
         }
 
         #emote- {
+            justify-content: flex-end;
+        }
+    }
+
+    #weapons-list {
+        overflow-y: scroll;
+        flex-grow: 1;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+
+        #weapons- {
             justify-content: flex-end;
         }
     }
@@ -615,6 +699,31 @@
                 background-size: contain;
             }
         }
+        #weapons-list {
+            gap: 5px;
+
+            .weapons-list-item-container {
+                border-width: 3px;
+            }
+
+            .weapons-list-item {
+                width: 42px;
+                height: 42px;
+                background-size: contain;
+            }
+        }
+
+        #weapons-customize-vals{
+            width: 191px;
+            height: 191px;
+            background-size: contain;
+
+            &>div {
+                width: 56px;
+                height: 56px;
+                background-size: contain;
+            }
+        }
 
         #emote-customize-wheel {
             width: 191px;
@@ -693,6 +802,9 @@
         }
 
         #emotes-list {
+            padding-bottom: 16px;
+        }
+        #weapons-list {
             padding-bottom: 16px;
         }
 

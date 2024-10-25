@@ -56,6 +56,8 @@ export const WALL_STROKE_WIDTH = 8;
 
 export const emoteSlots = ["top", "right", "bottom", "left", "win", "death"] as const;
 
+export const weaponsSlots = ["gun1","gun2","melee"] as const;
+
 export const SHOCKWAVE_EXPLOSION_MULTIPLIERS = Object.freeze({
     time: 5,
     amplitude: 1,
