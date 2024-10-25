@@ -21,6 +21,11 @@ export type ThrowableDefinition = InventoryItemDefinition & {
     /**
      * Whether cooking the grenade will run down the fuse
      */
+
+    readonly zDecay:number
+    readonly zScaleA:number
+    readonly zBaseScale:number
+
     readonly cookable: boolean
     readonly c4: boolean
     readonly health?: number
@@ -77,11 +82,14 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
         cookSpeedMultiplier: 0.7,
         hitboxRadius: 1,
         impactDamage: 0,
+        zDecay:0.001,
+        zScaleA:.6,
+        zBaseScale:.6,
         obstacleMultiplier: 20,
         image: {
             zIndex: 5
         },
-        maxThrowDistance: 128,
+        maxThrowDistance: 150,
         fireDelay: 250,
         speedCap: Infinity
     },
@@ -190,7 +198,10 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
             idString: "c4",
             name: "C4",
             c4: true,
+            zScaleA:.7,
+            zBaseScale:.6,
             health: 40,
+            zDecay:0.002,
             image: {
                 position: Vec.create(60, 43),
                 angle: 60

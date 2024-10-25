@@ -29,6 +29,8 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
 
     c4?: boolean;
 
+    z:number=1
+
     floorType: FloorNames = FloorNames.Grass;
 
     constructor(game: Game, id: number, data: ObjectsNetData[ObjectCategory.ThrowableProjectile]) {
@@ -55,6 +57,12 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
         this.hitbox.radius = this.radius ?? 1;
         this.hitbox.position = this.position;
         this.layer = data.layer;
+
+        this.z=data.z
+
+
+        
+        this.container.scale=this.definition.zBaseScale+(this.definition.zScaleA*this.z)
 
         if (data.airborne) {
             this.container.zIndex = getEffectiveZIndex(ZIndexes.AirborneThrowables, this.layer, this.game.layer);

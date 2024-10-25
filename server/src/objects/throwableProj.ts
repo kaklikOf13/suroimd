@@ -34,7 +34,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         this._velocity.y = velocity.y ?? this._velocity.y;
     }
 
-    private _angularVelocity = 0.0035;
+    _angularVelocity = 0.0035;
     get angularVelocity(): number { return this._angularVelocity; }
 
     private readonly _spawnTime: number;
@@ -69,6 +69,8 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
      * leading to a chain reaction that can vaporize certain unlucky objects
      */
     private _damagedLastTick = new Set<GameObject>();
+
+    z:number=1
 
     constructor(
         game: Game,
@@ -133,6 +135,14 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
     }
 
     update(): void {
+        this.z=Numeric.clamp(this.z-(this.definition.zDecay * this.game.dt),0,1)
+
+        if(this.z==0){
+            this.velocity.x=0
+            this.velocity.y=0
+            this._angularVelocity=0
+        }
+
         if (this.definition.c4) {
             this._airborne = false;
             this.game.grid.updateObject(this);
@@ -528,6 +538,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
             layer: this.layer,
             airborne: this._airborne,
             activated: this._activated,
+            z:this.z,
             full: {
                 definition: this.definition
             }

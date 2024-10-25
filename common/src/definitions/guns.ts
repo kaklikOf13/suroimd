@@ -362,15 +362,15 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 name: "M3K",
                 ammoType: "12g",
                 ammoSpawnAmount: 18,
-                capacity: 9,
+                capacity: 6,
                 reloadTime: 0.55,
                 fireDelay: 700,
                 switchDelay: 700,
                 recoilMultiplier: 0.5,
                 recoilDuration: 500,
                 fireMode: FireMode.Single,
-                shotSpread: 5,
-                moveSpread: 7,
+                shotSpread: 7,
+                moveSpread: 12,
                 jitterRadius: 0.5,
                 bulletCount: 9,
                 length: 7.75,
@@ -390,7 +390,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     damage: 9,
                     obstacleMultiplier: 1,
                     speed: 0.2,
-                    range: 80
+                    range: 100
                 }
             },
             {
@@ -405,10 +405,10 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 recoilMultiplier: 0.5,
                 recoilDuration: 550,
                 fireMode: FireMode.Single,
-                shotSpread: 11,
-                moveSpread: 14,
-                jitterRadius: 1.25,
-                bulletCount: 10,
+                shotSpread: 14,
+                moveSpread: 17,
+                jitterRadius: 4,
+                bulletCount: 12,
                 length: 7.85,
                 fists: {
                     left: Vec.create(122, -3),
@@ -434,7 +434,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     damage: 10,
                     obstacleMultiplier: 1,
                     speed: 0.16,
-                    range: 48,
+                    range: 60,
                     tracer: {
                         length: 0.7
                     }
@@ -454,9 +454,9 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 recoilDuration: 600,
                 fireMode: FireMode.Single,
                 bulletCount: 18,
-                shotSpread: 18,
-                moveSpread: 22,
-                jitterRadius: 1.75,
+                shotSpread: 25,
+                moveSpread: 30,
+                jitterRadius: 4,
                 length: 8,
                 fists: {
                     left: Vec.create(120, -1),
@@ -470,12 +470,12 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 }],
                 gasParticles: gasParticlePresets.shotgun,
                 ballistics: {
-                    damage: 4,
+                    damage: 5,
                     obstacleMultiplier: 0.5,
-                    speed: 0.12,
-                    range: 40,
+                    speed: 0.2,
+                    range: 60,
                     tracer: {
-                        length: 0.5
+                        length: 0.3
                     }
                 }
             },
@@ -492,9 +492,9 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 recoilDuration: 100,
                 fireMode: FireMode.Single,
                 bulletCount: 10,
-                shotSpread: 11,
-                moveSpread: 14,
-                jitterRadius: 1.5,
+                shotSpread: 14,
+                moveSpread: 17,
+                jitterRadius: 4,
                 length: 6,
                 fists: {
                     left: Vec.create(95, -2),
@@ -517,32 +517,24 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 }],
                 gasParticles: gasParticlePresets.shotgun,
                 ballistics: {
-                    damage: 10,
+                    damage: 15,
                     obstacleMultiplier: 1,
                     speed: 0.16,
-                    range: 48,
+                    range: 60,
                     tracer: {
                         length: 0.5
                     }
                 }
             },
             {
+                [inheritFrom]: "model_37",
                 idString: "vepr12",
                 name: "Vepr-12",
-                ammoType: "12g",
                 ammoSpawnAmount: 20,
-                capacity: 5,
                 reloadTime: 2.4,
-                fireDelay: 450,
-                switchDelay: 650,
-                recoilMultiplier: 0.7,
-                recoilDuration: 550,
-                fireMode: FireMode.Auto,
-                shotSpread: 11,
-                moveSpread: 14,
-                jitterRadius: 1.25,
-                length: 7.1,
-                bulletCount: 10,
+                singleReload:false,
+                fireMode:FireMode.Auto,
+                fireDelay:450,
                 fists: {
                     left: Vec.create(98, -2),
                     right: Vec.create(40, 0),
@@ -554,15 +546,6 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     position: Vec.create(4.3, 0.6)
                 }],
                 gasParticles: gasParticlePresets.shotgun,
-                ballistics: {
-                    damage: 10,
-                    obstacleMultiplier: 1,
-                    speed: 0.16,
-                    range: 48,
-                    tracer: {
-                        length: 0.5
-                    }
-                }
             },
             {
                 idString: "mosin_nagant",
@@ -1612,10 +1595,10 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 },
                 image: { position: Vec.create(120, 4) },
                 gasParticles: gasParticlePresets.rifle,
-                capacity: 3,
+                capacity: 5,
                 reloadTime: 3.8,
                 ballistics: {
-                    damage: 150,
+                    damage: 140,
                     obstacleMultiplier: 1,
                     speed: 0.5,
                     tracer: {

@@ -1710,7 +1710,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     continue;
                 }
 
-                this.game.addLoot(item, this.position, this.layer, { count });
+                this.game.addLoot(item, this.hitbox.randomPoint(), this.layer, { count });
                 this.inventory.items.setItem(item, 0);
             }
         }
@@ -1719,7 +1719,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         for (const itemType of ["helmet", "vest", "backpack"] as const) {
             const item = this.inventory[itemType];
             if (item?.noDrop === false) {
-                this.game.addLoot(item, this.position, this.layer);
+                this.game.addLoot(item, this.hitbox.randomPoint(), this.layer);
             }
         }
 
@@ -1728,7 +1728,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         // Drop skin
         const { skin } = this.loadout;
         if (skin.hideFromLoadout && !skin.noDrop) {
-            this.game.addLoot(skin, this.position, this.layer);
+            this.game.addLoot(skin, this.hitbox.randomPoint(), this.layer);
         }
 
         // Create death marker

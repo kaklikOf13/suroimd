@@ -100,6 +100,11 @@ export class Explosion {
                                 (max - dist) * 0.01
                             );
                         }
+                        if(isThrowableProjectile){
+                            (object as ThrowableProjectile).z+=(max - dist) * 0.05;
+                            (object as ThrowableProjectile)._angularVelocity=0.008;
+                        }
+                        
                     }
                 }
 

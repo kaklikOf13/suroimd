@@ -148,11 +148,11 @@ export const GameConstants = freezeDeep({
     // or a new item is added to a definition list
     protocolVersion: 26,
     gridSize: 32,
-    bleedOutDPMs: 0.002, // === 2 dps
+    bleedOutDPMs: 0.001, // === 2 dps
     maxPosition: 1632,
     player: {
         radius: 2.25,
-        baseSpeed: 0.02655,
+        baseSpeed: 0.029,
         defaultHealth: 100,
         maxAdrenaline: 100,
         inventorySlotTypings,

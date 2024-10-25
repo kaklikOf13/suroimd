@@ -30,7 +30,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
     () => [
         {
             name: "Barrel",
-            damage: 130,
+            damage: 110,
             obstacleMultiplier: 1,
             radius: {
                 min: 8,
@@ -57,7 +57,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
         },
         {
             name: "Stove",
-            damage: 130,
+            damage: 110,
             obstacleMultiplier: 2,
             radius: {
                 min: 8,
@@ -84,7 +84,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
         },
         {
             name: "Control Panel",
-            damage: 130,
+            damage: 110,
             obstacleMultiplier: 1.5,
             radius: {
                 min: 8,
@@ -111,7 +111,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
         },
         {
             name: "Super Barrel",
-            damage: 160,
+            damage: 140,
             obstacleMultiplier: 1,
             radius: {
                 min: 8,
@@ -138,7 +138,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
         },
         {
             name: "Small Refinery Barrel",
-            damage: 200,
+            damage: 180,
             obstacleMultiplier: 2,
             radius: {
                 min: 16,
@@ -286,7 +286,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
         },
         {
             name: "Frag Grenade",
-            damage: 120,
+            damage: 100,
             obstacleMultiplier: 1.15,
             radius: {
                 min: 10,
@@ -343,7 +343,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
         },
         {
             name: "C4",
-            damage: 150,
+            damage: 110,
             obstacleMultiplier: 1.15,
             radius: {
                 min: 10,
@@ -358,7 +358,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
                 tint: 0x91140b,
                 scale: 1.5
             },
-            shrapnelCount: 0,
+            shrapnelCount: 10,
             ballistics: {
                 damage: 15,
                 obstacleMultiplier: 1,

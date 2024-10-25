@@ -3,6 +3,7 @@ import { ItemType, ObjectDefinitions, type ItemDefinition } from "../utils/objec
 export interface AmmoDefinition extends ItemDefinition {
     readonly itemType: ItemType.Ammo
     readonly maxStackSize: number
+    readonly dropAmmout:number
     readonly characteristicColor: {
         readonly hue: number
         readonly saturation: number
@@ -33,6 +34,7 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
             idString: "12g",
             name: "12 gauge",
             maxStackSize: 20,
+            dropAmmout:10,
             characteristicColor: {
                 hue: 0,
                 saturation: 100,
@@ -44,6 +46,7 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
             idString: "556mm",
             name: "5.56mm",
             maxStackSize: 60,
+            dropAmmout:47,
             characteristicColor: {
                 hue: 120,
                 saturation: 100,
@@ -55,6 +58,7 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
             idString: "762mm",
             name: "7.62mm",
             maxStackSize: 60,
+            dropAmmout:47,
             characteristicColor: {
                 hue: 210,
                 saturation: 100,
@@ -66,6 +70,7 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
             idString: "9mm",
             name: "9mm",
             maxStackSize: 90,
+            dropAmmout:47,
             characteristicColor: {
                 hue: 48,
                 saturation: 100,
@@ -77,6 +82,7 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
             idString: "50cal",
             name: ".50 Cal",
             maxStackSize: 9,
+            dropAmmout:5,
             characteristicColor: {
                 hue: 0,
                 saturation: 0,
@@ -89,6 +95,7 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
             idString: "338lap",
             name: ".338 Lapua Magnum",
             maxStackSize: 9,
+            dropAmmout:5,
             characteristicColor: {
                 hue: 75,
                 saturation: 100,
@@ -101,6 +108,7 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
             idString: "curadell",
             name: "Curadell",
             maxStackSize: 10,
+            dropAmmout:6,
             characteristicColor: {
                 hue: 26,
                 saturation: 100,
@@ -113,6 +121,7 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
             idString: "firework_rocket",
             name: "Firework Rocket",
             maxStackSize: 5,
+            dropAmmout:3,
             characteristicColor: {
                 hue: 0,
                 saturation: 55,
@@ -128,6 +137,7 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
             idString: "power_cell",
             name: "P.O.W.E.R. cell",
             maxStackSize: 10,
+            dropAmmout:6,
             characteristicColor: {
                 hue: 190,
                 saturation: 100,
@@ -140,6 +150,7 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
             idString: "bb",
             name: "6mm BB",
             maxStackSize: 240,
+            dropAmmout:5,
             characteristicColor: {
                 hue: 0,
                 saturation: 0,

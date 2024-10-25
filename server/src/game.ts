@@ -432,7 +432,7 @@ export class Game implements GameData {
                 break;
             case packet instanceof PlayerInputPacket:
                 // Ignore input packets from players that haven't finished joining, dead players, and if the game is over
-                if (!player.joined || player.dead || player.game.over) return;
+                if (!player.joined || player.dead || player.game.stopped) return;
                 player.processInputs(packet.output);
                 break;
             case packet instanceof SpectatePacket:
@@ -595,25 +595,28 @@ export class Game implements GameData {
                     : this.aliveCount <= 1
             )
         ) {
-            for (const player of this.livingPlayers) {
-                if(player.isNpc)continue
-                const { movement } = player;
-                movement.up = movement.down = movement.left = movement.right = false;
-                player.attacking = false;
-                player.sendEmote(player.loadout.emotes[4]);
-                player.sendGameOverPacket(true);
-                this.pluginManager.emit("player_did_win", player);
-            }
 
             this.pluginManager.emit("game_end", this);
 
             this.setGameData({ allowJoin: false, over: true });
 
-            // End the game in 1 second
+            // End the game in 2 second
             this.addTimeout(() => {
-                this.server.close();
-                this.setGameData({ stopped: true });
-            }, 1000);
+                for (const player of this.livingPlayers) {
+                    if(player.isNpc)continue
+                    const { movement } = player;
+                    movement.up = movement.down = movement.left = movement.right = false;
+                    player.attacking = false;
+                    player.sendEmote(player.loadout.emotes[4]);
+                    player.sendGameOverPacket(true);
+                    this.pluginManager.emit("player_did_win", player);
+                }
+
+                setTimeout(()=>{
+                    this.server.close();
+                    this.setGameData({ stopped: true });
+                },100)
+            }, 2000);
         }
 
         // Record performance and start the next tick
