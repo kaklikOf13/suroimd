@@ -22,7 +22,7 @@ import { ReportPacket } from "../../../common/src/packets/reportPacket";
 import { UpdatePacket, type UpdatePacketDataOut } from "../../../common/src/packets/updatePacket";
 import { CircleHitbox } from "../../../common/src/utils/hitbox";
 import { adjacentOrEqualLayer } from "../../../common/src/utils/layer";
-import { EaseFunctions, Geometry } from "../../../common/src/utils/math";
+import { EaseFunctions, Geometry, Numeric } from "../../../common/src/utils/math";
 import { Timeout } from "../../../common/src/utils/misc";
 import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
 import { ObjectPool } from "../../../common/src/utils/objectPool";
@@ -122,6 +122,7 @@ export class Game {
 
     gameStarted = false;
     gameOver = false;
+    playing=false;
     spectating = false;
     error = false;
 
@@ -141,7 +142,60 @@ export class Game {
     readonly gasRender = new GasRender(PIXI_SCALE);
     readonly gas = new Gas(this);
 
-    readonly music: Sound;
+    music:Sound|undefined=undefined;
+
+    stop_music(changeVal:number=0.01,volume:number=1):Promise<void>{
+        return new Promise<void>((resolve, _reject) => {
+            const f=()=>{
+                if(this.music){
+                    this.music.volume=Numeric.clamp(this.music.volume-changeVal,0,volume*this.console.getBuiltInCVar("cv_music_volume"))
+                    if(this.music.volume==0){
+                        this.music.stop()
+                        this.music.volume=volume*this.console.getBuiltInCVar("cv_music_volume")
+                        this.music=undefined
+                        resolve()
+                        return
+                    }
+                    self.requestAnimationFrame(f)
+                }else{
+                    resolve()
+                    return
+                }
+            }
+            f()
+        })
+    }
+    async play_music(music:Sound,changeVal:number=0.01,volume:number=1){
+        if(this.music!=undefined){
+            return
+        }
+        this.music=music
+        this.music.volume=0
+        const f=()=>{
+            if(this.music){
+                this.music.volume=Numeric.clamp(this.music.volume+changeVal,0,volume*this.console.getBuiltInCVar("cv_music_volume"))
+                if(this.music.volume==this.console.getBuiltInCVar("cv_music_volume")){
+                    return
+                }
+                self.requestAnimationFrame(f)
+            }else{
+                return
+            }
+        }
+        await this.music.play()
+        f()
+    }
+    async change_music(music:Sound,changeVal:number=0.01,volume:number=1){
+        if(this.music==music){
+            return
+        }
+        await this.stop_music(changeVal,volume)
+        await this.play_music(music,changeVal,volume)
+    }
+
+    readonly menu_music: Sound;
+
+    readonly gameplay_music:Sound;
 
     readonly tweens = new Set<Tween<unknown>>();
 
@@ -241,13 +295,25 @@ export class Game {
         setUpCommands(this);
         this.inputManager.generateBindsConfigScreen();
 
-        this.music = sound.add("menu_music", {
+        this.menu_music = sound.add("menu_music", {
             url: `./audio/music/menu_music${this.console.getBuiltInCVar("cv_use_old_menu_music") ? "_old" : MODE.specialMenuMusic ? `_${MODE.idString}` : ""}.mp3`,
             singleInstance: true,
             preload: true,
-            autoPlay: true,
+            autoPlay: false,
             volume: this.console.getBuiltInCVar("cv_music_volume")
         });
+
+        this.gameplay_music = sound.add("gameplay_music", {
+            url: `./audio/music/gameplay_music.mp3`,
+            singleInstance: true,
+            preload: true,
+            autoPlay: false,
+            volume: this.console.getBuiltInCVar("cv_music_volume")
+        });
+
+        this.music=undefined
+
+        this.play_music(this.menu_music)
     }
 
     resize(): void {
@@ -264,7 +330,7 @@ export class Game {
         this._socket.binaryType = "arraybuffer";
 
         this._socket.onopen = (): void => {
-            this.music.stop();
+            this.stop_music()
             this.gameStarted = true;
             this.gameOver = false;
             this.spectating = false;
@@ -337,6 +403,8 @@ export class Game {
         this._socket.onclose = (): void => {
             resetPlayButtons();
 
+            this.playing=false
+
             const reason = this.disconnectReason || "Connection lost";
 
             if (!this.gameOver) {
@@ -348,6 +416,7 @@ export class Game {
                 this.uiManager.ui.btnSpectate.addClass("btn-disabled");
                 if (!this.error) void this.endGame();
             }
+            
 
             if (reason.startsWith("Invalid game version")) {
                 alert(reason);
@@ -371,6 +440,10 @@ export class Game {
                 this.processUpdate(packet.output);
                 break;
             case packet instanceof GameOverPacket:
+                this.playing=false
+                if(packet.output.won){
+                    this.change_music(this.menu_music,0.1)
+                }
                 this.uiManager.showGameOverScreen(packet.output);
                 break;
             case packet instanceof KillFeedPacket:
@@ -445,6 +518,7 @@ export class Game {
     }
 
     startGame(packet: JoinedPacketData): void {
+        this.playing=true
         // Sound which notifies the player that the
         // game started if page is out of focus.
         if (!document.hasFocus()) this.soundManager.play("join_notification");
@@ -476,11 +550,9 @@ export class Game {
         return await new Promise(resolve => {
             ui.splashOptions.addClass("loading");
 
-            this.soundManager.stopAll();
-
+            this.playing=false
+            this.change_music(this.menu_music)
             ui.splashUi.fadeIn(400, () => {
-                void this.music.play();
-
                 ui.teamContainer.html("");
                 ui.actionContainer.hide();
                 ui.gameMenu.hide();
@@ -828,9 +900,17 @@ export class Game {
         } = {};
 
         return () => {
+            if(this.music){
+                if(this.music.instances[0].progress==1){
+                    this.music=undefined
+                }
+            }else if(this.playing&&this.gameStarted&&Math.random()<=0.01&&Math.random()<=0.05){
+                //Ambientation Music
+                this.change_music(this.gameplay_music,undefined,0.6)
+            }
+            this.soundManager.update();
             if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
             this.inputManager.update();
-            this.soundManager.update();
 
             const player = this.activePlayer;
             if (!player) return;
