@@ -1,6 +1,6 @@
 import { AnimationType, GameConstants, InputActions, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType, Layer, ObjectCategory, PlayerActions, SpectateActions } from "@common/constants";
 import { Ammos, Armors, ArmorType, Backpacks, DEFAULT_SCOPE, Emotes, Guns, HealingItems, Loots, Melees, Scopes, Throwables, type BadgeDefinition, type EmoteDefinition, type GunDefinition, type MeleeDefinition, type PlayerPing, type ScopeDefinition, type SkinDefinition, type SyncedParticleDefinition, type ThrowableDefinition, type WeaponDefinition } from "@common/definitions";
-import { DisconnectPacket, GameOverPacket, KillFeedPacket, NoMobile, PacketStream, PlayerInputData, ReportPacket, SpectatePacketData, UpdatePacket, type ForEventType, type GameOverData, type InputPacket, type PlayerData, type UpdatePacketDataCommon, type UpdatePacketDataIn } from "@common/packets";
+import { DisconnectPacket, GameOverPacket, InputAction, KillFeedPacket, NoMobile, PacketStream, PlayerInputData, ReportPacket, SpectatePacketData, UpdatePacket, type ForEventType, type GameOverData, type InputPacket, type PlayerData, type UpdatePacketDataCommon, type UpdatePacketDataIn } from "@common/packets";
 import { createKillfeedMessage } from "@common/packets/killFeedPacket";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, isVisibleFromLayer } from "@common/utils/layer";
@@ -1141,9 +1141,16 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     AI(){
         //NPC Ai
-        this.rotation+=0.01
         if (this.rotation > 3.1415) this.rotation = -3.1415 + (this.rotation - 3.1415);
-        this.processInputs({attacking:!this.attacking,actions:[],rotation:this.rotation,turning:true,isMobile:false,distanceToMouse:30,movement:{down:false,left:false,right:false,up:false}})
+        const actions:InputAction[]=[]
+        if(this.inventory.activeWeapon instanceof GunItem&&(this.inventory.activeWeapon as GunItem).ammo>0){
+            this.rotation+=0.01
+        }else{
+            actions.push({
+                type:InputActions.Reload,
+            })
+        }
+        this.processInputs({attacking:(this.inventory.activeWeapon instanceof MeleeItem)||(this.inventory.activeWeapon as GunItem).ammo>0,actions:actions,rotation:this.rotation,turning:true,isMobile:false,distanceToMouse:30,movement:{down:false,left:false,right:false,up:false}})
     }
 
     /**
@@ -1361,10 +1368,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         let { amount } = params;
         if (
             this.invulnerable
+            ||(source instanceof Player&&source.teamID === this.teamID&&source.isNpc===this.isNpc&&this.isNpc)
             || (
                 this.game.teamMode
                 && source instanceof Player
-                && source.teamID === this.teamID
+                && (source.teamID === this.teamID&&source.isNpc===this.isNpc)
                 && source.id !== this.id
                 && !this.disconnected
             )

@@ -35,6 +35,7 @@ interface BuildingNpcs{
         readonly vest?:string
         readonly helmet?:string
     }
+    readonly team?:number
     readonly items?:Record<string,number>
 }
 
@@ -169,6 +170,10 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly rotationMode: RotationMode.Limited | RotationMode.Binary | RotationMode.None
 }
 
+enum NPCSTeams{
+    aegis=0
+}
+
 const npcsGenerators={
     aegis_soldier:function(position:Vector):BuildingNpcs{
         return {
@@ -195,7 +200,8 @@ const npcsGenerators={
             weapons:{
                 0:"model_37",
                 1:"ak47"
-            }
+            },
+            team:NPCSTeams.aegis,
         }
     }
 }

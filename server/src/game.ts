@@ -20,7 +20,7 @@ import { type PingSerialization } from "@common/packets/updatePacket";
 import { CircleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { EaseFunctions, Geometry, Numeric, Statistics } from "@common/utils/math";
 import { Timeout } from "@common/utils/misc";
-import { ItemType, MapObjectSpawnMode, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { ItemType, MapObjectSpawnMode, SetArray, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { pickRandomInArray, randomFloat, randomPointInsideCircle, randomRotation } from "@common/utils/random";
 import { OBJECT_ID_BITS, SuroiBitStream } from "@common/utils/suroiBitStream";
 import { Vec, type Vector } from "@common/utils/vector";
@@ -105,37 +105,10 @@ export class Game implements GameData {
     readonly maxTeamSize: TeamSize;
 
     readonly teamMode: boolean;
+    
 
-    readonly teams = new (class SetArray<T> extends Set<T> {
-        private _valueCache?: T[];
-        get valueArray(): T[] {
-            return this._valueCache ??= [...super.values()];
-        }
-
-        add(value: T): this {
-            super.add(value);
-            this._valueCache = undefined;
-            return this;
-        }
-
-        delete(value: T): boolean {
-            const ret = super.delete(value);
-            this._valueCache = undefined;
-            return ret;
-        }
-
-        clear(): void {
-            super.clear();
-            this._valueCache = undefined;
-        }
-
-        values(): IterableIterator<T> {
-            const iterator = this.values();
-            this._valueCache ??= [...iterator];
-
-            return iterator;
-        }
-    })<Team>();
+    readonly teams = new SetArray<Team>();
+    readonly npcTeams=new Map<number,Team>()
 
     private _nextTeamID = -1;
     get nextTeamID(): number { return ++this._nextTeamID; }
@@ -531,7 +504,7 @@ export class Game implements GameData {
 
         // Delete players that haven't sent a JoinPacket after 5 seconds
         for (const player of this.connectingPlayers) {
-            if (this.now - player.joinTime > 5000) {
+            if (this.now - player.joinTime > 10000) {
                 player.disconnect("JoinPacket not received after 5 seconds");
             }
         }
@@ -992,10 +965,15 @@ export class Game implements GameData {
         this.pluginManager.emit("player_disconnect", player);
     }
 
-    addNpc(position:Vector,join:JoinPacketData,layer:number,team?:Team):Player{
-        const npc=new Player(this,undefined,position,layer,team)
+    addNpc(position:Vector,join:JoinPacketData,layer:number,team?:number):Player{
+        let t:Team|undefined=undefined
+        if(team!==undefined){
+            t=this.npcTeams.get(team)??this.npcTeams.set(team,new Team(team,false)).get(team)
+        }
+        const npc=new Player(this,undefined,position,layer,t)
         npc.isNpc=true
         this.activatePlayer(npc,join)
+        npc.teamID=team
         return npc
     }
 

@@ -56,7 +56,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
         {
             idString: "fists",
             name: "Fists",
-            damage: 20,
+            damage: 23,
             obstacleMultiplier: 1,
             radius: 1.5,
             offset: Vec.create(2.5, 0),

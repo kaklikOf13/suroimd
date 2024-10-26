@@ -13,8 +13,8 @@ import { type GunItem } from "../inventory/gunItem";
 import { GameMap } from "../map";
 import { Player, type PlayerContainer } from "../objects/player";
 import { LootTables } from "./lootTables";
-import { Layer } from "@common/constants";
-import { Guns } from "@common/definitions";
+import { GameConstants, Layer } from "@common/constants";
+import { Backpacks, Guns, Skins } from "@common/definitions";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { getLootTableLoot } from "../utils/misc";
 
@@ -398,6 +398,31 @@ const maps = {
             genLoots(Vec.add(center, Vec.create(70, 90)), 8, 8);
             genLoots(Vec.add(center, Vec.create(-70, -90)), -8, 8);
             genLoots(Vec.add(center, Vec.create(70, -90)), -8, 8);
+            
+            setTimeout(()=>{
+                const npc1=map.game.addNpc(center,{
+                    emotes:[undefined,undefined,undefined,undefined,undefined,undefined],
+                    name:"NPC",
+                    isMobile:false,
+                    protocolVersion:0,
+                    skin:Skins.fromString(GameConstants.player.defaultSkin),
+                    gun1:"ak47",
+                    gun2:"model_37",
+                },0)
+                npc1.inventory.backpack=Backpacks.fromString("tactical_pack")
+                npc1.inventory.items.setItem("762mm",400)
+                const npc2=map.game.addNpc(Vec.add(center,Vec.create(10,0)),{
+                    emotes:[undefined,undefined,undefined,undefined,undefined,undefined],
+                    name:"NPC",
+                    isMobile:false,
+                    protocolVersion:0,
+                    skin:Skins.fromString(GameConstants.player.defaultSkin),
+                    gun1:"ak47",
+                    gun2:"model_37",
+                },0)
+                npc2.inventory.backpack=Backpacks.fromString("tactical_pack")
+                npc2.inventory.items.setItem("762mm",400)
+            },2000)
 
             // Generate random obstacles around the center
             const randomObstacles: MapDefinition["obstacles"] = {

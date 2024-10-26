@@ -38,6 +38,37 @@ import { type Vector } from "./vector";
  * }
  * ```
  */
+
+export class SetArray<T> extends Set<T> {
+    private _valueCache?: T[];
+    get valueArray(): T[] {
+        return this._valueCache ??= [...super.values()];
+    }
+
+    add(value: T): this {
+        super.add(value);
+        this._valueCache = undefined;
+        return this;
+    }
+
+    delete(value: T): boolean {
+        const ret = super.delete(value);
+        this._valueCache = undefined;
+        return ret;
+    }
+
+    clear(): void {
+        super.clear();
+        this._valueCache = undefined;
+    }
+
+    values(): IterableIterator<T> {
+        const iterator = this.values();
+        this._valueCache ??= [...iterator];
+
+        return iterator;
+    }
+}
 export const inheritFrom: unique symbol = Symbol("inherit from");
 
 /**

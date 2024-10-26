@@ -570,7 +570,7 @@ export class GameMap {
                 for(const npcData of definition.npcs){
                     const npc=this.game.addNpc(
                         Vec.addAdjust(b.position, npcData.position, b.orientation),
-                        npcData.data,npcData.layer??b.layer)
+                        npcData.data,npcData.layer??b.layer,npcData.team)
                     if(npcData.items){
                         for(const item of Object.getOwnPropertyNames(npcData.items)){
                             npc.inventory.items.setItem(item,npcData.items[item])

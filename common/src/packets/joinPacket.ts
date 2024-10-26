@@ -37,21 +37,21 @@ export const JoinPacket = createPacket("JoinPacket")<JoinPacketCreation, JoinPac
             Emotes.writeOptional(stream, emote);
         }
 
-        stream.writeBoolean(data.gun1!==undefined)
+        stream.writeBoolean(!(data.gun1==undefined||data.gun1==""))
 
         if(data.gun1){
             stream.writeUint16(data.gun1.length)
             stream.writeASCIIString(data.gun1,data.gun1.length)
         }
 
-        stream.writeBoolean(data.gun2!==undefined)
+        stream.writeBoolean(!(data.gun2==undefined||data.gun2==""))
 
         if(data.gun2){
             stream.writeUint16(data.gun2.length)
             stream.writeASCIIString(data.gun2,data.gun2.length)
         }
 
-        stream.writeBoolean(data.melee!==undefined)
+        stream.writeBoolean(!(data.melee==undefined||data.melee==""))
 
         if(data.melee){
             stream.writeUint16(data.melee.length)
