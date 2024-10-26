@@ -331,6 +331,7 @@ export class Game {
 
         this._socket.onopen = (): void => {
             this.stop_music()
+            this.soundManager.stopAll()
             this.gameStarted = true;
             this.gameOver = false;
             this.spectating = false;
@@ -416,6 +417,8 @@ export class Game {
                 this.uiManager.ui.btnSpectate.addClass("btn-disabled");
                 if (!this.error) void this.endGame();
             }
+
+            this.change_music(this.menu_music)
             
 
             if (reason.startsWith("Invalid game version")) {
@@ -518,6 +521,7 @@ export class Game {
     }
 
     startGame(packet: JoinedPacketData): void {
+        this.stop_music()
         this.playing=true
         // Sound which notifies the player that the
         // game started if page is out of focus.
@@ -551,7 +555,6 @@ export class Game {
             ui.splashOptions.addClass("loading");
 
             this.playing=false
-            this.change_music(this.menu_music)
             ui.splashUi.fadeIn(400, () => {
                 ui.teamContainer.html("");
                 ui.actionContainer.hide();
@@ -900,16 +903,19 @@ export class Game {
         } = {};
 
         return () => {
-            if(this.music){
+            if(this.music&&this.music.instances.length!=0){
                 if(this.music.instances[0].progress==1){
                     this.music=undefined
                 }
             }else if(this.playing&&this.gameStarted&&Math.random()<=0.01&&Math.random()<=0.05){
+                if(this.music&&this.music.instances.length==0){
+                    this.music=undefined
+                }
                 //Ambientation Music
                 this.change_music(this.gameplay_music,undefined,0.6)
             }
-            this.soundManager.update();
             if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
+            this.soundManager.update();
             this.inputManager.update();
 
             const player = this.activePlayer;

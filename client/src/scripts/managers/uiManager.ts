@@ -422,8 +422,6 @@ export class UIManager {
         gameOverDamageTaken.text(packet.damageTaken);
         gameOverTime.text(formatDate(packet.timeAlive));
 
-        if (packet.won) void game.music.play();
-
         this.gameOverScreenTimeout = window.setTimeout(() => gameOverOverlay.fadeIn(500), 500);
 
         // Player rank
