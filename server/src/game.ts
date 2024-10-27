@@ -49,6 +49,7 @@ import { IDAllocator } from "./utils/idAllocator";
 import { cleanUsername, Logger, removeFrom } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
 import { Backpacks, Guns, Melees, SkinDefinition, Skins } from "@common/definitions";
+import { GoapAgent } from "./utils/goap";
 
 /*
     eslint-disable
@@ -524,15 +525,15 @@ export class Game implements GameData {
             fullObject.serializeFull();
         }
 
+        //NPCS AI
+        for(const npc of this.livingNpcs){
+            npc.AI()
+        }
+
         // Second loop over players: calculate visible objects & send updates
         for (const player of this.connectedPlayers) {
             if (!player.joined) continue;
             player.secondUpdate();
-        }
-
-        //NPCS AI
-        for(const npc of this.livingNpcs){
-            npc.AI()
         }
 
         // Third loop over players: clean up after all packets have been sent
@@ -971,6 +972,7 @@ export class Game implements GameData {
             t=this.npcTeams.get(team)??this.npcTeams.set(team,new Team(team,false)).get(team)
         }
         const npc=new Player(this,undefined,position,layer,t)
+        npc.goapAgent=new GoapAgent(npc)
         npc.isNpc=true
         this.activatePlayer(npc,join)
         npc.teamID=team

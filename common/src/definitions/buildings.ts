@@ -3985,8 +3985,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "detector", position: Vec.create(-25, 25.5) }
                 ],
                 npcs:[
-                    npcsGenerators.aegis_soldier(Vec.create(-35, 22)),
-                    npcsGenerators.aegis_soldier(Vec.create(-25, 22))
+                    npcsGenerators.aegis_soldier(Vec.create(-35, 15)),
+                    npcsGenerators.aegis_soldier(Vec.create(-25, 15))
                 ]
             },
             {

@@ -7,6 +7,7 @@ import { findGame } from "./gameManager";
 import { type Player } from "./objects/player";
 import { customTeams } from "./server";
 import { removeFrom } from "./utils/misc";
+import { GOAPGoal } from "./utils/goap";
 
 export class Team {
     readonly id: number;
@@ -114,7 +115,11 @@ export class Team {
         return this.players.filter(player => !player.dead && !player.disconnected);
     }
 }
-
+export class GoapTeam extends Team{
+    spotedEnemys:Player[]=[]
+    alert:number=0
+    goal:GOAPGoal|undefined
+}
 export class CustomTeam {
     private static readonly _idChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static readonly _idCharMax = this._idChars.length - 1;

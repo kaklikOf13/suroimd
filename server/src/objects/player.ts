@@ -8,7 +8,7 @@ import { Collision, Geometry, Numeric } from "@common/utils/math";
 import { ExtendedMap, type SDeepMutable, type SMutable, type Timeout } from "@common/utils/misc";
 import { ItemType, type ExtendedWearerAttributes, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
-import { pickRandomInArray, random, randomSign } from "@common/utils/random";
+import { pickRandomInArray } from "@common/utils/random";
 import { SuroiBitStream } from "@common/utils/suroiBitStream";
 import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
@@ -26,6 +26,7 @@ import { ThrowableItem } from "../inventory/throwableItem";
 import { type Team } from "../team";
 import { mod_api_data, sendPostRequest } from "../utils/apiHelper";
 import { removeFrom } from "../utils/misc";
+import { GoapAgent } from "../utils/goap";
 
 export interface PlayerContainer {
     readonly teamID?: string
@@ -59,7 +60,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     joined = false;
     disconnected = false;
+
     isNpc=false;
+    goapAgent:GoapAgent|undefined
 
     private _team?: Team;
     get team(): Team | undefined { return this._team; }
@@ -1140,17 +1143,24 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     AI(){
-        //NPC Ai
-        if (this.rotation > 3.1415) this.rotation = -3.1415 + (this.rotation - 3.1415);
-        const actions:InputAction[]=[]
-        if(this.inventory.activeWeapon instanceof GunItem&&(this.inventory.activeWeapon as GunItem).ammo>0){
-            this.rotation+=0.01
-        }else{
-            actions.push({
-                type:InputActions.Reload,
-            })
+        if(this.goapAgent){
+            if(this.goapAgent.target==undefined){
+                const min=Vec.add(Vec.create(-this.goapAgent.viewDistance,-this.goapAgent.viewDistance),this.position)
+                const max=Vec.add(Vec.create(this.goapAgent.viewDistance,this.goapAgent.viewDistance),this.position)
+                const objs=this.game.grid.intersectsHitbox(new RectangleHitbox(min,max),this.layer)
+                for(const obj of objs){
+                    let inter=false
+                    if(obj instanceof Player&&!obj.isNpc&&Geometry.distance(obj.position,this.position)<this.goapAgent.viewDistance){
+                        if(inter){
+                            continue
+                        }
+                        this.goapAgent.target=obj
+                        break
+                    }
+                }
+            }
+            this.goapAgent.update()
         }
-        this.processInputs({attacking:(this.inventory.activeWeapon instanceof MeleeItem)||(this.inventory.activeWeapon as GunItem).ammo>0,actions:actions,rotation:this.rotation,turning:true,isMobile:false,distanceToMouse:30,movement:{down:false,left:false,right:false,up:false}})
     }
 
     /**

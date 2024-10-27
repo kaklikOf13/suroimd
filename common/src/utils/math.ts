@@ -83,6 +83,23 @@ export const Numeric = Object.freeze({
     lerp(start: number, end: number, interpFactor: number): number {
         return start * (1 - interpFactor) + end * interpFactor;
     },
+    lerpAngle(start: number, end: number, interpFactor: number): number {
+        // Normalize angles to the range [0, 2 * PI]
+        const twoPi = Math.PI * 2;
+        const normalizedStart = ((start % twoPi) + twoPi) % twoPi;
+        const normalizedEnd = ((end % twoPi) + twoPi) % twoPi;
+
+        // Calculate the difference and ensure the shortest path
+        let diff = normalizedEnd - normalizedStart;
+        if (diff > Math.PI) {
+            diff -= twoPi; // Wrap around positively
+        } else if (diff < -Math.PI) {
+            diff += twoPi; // Wrap around negatively
+        }
+
+        // Interpolate the angle
+        return normalizedStart + diff * interpFactor;
+    },
     /**
      * Conform a number to specified bounds
      * @param value The number to conform

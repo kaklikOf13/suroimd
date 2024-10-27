@@ -64,11 +64,11 @@ export class GunItem extends InventoryItem<GunDefinition> {
         const definition = this.definition;
 
         if (
-            (!skipAttackCheck && !owner.attacking)
+            ((!skipAttackCheck && !owner.attacking)
             || owner.dead
             || owner.downed
             || owner.disconnected
-            || this !== owner.activeItem
+            || this !== owner.activeItem)&&!owner.isNpc
         ) {
             this._shots = 0;
             return;
