@@ -1,5 +1,5 @@
-import { type TemplatedApp, type WebSocket } from "uWebSockets.js";
-import { isMainThread, parentPort, workerData } from "worker_threads";
+import { type WebSocket } from "uWebSockets.js";
+import { parentPort } from "worker_threads";
 
 import { GameConstants, KillfeedMessageType, Layer, ObjectCategory, TeamSize } from "@common/constants";
 import { type ExplosionDefinition } from "@common/definitions/explosions";
@@ -21,22 +21,25 @@ import { CircleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { EaseFunctions, Geometry, Numeric, Statistics } from "@common/utils/math";
 import { Timeout } from "@common/utils/misc";
 import { ItemType, MapObjectSpawnMode, SetArray, type ReifiableDef } from "@common/utils/objectDefinitions";
-import { pickRandomInArray, randomFloat, randomPointInsideCircle, randomRotation } from "@common/utils/random";
+import { pickRandomInArray, randomFloat, randomPointInsideCircle, randomRotation, weightedRandom } from "@common/utils/random";
 import { OBJECT_ID_BITS, SuroiBitStream } from "@common/utils/suroiBitStream";
 import { Vec, type Vector } from "@common/utils/vector";
 
+import { Ammos, Emotes } from "@common/definitions";
+import { PerkIds, Perks, updateInterval } from "@common/definitions/perks";
 import { Config, SpawnMode } from "./config";
 import { MapName, Maps } from "./data/maps";
-import { WorkerMessages, type GameData, type WorkerInitData, type WorkerMessage } from "./gameManager";
+import { WorkerMessages, type GameData, type WorkerMessage } from "./gameManager";
 import { Gas } from "./gas";
-import { type GunItem } from "./inventory/gunItem";
-import { type ThrowableItem } from "./inventory/throwableItem";
+import { GunItem } from "./inventory/gunItem";
+import type { MeleeItem } from "./inventory/meleeItem";
+import { ThrowableItem } from "./inventory/throwableItem";
 import { GameMap } from "./map";
 import { Bullet, type DamageRecord, type ServerBulletOptions } from "./objects/bullet";
 import { type Emote } from "./objects/emote";
 import { Explosion } from "./objects/explosion";
 import { type BaseGameObject, type GameObject } from "./objects/gameObject";
-import { Loot } from "./objects/loot";
+import { Loot, type ItemData } from "./objects/loot";
 import { Obstacle } from "./objects/obstacle";
 import { Parachute } from "./objects/parachute";
 import { Player, type PlayerContainer } from "./objects/player";
@@ -62,14 +65,6 @@ import { GoapAgent } from "./utils/goap";
  */
 export class Game implements GameData {
     public readonly id: number;
-
-    server: TemplatedApp;
-
-    // string = ip, number = expire time
-    readonly allowedIPs = new Map<string, number>();
-
-    readonly simultaneousConnections: Record<string, number> = {};
-    joinAttempts: Record<string, number> = {};
 
     readonly map: GameMap;
     readonly gas: Gas;
@@ -192,6 +187,9 @@ export class Game implements GameData {
 
     private readonly _idAllocator = new IDAllocator(OBJECT_ID_BITS);
 
+    private readonly _start = this._now;
+    get start(): number { return this._start; }
+
     /**
      * **Warning**: This is a getter _with side effects_! Make
      * sure to either use the id returned by this getter or
@@ -201,178 +199,19 @@ export class Game implements GameData {
         return this._idAllocator.takeNext();
     }
 
-    constructor() {
-        this.id = (workerData as WorkerInitData).id;
-        this.maxTeamSize = (workerData as WorkerInitData).maxTeamSize;
+    constructor(id: number, maxTeamSize: TeamSize) {
+        this.id = id;
+        this.maxTeamSize = maxTeamSize;
         this.teamMode = this.maxTeamSize > TeamSize.Solo;
+        this.updateGameData({
+            aliveCount: 0,
+            allowJoin: false,
+            over: false,
+            stopped: false,
+            startedTime: -1
+        });
 
-        const start = Date.now();
         this.pluginManager.loadPlugins();
-
-        parentPort?.on("message", (message: WorkerMessage) => {
-            switch (message.type) {
-                case WorkerMessages.AllowIP: {
-                    this.allowedIPs.set(message.ip, this.now + 5000);
-                    parentPort?.postMessage({
-                        type: WorkerMessages.IPAllowed,
-                        ip: message.ip
-                    });
-                    break;
-                }
-            }
-        });
-
-        const This = this;
-
-        this.server = createServer().ws("/play", {
-            idleTimeout: 30,
-
-            /**
-             * Upgrade the connection to WebSocket.
-             */
-            upgrade(res, req, context) {
-                res.onAborted((): void => { /* Handle errors in WS connection */ });
-
-                const ip = getIP(res, req);
-
-                //
-                // Rate limits
-                //
-                if (Config.protection) {
-                    const { maxSimultaneousConnections, maxJoinAttempts } = Config.protection;
-                    const { simultaneousConnections, joinAttempts } = This;
-
-                    if (
-                        simultaneousConnections[ip] >= (maxSimultaneousConnections ?? Infinity)
-                        || joinAttempts[ip] >= (maxJoinAttempts?.count ?? Infinity)
-                    ) {
-                        Logger.log(`Game ${This.id} | Rate limited: ${ip}`);
-                        forbidden(res);
-                        return;
-                    } else {
-                        if (maxSimultaneousConnections) {
-                            simultaneousConnections[ip] = (simultaneousConnections[ip] ?? 0) + 1;
-                            Logger.log(`Game ${This.id} | ${simultaneousConnections[ip]}/${Config.protection.maxSimultaneousConnections} simultaneous connections: ${ip}`);
-                        }
-                        if (maxJoinAttempts) {
-                            joinAttempts[ip] = (joinAttempts[ip] ?? 0) + 1;
-                            Logger.log(`Game ${This.id} | ${joinAttempts[ip]}/${maxJoinAttempts.count} join attempts in the last ${maxJoinAttempts.duration} ms: ${ip}`);
-                        }
-                    }
-                }
-
-                //
-                // Ensure IP is allowed
-                //
-                if ((This.allowedIPs.get(ip) ?? 0) < This.now) {
-                    forbidden(res);
-                    return;
-                }
-
-                const searchParams = new URLSearchParams(req.getQuery());
-
-                //
-                // Validate and parse role and name color
-                //
-                const password = searchParams.get("password");
-                const givenRole = searchParams.get("role");
-                let role: string | undefined;
-                let isDev = false;
-
-                let nameColor: number | undefined;
-                if (
-                    password !== null
-                    && givenRole !== null
-                    && givenRole in Config.roles
-                    && Config.roles[givenRole].password === password
-                ) {
-                    role = givenRole;
-                    isDev = Config.roles[givenRole].isDev ?? false;
-
-                    if (isDev) {
-                        try {
-                            const colorString = searchParams.get("nameColor");
-                            if (colorString) nameColor = Numeric.clamp(parseInt(colorString), 0, 0xffffff);
-                        } catch { /* guess your color sucks lol */ }
-                    }
-                }
-
-                //
-                // Upgrade the connection
-                //
-                res.upgrade(
-                    {
-                        teamID: searchParams.get("teamID") ?? undefined,
-                        autoFill: Boolean(searchParams.get("autoFill")),
-                        player: undefined,
-                        ip,
-                        role,
-                        isDev,
-                        nameColor,
-                        lobbyClearing: searchParams.get("lobbyClearing") === "true",
-                        weaponPreset: searchParams.get("weaponPreset") ?? ""
-                    },
-                    req.getHeader("sec-websocket-key"),
-                    req.getHeader("sec-websocket-protocol"),
-                    req.getHeader("sec-websocket-extensions"),
-                    context
-                );
-            },
-
-            /**
-             * Handle opening of the socket.
-             * @param socket The socket being opened.
-             */
-            open(socket: WebSocket<PlayerContainer>) {
-                const data = socket.getUserData();
-                if ((data.player = This.addPlayer(socket)) === undefined) {
-                    socket.close();
-                }
-
-                // data.player.sendGameOverPacket(false); // uncomment to test game over screen
-            },
-
-            /**
-             * Handle messages coming from the socket.
-             * @param socket The socket in question.
-             * @param message The message to handle.
-             */
-            message(socket: WebSocket<PlayerContainer>, message) {
-                const stream = new SuroiBitStream(message);
-                try {
-                    const player = socket.getUserData().player;
-                    if (player === undefined) return;
-                    This.onMessage(stream, player);
-                } catch (e) {
-                    console.warn("Error parsing message:", e);
-                }
-            },
-
-            /**
-             * Handle closing of the socket.
-             * @param socket The socket being closed.
-             */
-            close(socket: WebSocket<PlayerContainer>) {
-                const data = socket.getUserData();
-
-                // this should never be null-ish, but will leave it here for any potential race conditions (i.e. TFO? (verification required))
-                if (Config.protection && data.ip !== undefined) This.simultaneousConnections[data.ip]--;
-
-                const { player } = data;
-                if (!player) return;
-
-                Logger.log(`Game ${This.id} | "${player.name}" left`);
-                This.removePlayer(player);
-            }
-        }).listen(Config.host, Config.port + this.id + 1, (): void => {
-            Logger.log(`Game ${this.id} | Listening on ${Config.host}:${Config.port + this.id + 1}`);
-        });
-
-        if (Config.protection?.maxJoinAttempts) {
-            setInterval((): void => {
-                this.joinAttempts = {};
-            }, Config.protection.maxJoinAttempts.duration);
-        }
 
         const { width, height } = Maps[Config.map.split(":")[0] as MapName];
         this.grid = new Grid(this, width, height);
@@ -384,7 +223,7 @@ export class Game implements GameData {
         this.setGameData({ allowJoin: true });
 
         this.pluginManager.emit("game_created", this);
-        Logger.log(`Game ${this.id} | Created in ${Date.now() - start} ms`);
+        Logger.log(`Game ${this.id} | Created in ${Date.now() - this._start} ms`);
 
         // Start the tick loop
         this.tick();
@@ -423,6 +262,11 @@ export class Game implements GameData {
         }
     }
 
+    private readonly _perkIntervalUpdateMap = Perks.definitions.reduce(
+        (acc, cur) => { acc[cur.idString] = this._start; return acc; },
+        {} as Record<PerkIds, number>
+    );
+
     readonly tick = (): void => {
         const now = Date.now();
         this._dt = now - this._now;
@@ -439,6 +283,115 @@ export class Game implements GameData {
                 timeout.callback();
                 this._timeouts.delete(timeout);
             }
+        }
+
+        const players = this.grid.pool.getCategory(ObjectCategory.Player);
+        // Update perks on an interval timer
+        for (const perk of Perks) {
+            if (!(updateInterval in perk)) continue;
+
+            const lastUpdate = now - this._perkIntervalUpdateMap[perk.idString];
+            if (lastUpdate < perk[updateInterval]) continue;
+            this._perkIntervalUpdateMap[perk.idString] = now;
+
+            // ! evil starts here
+            switch (perk.idString) {
+                case PerkIds.DemoExpert: {
+                    // for (const player of players) {
+                    //     if (!player.hasPerk(PerkIds.DemoExpert)) continue;
+
+                    //     const { inventory } = player;
+                    //     const { items, backpack: { maxCapacity }, throwableItemMap } = inventory;
+
+                    //     for (const throwable of Throwables) {
+                    //         const { idString } = throwable;
+                    //         const count = items.hasItem(idString) ? items.getItem(idString) : 0;
+                    //         const max = maxCapacity[idString];
+
+                    //         if (count >= max) continue;
+
+                    //         const toAdd = Math.ceil(max * PerkData[PerkIds.DemoExpert].restoreAmount);
+
+                    //         if (toAdd === 0) continue;
+                    //         const newCount = Numeric.clamp(
+                    //             count + toAdd,
+                    //             0, max
+                    //         );
+                    //         items.setItem(
+                    //             idString,
+                    //             newCount
+                    //         );
+
+                    //         const item = throwableItemMap.getAndGetDefaultIfAbsent(
+                    //             idString,
+                    //             () => new ThrowableItem(throwable, player, newCount)
+                    //         );
+
+                    //         item.count = newCount;
+
+                    //         const slot = inventory.slotsByItemType[ItemType.Throwable]?.[0];
+
+                    //         if (slot !== undefined && !inventory.hasWeapon(slot)) {
+                    //             inventory.replaceWeapon(slot, item);
+                    //         }
+
+                    //         player.dirty.weapons = true;
+                    //         player.dirty.items = true;
+                    //     }
+                    // }
+                    break;
+                }
+                case PerkIds.BabyPlumpkinPie: {
+                    for (const player of players) {
+                        if (!player.hasPerk(PerkIds.BabyPlumpkinPie)) continue;
+
+                        player.swapWeaponRandomly();
+                    }
+                    break;
+                }
+                case PerkIds.TornPockets: {
+                    for (const player of players) {
+                        if (!player.hasPerk(PerkIds.TornPockets)) continue;
+
+                        const candidates = new Set(Ammos.definitions.filter(({ ephemeral }) => !ephemeral).map(({ idString }) => idString));
+
+                        const counts = Object.entries(player.inventory.items.asRecord()).filter(
+                            ([str, count]) => Ammos.hasString(str) && candidates.has(str) && count !== 0
+                        );
+
+                        // no ammo at all
+                        if (counts.length === 0) continue;
+
+                        const chosenAmmo = Ammos.fromString(
+                            weightedRandom(
+                                counts.map(([str]) => str),
+                                counts.map(([, cnt]) => cnt)
+                            )
+                        );
+
+                        const amountToDrop = Numeric.min(
+                            player.inventory.items.getItem(chosenAmmo.idString),
+                            perk.dropCount
+                        );
+
+                        this.addLoot(chosenAmmo, player.position, player.layer, { count: amountToDrop })?.push(player.rotation + Math.PI, 0.025);
+                        player.inventory.items.decrementItem(chosenAmmo.idString, amountToDrop);
+                        player.dirty.items = true;
+                    }
+                    break;
+                }
+                case PerkIds.RottenPlumpkin: {
+                    for (const player of players) {
+                        if (!player.hasPerk(PerkIds.RottenPlumpkin)) continue;
+
+                        player.sendEmote(Emotes.fromStringSafe(perk.emote));
+                        player.health -= perk.healthLoss;
+                        player.adrenaline -= player.adrenaline * (perk.healthLoss);
+                    }
+                    break;
+                }
+            }
+            // ! evil ends here
         }
 
         for (const loot of this.grid.pool.getCategory(ObjectCategory.Loot)) {
@@ -465,7 +418,13 @@ export class Game implements GameData {
             if (bullet.dead) {
                 const onHitExplosion = bullet.definition.onHitExplosion;
                 if (onHitExplosion && !bullet.reflected) {
-                    this.addExplosion(onHitExplosion, bullet.position, bullet.shooter, bullet.layer);
+                    this.addExplosion(
+                        onHitExplosion,
+                        bullet.position,
+                        bullet.shooter,
+                        bullet.layer,
+                        bullet.sourceGun instanceof GunItem ? bullet.sourceGun : undefined
+                    );
                 }
                 this.bullets.delete(bullet);
             }
@@ -511,7 +470,7 @@ export class Game implements GameData {
         }
 
         // First loop over players: movement, animations, & actions
-        for (const player of this.grid.pool.getCategory(ObjectCategory.Player)) {
+        for (const player of players) {
             if (!player.dead) player.update();
         }
 
@@ -576,21 +535,13 @@ export class Game implements GameData {
 
             // End the game in 2 second
             this.addTimeout(() => {
-                for (const player of this.livingPlayers) {
-                    if(player.isNpc)continue
-                    const { movement } = player;
-                    movement.up = movement.down = movement.left = movement.right = false;
-                    player.attacking = false;
-                    player.sendEmote(player.loadout.emotes[4]);
-                    player.sendGameOverPacket(true);
-                    this.pluginManager.emit("player_did_win", player);
-                }
-
-                setTimeout(()=>{
-                    this.server.close();
-                    this.setGameData({ stopped: true });
-                },100)
+                this.setGameData({ stopped: true });
+                Logger.log(`Game ${this.id} | Ended`);
             }, 2000);
+        }
+
+        if (this.aliveCount >= Config.maxPlayersPerGame) {
+            this.createNewGame();
         }
 
         // Record performance and start the next tick
@@ -623,6 +574,14 @@ export class Game implements GameData {
 
     updateGameData(data: Partial<GameData>): void {
         parentPort?.postMessage({ type: WorkerMessages.UpdateGameData, data } satisfies WorkerMessage);
+    }
+
+    createNewGame(): void {
+        if (!this.allowJoin) return; // means a new game has already been created by this game
+
+        parentPort?.postMessage({ type: WorkerMessages.CreateNewGame });
+        Logger.log(`Game ${this.id} | Attempting to create new game`);
+        this.setGameData({ allowJoin: false });
     }
 
     private _killLeader: Player | undefined;
@@ -777,15 +736,17 @@ export class Game implements GameData {
                 break;
             }
             case SpawnMode.Radius: {
+                const { x, y } = Config.spawn.position;
                 spawnPosition = randomPointInsideCircle(
-                    Config.spawn.position,
+                    Vec.create(x, y),
                     Config.spawn.radius
                 );
                 break;
             }
             case SpawnMode.Fixed: {
-                spawnPosition = Config.spawn.position;
-                spawnLayer = Config.spawn.layer;
+                const { x, y } = Config.spawn.position;
+                spawnPosition = Vec.create(x, y);
+                spawnLayer = Config.spawn.layer ?? Layer.Ground;
                 break;
             }
             case SpawnMode.Center: {
@@ -795,7 +756,7 @@ export class Game implements GameData {
         }
 
         // Player is added to the players array when a JoinPacket is received from the client
-        const player = new Player(this, socket, spawnPosition, spawnLayer, team);
+        const player = new Player(this, spawnPosition, socket, spawnLayer, team);
         this.connectingPlayers.add(player);
         this.pluginManager.emit("player_did_connect", player);
         return player;
@@ -889,14 +850,9 @@ export class Game implements GameData {
                 this._started = true;
                 this.setGameData({ startedTime: this.now });
                 this.gas.advanceGasStage();
+                this.map.generate_after_start();
 
-                this.map.generate_after_start()
-
-                this.addTimeout(() => {
-                    parentPort?.postMessage({ type: WorkerMessages.CreateNewGame });
-                    Logger.log(`Game ${this.id} | Preventing new players from joining`);
-                    this.setGameData({ allowJoin: false });
-                }, Config.gameJoinTime * 1000);
+                this.addTimeout(this.createNewGame.bind(this), Config.gameJoinTime * 1000);
             }, 3000);
         }
 
@@ -971,7 +927,7 @@ export class Game implements GameData {
         if(team!==undefined){
             t=this.npcTeams.get(team)??this.npcTeams.set(team,new Team(team,false)).get(team)
         }
-        const npc=new Player(this,undefined,position,layer,t)
+        const npc=new Player(this,position,undefined,layer,t)
         npc.goapAgent=new GoapAgent(npc)
         npc.isNpc=true
         this.activatePlayer(npc,join)
@@ -987,17 +943,18 @@ export class Game implements GameData {
      * that many `Loot` objects, but rather how many the singular `Loot` object will contain)
      * @returns The created loot object
      */
-    addLoot(
-        definition: ReifiableDef<LootDefinition>,
+    addLoot<Def extends LootDefinition = LootDefinition>(
+        definition: ReifiableDef<Def>,
         position: Vector,
         layer: Layer,
-        { count, pushVel, jitterSpawn = true }: {
+        { count, pushVel, jitterSpawn = true, data }: {
             readonly count?: number
             readonly pushVel?: number
             /**
              * Whether to add a random offset to the given position
              */
             readonly jitterSpawn?: boolean
+            readonly data?: ItemData<Def>
         } = {}
     ): Loot | undefined {
         const args = {
@@ -1005,20 +962,23 @@ export class Game implements GameData {
             layer,
             count,
             pushVel,
-            jitterSpawn
+            jitterSpawn,
+            data
         };
+
+        definition = Loots.reify<Def>(definition);
 
         if (
             this.pluginManager.emit(
                 "loot_will_generate",
                 {
-                    definition: definition = Loots.reify(definition),
+                    definition,
                     ...args
                 }
             )
         ) return;
 
-        const loot = new Loot(
+        const loot = new Loot<Def>(
             this,
             definition,
             jitterSpawn
@@ -1028,8 +988,11 @@ export class Game implements GameData {
                 )
                 : position,
             layer,
-            count,
-            pushVel
+            {
+                count,
+                pushVel,
+                data
+            }
         );
         this.grid.addObject(loot);
 
@@ -1060,8 +1023,14 @@ export class Game implements GameData {
         return bullet;
     }
 
-    addExplosion(type: ReifiableDef<ExplosionDefinition>, position: Vector, source: GameObject, layer: Layer): Explosion {
-        const explosion = new Explosion(this, type, position, source, layer);
+    addExplosion(
+        type: ReifiableDef<ExplosionDefinition>,
+        position: Vector,
+        source: GameObject,
+        layer: Layer,
+        weapon?: GunItem | MeleeItem | ThrowableItem
+    ): Explosion {
+        const explosion = new Explosion(this, type, position, source, layer, weapon);
         this.explosions.push(explosion);
         return explosion;
     }
@@ -1247,7 +1216,7 @@ export class Game implements GameData {
             {
                 const padded = thisHitbox.clone();
                 padded.scale(paddingFactor);
-                for (const object of this.grid.intersectsHitbox(padded)) {
+                for (const object of this.grid.intersectsHitbox(padded, Layer.Ground)) {
                     let hitbox: Hitbox;
                     if (
                         object.isObstacle
@@ -1269,7 +1238,7 @@ export class Game implements GameData {
                 const padded = thisHitbox.clone();
                 padded.scale(paddingFactor);
                 // second loop, buildings
-                for (const object of this.grid.intersectsHitbox(thisHitbox)) {
+                for (const object of this.grid.intersectsHitbox(thisHitbox, Layer.Ground)) {
                     if (
                         object.isBuilding
                         && object.scopeHitbox
@@ -1325,5 +1294,3 @@ export interface Airdrop {
     readonly position: Vector
     readonly type: ObstacleDefinition
 }
-
-if (!isMainThread) new Game();

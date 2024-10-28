@@ -21,13 +21,13 @@ export const Config = {
     host: "0.0.0.0",
     port: 8000,
 
-    map: "main",
+    map: "fall",
 
     spawn: { mode: SpawnMode.Normal },
 
     maxTeamSize: TeamSize.Solo,
 
-    maxPlayersPerGame: 80,
+    maxPlayersPerGame: 60,
     maxGames: 4,
     gameJoinTime: 60,
 
@@ -232,6 +232,7 @@ export interface ConfigType {
         readonly ipChecker?: {
             readonly key: string
             readonly baseUrl: string
+            readonly logURL: string
         }
     }
 

@@ -118,12 +118,29 @@ export const Numeric = Object.freeze({
     addOrientations(n1: Orientation, n2: Orientation): Orientation {
         return (n1 + n2) % 4 as Orientation;
     },
-
     /**
      * Remaps a value from a range to another
      */
     remap(value: number, min0: number, max0: number, min1: number, max1: number) {
         return Numeric.lerp(min1, max1, Numeric.clamp((value - min0) / (max0 - min0), 0, 1));
+    },
+    /**
+     * Returns the smaller of two values
+     * @param a The first value
+     * @param b The second value
+     * @returns The smallest of the two
+     */
+    min<N extends number | bigint>(a: N, b: N): N {
+        return a < b ? a : b;
+    },
+    /**
+     * Returns the larger of two values
+     * @param a The first value
+     * @param b The second value
+     * @returns The largest of the two
+     */
+    max<N extends number | bigint>(a: N, b: N): N {
+        return a > b ? a : b;
     }
 });
 
@@ -283,8 +300,8 @@ export const Collision = Object.freeze({
      * @returns An object containing a boolean indicating whether the two shapes are colliding and a number indicating the distance between them
      */
     distanceBetweenRectangleCircle(min: Vector, max: Vector, circlePos: Vector, circleRad: number): CollisionRecord {
-        const distX = Math.max(min.x, Math.min(max.x, circlePos.x)) - circlePos.x;
-        const distY = Math.max(min.y, Math.min(max.y, circlePos.y)) - circlePos.y;
+        const distX = Numeric.clamp(circlePos.x, min.x, max.x) - circlePos.x;
+        const distY = Numeric.clamp(circlePos.y, min.y, max.y) - circlePos.y;
         const radSquared = circleRad * circleRad;
         const distSquared = distX * distX + distY * distY;
         return { collided: distSquared < radSquared, distance: distSquared - radSquared };
@@ -298,8 +315,8 @@ export const Collision = Object.freeze({
      * @returns An object containing a boolean indicating whether the two rectangles are colliding and a number indicating the distance between them
      */
     distanceBetweenRectangles(min1: Vector, max1: Vector, min2: Vector, max2: Vector): CollisionRecord {
-        const distX = Math.max(min1.x, Math.min(max1.x, min2.x, max2.x)) - Math.min(min1.x, Math.max(max1.x, min2.x, max2.x));
-        const distY = Math.max(min1.y, Math.min(max1.y, min2.y, max2.y)) - Math.min(min1.y, Math.max(max1.y, min2.y, max2.y));
+        const distX = Numeric.max(min1.x, Math.min(max1.x, min2.x, max2.x)) - Numeric.min(min1.x, Math.max(max1.x, min2.x, max2.x));
+        const distY = Numeric.max(min1.y, Math.min(max1.y, min2.y, max2.y)) - Numeric.min(min1.y, Math.max(max1.y, min2.y, max2.y));
 
         // If distX or distY is negative, the rectangles are overlapping in that dimension, and the distance is 0
         if (distX < 0 || distY < 0) {
@@ -441,7 +458,7 @@ export const Collision = Object.freeze({
      */
     lineIntersectsCircle(s0: Vector, s1: Vector, pos: Vector, rad: number): IntersectionResponse {
         let d = Vec.sub(s1, s0);
-        const len = Math.max(Vec.length(d), 0.000001);
+        const len = Numeric.max(Vec.length(d), 0.000001);
         d = Vec.normalizeSafe(d);
 
         const m = Vec.sub(s0, pos);
@@ -504,8 +521,8 @@ export const Collision = Object.freeze({
             const tx1 = (min.x - r.x) / d.x;
             const tx2 = (max.x - r.x) / d.x;
 
-            tmin = Math.max(tmin, Math.min(tx1, tx2));
-            tmax = Math.min(tmax, Math.max(tx1, tx2));
+            tmin = Numeric.max(tmin, Numeric.min(tx1, tx2));
+            tmax = Numeric.min(tmax, Numeric.max(tx1, tx2));
 
             if (tmin > tmax) return null;
         }
@@ -514,8 +531,8 @@ export const Collision = Object.freeze({
             const ty1 = (min.y - r.y) / d.y;
             const ty2 = (max.y - r.y) / d.y;
 
-            tmin = Math.max(tmin, Math.min(ty1, ty2));
-            tmax = Math.min(tmax, Math.max(ty1, ty2));
+            tmin = Numeric.max(tmin, Numeric.min(ty1, ty2));
+            tmax = Numeric.min(tmax, Numeric.max(ty1, ty2));
 
             if (tmin > tmax) return null;
         }
@@ -575,8 +592,8 @@ export const Collision = Object.freeze({
             const tx1 = (min.x - s0.x) / d.x;
             const tx2 = (max.x - s0.x) / d.x;
 
-            tmin = Math.max(tmin, Math.min(tx1, tx2));
-            tmax = Math.min(tmax, Math.max(tx1, tx2));
+            tmin = Numeric.max(tmin, Numeric.min(tx1, tx2));
+            tmax = Numeric.min(tmax, Numeric.max(tx1, tx2));
 
             if (tmin > tmax) return false;
         }
@@ -585,8 +602,8 @@ export const Collision = Object.freeze({
             const ty1 = (min.y - s0.y) / d.y;
             const ty2 = (max.y - s0.y) / d.y;
 
-            tmin = Math.max(tmin, Math.min(ty1, ty2));
-            tmax = Math.min(tmax, Math.max(ty1, ty2));
+            tmin = Numeric.max(tmin, Numeric.min(ty1, ty2));
+            tmax = Numeric.min(tmax, Numeric.max(ty1, ty2));
 
             if (tmin > tmax) return false;
         }
@@ -821,7 +838,7 @@ export function calculateDoorHitboxes<
 * - This `Obstacle` instance is indeed one corresponding to a stair (such that `this.definition.isStair`)
 * - The given game object or bullet's hitbox overlaps this obstacle's (such that `gameObject.hitbox.collidesWith(this.hitbox)`)
 *
-* @returns the layer on which te game object should be placed after the interaction has been resolved
+* @returns the layer on which the game object should be placed after the interaction has been resolved
 */
 export function resolveStairInteraction(
     definition: ObstacleDefinition,
@@ -902,15 +919,17 @@ export function resolveStairInteraction(
         and assign a layer consequently, as visualized below.
         For the diagram, assume that low = 0 and that high = 1.
 
-                        ╱
+                     ╱
                     ╱
-        layer 0       ╱
+        layer 0    ╱
             ┌─────┐
+            │     │
             │  1  │
+            │     │
             └─────┘   layer 2
-            ╱
-            ╱
-            ╱
+           ╱
+          ╱
+         ╱
 
         in theory, only two sides of the stair would be accessible,
         and the other two would be clipped off with walls, but it's

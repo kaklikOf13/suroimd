@@ -2,6 +2,58 @@ import { type NewsPost } from "./newsHelper";
 
 export const news: NewsPost[] = [
     {
+        date: 1730057509000,
+        author: "HAZEL",
+        title: "Open Season",
+        bannerImage: "../img/news/v0.20.0.png",
+        content: `Fall settles on a brand new mode, <strong>Harvest</strong>, bringing a plethora of <strong>new guns</strong>, a wide assortment of <strong>Perks</strong>, and the mysterious <strong>Plumpkins...</strong>
+
+<br><br>Harvest is a large map filled with new trees, trails, and brand new ambient sounds and particles, as well as a bounty of new structures, including the <strong>Barns</strong>, old farming relics with plenty of cover, and the <strong>Lodge</strong>, a luxurious forest getaway with more than meets the eye...
+
+<br><br>Deep underground, the <strong>Plumpkin Bunker</strong> has been uncovered. This monument of engineering and science contains everything from a fully stocked guard's quarters, to a warehouse, generator room, and the main labs themselves. Rumors have it that the experiments sealed inside the test chambers are highly enigmatic, but <strong>richly rewarding</strong> to anyone fortunate enough to lay hands on them. One of the samples seems to be sealed off... <strong>for now.</strong>
+
+<br><br>Recent documents have revealed the <strong>Bombed Armory</strong>, containing the returning fan-favorite <strong>USAS-12</strong> sealed inside the vault, although getting inside might take a more <strong>brute force</strong> approach this time.
+
+<br><br>Brand new weapon shipments to both Harvest and Normal mode include the <strong>SKS</strong>, a reliable and common DMR chambered in 7.62, although it leaves something to be desired in damage. The <strong>VKS Vykhlop</strong> has that more than covered, firing high damage suppressed .50 cal rounds at a low velocity. Finally, the monstrous <strong>Mk-18 Mjölnir</strong>, chambered in .338 Lapua Magnum, will rip through any competition with an impressive mixture of immense damage and fast fire rate.
+
+<br><br>Unique to Harvest mode are two brand new shotguns, the <strong>DT-11</strong>, an under-over double barrel shotgun with longer range and lower damage compared to its sawed-off counterpart, and the <strong>M590M</strong>, a military pump-action shotgun firing high-explosive slugs.
+
+<br><br>There's much more to check out, including new skins, a variety of small structures, brand new foliage, and changes yet to come.
+        `,
+        longContent: `<h2>Suroi v0.20.0</h2>
+<h3>New features</h3>
+<ul>
+  <li><strong>Harvest mode!</strong> A larger, fall-themed map with terrain features.</li>
+  <li><strong>Perks!</strong> Added 12 perks.</li>
+  <li><strong>New structures!</strong> Added the Plumpkin Bunker, Lodge, Barn, Bombed Armory, Tents, Outhouses, and Hay Sheds.</li>
+  <li><strong>New guns!</strong></li>
+  <ul>
+    <li>SKS: A DMR chambered in 7.62mm.</li>
+    <li>VKS Vykhlop: A suppressed sniper chambered in .50 Cal.</li>
+    <li>Mk-18 Mjölnir: A powerful DMR chambered in .338 Lapua Magnum.</li>
+    <li>DT-11: A double-barrel shotgun. Exclusive to Harvest mode.</li>
+    <li>M590M: A pump-action shotgun which fires high explosive rounds, similar to the USAS-12. Also exclusive to Harvest mode.</li>
+  </ul>
+</ul>
+
+<h3>Changes</h3>
+<ul>
+  <li>Overhaul to matchmaking algorithm. This should reduce late spawning and improve server performance.</li>
+  <ul>
+    <li>Reduced max players per game to 60.</li>
+  </ul>
+  <li>Nerfed grenade boosting.</li>
+  <li>Ammo crates now drop 2-3 pieces of ammo.</li>
+  <li>The Model 89 is now more common in normal mode.</li>
+  <li>Increased M1 Garand damage from 39 to 48.</li>
+  <li>Increased SR-25 damage from 28.5 to 33.</li>
+  <li>New AK-47, M16A4, and Vector sounds.</li>
+  <li>New Flues and G19 fire sounds.</li>
+  <li>Fixed bullets not damaging bushes and tables.</li>
+  <li>Fixed occasional “Error joining game” issues.</li>
+</ul>`
+    },
+    {
         date: 1727030995000,
         author: "HAZEL",
         title: "High-Caliber Negotiations",
