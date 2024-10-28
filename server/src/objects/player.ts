@@ -228,6 +228,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         perks: true
     };
 
+    autoReload:boolean=true
+
     readonly inventory = new Inventory(this);
 
     get activeItemIndex(): number {
@@ -818,7 +820,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             * recoilMultiplier                                                // Recoil from items
             * perkSpeedMod                                                    // See above
             * (this.action?.speedMultiplier ?? 1)                             // Speed modifier from performing actions
-            * (1 + (this.adrenaline / 1000))                                  // Linear speed boost from adrenaline
+            * (1 + (this.adrenaline / 800))                                   // Linear speed boost from adrenaline
             * (this.downed ? 0.5 : this.activeItemDefinition.speedMultiplier) // Active item/knocked out speed modifier
             * (this.beingRevivedBy ? 0.5 : 1)                                 // Being revived speed multiplier
             * this._modifiers.baseSpeed;                                      // Current on-wearer modifier
@@ -1321,8 +1323,15 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 const max=Vec.add(Vec.create(this.goapAgent.viewDistance,this.goapAgent.viewDistance),this.position)
                 const objs=this.game.grid.intersectsHitbox(new RectangleHitbox(min,max),this.layer)
                 for(const obj of objs){
-                    let inter=false
+                    if(this===obj&&this.floor!==obj.floor)continue
                     if(obj instanceof Player&&!obj.isNpc&&Geometry.distance(obj.position,this.position)<this.goapAgent.viewDistance){
+                        let inter=false
+                        for(const obj2 of objs){
+                            if(obj===obj2)continue
+                            if((obj2.isObstacle||obj2.isBuilding)&&obj2.collidable&&obj2.hitbox?.intersectsLine(this.position,obj.position)){
+                                inter=true
+                            }
+                        }
                         if(inter){
                             continue
                         }

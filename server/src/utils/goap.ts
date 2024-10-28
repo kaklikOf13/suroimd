@@ -6,6 +6,7 @@ import { randomVector } from "@common/utils/random";
 import { GoapTeam } from "../team";
 import { Numeric } from "@common/utils/math";
 import { InputActions } from "@common/constants";
+import { MeleeItem } from "../inventory/meleeItem";
 
 export interface GOAPAction {
     preconditions: (agent: GoapAgent) => boolean;
@@ -19,7 +20,6 @@ export interface GOAPGoal {
     priority: number;
     id: string;
     score: (input: PlayerInputData, agent: GoapAgent) => number;
-    goalScore: (goal: GOAPGoal, agent: GoapAgent) => number;
     completed:(agent:GoapAgent)=>boolean;
 }
 
@@ -49,10 +49,6 @@ export const goapActions: GOAPAction[] = [
                 turning: true,
             } satisfies PlayerInputData;
         },
-        subgoal:(agent)=>{
-            return (agent.player.inventory.activeWeapon instanceof GunItem &&
-            agent.player.inventory.activeWeapon.ammo === 0)?goapGoals.reloadAll:undefined
-        },
         name: "shot on player",
         priority: 10,
     },
@@ -60,7 +56,7 @@ export const goapActions: GOAPAction[] = [
         preconditions: (agent) => {
             return (
                 agent.player.inventory.activeWeapon instanceof GunItem &&
-                agent.player.inventory.activeWeapon.ammo < agent.player.inventory.activeWeapon.definition.capacity
+                agent.player.inventory.activeWeapon.ammo<agent.player.inventory.activeWeapon.definition.capacity
             );
         },
         execute: (agent) => {
@@ -81,8 +77,12 @@ export const goapActions: GOAPAction[] = [
                 turning: false,
             } satisfies PlayerInputData;
         },
-        name: "reload part",
-        priority: 1,
+        subgoal:(agent)=>{
+            return agent.player.inventory.activeWeapon instanceof GunItem &&
+            agent.player.inventory.activeWeapon.ammo===0?goapGoals["reloadAll"]:undefined
+        },
+        name: "reload",
+        priority: 5,
     },
 ];
 
@@ -91,31 +91,23 @@ export const goapGoals: Record<string,GOAPGoal> = {
         priority: 10,
         id: "disappearWithAlert",
         score: (input, agent) => {
-            let score = 0;
-            if (input.attacking) {
-                if (agent.player.inventory.activeWeapon instanceof GunItem) {
-                    score += (agent.player.inventory.activeWeapon.ammo * agent.player.inventory.activeWeapon.definition.ballistics.damage) / 2;
-                }
-            }
-            return score;
+            return input.attacking?10:5
         },
-        goalScore: (goal, agent) => {
-            switch (goal.id) {
-                case "reloadAll":
-                    return agent.player.inventory.activeWeapon instanceof GunItem ? (agent.player.inventory.activeWeapon.definition.capacity - agent.player.inventory.activeWeapon.ammo) : 0;
-            }
-            return 0;
-        },
+        completed:(agent)=>{
+            return agent.alert==0
+        }
     },
     "reloadAll":{
         priority: 5,
-        id: "reloadPart",
+        id: "reloadAll",
         score: (input, agent) => {
-            return input.actions.some(action => action.type === InputActions.Reload) ? Infinity : 0;
+            return input.actions.find((v,_i,_o)=>{
+                return v.type===InputActions.Reload?v:undefined
+            }) ? Infinity : 0;
         },
-        goalScore: (goal, agent) => {
-            return agent.player.inventory.activeWeapon instanceof GunItem ? (agent.player.inventory.activeWeapon.definition.capacity - agent.player.inventory.activeWeapon.ammo) : 0;
-        },
+        completed:(agent)=>{
+            return (agent.player.inventory.activeWeapon instanceof GunItem&&agent.player.inventory.activeWeapon.ammo===agent.player.inventory.activeWeapon.definition.capacity)||agent.player.inventory.activeWeapon instanceof MeleeItem
+        }
     },
     // Add more goals as needed
 };
@@ -124,7 +116,7 @@ export class GoapAgent {
     player: Player;
     target: Player | undefined;
     aimAccurrence: number = 5;
-    alert: number = 0; // Enemy knows there is a player in place
+    alert: number = 1; // Enemy knows there is a player in place
     goals: GOAPGoal[]=[]; // Use an array to hold multiple goals
     viewDistance: number = 100;
     aimSpeed: number = 0.05;
@@ -143,7 +135,12 @@ export class GoapAgent {
             this.target = undefined;
         }
 
-        if (this.target && this.currentGoals) {
+        if (this.target && this.goals.length>0) {
+            const goal=this.goals[this.goals.length-1]
+            if(goal.completed(this)){
+                this.goals.pop()
+                return
+            }
             let bestAction: GOAPAction | null = null;
             let bestScore = -Infinity;
             let exec: PlayerInputData | null = null;
@@ -151,33 +148,29 @@ export class GoapAgent {
             for (const action of goapActions) {
                 if (action.preconditions(this)) {
                     const exe = action.execute(this);
-                    const score = action.priority * (this.currentGoal.score(exe, this));
+                    const score = action.priority * (goal.score(exe, this));
 
                     if (score > bestScore) {
                         bestScore = score;
                         bestAction = action;
                         exec = exe;
-                        
-                    }
-
-                    // Check for subgoals
-                    if (action.subgoal) {
-                        const subgoal = action.subgoal(this);
-                        if(!subgoal){
-                            continue
-                        }
-                        const subgoalScore = subgoal.goalScore(subgoal, this);
-                        if (subgoalScore > bestScore) {
-                            bestScore = subgoalScore;
-                            bestAction = action;
-                            exec = exe; // Re-use execution from the main action
-                        }
                     }
                 }
             }
 
             if (exec) {
-                this.player.processInputs(exec);
+                let sb=true
+                // Check for subgoals
+                if (bestAction!.subgoal) {
+                    const subgoal = bestAction!.subgoal(this);
+                    if(subgoal&&goal.id!==subgoal.id){
+                        this.goals.push(subgoal)
+                        sb=false
+                    }
+                }
+                if(sb){
+                    this.player.processInputs(exec);
+                }
             }
         } else {
             this.player.processInputs({

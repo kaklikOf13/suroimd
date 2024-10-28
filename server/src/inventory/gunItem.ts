@@ -80,7 +80,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
             || owner.dead
             || owner.downed
             || owner.disconnected
-            || this !== owner.activeItem)&&!owner.isNpc
+            || this !== owner.activeItem)
         ) {
             this._consecutiveShots = 0;
             return;
@@ -301,10 +301,12 @@ export class GunItem extends InventoryItem<GunDefinition> {
 
         if (this.ammo <= 0) {
             this._consecutiveShots = 0;
-            this._reloadTimeout = owner.game.addTimeout(
-                this.reload.bind(this, true),
-                definition.fireDelay
-            );
+            if(this.owner.autoReload){
+                this._reloadTimeout = owner.game.addTimeout(
+                    this.reload.bind(this, true),
+                    definition.fireDelay
+                );
+            }
             return;
         }
 
@@ -318,7 +320,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
         }
 
         if (
-            (definition.fireMode !== FireMode.Single || owner.isMobile || owner.isNpc)
+            (definition.fireMode !== FireMode.Single || owner.isMobile)
             && owner.activeItem === this
         ) {
             clearTimeout(this._autoFireTimeout);

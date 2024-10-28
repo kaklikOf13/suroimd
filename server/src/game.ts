@@ -518,7 +518,6 @@ export class Game implements GameData {
         this.gas.completionRatioDirty = false;
         this.updateObjects = false;
 
-        // Winning logic
         if (
             this._started
             && !this.over
@@ -528,15 +527,24 @@ export class Game implements GameData {
                     : this.aliveCount <= 1
             )
         ) {
-
             this.pluginManager.emit("game_end", this);
 
             this.setGameData({ allowJoin: false, over: true });
 
-            // End the game in 2 second
+            // End the game in 1 second
             this.addTimeout(() => {
-                this.setGameData({ stopped: true });
-                Logger.log(`Game ${this.id} | Ended`);
+                for (const player of this.livingPlayers) {
+                    const { movement } = player;
+                    movement.up = movement.down = movement.left = movement.right = false;
+                    player.attacking = false;
+                    player.sendEmote(player.loadout.emotes[4]);
+                    player.sendGameOverPacket(true);
+                    this.pluginManager.emit("player_did_win", player);
+                }
+                setTimeout(()=>{
+                    this.setGameData({ stopped: true });
+                    Logger.log(`Game ${this.id} | Ended`);
+                },100)
             }, 2000);
         }
 
@@ -928,6 +936,7 @@ export class Game implements GameData {
             t=this.npcTeams.get(team)??this.npcTeams.set(team,new Team(team,false)).get(team)
         }
         const npc=new Player(this,position,undefined,layer,t)
+        npc.autoReload=false
         npc.goapAgent=new GoapAgent(npc)
         npc.isNpc=true
         this.activatePlayer(npc,join)

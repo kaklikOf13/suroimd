@@ -117,7 +117,7 @@ export class Team {
 }
 export class GoapTeam extends Team{
     spotedEnemys:Player[]=[]
-    alert:number=0
+    alert:number=1
     goal:GOAPGoal|undefined
 }
 export class CustomTeam {

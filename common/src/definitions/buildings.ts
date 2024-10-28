@@ -210,6 +210,8 @@ const npcsGenerators={
             weapons:{
                 0:"model_37",
                 1:"ak47"
+                
+                //0:"ak47"
             },
             team:NPCSTeams.aegis,
         }

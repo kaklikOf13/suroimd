@@ -1598,7 +1598,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 name: "L115A1",
                 ammoType: "338lap",
                 ammoSpawnAmount: 12,
-                fireDelay: 1500,
+                fireDelay: 1800,
                 switchDelay: 900,
                 recoilMultiplier: 0.4,
                 recoilDuration: 1600,
@@ -1618,13 +1618,13 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 },
                 image: { position: Vec.create(120, 4) },
                 gasParticles: gasParticlePresets.rifle,
-                capacity: 3,
+                capacity: 5,
                 extendedCapacity: 5,
                 reloadTime: 3.8,
                 ballistics: {
-                    damage: 150,
+                    damage: 120,
                     obstacleMultiplier: 1,
-                    speed: 0.5,
+                    speed: 0.4,
                     tracer: {
                         width: 2.5,
                         length: 4

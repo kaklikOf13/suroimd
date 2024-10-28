@@ -20,6 +20,8 @@ import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Obstacle } from "./objects/obstacle";
 import { CARDINAL_DIRECTIONS, Logger, getRandomIDString } from "./utils/misc";
+import { GunItem } from "./inventory/gunItem";
+import { Armors, Backpacks } from "@common/definitions";
 
 export class GameMap {
     readonly game: Game;
