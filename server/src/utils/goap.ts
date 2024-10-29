@@ -1,12 +1,13 @@
-import { Player } from "../objects";
+import { Building, GameObject, Obstacle, Player } from "../objects";
 import { GunItem } from "../inventory/gunItem";
 import { PlayerInputData } from "@common/packets";
-import { Vec } from "@common/utils/vector";
+import { Vec, Vector } from "@common/utils/vector";
 import { randomVector } from "@common/utils/random";
 import { GoapTeam } from "../team";
-import { Numeric } from "@common/utils/math";
+import { Geometry, Numeric } from "@common/utils/math";
 import { InputActions } from "@common/constants";
 import { MeleeItem } from "../inventory/meleeItem";
+import { RectangleHitbox } from "@common/utils/hitbox";
 
 export interface GOAPAction {
     preconditions: (agent: GoapAgent) => boolean;
@@ -111,6 +112,133 @@ export const goapGoals: Record<string,GOAPGoal> = {
     },
     // Add more goals as needed
 };
+//A*
+interface ASNode {
+    position: Vector;
+    gCost: number; // Cost from start to this node
+    hCost: number; // Heuristic cost from this node to end
+    fCost: number; // Total cost (gCost + hCost)
+    parent?: Node; // For reconstructing the path
+}
+function heuristic(a: Vector, b: Vector): number {
+    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y); // Manhattan Distance
+}
+function calculateProximityPenalty(position: Vector, nearbyObjects: Set<GameObject>): number {
+    const proximityRadius = 3; // Distância para penalidade
+    let penalty = 0;
+    
+    for (const obj of nearbyObjects) {
+        if (obj.isObstacle || obj.isBuilding) {
+            const distance = Geometry.distance(position, obj.position);
+            if (distance < proximityRadius) {
+                penalty += (proximityRadius - distance); // Penalidade aumenta à medida que se aproxima do obstáculo
+            }
+        }
+    }
+    return penalty;
+}
+
+function calculateAvoidanceVector(agent: GoapAgent, target: Vector, nearbyObjects: Set<GameObject>): Vector {
+    // Calcula um vetor de evitação para evitar colisões com obstáculos ao redor do agente
+    let avoidance = { x: 0, y: 0 };
+    const radius = 5; // Define uma área de influência ao redor do agente
+    
+    for (const obj of nearbyObjects) {
+        if (obj.isObstacle || obj.isBuilding) {
+            const dist = Geometry.distance(agent.player.position, obj.position);
+            if (dist < radius) {
+                const avoidDir = Vec.sub(agent.player.position, obj.position);
+                const factor = (radius - dist) / radius;
+                avoidance = Vec.add(avoidance, Vec.scale(avoidDir, factor));
+            }
+        }
+    }
+    
+    // Normalize e aplica um peso ao vetor de evitação
+    return Vec.scale(Vec.normalizeSafe(avoidance), 0.5); 
+}
+
+// Ajustes no A* com evitamento de obstáculos
+function calcAStar(dest: Vector, agent: GoapAgent) {
+    const start: Vector = agent.player.position;
+    const openSet: ASNode[] = [];
+    const closedSet: Set<string> = new Set();
+    const nearbyObjects = agent.player.game.grid.intersectsHitbox(agent.proctedBuild!.spawnHitbox);
+    
+    openSet.push({ position: start, gCost: 0, hCost: heuristic(start, dest), fCost: 0 });
+
+    while (openSet.length > 0) {
+        openSet.sort((a, b) => a.fCost - b.fCost);
+        const current = openSet.shift()!;
+
+        if (current.position.x === dest.x && current.position.y === dest.y) {
+            const path: Vector[] = [];
+            let temp: ASNode | undefined = current;
+            while (temp) {
+                path.unshift(temp.position);
+                temp = temp.parent;
+            }
+            agent.path = path;
+            return;
+        }
+
+        closedSet.add(`${current.position.x},${current.position.y}`);
+
+        for (const obj of nearbyObjects) {
+            const neighborPos = obj.position;
+            if (closedSet.has(`${neighborPos.x},${neighborPos.y}`)) continue;
+
+            let collisionDetected = false;
+            for (const otherObj of nearbyObjects) {
+                if (otherObj === obj) continue;
+                if (otherObj.hitbox && otherObj.hitbox.isPointInside(neighborPos)) {
+                    collisionDetected = true;
+                    break;
+                }
+            }
+            if (collisionDetected) continue;
+
+            const proximityPenalty = calculateProximityPenalty(neighborPos, nearbyObjects);
+            const avoidanceVector = calculateAvoidanceVector(agent, neighborPos, nearbyObjects);
+            const adjustedNeighborPos = Vec.add(neighborPos, avoidanceVector);
+
+            const gCost = current.gCost + heuristic(current.position, adjustedNeighborPos) + proximityPenalty;
+            let neighborNode = openSet.find(n => n.position.x === adjustedNeighborPos.x && n.position.y === adjustedNeighborPos.y);
+
+            if (!neighborNode) {
+                const hCost = heuristic(adjustedNeighborPos, dest);
+                neighborNode = {
+                    position: adjustedNeighborPos,
+                    gCost,
+                    hCost,
+                    fCost: gCost + hCost,
+                    parent: current
+                };
+                openSet.push(neighborNode);
+            } else if (gCost < neighborNode.gCost) {
+                neighborNode.gCost = gCost;
+                neighborNode.fCost = gCost + neighborNode.hCost;
+                neighborNode.parent = current;
+            }
+        }
+    }
+
+    agent.path = [];
+}
+
+function smoothRotation(agent: GoapAgent, target: Vector): number {
+    const angleToTarget = Math.atan2(target.y - agent.player.position.y, target.x - agent.player.position.x);
+    return Numeric.clamp(Numeric.lerp(agent.player.rotation, angleToTarget, 0.1), -Math.PI, Math.PI);
+}
+
+function maintainDistance(agent: GoapAgent, target: Vector, minDistance: number): Vector {
+    const distance = Geometry.distance(agent.player.position, target);
+    if (distance < minDistance) {
+        const retreatVector = Vec.sub(agent.player.position, target);
+        return Vec.add(agent.player.position, Vec.scale(Vec.normalize(retreatVector), minDistance));
+    }
+    return target;
+}
 
 export class GoapAgent {
     player: Player;
@@ -118,12 +246,71 @@ export class GoapAgent {
     aimAccurrence: number = 5;
     alert: number = 1; // Enemy knows there is a player in place
     goals: GOAPGoal[]=[]; // Use an array to hold multiple goals
-    viewDistance: number = 100;
+    viewDistance: number = 70;
     aimSpeed: number = 0.05;
 
-    constructor(player: Player) {
+    proctedBuild?:Building
+
+    path:Vector[]=[]
+    pathA:number=0
+
+    get gotoTarget():Vector|undefined{
+        return this._gotoTarget
+    }
+    set gotoTarget(dest:Vector){
+        if(this.proctedBuild){
+            //calcAStar(dest,this)
+            this._gotoTarget=dest
+            this.pathA=0
+        }
+    }
+
+    input?:PlayerInputData
+
+    private _gotoTarget?:Vector
+
+    constructor(player: Player,projectBuilding?:Building) {
         this.player = player;
+        this.proctedBuild=projectBuilding
         this.goals.push(goapGoals["disappearWithAlert"])
+    }
+
+    targetCheck(){
+        const min=Vec.add(Vec.create(-this.viewDistance,-this.viewDistance),this.player.position)
+        const max=Vec.add(Vec.create(this.viewDistance,this.viewDistance),this.player.position)
+        const objs=this.player.game.grid.intersectsHitbox(new RectangleHitbox(min,max),this.player.layer)
+        if(this.target===undefined){
+            for(const obj of objs){
+                if(this.player===obj||this.player.layer!==obj.layer)continue
+                if(obj instanceof Player&&!obj.isNpc&&Geometry.distance(obj.position,this.player.position)<this.viewDistance){
+                    let inter=false
+                    for(const obj2 of objs){
+                        if(obj===obj2||this.player.layer!==obj2.layer)continue
+                        if((obj2.isObstacle||obj2.isBuilding)&&obj2.collidable&&obj2.hitbox?.intersectsLine(this.player.position,obj.position)){
+                            inter=true
+                        }
+                    }
+                    if(inter){
+                        continue
+                    }
+                    this.target=obj
+                    break
+                }
+            }
+        }else{
+            if(this.target.layer!==this.player.layer){
+                this.target=undefined
+                return
+            }
+            for(const obj of objs){
+                if(obj===this.target||this.player.layer!==obj.layer)continue
+                if((obj.isObstacle||obj.isBuilding)&&obj.collidable&&(obj.isObstacle&&(obj.definition.allowFlyover>1||(obj.isDoor&&obj.door?.isOpen))||!obj.isObstacle)&&obj.hitbox?.intersectsLine(this.player.position,obj.position)){
+                    this.gotoTarget=this.target.position
+                    this.target=undefined
+                    break
+                }
+            }
+        }
     }
 
     update() {
@@ -135,21 +322,21 @@ export class GoapAgent {
             this.target = undefined;
         }
 
-        if (this.target && this.goals.length>0) {
-            const goal=this.goals[this.goals.length-1]
-            if(goal.completed(this)){
-                this.goals.pop()
-                return
+        if (this.target && this.goals.length > 0) {
+            const goal = this.goals[this.goals.length - 1];
+            if (goal.completed(this)) {
+                this.goals.pop();
+                return;
             }
+    
             let bestAction: GOAPAction | null = null;
             let bestScore = -Infinity;
             let exec: PlayerInputData | null = null;
-
+    
             for (const action of goapActions) {
                 if (action.preconditions(this)) {
                     const exe = action.execute(this);
                     const score = action.priority * (goal.score(exe, this));
-
                     if (score > bestScore) {
                         bestScore = score;
                         bestAction = action;
@@ -157,23 +344,22 @@ export class GoapAgent {
                     }
                 }
             }
-
+    
             if (exec) {
-                let sb=true
-                // Check for subgoals
+                let subGoalActive = true;
                 if (bestAction!.subgoal) {
                     const subgoal = bestAction!.subgoal(this);
-                    if(subgoal&&goal.id!==subgoal.id){
-                        this.goals.push(subgoal)
-                        sb=false
+                    if (subgoal && goal.id !== subgoal.id) {
+                        this.goals.push(subgoal);
+                        subGoalActive = false;
                     }
                 }
-                if(sb){
-                    this.player.processInputs(exec);
+                if (subGoalActive) {
+                    this.input = exec;
                 }
             }
         } else {
-            this.player.processInputs({
+            this.input = {
                 attacking: false,
                 actions: [],
                 distanceToMouse: 1,
@@ -185,8 +371,32 @@ export class GoapAgent {
                     up: false
                 },
                 rotation: this.player.rotation,
-                turning: false
-            });
+                turning:false
+            };
+        }
+    
+        if (this._gotoTarget) {
+            const adjustedTarget = maintainDistance(this, this._gotoTarget, 5);
+            if (Geometry.distance(this.player.position, adjustedTarget) < 2 || this.pathA >= this.path.length) {
+                this._gotoTarget = undefined;
+            } else if (Geometry.distance(this.player.position, this.path[this.pathA]) < 1) {
+                this.pathA++;
+            } else if (this.input) {
+                const nextPos = this.path[this.pathA];
+                const dx = nextPos.x - this.player.position.x;
+                const dy = nextPos.y - this.player.position.y;
+                this.input.movement.left = dx < -1;
+                this.input.movement.right = dx > 1;
+                this.input.movement.up = dy < -1;
+                this.input.movement.down = dy > 1;
+                this.input.turning=true
+                this.input.rotation = smoothRotation(this, nextPos);
+            }
+        }
+    
+        if (this.input) {
+            this.player.processInputs(this.input);
+            this.input = undefined;
         }
     }
 }

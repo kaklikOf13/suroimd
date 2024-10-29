@@ -25,7 +25,7 @@ import { pickRandomInArray, randomFloat, randomPointInsideCircle, randomRotation
 import { OBJECT_ID_BITS, SuroiBitStream } from "@common/utils/suroiBitStream";
 import { Vec, type Vector } from "@common/utils/vector";
 
-import { Ammos, Emotes } from "@common/definitions";
+import { Ammos, Buildings, Emotes } from "@common/definitions";
 import { PerkIds, Perks, updateInterval } from "@common/definitions/perks";
 import { Config, SpawnMode } from "./config";
 import { MapName, Maps } from "./data/maps";
@@ -53,6 +53,7 @@ import { cleanUsername, Logger, removeFrom } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
 import { Backpacks, Guns, Melees, SkinDefinition, Skins } from "@common/definitions";
 import { GoapAgent } from "./utils/goap";
+import { Building } from "./objects";
 
 /*
     eslint-disable
@@ -855,17 +856,33 @@ export class Game implements GameData {
             && this.startTimeout === undefined
         ) {
             this.startTimeout = this.addTimeout(() => {
-                this._started = true;
-                this.setGameData({ startedTime: this.now });
-                this.gas.advanceGasStage();
-                this.map.generate_after_start();
-
-                this.addTimeout(this.createNewGame.bind(this), Config.gameJoinTime * 1000);
+                this.StartGame()
             }, 3000);
         }
 
         Logger.log(`Game ${this.id} | "${player.name}" joined`);
         this.pluginManager.emit("player_did_join", { player, joinPacket: packet });
+    }
+    StartGame(){
+        if(!this._started){
+            this._started = true;
+            this.setGameData({ startedTime: this.now });
+            this.gas.advanceGasStage();
+            this.map.generate_after_start();
+
+            this.addTimeout(this.createNewGame.bind(this), Config.gameJoinTime * 1000);
+
+            this.addTimeout(this.IATargetCheck.bind(this),3000);
+        }
+    }
+
+    IATargetCheck(){
+        for(const npc of this.livingNpcs){
+            if(npc.goapAgent){
+                npc.goapAgent.targetCheck()
+            }
+        }
+        this.addTimeout(this.IATargetCheck.bind(this),1300)
     }
 
     removePlayer(player: Player): void {
@@ -930,14 +947,14 @@ export class Game implements GameData {
         this.pluginManager.emit("player_disconnect", player);
     }
 
-    addNpc(position:Vector,join:JoinPacketData,layer:number,team?:number):Player{
+    addNpc(position:Vector,join:JoinPacketData,layer:number,protectBuild?:Building,team?:number):Player{
         let t:Team|undefined=undefined
         if(team!==undefined){
             t=this.npcTeams.get(team)??this.npcTeams.set(team,new Team(team,false)).get(team)
         }
         const npc=new Player(this,position,undefined,layer,t)
         npc.autoReload=false
-        npc.goapAgent=new GoapAgent(npc)
+        npc.goapAgent=new GoapAgent(npc,protectBuild)
         npc.isNpc=true
         this.activatePlayer(npc,join)
         npc.teamID=team

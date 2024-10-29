@@ -58,10 +58,10 @@ export type InputAction =
 
 export type PlayerInputData = {
     readonly movement: {
-        readonly up: boolean
-        readonly down: boolean
-        readonly left: boolean
-        readonly right: boolean
+        up: boolean
+        down: boolean
+        left: boolean
+        right: boolean
     }
     readonly attacking: boolean
     readonly actions: readonly InputAction[]
@@ -73,19 +73,17 @@ export type PlayerInputData = {
         readonly moving: boolean
         readonly angle: number
     }
-}) & ({
-    readonly turning: false
-} | (
+}) & (
     {
-        readonly turning: true
-        readonly rotation: number
+        turning: boolean
+        rotation: number
     } & ({
         readonly isMobile: false
         readonly distanceToMouse: number
     } | {
         readonly isMobile: true
     })
-));
+);
 
 export type WithMobile = PlayerInputData & { readonly isMobile: true };
 export type NoMobile = PlayerInputData & { readonly isMobile: false };

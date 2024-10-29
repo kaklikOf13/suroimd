@@ -1316,30 +1316,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
     }
 
+    targetCheck(){
+        if(this.goapAgent){
+            this.goapAgent.targetCheck()
+        }
+    }
+
     AI(){
         if(this.goapAgent){
-            if(this.goapAgent.target==undefined){
-                const min=Vec.add(Vec.create(-this.goapAgent.viewDistance,-this.goapAgent.viewDistance),this.position)
-                const max=Vec.add(Vec.create(this.goapAgent.viewDistance,this.goapAgent.viewDistance),this.position)
-                const objs=this.game.grid.intersectsHitbox(new RectangleHitbox(min,max),this.layer)
-                for(const obj of objs){
-                    if(this===obj&&this.floor!==obj.floor)continue
-                    if(obj instanceof Player&&!obj.isNpc&&Geometry.distance(obj.position,this.position)<this.goapAgent.viewDistance){
-                        let inter=false
-                        for(const obj2 of objs){
-                            if(obj===obj2)continue
-                            if((obj2.isObstacle||obj2.isBuilding)&&obj2.collidable&&obj2.hitbox?.intersectsLine(this.position,obj.position)){
-                                inter=true
-                            }
-                        }
-                        if(inter){
-                            continue
-                        }
-                        this.goapAgent.target=obj
-                        break
-                    }
-                }
-            }
             this.goapAgent.update()
         }
     }

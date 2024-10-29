@@ -31,7 +31,7 @@ export const Modes: Record<Mode, ModeDefinition> = {
         ambience: "wind_ambience",
         reskin: "normal",
         particleEffects: {
-            frames: ["leaf_particle_1", "leaf_particle_2"]
+            frames: ["leaf_particle_1", "leaf_particle_2", "leaf_particle_3", "leaf_particle_4", "leaf_particle_5", "leaf_particle_6"]
         }
     },
     fall: {

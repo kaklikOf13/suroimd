@@ -23,6 +23,14 @@ import { CARDINAL_DIRECTIONS, Logger, getRandomIDString } from "./utils/misc";
 import { GunItem } from "./inventory/gunItem";
 import { Armors, Backpacks } from "@common/definitions";
 
+interface MapBuild{
+    defs:BuildingDefinition
+    build:Building
+    orientation:Orientation
+    layer:number
+    position:Vector
+}
+
 export class GameMap {
     readonly game: Game;
 
@@ -524,8 +532,6 @@ export class GameMap {
         orientation ??= GameMap.getRandomBuildingOrientation(definition.rotationMode);
         layer ??= 0;
 
-        this.buildings.push({defs:definition,orientation,layer,position})
-
         if (
             this.game.pluginManager.emit(
                 "building_will_generate",
@@ -620,6 +626,8 @@ export class GameMap {
         this.game.grid.addObject(building);
         this.game.pluginManager.emit("building_did_generate", building);
 
+        this.buildings.push({defs:definition,orientation,layer,position,build:building})
+
         return building;
     }
 
@@ -630,7 +638,7 @@ export class GameMap {
                 for(const npcData of definition.npcs){
                     const npc=this.game.addNpc(
                         Vec.addAdjust(b.position, npcData.position, b.orientation),
-                        npcData.data,npcData.layer??b.layer,npcData.team)
+                        npcData.data,npcData.layer??b.layer,b.build,npcData.team)
                     if(npcData.items){
                         for(const item of Object.getOwnPropertyNames(npcData.items)){
                             npc.inventory.items.setItem(item,npcData.items[item])
