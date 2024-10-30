@@ -272,8 +272,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { table: "scopes", weight: 0.3 }
         ],
         large_pumpkin: {
-            min: 1,
-            max: 2,
+            min: 2,
+            max: 3,
             loot: [
                 { table: "equipment", weight: 1 },
                 { table: "healing_items", weight: 1 },
@@ -876,7 +876,6 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
                 { item: PerkIds.Toploaded, weight: 1 },
                 { item: PerkIds.CloseQuartersCombat, weight: 1 },
                 { item: PerkIds.LowProfile, weight: 1 },
-                { item: PerkIds.Splinter, weight: 1 },
                 { item: PerkIds.Berserker, weight: 1 }
             ]
         }
@@ -961,6 +960,26 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             [{ item: "regular_pack", weight: 1 }],
             [{ item: "12g", count: 15, weight: 1 }]
         ],
+        lux_crate: [
+            [
+                { item: "vks", weight: 1 },
+                { item: "tango_51", weight: 1 }
+            ],
+            [{ table: "special_scopes", weight: 1 }]
+        ],
+        gold_rock: [
+            [{ item: "tango_51", weight: 1 }],
+            [{ table: "scopes", weight: 1 }]
+        ],
+        loot_barrel: [
+            [{ item: "crowbar", weight: 1 }],
+            [{ item: "sr25", weight: 1 }],
+            [
+                { table: "equipment", weight: 1 },
+                { table: "scopes", weight: 1 },
+                { table: "healing_items", weight: 1 }
+            ]
+        ],
         gun_locker: {
             min: 1,
             max: 2,
@@ -978,12 +997,12 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
                 { item: "mosin_nagant", weight: 0.066 },
 
                 // 10% chance for one of these
-                { item: "m590m", weight: 0.05 },
+                { item: "rsh12", weight: 0.05 },
                 { item: "vepr12", weight: 0.05 },
 
                 // 5% chance for one of these
                 { item: "tango_51", weight: 0.01 },
-                { item: "rsh12", weight: 0.01 },
+                { item: "m590m", weight: 0.01 },
                 { item: "vks", weight: 0.01 },
                 { item: "model_89", weight: 0.01 },
                 { item: "m1_garand", weight: 0.01 }
@@ -1012,13 +1031,13 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "mosin_nagant", weight: 0.0133 },
 
             // 2% chance for one of these
-            { item: "m590m", weight: 0.0066 },
+            { item: "tango_51", weight: 0.0066 },
             { item: "model_89", weight: 0.0066 },
             { item: "vepr12", weight: 0.0066 },
 
             // very rare shit
             { item: "rsh12", weight: 0.001 },
-            { item: "tango_51", weight: 0.001 },
+            { item: "m590m", weight: 0.001 },
             { item: "vks", weight: 0.001 },
             { item: "radio", weight: 0.001 }
         ],
@@ -1043,14 +1062,14 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "mosin_nagant", weight: 0.033 },
 
             // 5% chance for one of these
-            { item: "m590m", weight: 0.0166 },
+            { item: "rsh12", weight: 0.0166 },
             { item: "model_89", weight: 0.0166 },
             { item: "vepr12", weight: 0.0166 },
 
             // 1% chance for one of these
+            { item: "m590m", weight: 0.002 },
             { item: "tango_51", weight: 0.002 },
             { item: "vks", weight: 0.002 },
-            { item: "rsh12", weight: 0.002 },
             { item: "radio", weight: 0.002 },
             { item: "m1_garand", weight: 0.002 }
         ],
@@ -1189,7 +1208,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         melee: [
             { item: "hatchet", weight: 3 },
             { item: "kbar", weight: 2 },
-            { item: "baseball_bat", weight: 2 }
+            { item: "baseball_bat", weight: 2 },
+            { item: "gas_can", weight: 0 } // somewhat hack in order to make the gas can obtainable through mini plumpkins
         ]
     }
 };
