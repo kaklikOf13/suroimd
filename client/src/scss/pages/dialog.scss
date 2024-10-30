@@ -362,11 +362,11 @@
             border: 5px solid transparent;
             border-radius: 10px;
             padding: 5px;
-            background-color: $transparent_bg;
+            background-color: palette.$transparent_bg;
             justify-content: center;
 
             &.selected {
-                border-color: $orange;
+                border-color: palette.$orange;
             }
         }
 
@@ -383,7 +383,7 @@
         .weapons-name {
             text-align: center;
             font-weight: bold;
-            @include text-shadow;
+            @include variables.text-shadow;
         }
 
         #weapons- {
@@ -394,7 +394,7 @@
             font-size: 2em;
             font-weight: bold;
             width: 100%;
-            @include text-shadow;
+            @include variables.text-shadow;
         }
 
         .remove-weapon-btn {
