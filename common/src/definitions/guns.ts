@@ -1365,7 +1365,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 name: "Vepr-12",
                 ammoSpawnAmount: 20,
                 reloadTime: 2.4,
-                singleReload:false,
+                shotsPerReload: 5,
                 fireMode:FireMode.Auto,
                 fireDelay:450,
                 fists: {
