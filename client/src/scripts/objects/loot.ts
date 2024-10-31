@@ -140,12 +140,12 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
 
             // Play an animation if this is new loot
             if (data.full.isNew && isNew) {
-                this.container.scale.set(0);
+                this.container.scale.set(.3);
                 this.animation = this.game.addTween({
                     target: this.container.scale,
                     to: { x: 1, y: 1 },
-                    duration: 1000,
-                    ease: EaseFunctions.elasticOut2,
+                    duration: 3000,
+                    ease: EaseFunctions.elasticOut,
                     onComplete: () => {
                         this.animation = undefined;
                     }

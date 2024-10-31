@@ -2042,7 +2042,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         for (const itemType of ["helmet", "vest", "backpack"] as const) {
             const item = this.inventory[itemType];
             if (item?.noDrop === false) {
-                this.game.addLoot(item, this.hitbox.randomPoint(), this.layer);
+                this.game.addLoot(item, this.position, this.layer);
             }
         }
 
@@ -2078,6 +2078,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         if (this === this.game.killLeader) {
             this.game.killLeaderDead(sourceIsPlayer ? source : undefined);
         }
+
+        this.hitbox.radius=GameConstants.player.radius
 
         this.game.pluginManager.emit("player_did_die", {
             player: this,
