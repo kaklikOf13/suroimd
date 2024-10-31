@@ -5,12 +5,12 @@ import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Angle, Geometry } from "@common/utils/math";
 import { type ReifiableDef } from "@common/utils/objectDefinitions";
-import { randomRotation } from "@common/utils/random";
+import { randomFloat, randomRotation } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import type { GunItem } from "../inventory/gunItem";
 import type { MeleeItem } from "../inventory/meleeItem";
-import type { ThrowableItem } from "../inventory/throwableItem";
+import { ThrowableItem } from "../inventory/throwableItem";
 import { Building } from "./building";
 import { Decal } from "./decal";
 import { type GameObject } from "./gameObject";
@@ -18,6 +18,7 @@ import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
 import { ThrowableProjectile } from "./throwableProj";
+import { Throwables } from "@common/definitions";
 
 export class Explosion {
     readonly definition: ExplosionDefinition;
@@ -28,7 +29,8 @@ export class Explosion {
         readonly position: Vector,
         readonly source: GameObject,
         readonly layer: Layer,
-        readonly weapon?: GunItem | MeleeItem | ThrowableItem
+        readonly weapon?: GunItem | MeleeItem | ThrowableItem,
+        readonly owner_velocity:Vector=Vec.create(0,0)
     ) {
         this.definition = Explosions.reify(definition);
     }
@@ -155,6 +157,19 @@ export class Explosion {
             );
 
             this.game.updateObjects = true;
+        }
+
+        if(this.definition.subthrowable){
+            const def=Throwables.fromString(this.definition.subthrowable.proj)
+            for(let i=0;i<this.definition.subthrowable.count;i++){
+                const proj=this.game.addProjectile(def,this.position,this.layer,new ThrowableItem(def,this.source as Player,{
+                    damage:0,
+                    kills:0,
+                }))
+                proj.detonate(def.fuseTime)
+                proj.velocity=this.owner_velocity
+                proj.push(randomRotation(),(typeof this.definition.subthrowable.speed=="number")?this.definition.subthrowable.speed:randomFloat(this.definition.subthrowable.speed.x,this.definition.subthrowable.speed.y)/2)
+            }
         }
     }
 }

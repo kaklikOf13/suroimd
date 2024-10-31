@@ -791,7 +791,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 const range = def.c4
                     ? 0
                     : Numeric.min(
-                        this.game.inputManager.distanceToMouse * 0.9, // <- this constant is defined server-side
+                        (this.game.inputManager.distanceToMouse*this.game.camera.zoom/13) * 0.7, // <- this constant is defined server-side
                         def.maxThrowDistance * PerkData[PerkIds.DemoExpert].rangeMod
                     );
 

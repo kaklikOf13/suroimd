@@ -72,7 +72,7 @@ export type ThrowableDefinition = InventoryItemDefinition & {
 export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
     {
         itemType: ItemType.Throwable,
-        speedMultiplier: 0.92,
+        speedMultiplier: 1,
         cookable: false,
         fuseTime: 4000,
         cookTime: 150,
@@ -106,11 +106,68 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
                 angle: 60
             },
             detonation: {
-                explosion: "frag_grenade_explosion"
+                explosion: "frag_grenade_explosion",
+                subthrowable:undefined
             },
             animation: {
                 pinImage: "proj_frag_pin",
                 liveImage: "proj_frag",
+                leverImage: "proj_frag_lever",
+                cook: {
+                    leftFist: Vec.create(2.5, 0),
+                    rightFist: Vec.create(-0.5, 2.15)
+                },
+                throw: {
+                    leftFist: Vec.create(1.9, -1.75),
+                    rightFist: Vec.create(4, 2.15)
+                }
+            }
+        },
+        {
+            idString: "mirv_grenade",
+            name: "Mirv Grenade",
+            fuseTime: 4000,
+            impactDamage: 1,
+            obstacleMultiplier: 20,
+            cookable: true,
+            image: {
+                position: Vec.create(60, 43),
+                angle: 60
+            },
+            detonation: {
+                explosion: "mirv_grenade_explosion",
+            },
+            animation: {
+                pinImage: "proj_frag_pin",
+                liveImage: "proj_mirv",
+                leverImage: "proj_frag_lever",
+                cook: {
+                    leftFist: Vec.create(2.5, 0),
+                    rightFist: Vec.create(-0.5, 2.15)
+                },
+                throw: {
+                    leftFist: Vec.create(1.9, -1.75),
+                    rightFist: Vec.create(4, 2.15)
+                }
+            }
+        },
+        {
+            idString: "mirv_subgrenade",
+            name: "Mirv Sub Grenade",
+            fuseTime: 3000,
+            impactDamage: 1,
+            obstacleMultiplier: 20,
+            cookable: true,
+            image: {
+                position: Vec.create(60, 43),
+                angle: 60
+            },
+            detonation: {
+                explosion: "submirv_grenade_explosion",
+            },
+            animation: {
+                pinImage: "proj_frag_pin",
+                liveImage: "proj_submirv",
                 leverImage: "proj_frag_lever",
                 cook: {
                     leftFist: Vec.create(2.5, 0),

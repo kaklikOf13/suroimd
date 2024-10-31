@@ -44,7 +44,8 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                     "frag_grenade": 3,
                     "smoke_grenade": 3,
                     "c4": 2,
-                    "confetti_grenade": 5
+                    "confetti_grenade": 5,
+                    "mirv_grenade":2,
                 },
                 noDrop: true
             },
@@ -69,7 +70,8 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                         "frag_grenade": 6,
                         "smoke_grenade": 6,
                         "c4": 4,
-                        "confetti_grenade": 9
+                        "confetti_grenade": 9,
+                        "mirv_grenade":4,
                     },
                     defaultTint: 0xeeeeee
                 }
@@ -95,7 +97,8 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                         "frag_grenade": 9,
                         "smoke_grenade": 9,
                         "c4": 6,
-                        "confetti_grenade": 12
+                        "confetti_grenade": 12,
+                        "mirv_grenade":6,
                     },
                     defaultTint: 0x63754b
                 }
@@ -121,7 +124,8 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                         "frag_grenade": 12,
                         "smoke_grenade": 12,
                         "c4": 8,
-                        "confetti_grenade": 16
+                        "confetti_grenade": 16,
+                        "mirv_grenade":8,
                     },
                     defaultTint: 0x3f3f3f
                 }

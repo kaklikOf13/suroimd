@@ -59,8 +59,6 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
         this.layer = data.layer;
 
         this.z=data.z
-
-
         
         this.container.scale=this.definition.zBaseScale+(this.definition.zScaleA*this.z)
 

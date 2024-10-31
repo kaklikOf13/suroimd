@@ -1054,9 +1054,10 @@ export class Game implements GameData {
         position: Vector,
         source: GameObject,
         layer: Layer,
-        weapon?: GunItem | MeleeItem | ThrowableItem
+        weapon?: GunItem | MeleeItem | ThrowableItem,
+        owner_velocity?:Vector
     ): Explosion {
-        const explosion = new Explosion(this, type, position, source, layer, weapon);
+        const explosion = new Explosion(this, type, position, source, layer, weapon,owner_velocity);
         this.explosions.push(explosion);
         return explosion;
     }

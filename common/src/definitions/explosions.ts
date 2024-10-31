@@ -1,5 +1,6 @@
 import { defaultBulletTemplate } from "../constants";
 import { ObjectDefinitions, type BaseBulletDefinition, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { Vec, Vector } from "../utils/vector";
 import { type DecalDefinition } from "./decals";
 
 export interface ExplosionDefinition extends ObjectDefinition {
@@ -19,6 +20,13 @@ export interface ExplosionDefinition extends ObjectDefinition {
         readonly scale: number
     }
     readonly sound?: string // TODO: move the barrel and super barrel destroy sounds to explosion sounds
+
+    readonly subthrowable?:{
+        readonly proj:string
+        //X=Min Y=Max
+        readonly count:number
+        readonly speed:number|Vector
+    }
 
     readonly decal?: ReferenceTo<DecalDefinition>
     readonly shrapnelCount: number
@@ -369,6 +377,71 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             },
             sound: "frag_grenade",
             decal: "frag_explosion_decal"
+        },
+        {
+            name: "Mirv Grenade",
+            damage: 100,
+            obstacleMultiplier: 1.15,
+            radius: {
+                min: 10,
+                max: 25
+            },
+            subthrowable:{
+                proj:"mirv_subgrenade",
+                count:6,
+                speed:Vec.create(0,0.02)
+            },
+            cameraShake: {
+                duration: 200,
+                intensity: 30
+            },
+            animation: {
+                duration: 1000,
+                tint: 0x9114ff,
+                scale: 1.5
+            },
+            shrapnelCount: 0,
+            ballistics: {
+                damage: 15,
+                obstacleMultiplier: 1,
+                speed: 0.08,
+                range: 20,
+                rangeVariance: 1,
+                shrapnel: true
+            },
+            
+            sound: "12g_frag_explosion",
+            decal: "explosion_decal"
+        },
+        {
+            name: "SubMirv Grenade",
+            damage: 40,
+            obstacleMultiplier: 1.15,
+            radius: {
+                min: 5,
+                max: 12
+            },
+            cameraShake: {
+                duration: 100,
+                intensity: 10
+            },
+            animation: {
+                duration: 800,
+                tint: 0x5614ae,
+                scale: 1
+            },
+            shrapnelCount: 4,
+            ballistics: {
+                damage: 5,
+                obstacleMultiplier: 1,
+                speed: 0.08,
+                range: 10,
+                rangeVariance: 1,
+                shrapnel: true
+            },
+            
+            sound: "frag_grenade",
+            decal: "explosion_decal"
         },
         {
             name: "Smoke Grenade",

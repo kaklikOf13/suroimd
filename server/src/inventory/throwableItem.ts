@@ -1,7 +1,7 @@
 import { AnimationType, Layer } from "@common/constants";
 import { PerkIds } from "@common/definitions/perks";
 import { type ThrowableDefinition } from "@common/definitions/throwables";
-import { Numeric } from "@common/utils/math";
+import { EaseFunctions, Numeric } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
 import { ItemType, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { Vec } from "@common/utils/vector";
@@ -111,7 +111,8 @@ class GrenadeHandler {
                 referencePosition,
                 this.parent.owner,
                 this._projectile?.layer ?? this.parent.owner.layer,
-                this.parent
+                this.parent,
+                this._projectile?.velocity
             );
         }
 
@@ -225,7 +226,7 @@ class GrenadeHandler {
                         ? 0
                         : Numeric.min(
                             definition.maxThrowDistance * this.owner.mapPerkOrDefault(PerkIds.DemoExpert, ({ rangeMod }) => rangeMod, 1),
-                            0.9 * this.owner.distanceToMouse
+                            0.9 * (this.owner.distanceToMouse*(this.owner.zoom/13))
                         //  ^^^ Grenades will consistently undershoot the mouse by 10% in order to make long-range shots harder
                         //      while not really affecting close-range shots
                         ) / 985
