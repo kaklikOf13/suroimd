@@ -410,7 +410,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
                 shrapnel: true
             },
             
-            sound: "12g_frag_explosion",
+            sound: "frag_grenade",
             decal: "explosion_decal"
         },
         {
@@ -440,7 +440,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
                 shrapnel: true
             },
             
-            sound: "frag_grenade",
+            sound: "12g_frag_explosion",
             decal: "explosion_decal"
         },
         {

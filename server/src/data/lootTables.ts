@@ -205,6 +205,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         },
         grenade_box: [
             { item: "frag_grenade", weight: 1, count: 2 },
+            { item: "mirv_grenade", weight: .4, count: 2 },
             { item: "smoke_grenade", weight: 1, count: 2 }
         ],
         melee_crate: {
@@ -457,6 +458,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             [{ table: "airdrop_guns", weight: 1 }],
             [
                 { item: "frag_grenade", count: 3, weight: 2 },
+                { item: "mirv_grenade", count: 2, weight: 2 },
                 { item: NullString, weight: 1 }
             ]
         ],
@@ -468,7 +470,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             [{ table: "airdrop_melee", weight: 1 }],
             [{ table: "ammo", weight: 1 }],
             [{ table: "gold_airdrop_guns", weight: 1 }],
-            [{ item: "frag_grenade", count: 3, weight: 1 }]
+            [{ item: "frag_grenade", count: 3, weight: 1 },{ item: "mirv_grenade", count: 3, weight: 2 },]
         ],
         flint_stone: [
             { table: "gold_airdrop_guns", weight: 1 }
@@ -680,6 +682,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         ],
         throwables: [
             { item: "frag_grenade", count: 2, weight: 1 },
+            { item: "mirv_grenade", count: 1, weight: .7 },
             { item: "smoke_grenade", count: 2, weight: 1 },
             { item: "c4", count: 2, weight: 0.2 }
         ],
@@ -929,7 +932,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
                 { table: "fall_perks", weight: 0.5 },
                 { item: NullString, weight: 0.5 }
             ],
-            [{ item: "frag_grenade", count: 3, weight: 1 }]
+            [{ item: "frag_grenade", count: 3, weight: 1 },{ item: "mirv_grenade", count: 2, weight: .7 }]
         ],
         briefcase: [
             { item: "usas12", weight: 1 },
@@ -1171,7 +1174,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         ],
         throwables: [
             { item: "frag_grenade", count: 2, weight: 1 },
-            { item: "smoke_grenade", count: 2, weight: 1 }
+            { item: "smoke_grenade", count: 2, weight: 1 },
+            { item: "mirv_grenade", count: 2, weight: 1 },
         ],
         equipment: [
             { item: "regular_helmet", weight: 1 },
