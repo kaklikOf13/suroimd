@@ -28,6 +28,8 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
     collidable: boolean;
 
+    playMaterialDestroyedSound = true;
+
     readonly variation: Variation;
 
     spawnHitbox: Hitbox;
@@ -186,7 +188,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             this.health = 0;
             this.dead = true;
             if (definition.weaponSwap && source instanceof BaseGameObject && source.isPlayer) {
-                source.swapWeaponRandomly(weaponIsItem ? weaponUsed : weaponUsed?.weapon);
+                source.swapWeaponRandomly(weaponIsItem ? weaponUsed : weaponUsed?.weapon, true);
             }
 
             if (
@@ -209,7 +211,13 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             }
 
             // Pumpkin Bombs
-            if (source instanceof BaseGameObject && source.isPlayer && source.perks.hasPerk(PerkIds.PlumpkinBomb) && definition.material === "pumpkin") {
+            if (
+                source instanceof BaseGameObject
+                && source.isPlayer
+                && source.perks.hasPerk(PerkIds.PlumpkinBomb)
+                && definition.material === "pumpkin"
+            ) {
+                this.playMaterialDestroyedSound = false;
                 this.game.addExplosion("pumpkin_explosion", this.position, source, source.layer);
             }
 
@@ -444,6 +452,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         return {
             scale: this.scale,
             dead: this.dead,
+            playMaterialDestroyedSound: this.playMaterialDestroyedSound,
             full: {
                 activated: this.activated,
                 definition: this.definition,

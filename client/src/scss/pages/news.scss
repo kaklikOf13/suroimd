@@ -1,9 +1,9 @@
-@import "../main.scss";
-@import "../pages/client/splash.scss";
-@import "../palette.scss";
+@use "../main.scss";
+@use "../pages/client/splash.scss";
+@use "../palette.scss";
 
 body {
-    background: $bg;
+    background: palette.$bg;
     overflow-x: hidden;
     overflow-y: scroll;
 }
@@ -16,7 +16,7 @@ body {
     border-radius: 15px;
 
     h1 {
-        color: $orange;
+        color: palette.$orange;
         text-align: center;
         font-family: "Inter", sans-serif;
         font-size: 50px;
@@ -39,7 +39,7 @@ body {
         }
 
         .news-title {
-            color: $blue;
+            color: palette.$blue;
             font-size: 28px;
             font-weight: bold;
             margin-top: 0;

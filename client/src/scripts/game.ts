@@ -146,6 +146,18 @@ export class Game {
     readonly gasRender = new GasRender(PIXI_SCALE);
     readonly gas = new Gas(this);
 
+    _ilumination:number=1
+
+    get ilumination():number{
+        return this._ilumination
+    }
+    set ilumination(v:number){
+        if(this.pixi.renderer){
+            this.pixi.renderer.canvas.style.filter=`brightness(${v})`
+            this._ilumination=v
+        }
+    }
+
     music:Sound|undefined=undefined;
 
     stop_music(changeVal:number=0.01,volume:number=1):Promise<void>{
@@ -318,6 +330,7 @@ export class Game {
         this.music=undefined
 
         this.play_music(this.menu_music)
+
     }
 
     resize(): void {
@@ -549,6 +562,9 @@ export class Game {
                         case ItemType.Throwable:
                             soundID = "throwable_pickup";
                             break;
+                        case ItemType.Perk:
+                            soundID = "pickup";
+                            break;
                         default:
                             soundID = "pickup";
                             break;
@@ -592,6 +608,8 @@ export class Game {
         ui.spectateKillLeader.addClass("btn-disabled");
 
         ui.teamContainer.toggle(this.teamMode);
+
+        this.ilumination=1
     }
 
     async endGame(): Promise<void> {
@@ -755,7 +773,10 @@ export class Game {
         }
 
         const playerData = updateData.playerData;
-        if (playerData) this.uiManager.updateUI(playerData);
+        if (playerData) {
+            this.uiManager.updateUI(playerData);
+            this.uiManager.updateWeaponSlots(); // to load reskins
+        }
 
         for (const deletedPlayerId of updateData.deletedPlayers ?? []) {
             this.playerNames.delete(deletedPlayerId);

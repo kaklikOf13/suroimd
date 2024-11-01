@@ -21,12 +21,11 @@ import { CircleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { EaseFunctions, Geometry, Numeric, Statistics } from "@common/utils/math";
 import { Timeout } from "@common/utils/misc";
 import { ItemType, MapObjectSpawnMode, SetArray, type ReifiableDef } from "@common/utils/objectDefinitions";
-import { pickRandomInArray, randomFloat, randomPointInsideCircle, randomRotation, weightedRandom } from "@common/utils/random";
+import { pickRandomInArray, randomFloat, randomPointInsideCircle, randomRotation } from "@common/utils/random";
 import { OBJECT_ID_BITS, SuroiBitStream } from "@common/utils/suroiBitStream";
 import { Vec, type Vector } from "@common/utils/vector";
 
-import { Ammos, Buildings, Emotes } from "@common/definitions";
-import { PerkIds, Perks, updateInterval } from "@common/definitions/perks";
+import { PerkIds, Perks } from "@common/definitions/perks";
 import { Config, SpawnMode } from "./config";
 import { MapName, Maps } from "./data/maps";
 import { WorkerMessages, type GameData, type WorkerMessage } from "./gameManager";
@@ -286,115 +285,6 @@ export class Game implements GameData {
             }
         }
 
-        const players = this.grid.pool.getCategory(ObjectCategory.Player);
-        // Update perks on an interval timer
-        for (const perk of Perks) {
-            if (!(updateInterval in perk)) continue;
-
-            const lastUpdate = now - this._perkIntervalUpdateMap[perk.idString];
-            if (lastUpdate < perk[updateInterval]) continue;
-            this._perkIntervalUpdateMap[perk.idString] = now;
-
-            // ! evil starts here
-            switch (perk.idString) {
-                case PerkIds.DemoExpert: {
-                    // for (const player of players) {
-                    //     if (!player.hasPerk(PerkIds.DemoExpert)) continue;
-
-                    //     const { inventory } = player;
-                    //     const { items, backpack: { maxCapacity }, throwableItemMap } = inventory;
-
-                    //     for (const throwable of Throwables) {
-                    //         const { idString } = throwable;
-                    //         const count = items.hasItem(idString) ? items.getItem(idString) : 0;
-                    //         const max = maxCapacity[idString];
-
-                    //         if (count >= max) continue;
-
-                    //         const toAdd = Math.ceil(max * PerkData[PerkIds.DemoExpert].restoreAmount);
-
-                    //         if (toAdd === 0) continue;
-                    //         const newCount = Numeric.clamp(
-                    //             count + toAdd,
-                    //             0, max
-                    //         );
-                    //         items.setItem(
-                    //             idString,
-                    //             newCount
-                    //         );
-
-                    //         const item = throwableItemMap.getAndGetDefaultIfAbsent(
-                    //             idString,
-                    //             () => new ThrowableItem(throwable, player, newCount)
-                    //         );
-
-                    //         item.count = newCount;
-
-                    //         const slot = inventory.slotsByItemType[ItemType.Throwable]?.[0];
-
-                    //         if (slot !== undefined && !inventory.hasWeapon(slot)) {
-                    //             inventory.replaceWeapon(slot, item);
-                    //         }
-
-                    //         player.dirty.weapons = true;
-                    //         player.dirty.items = true;
-                    //     }
-                    // }
-                    break;
-                }
-                case PerkIds.BabyPlumpkinPie: {
-                    for (const player of players) {
-                        if (!player.hasPerk(PerkIds.BabyPlumpkinPie)) continue;
-
-                        player.swapWeaponRandomly();
-                    }
-                    break;
-                }
-                case PerkIds.TornPockets: {
-                    for (const player of players) {
-                        if (!player.hasPerk(PerkIds.TornPockets)) continue;
-
-                        const candidates = new Set(Ammos.definitions.filter(({ ephemeral }) => !ephemeral).map(({ idString }) => idString));
-
-                        const counts = Object.entries(player.inventory.items.asRecord()).filter(
-                            ([str, count]) => Ammos.hasString(str) && candidates.has(str) && count !== 0
-                        );
-
-                        // no ammo at all
-                        if (counts.length === 0) continue;
-
-                        const chosenAmmo = Ammos.fromString(
-                            weightedRandom(
-                                counts.map(([str]) => str),
-                                counts.map(([, cnt]) => cnt)
-                            )
-                        );
-
-                        const amountToDrop = Numeric.min(
-                            player.inventory.items.getItem(chosenAmmo.idString),
-                            perk.dropCount
-                        );
-
-                        this.addLoot(chosenAmmo, player.position, player.layer, { count: amountToDrop })?.push(player.rotation + Math.PI, 0.025);
-                        player.inventory.items.decrementItem(chosenAmmo.idString, amountToDrop);
-                        player.dirty.items = true;
-                    }
-                    break;
-                }
-                case PerkIds.RottenPlumpkin: {
-                    for (const player of players) {
-                        if (!player.hasPerk(PerkIds.RottenPlumpkin)) continue;
-
-                        player.sendEmote(Emotes.fromStringSafe(perk.emote));
-                        player.health -= perk.healthLoss;
-                        player.adrenaline -= player.adrenaline * (perk.healthLoss);
-                    }
-                    break;
-                }
-            }
-            // ! evil ends here
-        }
-
         for (const loot of this.grid.pool.getCategory(ObjectCategory.Loot)) {
             loot.update();
         }
@@ -471,7 +361,7 @@ export class Game implements GameData {
         }
 
         // First loop over players: movement, animations, & actions
-        for (const player of players) {
+        for (const player of this.grid.pool.getCategory(ObjectCategory.Player)) {
             if (!player.dead) player.update();
         }
 
@@ -861,6 +751,13 @@ export class Game implements GameData {
         }
 
         Logger.log(`Game ${this.id} | "${player.name}" joined`);
+        // AccessLog to store usernames for this connection
+        if (Config.protection?.punishments) {
+            const username = player.name;
+            if (username) {
+                fetch(`${Config.protection.punishments.url}/accesslog/${player.ip || "none"}`, { method: "POST", headers: { "Content-Type": "application/json", "api-key": Config.protection.punishments.password || "none" }, body: JSON.stringify({ username }) }).catch((e: unknown) => console.log(e));
+            }
+        }
         this.pluginManager.emit("player_did_join", { player, joinPacket: packet });
     }
     StartGame(){
@@ -1055,9 +952,10 @@ export class Game implements GameData {
         source: GameObject,
         layer: Layer,
         weapon?: GunItem | MeleeItem | ThrowableItem,
+        damageMod = 1,
         owner_velocity?:Vector
     ): Explosion {
-        const explosion = new Explosion(this, type, position, source, layer, weapon,owner_velocity);
+        const explosion = new Explosion(this, type, position, source, layer, weapon, damageMod,owner_velocity);
         this.explosions.push(explosion);
         return explosion;
     }
@@ -1073,8 +971,8 @@ export class Game implements GameData {
         projectile.dead = true;
     }
 
-    addSyncedParticle(definition: SyncedParticleDefinition, position: Vector, layer: Layer | number): SyncedParticle {
-        const syncedParticle = new SyncedParticle(this, definition, position, layer);
+    addSyncedParticle(definition: SyncedParticleDefinition, position: Vector, layer: Layer | number, creatorID?: number): SyncedParticle {
+        const syncedParticle = new SyncedParticle(this, definition, position, layer, creatorID);
         this.grid.addObject(syncedParticle);
         return syncedParticle;
     }

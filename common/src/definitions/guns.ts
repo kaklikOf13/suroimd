@@ -1386,7 +1386,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoType: "12g",
                 ammoSpawnAmount: 10,
                 capacity: 2,
-                reloadTime: 2.8,
+                reloadTime: 2.3,
                 fireDelay: 300,
                 switchDelay: 500,
                 recoilMultiplier: 0.6,
@@ -1604,6 +1604,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 fireMode: FireMode.Single,
                 shotSpread: 0.2,
                 moveSpread: 0.4,
+                shootOnRelease: true,
                 length: 10.8,
                 casingParticles: [{
                     position: Vec.create(5, 0.2),
@@ -1885,9 +1886,9 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 }],
                 gasParticles: gasParticlePresets.rifle,
                 ballistics: {
-                    damage: 49,
+                    damage: 55,
                     obstacleMultiplier: 1.5,
-                    speed: 0.28,
+                    speed: 0.31,
                     range: 250,
                     tracer: {
                         width: 1.8,

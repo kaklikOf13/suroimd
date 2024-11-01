@@ -1,3 +1,6 @@
+import { ReferenceTo } from "../utils/objectDefinitions";
+import { ScopeDefinition } from "./scopes";
+
 export type ColorKeys = "grass" | "water" | "border" | "beach" | "riverBank" | "trail" | "gas" | "void";
 
 export interface ModeDefinition {
@@ -5,6 +8,7 @@ export interface ModeDefinition {
     readonly specialMenuMusic?: boolean
     readonly ambience?: string
     readonly specialSounds?: string[]
+    readonly defaultScope?: ReferenceTo<ScopeDefinition>
     readonly reskin?: string
     // will be multiplied by the bullet trail color
     readonly bulletTrailAdjust?: string
@@ -46,6 +50,7 @@ export const Modes: Record<Mode, ModeDefinition> = {
             void: "hsl(25, 80%, 6%)"
         },
         ambience: "wind_ambience",
+        defaultScope: "2x_scope",
         reskin: "fall",
         particleEffects: {
             frames: ["leaf_particle_1", "leaf_particle_2", "leaf_particle_3"]
@@ -57,11 +62,12 @@ export const Modes: Record<Mode, ModeDefinition> = {
             water: "hsl(4, 100%, 14%)",
             border: "hsl(4, 90%, 12%)",
             beach: "hsl(33, 77%, 21%)",
-            riverBank: "hsl(33, 50%, 30%)",
-            trail: "hsl(35, 50%, 40%)",
+            riverBank: "hsl(33, 50%, 25%)",
+            trail: "hsl(35, 50%, 20%)",
             gas: "hsla(17, 100%, 50%, 0.55)",
             void: "hsl(25, 80%, 6%)"
         },
+        defaultScope: "2x_scope",
         specialMenuMusic: true,
         reskin: "fall"
     },
