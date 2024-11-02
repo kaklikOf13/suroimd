@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="90"
+   height="90"
+   viewBox="0 0 23.8125 23.8125"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="youtubr_swang_base.svg"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview5"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     showgrid="false"
+     inkscape:zoom="6.415521"
+     inkscape:cx="21.354462"
+     inkscape:cy="51.359819"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg5"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#d1d1d1" />
+  <defs
+     id="defs2">
+    <linearGradient
+       id="linearGradient1"
+       inkscape:collect="always">
+      <stop
+         style="stop-color:#cf1d00;stop-opacity:1;"
+         offset="0"
+         id="stop1" />
+      <stop
+         style="stop-color:#6b0017;stop-opacity:1;"
+         offset="1"
+         id="stop2" />
+    </linearGradient>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient1"
+       id="radialGradient2"
+       cx="-2.1672804e-07"
+       cy="16.83798"
+       fx="-2.1672804e-07"
+       fy="16.83798"
+       r="11.90625"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.0000001,1.646164e-4,1.646164e-4,1.0000001,0,0)" />
+  </defs>
+  <circle
+     style="display:inline;fill:url(#radialGradient2);fill-opacity:1;stroke:#ff1338;stroke-width:0.42995;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
+     id="circle1956"
+     cy="16.837994"
+     cx="0.0027837253"
+     transform="matrix(-0.70722317,0.70699037,0.70722317,0.70699037,0,0)"
+     r="11.69263" />
+  <path
+     style="fill:#ff1338;fill-opacity:1;stroke:#ff1338;stroke-width:0.899583;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
+     d="M 7.3289297,16.483542 H 16.483569 L 12.015233,7.3289029 Z"
+     id="path3"
+     sodipodi:nodetypes="cccc" />
+</svg>

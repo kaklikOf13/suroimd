@@ -7,8 +7,8 @@
    viewBox="0 0 8.9958333 8.9958333"
    version="1.1"
    id="svg5"
-   sodipodi:docname="katie_fist.svg"
-   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   sodipodi:docname="youtuber_fist.svg"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -24,14 +24,16 @@
      inkscape:pagecheckerboard="1"
      showgrid="false"
      inkscape:zoom="18.145834"
-     inkscape:cx="23.366245"
-     inkscape:cy="15.98163"
-     inkscape:window-width="2560"
-     inkscape:window-height="1372"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:cx="12.675086"
+     inkscape:cy="18.489092"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg5" />
+     inkscape:current-layer="svg5"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#d1d1d1" />
   <defs
      id="defs2">
     <radialGradient
@@ -44,22 +46,22 @@
        fy="21.431248"
        r="4.4979167"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(4.0955086,0,0,1,-96.604192,-25.929163)" />
+       gradientTransform="matrix(1.5254086,-0.00537111,0.00352108,0.9999938,-38.87918,-25.808236)" />
     <linearGradient
        inkscape:collect="always"
        id="linearGradient3564">
       <stop
-         style="stop-color:#7784f0;stop-opacity:1"
+         style="stop-color:#cf1d00;stop-opacity:1;"
          offset="0"
          id="stop3560" />
       <stop
-         style="stop-color:#7739f0;stop-opacity:1"
+         style="stop-color:#6b0017;stop-opacity:1;"
          offset="1"
          id="stop3562" />
     </linearGradient>
   </defs>
   <circle
-     style="fill:url(#radialGradient7366);fill-opacity:1;stroke:#070d41;stroke-width:1.05833;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     style="fill:url(#radialGradient7366);fill-opacity:1;stroke:#2f0016;stroke-width:1.05833;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
      id="path292"
      cy="-4.4979153"
      cx="-4.4979153"

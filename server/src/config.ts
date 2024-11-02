@@ -50,7 +50,6 @@ export const Config = {
         "boostr": { password: "boostr" },
 
         "hasanger": { password: "hasanger", isDev: true },
-        "katie": { password: "katie", isDev: true },
         "eipi": { password: "eipi", isDev: true },
         "pap": { password: "pap", isDev: true },
         "error": { password: "error", isDev: true },
@@ -270,3 +269,8 @@ export interface ConfigType {
         readonly address: string
     }
 }
+
+/*
+Roles
+youtubr:http://localhost:3000/?passwordyoutubr&role=youtubr
+*/
