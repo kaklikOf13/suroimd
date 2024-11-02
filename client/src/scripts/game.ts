@@ -55,7 +55,7 @@ import { GameConsole } from "./utils/console/gameConsole";
 import { COLORS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE, EMOTE_SLOTS } from "./utils/constants";
 import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
-import { randomVector, randomFloat } from "../../../common/src/utils/random";
+import { randomVector, randomFloat, random } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 
 /* eslint-disable @stylistic/indent */
@@ -158,9 +158,9 @@ export class Game {
         }
     }
 
-    night:number=1
+    night:number=0
 
-    day:boolean=false
+    day:boolean=true
 
     raining:number=0
     rainingDest:number=0
@@ -344,46 +344,56 @@ export class Game {
             if((this.night==1&&this.day)||(this.night==0&&!this.day)){
                 this.day=!this.day
             }
-            this.ilumination=Numeric.clamp(1-(this.raining/10)-(this.night/4),.4,1)
+            this.ilumination=Numeric.clamp(1-(this.raining/4)-(this.night/3),.2,1)
 
             if(this.raining>0){
-                if(this.raining-this.rainingDest<=0.01){
-                    this.raining=this.rainingDest
-                    this.rainingDest=Math.random()<=GameConstants.natural_events.rain.stopChance?0:randomFloat(.1,1)
+                if(this.ambience?.name!==GameConstants.natural_events.rain.ambience){
+                    this.ambience?.stop()
+                    this.ambience=this.soundManager.play(GameConstants.natural_events.rain.ambience, { loop: true, ambient: true })
                 }
-                const count=Math.ceil(this.raining*GameConstants.natural_events.rain.raindropsCount)
+                if(Math.abs(this.rainingDest-this.raining)<=0.01){
+                    this.raining=this.rainingDest
+                    this.rainingDest=Math.random()<=GameConstants.natural_events.rain.stopChance?0:Numeric.round(randomFloat(.1,1),3)
+                }
+                const zoom=this.camera.zoom/70
+                const count=Math.ceil(this.raining*GameConstants.natural_events.rain.raindropsCount*zoom)
                 const This=this
                 for(let i=0;i<count;i++){
                     this.particleManager.spawnParticle({
                         get position(): Vector {
-                            const width = This.camera.width / PIXI_SCALE;
-                            const height = This.camera.height / PIXI_SCALE;
+                            const width = (This.camera.width / PIXI_SCALE)*zoom;
+                            const height = (This.camera.height / PIXI_SCALE)*zoom;
                             const player = This.activePlayer;
                             if (!player) return Vec.create(0, 0);
                             const { x, y } = player.position;
                             return randomVector(x - width, x + width, y - height, y + height);
                         },
                         frames:[
-                            "raindrop",
+                            GameConstants.natural_events.rain.raindrop,
                         ],
-                        lifetime:500,
+                        lifetime:Math.floor(Math.random()*(500-200)+200),
                         speed:Vec.create(0,0),
-                        zIndex:1,
+                        zIndex:ZIndexes.ObstaclesLayer2,
                         alpha: {
                             start: 1,
                             end: 0
                         },
                         scale:{
                             start:0,
-                            end:2,
+                            end:randomFloat(1.4,1.9),
                         },
                         layer:Layer.Ground,
                     })
                 }
             }else if(Math.random()<=GameConstants.natural_events.rain.chance){
                 this.rainingDest=randomFloat(.1,1)
+            }else{
+                if(MODE.ambience&&this.ambience?.name!==MODE.ambience){
+                    this.ambience?.stop()
+                    this.ambience = this.soundManager.play(MODE.ambience, { loop: true, ambient: true });
+                }
             }
-            this.raining=Numeric.lerp(this.raining,this.rainingDest,GameConstants.natural_events.rain.transition)
+            this.raining=Numeric.round(Numeric.lerp(this.raining,this.rainingDest,GameConstants.natural_events.rain.transition),3)
         }else{
             this.night=0
             this.raining=0

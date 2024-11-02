@@ -73,6 +73,10 @@ export const Numeric = Object.freeze({
             ? a % n
             : (a % n + n) % n;
     },
+    round(num: number, decimalPlaces: number = 0): number {
+        const factor = Math.pow(10, decimalPlaces);
+        return Math.round(num * factor) / factor;
+    },
     /**
      * Interpolate between two values
      * @param start The start value

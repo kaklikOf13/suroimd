@@ -33,10 +33,12 @@ export const GameConstants = freezeDeep({
     natural_events:{
         daynightDelay:1000,
         rain:{
-            raindropsCount:10,
-            chance:0.01,
-            stopChance:0.05,
-            transition:0.001,
+            raindropsCount:80,
+            chance:0.001,
+            stopChance:.4,
+            transition:0.01,
+            raindrop:"ripple_particle",
+            ambience:"rain_ambience",
         }
     },
     player: {
