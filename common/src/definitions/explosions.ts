@@ -380,8 +380,8 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
         },
         {
             name: "Mirv Grenade",
-            damage: 100,
-            obstacleMultiplier: 1.15,
+            damage: 75,
+            obstacleMultiplier: 1.2,
             radius: {
                 min: 10,
                 max: 25
@@ -389,7 +389,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             subthrowable:{
                 proj:"mirv_subgrenade",
                 count:6,
-                speed:Vec.create(0,0.02)
+                speed:Vec.create(0,0.035)
             },
             cameraShake: {
                 duration: 200,
