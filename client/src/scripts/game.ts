@@ -158,6 +158,13 @@ export class Game {
         }
     }
 
+    night:number=1
+
+    day:boolean=false
+
+    raining:number=0
+    rainingDest:number=0
+
     music:Sound|undefined=undefined;
 
     stop_music(changeVal:number=0.01,volume:number=1):Promise<void>{
@@ -330,7 +337,60 @@ export class Game {
         this.music=undefined
 
         this.play_music(this.menu_music)
+    }
+    updateVisualEvents(){
+        if(this.playing){
+            this.night=Numeric.clamp(this.night+((this.day?1:-1)/GameConstants.natural_events.daynightDelay),0,1)
+            if((this.night==1&&this.day)||(this.night==0&&!this.day)){
+                this.day=!this.day
+            }
+            this.ilumination=Numeric.clamp(1-(this.raining/10)-(this.night/4),.4,1)
 
+            if(this.raining>0){
+                if(this.raining-this.rainingDest<=0.01){
+                    this.raining=this.rainingDest
+                    this.rainingDest=Math.random()<=GameConstants.natural_events.rain.stopChance?0:randomFloat(.1,1)
+                }
+                const count=Math.ceil(this.raining*GameConstants.natural_events.rain.raindropsCount)
+                const This=this
+                for(let i=0;i<count;i++){
+                    this.particleManager.spawnParticle({
+                        get position(): Vector {
+                            const width = This.camera.width / PIXI_SCALE;
+                            const height = This.camera.height / PIXI_SCALE;
+                            const player = This.activePlayer;
+                            if (!player) return Vec.create(0, 0);
+                            const { x, y } = player.position;
+                            return randomVector(x - width, x + width, y - height, y + height);
+                        },
+                        frames:[
+                            "raindrop",
+                        ],
+                        lifetime:500,
+                        speed:Vec.create(0,0),
+                        zIndex:1,
+                        alpha: {
+                            start: 1,
+                            end: 0
+                        },
+                        scale:{
+                            start:0,
+                            end:2,
+                        },
+                        layer:Layer.Ground,
+                    })
+                }
+            }else if(Math.random()<=GameConstants.natural_events.rain.chance){
+                this.rainingDest=randomFloat(.1,1)
+            }
+            this.raining=Numeric.lerp(this.raining,this.rainingDest,GameConstants.natural_events.rain.transition)
+        }else{
+            this.night=0
+            this.raining=0
+            this.rainingDest=0
+            this.day=true
+        }
+        this.addTimeout(this.updateVisualEvents.bind(this),300)
     }
 
     resize(): void {
@@ -610,6 +670,8 @@ export class Game {
         ui.teamContainer.toggle(this.teamMode);
 
         this.ilumination=1
+
+        this.updateVisualEvents()
     }
 
     async endGame(): Promise<void> {
@@ -742,7 +804,7 @@ export class Game {
         this.gasRender.update(this.gas);
 
         for (const plane of this.planes) plane.update();
-
+        
         this.camera.update();
     }
 

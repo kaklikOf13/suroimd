@@ -29,6 +29,16 @@ export const GameConstants = freezeDeep({
     gridSize: 32,
     maxPosition: 1924,
     modeName: "normal" satisfies Mode as Mode,
+
+    natural_events:{
+        daynightDelay:1000,
+        rain:{
+            raindropsCount:10,
+            chance:0.01,
+            stopChance:0.05,
+            transition:0.001,
+        }
+    },
     player: {
         radius: 2.25,
         baseSpeed: 0.028,
