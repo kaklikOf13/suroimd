@@ -2,6 +2,32 @@ import { type NewsPost } from "./newsHelper";
 
 export const news: NewsPost[] = [
     {
+      date: 1730428409000,
+      author: "Kaklik",
+      title: "Suroi Mod/SuroiMD",
+      bannerImage: "../img/news/v0.19.0.png",
+      content: `SuroiMD or SuroiMod (placeholder name) is a mod for suroi.io, aiming to create a new game based on suroi.io.`,
+      longContent: `<h2>Suroi v0.19.0</h2>
+<h3>New features</h3>
+<ul>
+<li><strong>Day And Night!</strong> Day And Night Cicle System</li>
+<li><strong>Rain!</strong> The Rain Is So Beautiful.</li>
+<li><strong>Mirv Grenades!</strong> A Splitting Grenade Created by AEGIS</li>
+<li><strong>Youtubr Swang</strong> Now Everyone With Youtubr Role Have A Skin</li>
+<li><strong>In Game Music</strong> In Game Music + Rain</li>
+</ul>
+<h3>Changes</h3>
+<ul>
+<li>Better Grenades System</li>
+<li>Character Speed</li>
+<h4>Guns Changes</h4>
+<li>M3K capicity 6 < 9</li>
+<li>New Shotguns System</li>
+<li>L115A1 Damage 120 < 150</li>
+<li>L115A1 Capacity 5 > 3</li>
+</ul>`
+    },
+    {
         date: 1730428409000,
         author: "HAZEL",
         title: "Plumpkin Panic",

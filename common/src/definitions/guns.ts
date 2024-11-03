@@ -1619,7 +1619,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 image: { position: Vec.create(120, 4) },
                 gasParticles: gasParticlePresets.rifle,
                 capacity: 5,
-                extendedCapacity: 5,
+                extendedCapacity: 7,
                 reloadTime: 3.8,
                 ballistics: {
                     damage: 120,

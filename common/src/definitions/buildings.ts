@@ -210,7 +210,7 @@ const npcsGenerators={
             weapons:{
                 0:"model_37",
                 1:"ak47"
-                
+
                 //0:"ak47"
             },
             team:NPCSTeams.aegis,
@@ -4292,10 +4292,10 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "detector", position: Vec.create(-35, 25.5) },
                     { idString: "detector", position: Vec.create(-25, 25.5) }
                 ],
-                npcs:[
+                /*npcs:[
                     npcsGenerators.aegis_soldier(Vec.create(-35, 15)),
                     npcsGenerators.aegis_soldier(Vec.create(-25, 15))
-                ]
+                ]*/
             },
             {
                 idString: "headquarters_second_floor",

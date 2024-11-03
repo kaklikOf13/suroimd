@@ -25,7 +25,7 @@
      showgrid="false"
      inkscape:zoom="6.415521"
      inkscape:cx="21.354462"
-     inkscape:cy="51.359819"
+     inkscape:cy="51.203947"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
      inkscape:window-x="-8"
@@ -58,15 +58,15 @@
        fy="16.83798"
        r="11.90625"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.0000001,1.646164e-4,1.646164e-4,1.0000001,0,0)" />
+       gradientTransform="matrix(1,-2.235854e-6,-2.235854e-6,1,0,0)" />
   </defs>
   <circle
      style="display:inline;fill:url(#radialGradient2);fill-opacity:1;stroke:#ff1338;stroke-width:0.42995;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
      id="circle1956"
-     cy="16.837994"
-     cx="0.0027837253"
-     transform="matrix(-0.70722317,0.70699037,0.70722317,0.70699037,0,0)"
-     r="11.69263" />
+     cy="16.837969"
+     cx="-5.0811181e-05"
+     transform="matrix(-0.7071052,0.70710836,0.7071052,0.70710836,0,0)"
+     r="11.69262" />
   <path
      style="fill:#ff1338;fill-opacity:1;stroke:#ff1338;stroke-width:0.899583;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
      d="M 7.3289297,16.483542 H 16.483569 L 12.015233,7.3289029 Z"
