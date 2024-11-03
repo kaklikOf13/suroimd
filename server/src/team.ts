@@ -132,6 +132,7 @@ export class CustomTeam {
     locked = false;
 
     gameID?: number;
+    lastGameIDUpdateTime = 0;
 
     constructor() {
         this.id = Array.from({ length: 4 }, () => CustomTeam._idChars.charAt(random(0, CustomTeam._idCharMax))).join("");
@@ -207,6 +208,7 @@ export class CustomTeam {
                 const result = await findGame();
                 if (result.success) {
                     this.gameID = result.gameID;
+                    this.lastGameIDUpdateTime = Date.now();
                     this._publishMessage({ type: CustomTeamMessages.Started });
                 }
                 break;

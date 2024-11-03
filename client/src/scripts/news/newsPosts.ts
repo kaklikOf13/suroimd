@@ -15,6 +15,7 @@ export const news: NewsPost[] = [
 <li><strong>Mirv Grenades!</strong> A Splitting Grenade Created by AEGIS</li>
 <li><strong>Youtubr Swang</strong> Now Everyone With Youtubr Role Have A Skin</li>
 <li><strong>In Game Music</strong> In Game Music + Rain</li>
+<li><strong>Weapons Selector</strong> Useless Because Don't Have Modes To This</li>
 </ul>
 <h3>Changes</h3>
 <ul>
