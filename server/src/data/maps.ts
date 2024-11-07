@@ -316,7 +316,7 @@ const maps = {
             gold_rock: 1,
             loot_tree: 4,
             loot_barrel: 1,
-            flint_stone: 3,
+            flint_stone: 1,
             pumpkin: 200,
             large_pumpkin: 5,
             pebble: 110
@@ -621,7 +621,7 @@ const maps = {
                         ((item.itemType === ItemType.Melee || item.itemType === ItemType.Scope) && item.noDrop)
                         || ("ephemeral" in item && item.ephemeral)
                         || (item.itemType === ItemType.Backpack && item.level === 0)
-                        // || (item.itemType === ItemType.Perk && item.categories.includes(PerkCategories.Halloween))
+                        // || (item.itemType === ItemType.Perk && item.category === PerkCategories.Halloween)
                         || item.itemType === ItemType.Skin
                     ) continue;
 

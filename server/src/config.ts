@@ -270,5 +270,5 @@ export interface ConfigType {
 
 /*
 Roles
-youtubr:http://localhost:3000/?passwordyoutubr&role=youtubr
+youtubr:http://localhost:3000/?password=youtubr&role=youtubr
 */

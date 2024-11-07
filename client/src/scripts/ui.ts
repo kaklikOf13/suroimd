@@ -369,46 +369,25 @@ export async function setUpUI(game: Game): Promise<void> {
                     // Check again because there is a small chance that the create-team-menu element won't hide.
                     if (createTeamMenu.css("display") !== "none") createTeamMenu.hide(); // what the if condition doin
                 } else {
-                    let showWarningModal = false;
-                    let title: string | undefined;
-                    const caseID = data.reportID || "No report ID provided.";
-                    let message: string;
-                    switch (data.message) {
-                        case "warn":
-                            showWarningModal = true;
-                            title = getTranslatedString("msg_warning");
-                            message = getTranslatedString("msg_warning_msg", { reason: data.reason ?? getTranslatedString("msg_no_reason") });
-                            break;
-                        case "temp":
-                            showWarningModal = true;
-                            title = getTranslatedString("msg_temp_ban");
-                            message = getTranslatedString("msg_temp_ban_msg", { reason: data.reason ?? getTranslatedString("msg_no_reason") });
-                            break;
-                        case "perma":
-                            showWarningModal = true;
-                            title = getTranslatedString("msg_perma_ban");
-                            message = getTranslatedString("msg_perma_ban_msg", { reason: data.reason ?? getTranslatedString("msg_no_reason") });
-                            break;
-                        default:
-                            message = html`
-                                ${getTranslatedString("msg_err_joining")}
-                                <br>
-                                ${getTranslatedString("msg_try_again")}
-                            `;
-                            break;
-                    }
+                    if (data.message !== undefined) {
+                        const reportID = data.reportID || "No report ID provided.";
+                        const message = getTranslatedString(`msg_punishment_${data.message}_reason`, { reason: data.reason ?? getTranslatedString("msg_no_reason") });
 
-                    if (showWarningModal) {
-                        ui.warningTitle.text(title ?? "");
-                        ui.warningText.html(`<span style="font-size:20px">Case ID: ${caseID ?? ""}</span><br>${message ?? ""}`);
+                        ui.warningTitle.text(getTranslatedString(`msg_punishment_${data.message}`));
+                        ui.warningText.html(`${data.message !== "vpn" ? `<span style="font-size:20px;margin-bottom:10px">Case ID: ${reportID}</span><br>` : ""}${message}`);
                         ui.warningAgreeOpts.toggle(data.message === "warn");
                         ui.warningAgreeCheckbox.prop("checked", false);
                         ui.warningModal.show();
                         ui.splashOptions.addClass("loading");
                     } else {
-                        ui.splashMsgText.html(message);
+                        ui.splashMsgText.html(html`
+                            ${getTranslatedString("msg_err_joining")}
+                            <br>
+                            ${getTranslatedString("msg_try_again")}
+                        `);
                         ui.splashMsg.show();
                     }
+
                     resetPlayButtons();
                 }
             }
@@ -444,11 +423,7 @@ export async function setUpUI(game: Game): Promise<void> {
 
         const params = new URLSearchParams();
 
-        const joiningTeam = this.id === "btn-join-team";
-        if (joiningTeam) {
-            ui.btnStartGame.addClass("btn-disabled").text(getTranslatedString("create_team_waiting"));
-            ui.createTeamToggles.addClass("disabled");
-
+        if (this.id === "btn-join-team") {
             // also rejects the empty string, but like who cares
             while (!teamID) {
                 teamID = prompt(getTranslatedString("msg_enter_team_code"));
@@ -473,9 +448,6 @@ export async function setUpUI(game: Game): Promise<void> {
             }
 
             params.set("teamID", teamID);
-        } else {
-            ui.btnStartGame.removeClass("btn-disabled").text(getTranslatedString("create_team_play"));
-            ui.createTeamToggles.removeClass("disabled");
         }
 
         params.set("name", game.console.getBuiltInCVar("cv_player_name"));
@@ -506,58 +478,47 @@ export async function setUpUI(game: Game): Promise<void> {
 
         teamSocket = new WebSocket(`${selectedRegion.mainAddress.replace("http", "ws")}/team?${params.toString()}`);
 
-        const getPlayerHTML = (p: CustomTeamPlayerInfo): string => {
-            let badgeSrc;
-            if (p.badge) badgeSrc = `./img/game/${emoteIdStrings.includes(p.badge) ? "emotes" : "badges"}/${p.badge}.svg`;
-            return `
-            <div class="create-team-player-container" data-id="${p.id}">
-              <i class="fa-solid fa-crown"${p.isLeader ? "" : ' style="display: none"'}></i>
-              <div class="skin">
-                <div class="skin-base" style="background-image: url('./img/game/skins/${p.skin}_base.svg')"></div>
-                <div class="skin-left-fist" style="background-image: url('./img/game/skins/${p.skin}_fist.svg')"></div>
-                <div class="skin-right-fist" style="background-image: url('./img/game/skins/${p.skin}_fist.svg')"></div>
-              </div>
-              <div class="create-team-player-name-container">
-                <span class="create-team-player-name"${p.nameColor ? ` style="color: ${new Color(p.nameColor).toHex()}"` : ""};>${p.name}</span>
-                ${p.badge ? `<img class="create-team-player-badge" draggable="false" src=${badgeSrc ?? "./img/game/badges/${p.badge}.svg"} />` : ""}
-              </div>
-            </div>
-            `;
-        };
-
-        let playerID: number;
-
         teamSocket.onmessage = (message: MessageEvent<string>): void => {
             const data = JSON.parse(message.data) as CustomTeamMessage;
             switch (data.type) {
                 case CustomTeamMessages.Join: {
                     joinedTeam = true;
-                    playerID = data.id;
                     teamID = data.teamID;
                     window.location.hash = `#${teamID}`;
 
                     ui.createTeamUrl.val(`${window.location.origin}/?region=${game.console.getBuiltInCVar("cv_region")}#${teamID}`);
+
                     ui.createTeamAutoFill.prop("checked", data.autoFill);
                     ui.createTeamLock.prop("checked", data.locked);
-                    ui.createTeamPlayers.html(data.players.map(getPlayerHTML).join(""));
                     break;
                 }
-                case CustomTeamMessages.PlayerJoin: {
-                    ui.createTeamPlayers.append(getPlayerHTML(data));
-                    break;
-                }
-                case CustomTeamMessages.PlayerLeave: {
-                    ui.createTeamPlayers.find(`[data-id="${data.id}"]`).remove();
-                    if (data.newLeaderID === undefined) {
-                        break;
-                    }
-
-                    ui.createTeamPlayers.find(`[data-id="${data.newLeaderID}"] .fa-crown`).show();
-
-                    if (data.newLeaderID === playerID) {
-                        ui.btnStartGame.removeClass("btn-disabled").text(getTranslatedString("create_team_play"));
-                        ui.createTeamToggles.removeClass("disabled");
-                    }
+                case CustomTeamMessages.Update: {
+                    const { players, isLeader, ready } = data;
+                    ui.createTeamPlayers.html(
+                        players.map((p: CustomTeamPlayerInfo): string => {
+                            let badgeSrc;
+                            if (p.badge) badgeSrc = `./img/game/shared/${emoteIdStrings.includes(p.badge) ? "emotes" : "badges"}/${p.badge}.svg`;
+                            return `
+                            <div class="create-team-player-container">
+                                <i class="fa-solid fa-crown"${p.isLeader ? "" : ' style="display: none"'}></i>
+                                <i class="fa-regular fa-circle-check"${p.ready ? "" : ' style="display: none"'}></i>
+                                <div class="skin">
+                                    <div class="skin-base" style="background-image: url('./img/game/shared/skins/${p.skin}_base.svg')"></div>
+                                    <div class="skin-left-fist" style="background-image: url('./img/game/shared/skins/${p.skin}_fist.svg')"></div>
+                                    <div class="skin-right-fist" style="background-image: url('./img/game/shared/skins/${p.skin}_fist.svg')"></div>
+                                </div>
+                                <div class="create-team-player-name-container">
+                                    <span class="create-team-player-name"${p.nameColor ? ` style="color: ${new Color(p.nameColor).toHex()}"` : ""};>${p.name}</span>
+                                    ${p.badge ? `<img class="create-team-player-badge" draggable="false" src=${badgeSrc ?? "./img/game/shared/badges/${p.badge}.svg"} />` : ""}
+                                </div>
+                            </div>
+                            `;
+                        }).join("")
+                    );
+                    ui.createTeamToggles.toggleClass("disabled", !isLeader);
+                    ui.btnStartGame
+                        .toggleClass("btn-disabled", !isLeader && ready)
+                        .text(getTranslatedString(isLeader ? "create_team_play" : ready ? "create_team_waiting" : "create_team_ready"));
                     break;
                 }
                 case CustomTeamMessages.Settings: {
@@ -953,12 +914,12 @@ export async function setUpUI(game: Game): Promise<void> {
     const updateSplashCustomize = (skinID: string): void => {
         base.css(
             "background-image",
-            `url("./img/game/skins/${skinID}_base.svg")`
+            `url("./img/game/shared/skins/${skinID}_base.svg")`
         );
 
         fists.css(
             "background-image",
-            `url("./img/game/skins/${skinID}_fist.svg")`
+            `url("./img/game/shared/skins/${skinID}_fist.svg")`
         );
     };
 
@@ -983,9 +944,9 @@ export async function setUpUI(game: Game): Promise<void> {
         const skinItem = skinUiCache[idString] = $<HTMLDivElement>(
             `<div id="skin-${idString}" class="skins-list-item-container${idString === currentSkin ? " selected" : ""}">
                 <div class="skin">
-                    <div class="skin-base" style="background-image: url('./img/game/skins/${idString}_base.svg')"></div>
-                    <div class="skin-left-fist" style="background-image: url('./img/game/skins/${idString}_fist.svg')"></div>
-                    <div class="skin-right-fist" style="background-image: url('./img/game/skins/${idString}_fist.svg')"></div>
+                    <div class="skin-base" style="background-image: url('./img/game/shared/skins/${idString}_base.svg')"></div>
+                    <div class="skin-left-fist" style="background-image: url('./img/game/shared/skins/${idString}_fist.svg')"></div>
+                    <div class="skin-right-fist" style="background-image: url('./img/game/shared/skins/${idString}_fist.svg')"></div>
                 </div>
                 <span class="skin-name">${getTranslatedString(idString)}</span>
             </div>`
@@ -1110,7 +1071,7 @@ export async function setUpUI(game: Game): Promise<void> {
             }
 
             // noinspection CssUnknownTarget
-            const emoteIdString = `./img/game/emotes/${emote.idString}.svg`;
+            const emoteIdString = `./img/game/shared/emotes/${emote.idString}.svg`;
             const emoteItem = $<HTMLDivElement>(
                 `<div id="emote-${emote.idString}" class="emotes-list-item-container">
                     <div class="emotes-list-item" style="background-image: url(${emoteIdString})"></div>
@@ -1136,7 +1097,7 @@ export async function setUpUI(game: Game): Promise<void> {
                     emoteWheelUiCache[cvarName] ??= $(`#emote-wheel-container .emote-${cvarName}`)
                 ).css(
                     "background-image",
-                    `url("./img/game/emotes/${emote.idString}.svg")`
+                    `url("./img/game/shared/emotes/${emote.idString}.svg")`
                 );
             });
 
@@ -1164,61 +1125,60 @@ export async function setUpUI(game: Game): Promise<void> {
     function changeEmoteSlotImage(slot: typeof EMOTE_SLOTS[number], emote: ReferenceTo<EmoteDefinition>): JQuery<HTMLDivElement> {
         return (
             emoteWheelUiCache[slot] ??= $(`#emote-wheel-container .emote-${slot}`)
-        ).css("background-image", emote ? `url("./img/game/emotes/${emote}.svg")` : "none");
 
+        ).css("background-image", emote ? `url("./img/game/shared/emotes/${emote}.svg")` : "none");
     }
 
     for(const slot of weaponsSlots){
-        const cvar = `cv_loadout_${slot}` as const;
-        const weapon = game.console.getBuiltInCVar(cvar);
+    const cvar = `cv_loadout_${slot}` as const;
+    const weapon = game.console.getBuiltInCVar(cvar);
 
-        game.console.variables.addChangeListener(
-            cvar,
-            (_, newWeapon) => {
-                weaponsList.children(`weapons-${newWeapon}`).removeClass("selected")
-                changeWeaponSlotImage(slot, newWeapon);
-            }
-        );
+    game.console.variables.addChangeListener(
+        cvar,
+        (_, newWeapon) => {
+            weaponsList.children(`weapons-${newWeapon}`).removeClass("selected")
+            changeWeaponSlotImage(slot, newWeapon);
+        }
+    );
 
-        changeWeaponSlotImage(slot, weapon)
-            .on("click", () => {
-                if (selectedWeaponSlot === slot) {
-                    weaponsSlotUiCache[slot]?.removeClass("selected");
-                    selectedWeaponSlot=undefined
-                    weaponsItemContainer
-                    .removeClass("selected")
-                    .css("cursor", "pointer");
-                    return
-                };
-
-                if (selectedWeaponSlot !== undefined) {
-                    weaponsSlotUiCache[selectedWeaponSlot]?.removeClass("selected")
-                }
-
-                selectedWeaponSlot = slot;
-
-                weaponsSlotUiCache[slot] = $(`#weapons-customize-vals #weapons-${slot}`)
-                console.log($(`#weapons-customize-vals #weapons-${slot}`))
-                weaponsSlotUiCache[slot].addClass("selected")
-
+    changeWeaponSlotImage(slot, weapon)
+        .on("click", () => {
+            if (selectedWeaponSlot === slot) {
+                weaponsSlotUiCache[slot]?.removeClass("selected");
+                selectedWeaponSlot=undefined
                 weaponsItemContainer
-                    .removeClass("selected")
-                    .css("cursor", "pointer");
+                .removeClass("selected")
+                .css("cursor", "pointer");
+                return
+            };
 
-                $(`#weapons-${game.console.getBuiltInCVar(cvar) || "none"}`).addClass("selected");
-            });
+            if (selectedWeaponSlot !== undefined) {
+                weaponsSlotUiCache[selectedWeaponSlot]?.removeClass("selected")
+            }
 
-        (
-            weaponsSlotUiCache[slot] ??= $(`#emote-wheel-container .emote-${slot}`)
-        ).children(".remove-weapon-btn")
-            .on("click", () => {
-                game.console.setBuiltInCVar(cvar, "");
-                (
-                    weaponsSlotUiCache[slot] ??= $(`#emote-wheel-container .emote-${slot}`)
-                ).css("background-image", "none");
-            });
+            selectedWeaponSlot = slot;
+
+            weaponsSlotUiCache[slot] = $(`#weapons-customize-vals #weapons-${slot}`)
+            console.log($(`#weapons-customize-vals #weapons-${slot}`))
+            weaponsSlotUiCache[slot].addClass("selected")
+
+            weaponsItemContainer
+                .removeClass("selected")
+                .css("cursor", "pointer");
+
+            $(`#weapons-${game.console.getBuiltInCVar(cvar) || "none"}`).addClass("selected");
+        });
+
+    (
+        weaponsSlotUiCache[slot] ??= $(`#emote-wheel-container .emote-${slot}`)
+    ).children(".remove-weapon-btn")
+        .on("click", () => {
+            game.console.setBuiltInCVar(cvar, "");
+            (
+                weaponsSlotUiCache[slot] ??= $(`#emote-wheel-container .emote-${slot}`)
+            ).css("background-image", "none");
+        });
     }
-
     for (const slot of EMOTE_SLOTS) {
         const cvar = `cv_loadout_${slot}_emote` as const;
         const emote = game.console.getBuiltInCVar(cvar);
@@ -1430,7 +1390,7 @@ export async function setUpUI(game: Game): Promise<void> {
                 const badgeItem = badgeUiCache[idString] = $<HTMLDivElement>(
                     `<div id="badge-${idString}" class="badges-list-item-container${idString === activeBadge ? " selected" : ""}">\
                         <div class="badges-list-item">\
-                            <div style="background-image: url('./img/game/${location}/${idString}.svg')"></div>\
+                            <div style="background-image: url('./img/game/shared/${location}/${idString}.svg')"></div>\
                         </div>\
                         <span class="badge-name">${getTranslatedString(`badge_${idString}`)}</span>\
                     </div>`
@@ -1988,7 +1948,7 @@ export async function setUpUI(game: Game): Promise<void> {
         Scopes.definitions.map(scope => {
             const ele = $<HTMLDivElement>(
                 `<div class="inventory-slot item-slot" id="${scope.idString}-slot" style="display: none;">
-                    <img class="item-image" src="./img/game/loot/${scope.idString}.svg" draggable="false">
+                    <img class="item-image" src="./img/game/shared/loot/${scope.idString}.svg" draggable="false">
                     <div class="item-tooltip">${scope.name.split(" ")[0]}</div>
                 </div>`
             );
@@ -2027,7 +1987,7 @@ export async function setUpUI(game: Game): Promise<void> {
         HealingItems.definitions.map(item => {
             const ele = $<HTMLDivElement>(
                 html`<div class="inventory-slot item-slot active" id="${item.idString}-slot">
-                    <img class="item-image" src="./img/game/loot/${item.idString}.svg" draggable="false">
+                    <img class="item-image" src="./img/game/shared/loot/${item.idString}.svg" draggable="false">
                     <span class="item-count" id="${item.idString}-count">0</span>
                     <div class="item-tooltip">
                         ${getTranslatedString("tt_restores", {
@@ -2086,7 +2046,7 @@ export async function setUpUI(game: Game): Promise<void> {
 
         const ele = $<HTMLDivElement>(
             `<div class="inventory-slot item-slot ammo-slot active" id="${ammo.idString}-slot">
-                <img class="item-image" src="./img/game/loot/${ammo.idString}.svg" draggable="false">
+                <img class="item-image" src="./img/game/shared/loot/${ammo.idString}.svg" draggable="false">
                 <span class="item-count" id="${ammo.idString}-count">0</span>
             </div>`
         );
