@@ -1158,8 +1158,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 recoilMultiplier: 0.5,
                 recoilDuration: 500,
                 fireMode: FireMode.Single,
-                shotSpread: 7,
-                moveSpread: 12,
+                shotSpread: 6.5,
+                moveSpread: 7,
                 jitterRadius: 0.5,
                 bulletCount: 9,
                 length: 7.75,
@@ -1178,8 +1178,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ballistics: {
                     damage: 9,
                     obstacleMultiplier: 1,
-                    speed: 0.2,
-                    range: 100
+                    speed: 0.3,
+                    range: 160
                 }
             },
             {
@@ -1195,8 +1195,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 recoilMultiplier: 0.5,
                 recoilDuration: 550,
                 fireMode: FireMode.Single,
-                shotSpread: 14,
-                moveSpread: 17,
+                shotSpread: 10,
+                moveSpread: 12,
                 jitterRadius: 4,
                 bulletCount: 12,
                 length: 7.85,
@@ -1223,8 +1223,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ballistics: {
                     damage: 10,
                     obstacleMultiplier: 1,
-                    speed: 0.16,
-                    range: 60,
+                    speed: 0.17,
+                    range: 70,
                     tracer: {
                         length: 0.7
                     }
@@ -1283,8 +1283,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 recoilDuration: 100,
                 fireMode: FireMode.Single,
                 bulletCount: 10,
-                shotSpread: 14,
-                moveSpread: 17,
+                shotSpread: 10,
+                moveSpread: 12,
                 jitterRadius: 4,
                 length: 6,
                 fists: {
@@ -1308,10 +1308,10 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 }],
                 gasParticles: gasParticlePresets.shotgun,
                 ballistics: {
-                    damage: 15,
+                    damage: 10.7,
                     obstacleMultiplier: 1,
-                    speed: 0.16,
-                    range: 60,
+                    speed: 0.2,
+                    range: 67,
                     tracer: {
                         length: 0.5
                     }

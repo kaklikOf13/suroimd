@@ -355,35 +355,37 @@ export class Game {
                     this.raining=this.rainingDest
                     this.rainingDest=Math.random()<=GameConstants.natural_events.rain.stopChance?0:Numeric.round(randomFloat(.1,1),3)
                 }
-                const zoom=this.camera.zoom/70
-                const count=Math.ceil(this.raining*GameConstants.natural_events.rain.raindropsCount*zoom)
-                const This=this
-                for(let i=0;i<count;i++){
-                    this.particleManager.spawnParticle({
-                        get position(): Vector {
-                            const width = (This.camera.width / PIXI_SCALE)*zoom;
-                            const height = (This.camera.height / PIXI_SCALE)*zoom;
-                            const player = This.activePlayer;
-                            if (!player) return Vec.create(0, 0);
-                            const { x, y } = player.position;
-                            return randomVector(x - width, x + width, y - height, y + height);
-                        },
-                        frames:[
-                            GameConstants.natural_events.rain.raindrop,
-                        ],
-                        lifetime:Math.floor(Math.random()*(500-200)+200),
-                        speed:Vec.create(0,0),
-                        zIndex:ZIndexes.ObstaclesLayer2,
-                        alpha: {
-                            start: 1,
-                            end: 0
-                        },
-                        scale:{
-                            start:0,
-                            end:randomFloat(1.4,1.9),
-                        },
-                        layer:Layer.Ground,
-                    })
+                if(this.map.terrainGraphics.visible){
+                    const zoom=this.camera.zoom/70
+                    const count=Math.ceil(this.raining*GameConstants.natural_events.rain.raindropsCount*zoom)
+                    const This=this
+                    for(let i=0;i<count;i++){
+                        this.particleManager.spawnParticle({
+                            get position(): Vector {
+                                const width = (This.camera.width / PIXI_SCALE)*zoom;
+                                const height = (This.camera.height / PIXI_SCALE)*zoom;
+                                const player = This.activePlayer;
+                                if (!player) return Vec.create(0, 0);
+                                const { x, y } = player.position;
+                                return randomVector(x - width, x + width, y - height, y + height);
+                            },
+                            frames:[
+                                GameConstants.natural_events.rain.raindrop,
+                            ],
+                            lifetime:Math.floor(Math.random()*(500-200)+200),
+                            speed:Vec.create(0,0),
+                            zIndex:ZIndexes.ObstaclesLayer2,
+                            alpha: {
+                                start: 1,
+                                end: 0
+                            },
+                            scale:{
+                                start:0,
+                                end:randomFloat(1.4,1.9),
+                            },
+                            layer:Layer.Ground,
+                        })
+                    }
                 }
             }else if(Math.random()<=GameConstants.natural_events.rain.chance){
                 this.rainingDest=randomFloat(.1,1)
