@@ -27,6 +27,9 @@ export interface ExplosionDefinition extends ObjectDefinition {
         readonly count:number
         readonly speed:number|Vector
     }
+    readonly obstacle?:{
+        readonly def:string
+    }
 
     readonly decal?: ReferenceTo<DecalDefinition>
     readonly shrapnelCount: number
@@ -377,6 +380,38 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             },
             sound: "frag_grenade",
             decal: "frag_explosion_decal"
+        },
+        {
+            name: "Ice Grenade",
+            damage: 60,
+            obstacleMultiplier: 1.15,
+            radius: {
+                min: 7,
+                max: 5
+            },
+            cameraShake: {
+                duration: 50,
+                intensity: 10
+            },
+            animation: {
+                duration: 500,
+                tint: 0x0771b3,
+                scale: 2
+            },
+            obstacle:{
+                def:"ice_rock"
+            },
+            shrapnelCount: 0,
+            ballistics: {
+                damage: 15,
+                obstacleMultiplier: 1,
+                speed: 0.08,
+                range: 20,
+                rangeVariance: 1,
+                shrapnel: true
+            },
+            sound: "smoke_grenade",
+            decal: "smoke_explosion_decal"
         },
         {
             name: "Mirv Grenade",

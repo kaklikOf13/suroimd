@@ -182,6 +182,35 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
             }
         },
         {
+            idString: "ice_grenade",
+            name: "Ice Grenade",
+            fuseTime: 2000,
+            impactDamage: 1,
+            obstacleMultiplier: 20,
+            cookable: true,
+            image: {
+                position: Vec.create(60, 43),
+                angle: 60
+            },
+            detonation: {
+                explosion: "ice_grenade_explosion",
+                subthrowable:undefined
+            },
+            animation: {
+                pinImage: "proj_frag_pin",
+                liveImage: "proj_ice",
+                leverImage: "proj_frag_lever",
+                cook: {
+                    leftFist: Vec.create(2.5, 0),
+                    rightFist: Vec.create(-0.5, 2.15)
+                },
+                throw: {
+                    leftFist: Vec.create(1.9, -1.75),
+                    rightFist: Vec.create(4, 2.15)
+                }
+            }
+        },
+        {
             idString: "smoke_grenade",
             name: "Smoke Grenade",
             fuseTime: 2000,

@@ -104,6 +104,8 @@ type RawObstacleDefinition = ObjectDefinition & {
     readonly noInteractMessage?: boolean
     readonly weaponSwap?: boolean
 
+    readonly decay?:number
+
     readonly frames: {
         readonly base?: string
         readonly particle?: string
@@ -339,6 +341,8 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     planted_bushes_particle:       { base: "toilet_particle",  tint: 0xaaaaaa },
     barn_wall_particle_1:          { base: "stone_particle_1", tint: 0x690c0c },
     barn_wall_particle_2:          { base: "stone_particle_2", tint: 0x690c0c },
+    ice_particle_1:                { base: "stone_particle_1", tint: 0x87b6ea},
+    ice_particle_2:                { base: "stone_particle_2", tint: 0x87b6ea},
     lodge_particle:                { base: "wood_particle",    tint: 0x49371d },
     lodge_wall_particle:           { base: "wood_particle",    tint: 0x5a4320 },
     gun_mount_dual_rsh12_particle: { base: "wood_particle",    tint: 0x595959 },
@@ -958,6 +962,29 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 spawnHitbox: new CircleHitbox(9),
                 rotationMode: RotationMode.Full,
                 variations: 5,
+                particleVariations: 2
+            },
+            {
+                idString: "ice_rock",
+                name: "Ice Rock",
+                material: "stone",
+                health: 550,
+                decay:.5,
+                scale: {
+                    spawnMin: 0.9,
+                    spawnMax: 1,
+                    destroy: 0.7
+                },
+                
+                frames: {
+                    particle: "ice_particle",
+                    residue:"ice_rock_residue"
+                },
+                zIndex: ZIndexes.Players+1,
+                hitbox: new CircleHitbox(8),
+                spawnHitbox: new CircleHitbox(9),
+                rotationMode: RotationMode.Full,
+                variations: 1,
                 particleVariations: 2
             },
             {

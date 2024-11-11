@@ -435,7 +435,11 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         this.spawnHitbox = this.hitbox;
         this.game.grid.updateObject(this);
     }
-
+    update(){
+        if(this.definition.decay){
+            this.damage({amount:this.definition.decay})
+        }
+    }
     updateDetector(): void {
         for (const object of this.game.grid.intersectsHitbox(this.spawnHitbox)) {
             if (object.isPlayer) {

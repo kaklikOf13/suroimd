@@ -46,6 +46,7 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                     "c4": 2,
                     "confetti_grenade": 5,
                     "mirv_grenade":2,
+                    "ice_grenade":1,
                 },
                 noDrop: true
             },
@@ -72,6 +73,7 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                         "c4": 4,
                         "confetti_grenade": 9,
                         "mirv_grenade":4,
+                        "ice_grenade":2,
                     },
                     defaultTint: 0xeeeeee
                 }
@@ -99,6 +101,7 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                         "c4": 6,
                         "confetti_grenade": 12,
                         "mirv_grenade":6,
+                        "ice_grenade":3,
                     },
                     defaultTint: 0x63754b
                 }
@@ -126,6 +129,7 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                         "c4": 8,
                         "confetti_grenade": 16,
                         "mirv_grenade":8,
+                        "ice_grenade":4,
                     },
                     defaultTint: 0x3f3f3f
                 }

@@ -350,6 +350,15 @@ export class Game implements GameData {
             detector.updateDetector();
         }
 
+        for(let i=0;i<this.map.obstacles.length;i++){
+            if(this.map.obstacles[i].dead){
+                this.map.obstacles.splice(i,1);
+                i--;
+                continue;
+            }
+            this.map.obstacles[i].update()
+        }
+
         // Update gas
         this.gas.tick();
 
@@ -953,9 +962,9 @@ export class Game implements GameData {
         layer: Layer,
         weapon?: GunItem | MeleeItem | ThrowableItem,
         damageMod = 1,
-        owner_velocity?:Vector
+        owner?:ThrowableProjectile
     ): Explosion {
-        const explosion = new Explosion(this, type, position, source, layer, weapon, damageMod,owner_velocity);
+        const explosion = new Explosion(this, type, position, source, layer, weapon, damageMod,owner);
         this.explosions.push(explosion);
         return explosion;
     }

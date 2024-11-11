@@ -136,7 +136,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
                     this.layer,
                     this.source,
                     undefined,
-                    this.velocity
+                    this
                 );
             }
         }, delay);

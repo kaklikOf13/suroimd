@@ -19,6 +19,7 @@ import { Obstacle } from "./obstacle";
 import { Player } from "./player";
 import { ThrowableProjectile } from "./throwableProj";
 import { Throwables } from "@common/definitions";
+import { Obstacles } from "@common/definitions/obstacles";
 
 export class Explosion {
     readonly definition: ExplosionDefinition;
@@ -31,7 +32,7 @@ export class Explosion {
         readonly layer: Layer,
         readonly weapon?: GunItem | MeleeItem | ThrowableItem,
         readonly damageMod = 1,
-        readonly owner_velocity:Vector=Vec.create(0,0)
+        readonly owner?:ThrowableProjectile
     ) {
         this.definition = Explosions.reify(definition);
     }
@@ -167,9 +168,14 @@ export class Explosion {
                     kills:0,
                 }))
                 proj.detonate(def.fuseTime)
-                proj.velocity=this.owner_velocity
+                if(this.owner&&this.owner.velocity){
+                    proj.velocity=this.owner.velocity
+                }
                 proj.push(randomRotation(),(typeof this.definition.subthrowable.speed=="number")?this.definition.subthrowable.speed:randomFloat(this.definition.subthrowable.speed.x,this.definition.subthrowable.speed.y)/2)
             }
+        }
+        if(this.definition.obstacle){
+            this.game.map.generateObstacle(Obstacles.fromString(this.definition.obstacle.def),this.position,{activated:true,layer:this.layer})
         }
     }
 }
