@@ -2183,13 +2183,13 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 capacity: 255,
                 extendedCapacity: 1, // womp womp
                 reloadTime: 0.4,
-                fireDelay: 50,
+                fireDelay: 150,
                 switchDelay: 250,
                 speedMultiplier: 1,
                 recoilMultiplier: 0.95,
                 recoilDuration: 100,
                 fireMode: FireMode.Auto,
-                shotSpread: 0.5,
+                shotSpread: 0.1,
                 moveSpread: 4,
                 length: 14,
                 noMuzzleFlash: true,
@@ -2230,6 +2230,9 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     obstacleMultiplier: 1,
                     speed: 0.45,
                     range: 500,
+                    onHitExplosion:"mirv_grenade_explosion",
+                    explodeOnImpact: true,
+                    allowRangeOverride: true,
                     tracer: {
                         width: 2.5,
                         length: 4

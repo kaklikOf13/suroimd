@@ -969,10 +969,10 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 name: "Ice Rock",
                 material: "stone",
                 health: 550,
-                decay:.5,
+                decay:.4,
                 scale: {
-                    spawnMin: 0.9,
-                    spawnMax: 1,
+                    spawnMin: 0.7,
+                    spawnMax: .8,
                     destroy: 0.7
                 },
                 
@@ -984,7 +984,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hitbox: new CircleHitbox(8),
                 spawnHitbox: new CircleHitbox(9),
                 rotationMode: RotationMode.Full,
-                variations: 1,
+                variations: 2,
                 particleVariations: 2
             },
             {
