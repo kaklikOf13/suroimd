@@ -16,14 +16,14 @@ import { SpectatePacket } from "@common/packets/spectatePacket";
 import { type PingSerialization } from "@common/packets/updatePacket";
 import { CircleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { EaseFunctions, Geometry, Numeric, Statistics } from "@common/utils/math";
-import { Timeout } from "@common/utils/misc";
+import { mergeDeep, Timeout } from "@common/utils/misc";
 import { ItemType, MapObjectSpawnMode, SetArray, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { pickRandomInArray, randomFloat, randomPointInsideCircle, randomRotation } from "@common/utils/random";
 import { type SuroiByteStream } from "@common/utils/suroiByteStream";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type WebSocket } from "uWebSockets.js";
 import { parentPort } from "worker_threads";
-import { Config, SpawnMode } from "./config";
+import { Config } from "./config";
 import { MapName, Maps } from "./data/maps";
 import { WorkerMessages, type GameData, type WorkerMessage } from "./gameManager";
 import { Gas } from "./gas";
@@ -48,7 +48,10 @@ import { IDAllocator } from "./utils/idAllocator";
 import { cleanUsername, Logger, removeFrom } from "./utils/misc";
 import { GoapAgent } from "./utils/goap";
 import { Building } from "./objects/building";
-
+import { DefaultGasStages, GasStage } from "./data/gasStages";
+import { Guns } from "@common/definitions/guns";
+import { Melees } from "@common/definitions/melees";
+import { DefaultGamemode, Gamemode, GasMode, SpawnMode } from "./data/gamemode";
 /*
     eslint-disable
 
@@ -62,6 +65,7 @@ export class Game implements GameData {
     public readonly id: number;
 
     readonly map: GameMap;
+    readonly gamemode:Gamemode;
     readonly gas: Gas;
     readonly grid: Grid;
     readonly pluginManager = new PluginManager(this);
@@ -194,7 +198,7 @@ export class Game implements GameData {
         return this._idAllocator.takeNext();
     }
 
-    constructor(id: number, maxTeamSize: TeamSize) {
+    constructor(id: number, maxTeamSize: TeamSize,gamemode:Partial<Gamemode>=Config.gamemode) {
         this.id = id;
         this.maxTeamSize = maxTeamSize;
         this.teamMode = this.maxTeamSize > TeamSize.Solo;
@@ -212,6 +216,12 @@ export class Game implements GameData {
         this.grid = new Grid(this, width, height);
 
         this.map = new GameMap(this, Config.map);
+
+        if(gamemode){
+            this.gamemode=mergeDeep(DefaultGamemode,gamemode)
+        }else{
+            this.gamemode=DefaultGamemode
+        }
 
         this.gas = new Gas(this);
 
@@ -585,7 +595,7 @@ export class Game implements GameData {
             }
         }
 
-        switch (Config.spawn.mode) {
+        switch (this.gamemode.spawn.mode) {
             case SpawnMode.Normal: {
                 const hitbox = new CircleHitbox(5);
                 const gasPosition = this.gas.currentPosition;
@@ -634,17 +644,17 @@ export class Game implements GameData {
                 break;
             }
             case SpawnMode.Radius: {
-                const { x, y } = Config.spawn.position;
+                const { x, y } = this.gamemode.spawn.position;
                 spawnPosition = randomPointInsideCircle(
                     Vec.create(x, y),
-                    Config.spawn.radius
+                    this.gamemode.spawn.radius
                 );
                 break;
             }
             case SpawnMode.Fixed: {
-                const { x, y } = Config.spawn.position;
+                const { x, y } = this.gamemode.spawn.position;
                 spawnPosition = Vec.create(x, y);
-                spawnLayer = Config.spawn.layer ?? Layer.Ground;
+                spawnLayer =this.gamemode.spawn.layer ?? Layer.Ground;
                 break;
             }
             case SpawnMode.Center: {
@@ -691,19 +701,19 @@ export class Game implements GameData {
         }
         player.loadout.emotes = packet.emotes;
         
-        if(this.map.mapDef.gamemode?.weaponsSelect){
+        if(this.gamemode.weaponsSelect){
             if(packet.gun1&&Guns.fromStringSafe(packet.gun1)){
-                player.inventory.addOrReplaceWeapon(0,Guns.fromString(packet.gun1))
+                player.inventory.addOrReplaceWeapon(0,Guns.fromString(packet.gun1 as never))
                 const w=player.inventory.getWeapon(0) as GunItem
                 w.ammo=w.definition.capacity
             }
             if(packet.gun2&&Guns.fromStringSafe(packet.gun2)){
-                player.inventory.addOrReplaceWeapon(1,Guns.fromString(packet.gun2))
+                player.inventory.addOrReplaceWeapon(1,Guns.fromString(packet.gun2 as never))
                 const w=player.inventory.getWeapon(1) as GunItem
                 w.ammo=w.definition.capacity
             }
             if(packet.melee&&Melees.fromStringSafe(packet.melee)){
-                player.inventory.addOrReplaceWeapon(2,Melees.fromString(packet.melee))
+                player.inventory.addOrReplaceWeapon(2,Melees.fromString(packet.melee as never))
             }
         }
 

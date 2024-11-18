@@ -17,6 +17,7 @@ import { PerkCategories } from "@common/definitions/perks";
 import { Skins } from "@common/definitions/skins";
 import { Backpacks } from "@common/definitions/backpacks";
 import { Guns } from "@common/definitions/guns";
+import { GasStage } from "./gasStages";
 
 export interface RiverDefinition {
     readonly minAmount: number
@@ -58,10 +59,6 @@ export interface MapDefinition {
         readonly name: string
         readonly position: Vector
     }>
-
-    readonly gamemode?:{
-        readonly weaponsSelect?:boolean,
-    }
 
     readonly onGenerate?: (map: GameMap, params: string[]) => void
 }
@@ -593,9 +590,6 @@ const maps = {
         height: 512,
         beachSize: 16,
         oceanSize: 40,
-        gamemode:{
-            weaponsSelect:true
-        },
         onGenerate(map) {
             // Function to generate all game loot items
             const genLoots = (pos: Vector, ySpacing: number, xSpacing: number): void => {

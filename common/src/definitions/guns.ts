@@ -637,10 +637,10 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 gasParticles: gasParticlePresets.automatic,
                 image: { position: Vec.create(80, 0) },
                 ballistics: {
-                    damage: 10,
+                    damage: 12,
                     obstacleMultiplier: 1,
                     speed: 0.27,
-                    range: 100
+                    range: 130
                 }
             },
             {
@@ -1179,7 +1179,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ballistics: {
                     damage: 9,
                     obstacleMultiplier: 1,
-                    speed: 0.3,
+                    speed: 0.27,
                     range: 160
                 }
             },
@@ -1236,19 +1236,19 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 name: "HP-18",
                 ammoType: "12g",
                 ammoSpawnAmount: 15,
-                capacity: 5,
-                extendedCapacity: 8,
+                capacity: 7,
+                extendedCapacity: 12,
                 reloadTime: 0.725,
                 shotsPerReload: 1,
                 fireDelay: 300,
                 switchDelay: 400,
                 recoilMultiplier: 0.6,
                 recoilDuration: 600,
-                fireMode: FireMode.Single,
+                fireMode: FireMode.Auto,
                 bulletCount: 18,
                 shotSpread: 25,
                 moveSpread: 30,
-                jitterRadius: 4,
+                jitterRadius: 3,
                 length: 8,
                 fists: {
                     left: Vec.create(120, -1),
@@ -1262,7 +1262,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 }],
                 gasParticles: gasParticlePresets.shotgun,
                 ballistics: {
-                    damage: 5,
+                    damage: 5.5,
                     obstacleMultiplier: 0.5,
                     speed: 0.2,
                     range: 60,

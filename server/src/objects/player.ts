@@ -1655,9 +1655,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         });
 
         // Reductions are merged additively
-        amount *= 1 - (
+        amount *= this.game.gamemode.globalDamage - ((
             (this.inventory.helmet?.damageReduction ?? 0) + (this.inventory.vest?.damageReduction ?? 0)
-        );
+        )*this.game.gamemode.armorProtection);
 
         amount = this._clampDamageAmount(amount);
 

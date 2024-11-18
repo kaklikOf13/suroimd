@@ -20,6 +20,8 @@ import { Building } from "./objects/building";
 import { Obstacle } from "./objects/obstacle";
 import { CARDINAL_DIRECTIONS, Logger, getRandomIDString } from "./utils/misc";
 import { GunItem } from "./inventory/gunItem";
+import { Armors } from "@common/definitions/armors";
+import { Backpacks } from "@common/definitions/backpacks";
 
 interface MapBuild{
     defs:BuildingDefinition

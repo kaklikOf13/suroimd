@@ -9,7 +9,7 @@ export interface GasStage {
     readonly summonAirdrop?: boolean
 }
 
-export const GasStages: GasStage[] = [
+export const DefaultGasStages: GasStage[] = [
     {
         state: GasState.Inactive,
         duration: 0,

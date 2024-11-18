@@ -1,36 +1,23 @@
-import { Layer, TeamSize } from "@common/constants";
-import { type Vector } from "@common/utils/vector";
+import { TeamSize } from "@common/constants";
 import { type Maps } from "./data/maps";
 import { type Game } from "./game";
 import { type GamePlugin } from "./pluginManager";
-
-export const enum SpawnMode {
-    Normal,
-    Radius,
-    Fixed,
-    Center
-}
-export const enum GasMode {
-    Normal,
-    Debug,
-    Disabled
-}
+import { type Gamemode } from "./data/gamemode";
 
 export const Config = {
     host: "0.0.0.0",
     port: 8000,
 
     map: "normal",
-
-    spawn: { mode: SpawnMode.Normal },
+    gamemode:{
+        
+    },
 
     maxTeamSize: TeamSize.Solo,
 
     maxPlayersPerGame: 70,
     maxGames: 5,
     gameJoinTime: 60,
-
-    gas: { mode: GasMode.Normal },
 
     tps: 40,
 
@@ -88,27 +75,8 @@ export interface ConfigType {
      */
     readonly map: `${keyof typeof Maps}${string}`
 
-    /**
-     * There are 4 spawn modes: `Normal`, `Radius`, `Fixed`, and `Center`.
-     * - `SpawnMode.Normal` spawns the player at a random location that is at least 50 units away from other players.
-     * - `SpawnMode.Radius` spawns the player at a random location within the circle with the given position and radius.
-     * - `SpawnMode.Fixed` always spawns the player at the exact position given.
-     * - `SpawnMode.Center` always spawns the player in the center of the map.
-     */
-    readonly spawn:
-        | { readonly mode: SpawnMode.Normal }
-        | {
-            readonly mode: SpawnMode.Radius
-            readonly position: Vector
-            readonly radius: number
-        }
-        | {
-            readonly mode: SpawnMode.Fixed
-            readonly position: Vector
-            readonly layer?: Layer
-        }
-        | { readonly mode: SpawnMode.Center }
-
+    readonly gamemode:Partial<Gamemode>,
+    
     /**
      * The maximum number of players allowed to join a team.
      *
@@ -142,21 +110,6 @@ export interface ConfigType {
      * The number of seconds after which players are prevented from joining a game.
      */
     readonly gameJoinTime: number
-
-    /**
-     * There are 3 gas modes: GasMode.Normal, GasMode.Debug, and GasMode.Disabled.
-     * GasMode.Normal: Default gas behavior. overrideDuration is ignored.
-     * GasMode.Debug: The duration of each stage is always the duration specified by overrideDuration.
-     * GasMode.Disabled: Gas is disabled.
-     */
-    readonly gas:
-        | { readonly mode: GasMode.Disabled }
-        | { readonly mode: GasMode.Normal }
-        | {
-            readonly mode: GasMode.Debug
-            readonly overridePosition?: boolean
-            readonly overrideDuration?: number
-        }
 
     /**
      * The number of game ticks that occur per second.
