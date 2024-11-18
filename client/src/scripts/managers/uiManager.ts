@@ -182,7 +182,7 @@ export class UIManager {
         adrenalineBarAmount: $<HTMLSpanElement>("#adrenaline-bar-amount"),
 
         capacityBar: $<HTMLDivElement>("#capacity-bar"),
-        capacityBarAmount: $<HTMLSpanElement>("#capacity-bar-amount"),
+        capacityBarAmount: $<HTMLDivElement>("#capacity-bar-amount"),
 
         killFeed: $<HTMLDivElement>("#kill-feed"),
 
@@ -651,7 +651,9 @@ export class UIManager {
         if (capacity !== undefined) {;
             const percent = Numeric.clamp(capacity,0,100);
 
-            this.ui.capacityBar.width(`${percent}%`);
+            this.ui.capacityBar.css("--value",`${percent}%`);
+
+            this.ui.capacityBarAmount.text(`${Numeric.clamp(Math.floor(percent),0,100)}%`)
         }
 
         if (inventory?.weapons) {

@@ -825,27 +825,27 @@
     */
 
     #capacity-bar {
-        background-color: palette.$danger;
-        transition: width ease-in-out 300ms;
         height: 100%;
+        width: 100%;
+        --value: 100%;
+        background: linear-gradient(90deg,palette.$success,palette.$warning,palette.$danger);
+
+        mask-image: linear-gradient(to right, black var(--value, 100%), transparent var(--value, 100%));
+        -webkit-mask-image: linear-gradient(to right, black var(--value, 100%), transparent var(--value, 100%));
+    }
+    #capacity-bar-amount {
+        color: #000000aa;
+        font-size: 15px;
+        z-index: 1;
+        margin-left: 8px;
+
+        @media screen and (max-width: variables.$screen_large) {
+            font-size: 15px;
+        }
     }
 
     .flashing {
         animation: 0.5s ease-in-out 0.5s infinite flashing;
-    }
-
-    @keyframes flashing {
-        0% {
-            background-color: #000000;
-        }
-
-        50% {
-            background-color: #ff0000;
-        }
-
-        100% {
-            background-color: #000000;
-        }
     }
 }
 
