@@ -1976,7 +1976,6 @@ export async function setUpUI(game: Game): Promise<void> {
             slotListener(ele, button => {
                 const isPrimary = button === 0;
                 const isSecondary = button === 2;
-                const isTeamMode = game.teamMode;
 
                 if (isPrimary) {
                     inputManager.addAction({
@@ -1984,10 +1983,10 @@ export async function setUpUI(game: Game): Promise<void> {
                         item: scope
                     });
 
-                    mobileDropItem(button, isTeamMode, scope);
+                    mobileDropItem(button, true, scope);
                 }
 
-                if (isSecondary && isTeamMode) {
+                if (isSecondary) {
                     inputManager.addAction({
                         type: InputActions.DropItem,
                         item: scope
@@ -2024,7 +2023,6 @@ export async function setUpUI(game: Game): Promise<void> {
             slotListener(ele, button => {
                 const isPrimary = button === 0;
                 const isSecondary = button === 2;
-                const isTeamMode = game.teamMode;
 
                 if (isPrimary) {
                     if (inputManager.pingWheelActive) {
@@ -2039,10 +2037,10 @@ export async function setUpUI(game: Game): Promise<void> {
                         });
                     }
 
-                    mobileDropItem(button, isTeamMode, item);
+                    mobileDropItem(button, true, item);
                 }
 
-                if (isSecondary && isTeamMode) {
+                if (isSecondary) {
                     inputManager.addAction({
                         type: InputActions.DropItem,
                         item
@@ -2078,7 +2076,6 @@ export async function setUpUI(game: Game): Promise<void> {
         slotListener(ele, button => {
             const isPrimary = button === 0;
             const isSecondary = button === 2;
-            const isTeamMode = game.teamMode;
 
             if (isPrimary) {
                 if (inputManager.pingWheelActive) {
@@ -2088,10 +2085,10 @@ export async function setUpUI(game: Game): Promise<void> {
                     });
                 }
 
-                mobileDropItem(button, isTeamMode, ammo);
+                mobileDropItem(button, true, ammo);
             }
 
-            if (isSecondary && isTeamMode) {
+            if (isSecondary) {
                 inputManager.addAction({
                     type: InputActions.DropItem,
                     item: ammo
@@ -2120,7 +2117,7 @@ export async function setUpUI(game: Game): Promise<void> {
 
         slotListener(ele, button => {
             const isSecondary = button === 2;
-            const shouldDrop = game.activePlayer && game.teamMode;
+            const shouldDrop = game.activePlayer!==undefined;
 
             if (isSecondary && shouldDrop) {
                 const item = game.activePlayer.getEquipment(type);
@@ -2133,7 +2130,7 @@ export async function setUpUI(game: Game): Promise<void> {
             }
 
             if (shouldDrop !== undefined) {
-                mobileDropItem(button, shouldDrop, game.activePlayer?.getEquipment(type));
+                mobileDropItem(button,shouldDrop, game.activePlayer?.getEquipment(type));
             }
         });
     }

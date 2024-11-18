@@ -136,6 +136,17 @@ export class Inventory {
         this.owner.dirty.slotLocks = true;
     }
 
+    getUCurCap():number{
+        let ret=0
+        for(const a of Ammos){
+            ret+=this.items.hasItem(a.idString)?(this.items.getItem(a.idString)===Infinity?0:this.items.getItem(a.idString)*a.size):0
+        }
+        for(const r of HealingItems){
+            ret+=this.items.hasItem(r.idString)?(this.items.getItem(r.idString)===Infinity?0:this.items.getItem(r.idString)*r.size):0
+        }
+        return ret
+    }
+
     /**
      * Private variable storing the index pointing to the last active weapon
      */
@@ -520,8 +531,11 @@ export class Inventory {
         this.owner.dirty.weapons = true;
     }
 
-    giveItem(item: ReifiableDef<LootDefinition>, amount = 1): void {
+    giveItem(item: ReifiableDef<LootDefinition>, amount = 1, doa=true): number {
         const itemString = typeof item === "string" ? item : item.idString;
+        const itemDef=typeof item === "string" ? Loots.fromStringSafe(item) : item
+        //@ts-expect-error
+        const cc=itemDef?this.getUCurCap()+(amount*(itemDef.size?itemDef.size:9)):0
         this.items.incrementItem(
             itemString,
             amount
@@ -544,15 +558,28 @@ export class Inventory {
 
             To solve this, we just ignore capacity limits when the player is dead.
         */
-        const overAmount = Loots.reify<AmmoDefinition>(itemString).ephemeral || this.owner.dead
+        let overAmount = 0
+        
+        //@ts-expect-error
+        if(typeof itemDef.size !== "undefined"){
+            if(cc<=this.backpack.capacity){
+                overAmount=0
+            }else{
+                //@ts-expect-error
+                overAmount=Math.floor(Numeric.clamp((cc-this.backpack.capacity)/itemDef.size,0,amount))
+            }
+        }else{
+            overAmount = Loots.reify<AmmoDefinition>(itemString).ephemeral || this.owner.dead
             ? 0
             : this.items.getItem(itemString) - (this.backpack.maxCapacity[itemString] ?? 0);
+        }
+        
+        this.items.decrementItem(itemString, overAmount);
 
-        if (overAmount > 0) {
-            this.items.decrementItem(itemString, overAmount);
-
+        if (overAmount > 0&&doa) {
             this._dropItem(item, { count: overAmount });
         }
+        return overAmount
     }
 
     /**

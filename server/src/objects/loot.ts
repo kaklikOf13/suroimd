@@ -205,15 +205,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
             case ItemType.Healing:
             case ItemType.Ammo:
             case ItemType.Throwable: {
-                const idString = definition.idString;
-
-                if (definition.itemType === ItemType.Throwable && inventory.isLocked(3)) {
-                    return false;
-                } else if (inventory.items.getItem(idString) + 1 > (inventory.backpack.maxCapacity[idString] ?? 0)) {
-                    return InventoryMessages.NotEnoughSpace;
-                } else {
-                    return true;
-                }
+                return true
             }
             case ItemType.Melee: {
                 return definition !== inventory.getWeapon(2)?.definition && !inventory.isLocked(2);
@@ -381,9 +373,11 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
             case ItemType.Throwable: {
                 const currentCount = inventory.items.getItem(idString);
                 const maxCapacity = inventory.backpack.maxCapacity[idString] ?? 0;
-
                 const modifyItemCollections = (): void => {
-                    if (currentCount + 1 <= maxCapacity) {
+                    //@ts-expect-error
+                    if(typeof definition.size !== "undefined"){
+                        countToRemove=this._count-inventory.giveItem(definition,this._count,false)
+                    }else{
                         if (currentCount + this._count <= maxCapacity) {
                             inventory.items.incrementItem(idString, this._count);
                             countToRemove = this._count;

@@ -20,6 +20,7 @@ export interface AmmoDefinition extends ItemDefinition {
     readonly defaultCasingFrame: string
     readonly hideUnlessPresent: boolean
     readonly capacity:number
+    readonly size:number
 }
 
 export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
@@ -29,7 +30,8 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
         noDrop: false,
         ephemeral: false,
         defaultCasingFrame: "",
-        hideUnlessPresent: false
+        hideUnlessPresent: false,
+        size:0.1
     },
     () => [
         {
@@ -42,7 +44,8 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
                 saturation: 100,
                 lightness: 89
             },
-            defaultCasingFrame: "casing_12ga_275in"
+            defaultCasingFrame: "casing_12ga_275in",
+            size:0.15
         },
         {
             idString: "556mm",
@@ -54,7 +57,8 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
                 saturation: 100,
                 lightness: 75
             },
-            defaultCasingFrame: "casing_556x45mm"
+            defaultCasingFrame: "casing_556x45mm",
+            size:0.03
         },
         {
             idString: "762mm",
@@ -66,7 +70,8 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
                 saturation: 100,
                 lightness: 65
             },
-            defaultCasingFrame: "casing_762x51mm"
+            defaultCasingFrame: "casing_762x51mm",
+            size:0.03
         },
         {
             idString: "9mm",
@@ -78,7 +83,8 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
                 saturation: 100,
                 lightness: 75
             },
-            defaultCasingFrame: "casing_9x19mm"
+            defaultCasingFrame: "casing_9x19mm",
+            size:0.0125
         },
         {
             idString: "50cal",
@@ -91,7 +97,8 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
                 lightness: 0
             },
             defaultCasingFrame: "casing_50bmg",
-            hideUnlessPresent: true
+            hideUnlessPresent: true,
+            size:0.07
         },
         {
             idString: "338lap",
@@ -104,7 +111,8 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
                 lightness: 75
             },
             defaultCasingFrame: "casing_338lap",
-            hideUnlessPresent: true
+            hideUnlessPresent: true,
+            size:0.35
         },
         {
             idString: "curadell",
@@ -117,7 +125,8 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
                 lightness: 75
             },
             defaultCasingFrame: "casing_curadell",
-            hideUnlessPresent: true
+            hideUnlessPresent: true,
+            size:0.6
         },
         {
             idString: "firework_rocket",
@@ -130,7 +139,8 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
                 lightness: 85
             },
             defaultCasingFrame: "casing_firework_rocket",
-            hideUnlessPresent: true
+            hideUnlessPresent: true,
+            size:.7
         },
 
         // Ephemeral ammo types below
@@ -146,7 +156,7 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
                 lightness: 85
             },
             defaultCasingFrame: "casing_power_cell",
-            ephemeral: true
+            ephemeral: true,
         },
         {
             idString: "bb",

@@ -8,6 +8,7 @@ export interface BackpackDefinition extends ItemDefinition {
     readonly level: number
     readonly defaultTint: number
     readonly maxCapacity: Record<ReferenceTo<HealingItemDefinition | AmmoDefinition | ThrowableDefinition>, number>
+    readonly capacity:number
 }
 
 export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
@@ -49,7 +50,8 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                     "mirv_grenade":2,
                     "ice_grenade":1,
                 },
-                noDrop: true
+                noDrop: true,
+                capacity:5,
             },
             backpack(
                 ["Basic"],
@@ -76,7 +78,8 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                         "mirv_grenade":4,
                         "ice_grenade":2,
                     },
-                    defaultTint: 0xeeeeee
+                    defaultTint: 0xeeeeee,
+                    capacity:10,
                 }
             ),
             backpack(
@@ -104,7 +107,8 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                         "mirv_grenade":6,
                         "ice_grenade":3,
                     },
-                    defaultTint: 0x63754b
+                    defaultTint: 0x63754b,
+                    capacity:20,
                 }
             ),
             backpack(
@@ -132,7 +136,8 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                         "mirv_grenade":8,
                         "ice_grenade":4,
                     },
-                    defaultTint: 0x3f3f3f
+                    defaultTint: 0x3f3f3f,
+                    capacity:30,
                 }
             )
         ];

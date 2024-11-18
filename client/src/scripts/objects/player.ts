@@ -1237,7 +1237,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             "pointerdown",
             (e: PointerEvent): void => {
                 e.stopImmediatePropagation();
-                if (e.button === 2 && def && this.game.teamMode) {
+                if (e.button === 2 && def) {
                     this.game.inputManager.addAction({
                         type: InputActions.DropItem,
                         item: def
