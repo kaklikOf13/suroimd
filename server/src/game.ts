@@ -1,6 +1,3 @@
-import { type WebSocket } from "uWebSockets.js";
-import { parentPort } from "worker_threads";
-
 import { GameConstants, KillfeedMessageType, Layer, ObjectCategory, TeamSize } from "@common/constants";
 import { type ExplosionDefinition } from "@common/definitions/explosions";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
@@ -22,10 +19,10 @@ import { EaseFunctions, Geometry, Numeric, Statistics } from "@common/utils/math
 import { Timeout } from "@common/utils/misc";
 import { ItemType, MapObjectSpawnMode, SetArray, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { pickRandomInArray, randomFloat, randomPointInsideCircle, randomRotation } from "@common/utils/random";
-import { OBJECT_ID_BITS, SuroiBitStream } from "@common/utils/suroiBitStream";
+import { type SuroiByteStream } from "@common/utils/suroiByteStream";
 import { Vec, type Vector } from "@common/utils/vector";
-
-import { PerkIds, Perks } from "@common/definitions/perks";
+import { type WebSocket } from "uWebSockets.js";
+import { parentPort } from "worker_threads";
 import { Config, SpawnMode } from "./config";
 import { MapName, Maps } from "./data/maps";
 import { WorkerMessages, type GameData, type WorkerMessage } from "./gameManager";
@@ -49,10 +46,8 @@ import { Team } from "./team";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { cleanUsername, Logger, removeFrom } from "./utils/misc";
-import { createServer, forbidden, getIP } from "./utils/serverHelpers";
-import { Backpacks, Guns, Melees, SkinDefinition, Skins } from "@common/definitions";
 import { GoapAgent } from "./utils/goap";
-import { Building } from "./objects";
+import { Building } from "./objects/building";
 
 /*
     eslint-disable
@@ -185,7 +180,7 @@ export class Game implements GameData {
 
     private readonly _tickTimes: number[] = [];
 
-    private readonly _idAllocator = new IDAllocator(OBJECT_ID_BITS);
+    private readonly _idAllocator = new IDAllocator(16);
 
     private readonly _start = this._now;
     get start(): number { return this._start; }
@@ -229,7 +224,7 @@ export class Game implements GameData {
         this.tick();
     }
 
-    onMessage(stream: SuroiBitStream, player: Player): void {
+    onMessage(stream: SuroiByteStream, player: Player): void {
         const packetStream = new PacketStream(stream);
         while (true) {
             const packet = packetStream.deserializeClientPacket();
@@ -261,11 +256,6 @@ export class Game implements GameData {
             }
         }
     }
-
-    private readonly _perkIntervalUpdateMap = Perks.definitions.reduce(
-        (acc, cur) => { acc[cur.idString] = this._start; return acc; },
-        {} as Record<PerkIds, number>
-    );
 
     readonly tick = (): void => {
         const now = Date.now();
@@ -764,7 +754,19 @@ export class Game implements GameData {
         if (Config.protection?.punishments) {
             const username = player.name;
             if (username) {
-                fetch(`${Config.protection.punishments.url}/accesslog/${player.ip || "none"}`, { method: "POST", headers: { "Content-Type": "application/json", "api-key": Config.protection.punishments.password || "none" }, body: JSON.stringify({ username }) }).catch((e: unknown) => console.log(e));
+                fetch(
+                    `${Config.protection.punishments.url}/accesslog/${player.ip || "none"}`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "api-key": Config.protection.punishments.password || "none"
+                        },
+                        body: `{ "username": "${username}" }`
+                    }
+                // you fuckin stupid or smth?
+                // eslint-disable-next-line @typescript-eslint/use-unknown-in-catch-callback-variable
+                ).catch(console.error);
             }
         }
         this.pluginManager.emit("player_did_join", { player, joinPacket: packet });

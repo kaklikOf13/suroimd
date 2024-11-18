@@ -1,33 +1,35 @@
+import { GameConstants, InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize, ZIndexes } from "@common/constants";
+import { ArmorType } from "@common/definitions/armors";
+import { Badges, type BadgeDefinition } from "@common/definitions/badges";
+import { Emotes } from "@common/definitions/emotes";
+import { type DualGunNarrowing } from "@common/definitions/guns";
+import { Loots } from "@common/definitions/loots";
+import { Scopes } from "@common/definitions/scopes";
+import { DisconnectPacket } from "@common/packets/disconnectPacket";
+import { GameOverPacket } from "@common/packets/gameOverPacket";
+import { JoinedPacket, type JoinedPacketData } from "@common/packets/joinedPacket";
+import { JoinPacket, type JoinPacketCreation } from "@common/packets/joinPacket";
+import { KillFeedPacket } from "@common/packets/killFeedPacket";
+import { MapPacket } from "@common/packets/mapPacket";
+import { type InputPacket, type OutputPacket } from "@common/packets/packet";
+import { PacketStream } from "@common/packets/packetStream";
+import { PickupPacket } from "@common/packets/pickupPacket";
+import { PingPacket } from "@common/packets/pingPacket";
+import { ReportPacket } from "@common/packets/reportPacket";
+import { UpdatePacket, type UpdatePacketDataOut } from "@common/packets/updatePacket";
+import { CircleHitbox } from "@common/utils/hitbox";
+import { adjacentOrEqualLayer } from "@common/utils/layer";
+import { EaseFunctions, Geometry, Numeric } from "@common/utils/math";
+import { Timeout } from "@common/utils/misc";
+import { ItemType, ObstacleSpecialRoles } from "@common/utils/objectDefinitions";
+import { ObjectPool } from "@common/utils/objectPool";
+import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { sound, type Sound } from "@pixi/sound";
+import $ from "jquery";
 import { Application, Color } from "pixi.js";
 import "pixi.js/prepare";
-import { GameConstants, InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize, ZIndexes } from "../../../common/src/constants";
-import { ArmorType } from "../../../common/src/definitions/armors";
-import { Badges, type BadgeDefinition } from "../../../common/src/definitions/badges";
-import { Emotes } from "../../../common/src/definitions/emotes";
-import { type DualGunNarrowing } from "../../../common/src/definitions/guns";
-import { Loots } from "../../../common/src/definitions/loots";
-import { Scopes } from "../../../common/src/definitions/scopes";
-import { DisconnectPacket } from "../../../common/src/packets/disconnectPacket";
-import { GameOverPacket } from "../../../common/src/packets/gameOverPacket";
-import { JoinedPacket, type JoinedPacketData } from "../../../common/src/packets/joinedPacket";
-import { JoinPacket, type JoinPacketCreation } from "../../../common/src/packets/joinPacket";
-import { KillFeedPacket } from "../../../common/src/packets/killFeedPacket";
-import { MapPacket } from "../../../common/src/packets/mapPacket";
-import { type InputPacket, type OutputPacket } from "../../../common/src/packets/packet";
-import { PacketStream } from "../../../common/src/packets/packetStream";
-import { PickupPacket } from "../../../common/src/packets/pickupPacket";
-import { PingPacket } from "../../../common/src/packets/pingPacket";
-import { ReportPacket } from "../../../common/src/packets/reportPacket";
-import { UpdatePacket, type UpdatePacketDataOut } from "../../../common/src/packets/updatePacket";
-import { CircleHitbox } from "../../../common/src/utils/hitbox";
-import { adjacentOrEqualLayer } from "../../../common/src/utils/layer";
-import { EaseFunctions, Geometry, Numeric } from "../../../common/src/utils/math";
-import { Timeout } from "../../../common/src/utils/misc";
-import { ItemType, ObstacleSpecialRoles } from "../../../common/src/utils/objectDefinitions";
-import { ObjectPool } from "../../../common/src/utils/objectPool";
-import { type ObjectsNetData } from "../../../common/src/utils/objectsSerializations";
 import { getTranslatedString, initTranslation } from "../translations";
+import { type TranslationKeys } from "../typings/translations";
 import { InputManager } from "./managers/inputManager";
 import { GameSound, SoundManager } from "./managers/soundManager";
 import { UIManager } from "./managers/uiManager";
@@ -52,10 +54,10 @@ import { autoPickup, resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, u
 import { setUpCommands } from "./utils/console/commands";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 import { GameConsole } from "./utils/console/gameConsole";
-import { COLORS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE, EMOTE_SLOTS } from "./utils/constants";
+import { COLORS, EMOTE_SLOTS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
-import { randomVector, randomFloat, random } from "../../../common/src/utils/random";
+import { randomVector, randomFloat } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 
 /* eslint-disable @stylistic/indent */
@@ -216,9 +218,9 @@ export class Game {
         await this.play_music(music,changeVal,volume)
     }
 
-    readonly menu_music: Sound;
+    menu_music!: Sound;
 
-    readonly gameplay_music:Sound;
+    gameplay_music!:Sound;
 
     readonly tweens = new Set<Tween<unknown>>();
 
@@ -231,24 +233,27 @@ export class Game {
     }
 
     private static _instantiated = false;
-    constructor() {
+
+    static async init(): Promise<Game> {
         if (Game._instantiated) {
             throw new Error("Class 'Game' has already been instantiated.");
         }
         Game._instantiated = true;
 
-        this.console.readFromLocalStorage();
-        initTranslation(this);
-        this.inputManager.setupInputs();
+        const game = new Game();
+
+        game.console.readFromLocalStorage();
+        await initTranslation(game);
+        game.inputManager.setupInputs();
 
         const initPixi = async(): Promise<void> => {
-            const renderMode = this.console.getBuiltInCVar("cv_renderer");
-            const renderRes = this.console.getBuiltInCVar("cv_renderer_res");
+            const renderMode = game.console.getBuiltInCVar("cv_renderer");
+            const renderRes = game.console.getBuiltInCVar("cv_renderer_res");
 
-            await this.pixi.init({
+            await game.pixi.init({
                 resizeTo: window,
                 background: COLORS.grass,
-                antialias: this.console.getBuiltInCVar("cv_antialias"),
+                antialias: game.console.getBuiltInCVar("cv_antialias"),
                 autoDensity: true,
                 preferWebGLVersion: renderMode === "webgl1" ? 1 : 2,
                 preference: renderMode === "webgpu" ? "webgpu" : "webgl",
@@ -265,17 +270,17 @@ export class Game {
                 }
             });
 
-            const pixi = this.pixi;
+            const pixi = game.pixi;
             await loadTextures(
                 pixi.renderer,
-                this.inputManager.isMobile
-                    ? this.console.getBuiltInCVar("mb_high_res_textures")
-                    : this.console.getBuiltInCVar("cv_high_res_textures")
+                game.inputManager.isMobile
+                    ? game.console.getBuiltInCVar("mb_high_res_textures")
+                    : game.console.getBuiltInCVar("cv_high_res_textures")
             );
 
             // HACK: the game ui covers the canvas
             // so send pointer events manually to make clicking to spectate players work
-            this.uiManager.ui.gameUi[0].addEventListener("pointerdown", e => {
+            game.uiManager.ui.gameUi[0].addEventListener("pointerdown", e => {
                 pixi.canvas.dispatchEvent(new PointerEvent("pointerdown", {
                     pointerId: e.pointerId,
                     button: e.button,
@@ -286,57 +291,59 @@ export class Game {
                 }));
             });
 
-            pixi.ticker.add(this.render.bind(this));
+            pixi.ticker.add(game.render.bind(game));
             pixi.stage.addChild(
-                this.camera.container,
-                this.map.container,
-                this.map.mask
+                game.camera.container,
+                game.map.container,
+                game.map.mask
             );
 
-            this.map.visible = !this.console.getBuiltInCVar("cv_minimap_minimized");
-            this.map.expanded = this.console.getBuiltInCVar("cv_map_expanded");
-            this.uiManager.ui.gameUi.toggle(this.console.getBuiltInCVar("cv_draw_hud"));
+            game.map.visible = !game.console.getBuiltInCVar("cv_minimap_minimized");
+            game.map.expanded = game.console.getBuiltInCVar("cv_map_expanded");
+            game.uiManager.ui.gameUi.toggle(game.console.getBuiltInCVar("cv_draw_hud"));
 
-            pixi.renderer.on("resize", () => this.resize());
-            this.resize();
+            pixi.renderer.on("resize", () => game.resize());
+            game.resize();
 
             setInterval(() => {
-                if (this.console.getBuiltInCVar("pf_show_fps")) {
-                    this.uiManager.debugReadouts.fps.text(`${Math.round(this.pixi.ticker.FPS)} fps`);
+                if (game.console.getBuiltInCVar("pf_show_fps")) {
+                    game.uiManager.debugReadouts.fps.text(`${Math.round(game.pixi.ticker.FPS)} fps`);
                 }
             }, 500);
         };
 
         void Promise.all([
             initPixi(),
-            setUpUI(this)
+            setUpUI(game)
         ]).then(() => {
             unlockPlayButtons();
             resetPlayButtons();
         });
 
-        setUpCommands(this);
-        this.inputManager.generateBindsConfigScreen();
+        setUpCommands(game);
+        game.inputManager.generateBindsConfigScreen();
 
-        this.menu_music = sound.add("menu_music", {
-            url: `./audio/music/menu_music${this.console.getBuiltInCVar("cv_use_old_menu_music") ? "_old" : MODE.specialMenuMusic ? `_${GameConstants.modeName}` : ""}.mp3`,
+        game.menu_music = sound.add("menu_music", {
+            url: `./audio/music/menu_music${game.console.getBuiltInCVar("cv_use_old_menu_music") ? "_old" : MODE.specialMenuMusic ? `_${GameConstants.modeName}` : ""}.mp3`,
             singleInstance: true,
             preload: true,
             autoPlay: false,
-            volume: this.console.getBuiltInCVar("cv_music_volume")
+            volume: game.console.getBuiltInCVar("cv_music_volume")
         });
 
-        this.gameplay_music = sound.add("gameplay_music", {
+        game.gameplay_music = sound.add("gameplay_music", {
             url: `./audio/music/gameplay_music.mp3`,
             singleInstance: true,
             preload: true,
             autoPlay: false,
-            volume: this.console.getBuiltInCVar("cv_music_volume")
+            volume: game.console.getBuiltInCVar("cv_music_volume")
         });
 
-        this.music=undefined
+        game.music=undefined
 
-        this.play_music(this.menu_music)
+        game.play_music(game.menu_music)
+
+        return game
     }
     updateVisualEvents(){
         if(this.playing){
@@ -608,7 +615,7 @@ export class Game {
 
                 if (message !== undefined) {
                     const inventoryMsg = this.uiManager.ui.inventoryMsg;
-                    inventoryMsg.text(getTranslatedString(inventoryMessageMap[message])).fadeIn(250);
+                    inventoryMsg.text(getTranslatedString(inventoryMessageMap[message] as TranslationKeys)).fadeIn(250);
                     if (inventoryMessageMap[message] === inventoryMessageMap[4]) this.soundManager.play("metal_light_destroyed");
                     clearTimeout(this.inventoryMsgTimeout);
                     this.inventoryMsgTimeout = window.setTimeout(() => inventoryMsg.fadeOut(250), 2500);
@@ -694,6 +701,7 @@ export class Game {
 
             this.playing=false
             ui.splashUi.fadeIn(400, () => {
+                this.change_music(this.menu_music)
                 ui.teamContainer.html("");
                 ui.actionContainer.hide();
                 ui.gameMenu.hide();
@@ -950,7 +958,7 @@ export class Game {
             if (this.console.getBuiltInCVar("cv_hide_emotes")) break;
             const player = this.objects.get(emote.playerID);
             if (player?.isPlayer) {
-                player.sendEmote(emote.definition);
+                player.showEmote(emote.definition);
             } else {
                 console.warn(`Tried to emote on behalf of ${player === undefined ? "a non-existant player" : `a/an ${ObjectCategory[player.type]}`}`);
                 continue;
@@ -1049,6 +1057,9 @@ export class Game {
         const funnyDetonateButtonCache: {
             bind?: string
         } = {};
+
+        // keep image thingy around to consult (and therefore lazily change) src
+        let detonateBindIcon: JQuery<HTMLImageElement> | undefined;
 
         return () => {
             if(this.music&&this.music.instances.length!=0){
@@ -1167,15 +1178,15 @@ export class Game {
                                             : getTranslatedString("action_close_door");
                                         break;
                                     case ObstacleSpecialRoles.Activatable:
-                                        text = getTranslatedString(`interact_${object.definition.idString}`);
+                                        text = getTranslatedString(`interact_${object.definition.idString}` as TranslationKeys);
                                         break;
                                 }
                                 break;
                             }
                             case object?.isLoot: {
                                 text = `${object.definition.idString.startsWith("dual_")
-                                    ? getTranslatedString("dual_template", { gun: getTranslatedString(object.definition.idString.slice("dual_".length)) })
-                                    : getTranslatedString(object.definition.idString)}${object.count > 1 ? ` (${object.count})` : ""}`;
+                                    ? getTranslatedString("dual_template", { gun: getTranslatedString(object.definition.idString.slice("dual_".length) as TranslationKeys) })
+                                    : getTranslatedString(object.definition.idString as TranslationKeys)}${object.count > 1 ? ` (${object.count})` : ""}`;
                                 break;
                             }
                             case object?.isPlayer: {
@@ -1291,6 +1302,7 @@ export class Game {
             }
 
             // funny detonate button stuff
+            const detonateKey = this.uiManager.ui.detonateKey;
             if (!this.inputManager.isMobile) {
                 const boomBind: string | undefined = this.inputManager.binds.getInputsBoundToAction("explode_c4")[0];
 
@@ -1300,17 +1312,29 @@ export class Game {
                     if (boomBind !== undefined) {
                         const bindImg = InputManager.getIconFromInputName(boomBind);
 
+                        detonateKey.show();
+
                         if (bindImg === undefined) {
-                            this.uiManager.ui.detonateKey.show().text(boomBind ?? "");
+                            detonateKey.text(boomBind ?? "");
+                            if (detonateBindIcon !== undefined) {
+                                detonateKey.empty();
+                                detonateBindIcon = undefined;
+                            }
                         } else {
-                            this.uiManager.ui.detonateKey.show().html(`<img src="${bindImg}" alt="${boomBind}"/>`);
+                            if (detonateBindIcon === undefined) {
+                                detonateKey.children().add(detonateBindIcon = $(`<img src="${bindImg}" alt=${boomBind} />`));
+                            }
+
+                            if (detonateBindIcon.attr("src") !== bindImg) {
+                                detonateBindIcon.attr("src", bindImg);
+                            }
                         }
                     } else {
-                        this.uiManager.ui.detonateKey.hide();
+                        detonateKey.hide();
                     }
                 }
             } else {
-                this.uiManager.ui.detonateKey.hide();
+                detonateKey.hide();
             }
         };
     })();

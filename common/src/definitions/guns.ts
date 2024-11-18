@@ -223,6 +223,7 @@ const defaultGun = {
 } satisfies DeepPartial<GunDefinition> as DeepPartial<GunDefinition>;
 
 export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
+    "Guns",
     defaultGun,
     () => {
         return ([
@@ -644,7 +645,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
             },
             {
                 idString: "pp19",
-                name: "PP-19",
+                name: "PP-19 Vityaz",
                 ammoType: "9mm",
                 ammoSpawnAmount: 90,
                 capacity: 30,
@@ -756,7 +757,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 idString: "m16a4",
                 name: "M16A4",
                 ammoType: "556mm",
-                ammoSpawnAmount: 90,
+                ammoSpawnAmount: 80,
                 capacity: 20,
                 extendedCapacity: 30,
                 reloadTime: 2.2,
@@ -1112,7 +1113,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 idString: "mg36",
                 name: "MG36",
                 ammoType: "556mm",
-                ammoSpawnAmount: 120,
+                ammoSpawnAmount: 100,
                 capacity: 50,
                 extendedCapacity: 100,
                 reloadTime: 2.75,
@@ -1277,10 +1278,10 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoSpawnAmount: 10,
                 capacity: 2,
                 reloadTime: 2.6,
-                fireDelay: 175,
+                fireDelay: 250,
                 switchDelay: 250,
-                recoilMultiplier: 0.8,
-                recoilDuration: 100,
+                recoilMultiplier: 0.5,
+                recoilDuration: 550,
                 fireMode: FireMode.Single,
                 bulletCount: 10,
                 shotSpread: 10,
@@ -1674,7 +1675,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
             // designated marksman rifles
             {
                 idString: "vss",
-                name: "VSS",
+                name: "VSS Vintorez",
                 ammoType: "9mm",
                 ammoSpawnAmount: 60,
                 capacity: 20,

@@ -1,8 +1,6 @@
-import { type WebSocket } from "uWebSockets.js";
-
 import { CustomTeamMessages, type CustomTeamMessage } from "@common/typings";
 import { random } from "@common/utils/random";
-
+import { type WebSocket } from "uWebSockets.js";
 import { findGame } from "./gameManager";
 import { type Player } from "./objects/player";
 import { customTeams } from "./server";
@@ -27,7 +25,9 @@ export class Team {
     }
 
     addPlayer(player: Player): void {
+        player.colorIndex = this.getNextAvailableColorIndex();
         this._indexMapping.set(player, this._players.push(player) - 1);
+        this.setDirty();
     }
 
     removePlayer(player: Player): boolean {
@@ -95,6 +95,7 @@ export class Team {
             for (const [player, mapped] of this._indexMapping.entries()) { // refresh mapping
                 if (mapped <= index) continue;
                 this._indexMapping.set(player, mapped - 1);
+                this.reassignColorIndexes();
             }
         }
 
@@ -105,6 +106,22 @@ export class Team {
         for (const player of this.players) {
             player.dirty.teammates = true;
         }
+    }
+
+    // Team color indexes must be checked and updated in order not to have duplicates.
+    getNextAvailableColorIndex(): number {
+        const existingIndexes = this.players.map(player => player.colorIndex);
+        let newIndex = 0;
+        while (existingIndexes.includes(newIndex)) {
+            newIndex++;
+        }
+        return newIndex;
+    }
+
+    reassignColorIndexes(): void {
+        this.players.forEach((player, index) => {
+            player.colorIndex = index;
+        });
     }
 
     hasLivingPlayers(): boolean {

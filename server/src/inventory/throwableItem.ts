@@ -5,9 +5,8 @@ import { EaseFunctions, Numeric } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
 import { ItemType, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { Vec } from "@common/utils/vector";
-
 import { type Game } from "../game";
-import type { ItemData } from "../objects/loot";
+import { type ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
 import { type ThrowableProjectile } from "../objects/throwableProj";
 import { CountableInventoryItem } from "./inventoryItem";
@@ -115,7 +114,7 @@ class GrenadeHandler {
                 this._projectile?.layer ?? this.parent.owner.layer,
                 this.parent,
                 (this._projectile?.halloweenSkin ?? false) ? PerkData[PerkIds.PlumpkinBomb].damageMod : 1,
-                this._projectile?.velocity
+                this._projectile
             );
         }
 

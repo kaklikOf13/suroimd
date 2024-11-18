@@ -18,8 +18,8 @@ import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
 import { ThrowableProjectile } from "./throwableProj";
-import { Throwables } from "@common/definitions";
 import { Obstacles } from "@common/definitions/obstacles";
+import { Throwables } from "@common/definitions/throwables";
 
 export class Explosion {
     readonly definition: ExplosionDefinition;

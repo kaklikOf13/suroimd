@@ -19,9 +19,11 @@ export interface AmmoDefinition extends ItemDefinition {
     readonly ephemeral: boolean
     readonly defaultCasingFrame: string
     readonly hideUnlessPresent: boolean
+    readonly capacity:number
 }
 
 export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
+    "Ammos",
     {
         itemType: ItemType.Ammo,
         noDrop: false,

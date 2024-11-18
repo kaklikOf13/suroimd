@@ -1,18 +1,18 @@
 import { Layer, ObjectCategory } from "@common/constants";
 import { FlyoverPref } from "@common/definitions/obstacles";
+import { PerkIds } from "@common/definitions/perks";
 import { type ThrowableDefinition } from "@common/definitions/throwables";
 import { CircleHitbox, Hitbox, HitboxType, RectangleHitbox, type GroupHitbox } from "@common/utils/hitbox";
 import { Angle, Collision, Numeric } from "@common/utils/math";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
-
 import { type Game } from "../game";
 import { type ThrowableItem } from "../inventory/throwableItem";
 import { Building } from "./building";
 import { BaseGameObject, type DamageParams, type GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
-import { PerkIds } from "@common/definitions/perks";
+import { equalLayer } from "@common/utils/layer";
 
 const enum Drag {
     Normal = 0.001,
@@ -20,8 +20,8 @@ const enum Drag {
 }
 
 export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.ThrowableProjectile) {
-    override readonly fullAllocBytes = 16;
-    override readonly partialAllocBytes = 4;
+    override readonly fullAllocBytes = 4;
+    override readonly partialAllocBytes = 14;
 
     private health?: number;
 
@@ -30,6 +30,9 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
     declare readonly hitbox: CircleHitbox;
 
     private _velocity = Vec.create(0, 0);
+
+    tintIndex = 0;
+    throwerTeamID = 0;
 
     get velocity(): Vector { return this._velocity; }
     set velocity(velocity: Partial<Vector>) {
@@ -90,6 +93,10 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
 
         this.halloweenSkin = this.source.owner.perks.hasPerk(PerkIds.PlumpkinBomb);
 
+        // Colored Teammate C4s
+        this.tintIndex = this.source.owner.colorIndex;
+        if (this.source.owner.teamID) this.throwerTeamID = this.source.owner.teamID;
+
         for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
             this.handleCollision(object);
         }
@@ -121,6 +128,8 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         this._activated = true;
         this.setDirty();
         setTimeout(() => {
+            if (this.dead) return;
+
             this.game.removeProjectile(this);
 
             const { explosion } = this.definition.detonation;
@@ -143,12 +152,13 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
     }
 
     update(): void {
-        this.z=Numeric.clamp(this.z-(this.definition.zDecay * this.game.dt),0,1)
 
         if(this.z==0){
             this.velocity.x=this.velocity.x*0.85
             this.velocity.y=this.velocity.y*0.85
             this._angularVelocity=Math.max(this._angularVelocity*.85,0)
+        }else{
+            this.z=Numeric.clamp(this.z-(this.definition.zDecay*this.game.dt),0,1)
         }
 
         if (this.definition.c4) {
@@ -454,7 +464,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         // nna could be used here, but there's a cleaner way to get rid of undefined with the optional chain below, so lol
         const hitbox = object.hitbox;
 
-        if (!hitbox?.collidesWith(this.hitbox)) return;
+        if (!hitbox?.collidesWith(this.hitbox) || !equalLayer(this.layer, object.layer)) return;
 
         const handleCircle = (hitbox: CircleHitbox): void => {
             const collision = Collision.circleCircleIntersection(this.position, this.hitbox.radius, hitbox.position, hitbox.radius);
@@ -540,9 +550,11 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
             airborne: this._airborne,
             activated: this._activated,
             z:this.z,
+            throwerTeamID: this.throwerTeamID,
             full: {
                 definition: this.definition,
-                halloweenSkin: this.halloweenSkin
+                halloweenSkin: this.halloweenSkin,
+                tintIndex: this.tintIndex
             }
         };
     }

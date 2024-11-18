@@ -1,6 +1,6 @@
 
-import { JoinPacketData } from "../packets";
 import { Layers, TentTints, ZIndexes } from "../constants";
+import { JoinPacketData } from "../packets/joinPacket";
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type DeepPartial } from "../utils/misc";
@@ -71,7 +71,6 @@ export interface BuildingDefinition extends ObjectDefinition {
 
     readonly hitbox?: Hitbox
     readonly spawnHitbox: Hitbox
-    readonly scopeHitbox?: Hitbox
     readonly ceilingHitbox?: Hitbox
     readonly allowFlyover: FlyoverPref
     readonly hideOnMap: boolean
@@ -79,6 +78,7 @@ export interface BuildingDefinition extends ObjectDefinition {
 
     readonly bridgeHitbox?: Hitbox
 
+    readonly ceilingScopeEffect: boolean
     readonly obstacles: readonly BuildingObstacle[]
     readonly npcs?:readonly BuildingNpcs[]
     readonly lootSpawners: readonly LootSpawner[]
@@ -280,6 +280,7 @@ const ContainerWallTints = {
 };
 
 export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
+    "Buildings",
     {
         hideOnMap: false,
         spawnMode: MapObjectSpawnMode.Grass,
@@ -296,7 +297,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
         graphicsZIndex: ZIndexes.BuildingsFloor,
         groundGraphics: [],
         rotationMode: RotationMode.Limited,
-        allowFlyover: FlyoverPref.Never
+        allowFlyover: FlyoverPref.Never,
+        ceilingScopeEffect: true
     } satisfies DeepPartial<Omit<BuildingDefinition, "idString">>,
     ([derive, , , _missingType]) => {
         type Missing = typeof _missingType;
@@ -389,7 +391,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 material: "metal_heavy",
                 particle: `container_particle_${color}`,
                 spawnHitbox,
-                scopeHitbox: RectangleHitbox.fromRect(12, 27),
+                ceilingHitbox: RectangleHitbox.fromRect(12, 27),
                 graphics: closed
                     ? []
                     : [
@@ -435,7 +437,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 idString: `tent_${id}`,
                 name: `Tent ${id}`,
                 spawnHitbox: RectangleHitbox.fromRect(31, 23),
-                scopeHitbox: RectangleHitbox.fromRect(26, 16),
+                ceilingHitbox: RectangleHitbox.fromRect(26, 16),
                 floorImages: [{
                     key: "tent_floor",
                     position: Vec.create(0, 0),
@@ -491,7 +493,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 idString: `hay_shed_${id}`,
                 name: `Hay Shed ${id}`,
                 spawnHitbox: RectangleHitbox.fromRect(47, 32),
-                scopeHitbox: RectangleHitbox.fromRect(33.5, 24.5, Vec.create(-1.2, -0.5)),
                 ceilingHitbox: RectangleHitbox.fromRect(33.5, 24.5, Vec.create(-1.2, -0.5)),
                 floorImages: [{
                     key: "fall_patch_floor",
@@ -529,7 +530,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 idString: `tent_big_${id}`,
                 name: `Big Tent ${id}`,
                 spawnHitbox: RectangleHitbox.fromRect(58, 35),
-                scopeHitbox: RectangleHitbox.fromRect(44, 27),
+                ceilingHitbox: RectangleHitbox.fromRect(44, 27),
                 floorImages: [{
                     key: "tent_floor_big",
                     position: Vec.create(0, 0),
@@ -636,7 +637,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
             ),
             spawnMode: MapObjectSpawnMode.Beach,
             spawnHitbox: RectangleHitbox.fromRect(70, 110, Vec.create(90, 0)),
-            scopeHitbox: RectangleHitbox.fromRect(30, 35, Vec.create(90, 12.5)),
+            ceilingHitbox: RectangleHitbox.fromRect(30, 35, Vec.create(90, 12.5)),
             floorImages: [
                 {
                     key: `tugboat_${color}_floor_1`,
@@ -714,7 +715,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 RectangleHitbox.fromRect(1.74, 25, Vec.create(29.65, 30))
             ),
             spawnHitbox: RectangleHitbox.fromRect(72, 130),
-            scopeHitbox: RectangleHitbox.fromRect(58, 118),
+            ceilingHitbox: RectangleHitbox.fromRect(58, 118),
             floorImages: [
                 { key: "port_warehouse_floor", position: Vec.create(2.04, -30.38) },
                 { key: "port_warehouse_floor", position: Vec.create(-2.04, 30.38), rotation: Math.PI }
@@ -752,7 +753,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 idString: "porta_potty",
                 name: "Porta Potty",
                 spawnHitbox: RectangleHitbox.fromRect(20, 32),
-                scopeHitbox: RectangleHitbox.fromRect(14, 18),
+                ceilingHitbox: RectangleHitbox.fromRect(14, 18),
                 floorImages: [
                     {
                         key: "porta_potty_floor_1",
@@ -830,7 +831,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 idString: "outhouse",
                 name: "Outhouse",
                 spawnHitbox: RectangleHitbox.fromRect(19, 29),
-                scopeHitbox: RectangleHitbox.fromRect(14.94, 20, Vec.create(0, -2.02)),
+                ceilingHitbox: RectangleHitbox.fromRect(14.94, 20, Vec.create(0, -2.02)),
                 floorImages: [
                     {
                         key: "outhouse_floor",
@@ -881,7 +882,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(1.75, 18, Vec.create(-32.3, -15))
                 ),
                 spawnHitbox: RectangleHitbox.fromRect(110, 70),
-                scopeHitbox: RectangleHitbox.fromRect(65, 48),
+                ceilingHitbox: RectangleHitbox.fromRect(65, 48),
                 floorImages: [
                     {
                         key: "firework_warehouse_floor_1_top",
@@ -1030,7 +1031,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(1.97, 87.84, Vec.create(26, 0))
                 ),
                 spawnHitbox: RectangleHitbox.fromRect(63.07, 114),
-                scopeHitbox: RectangleHitbox.fromRect(52.92, 89),
+                ceilingHitbox: RectangleHitbox.fromRect(52.92, 89),
                 floorImages: [
                     {
                         key: "warehouse_floor_1",
@@ -1104,7 +1105,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(102, 1.93, Vec.create(71.7, 83)) // Bottom bottom right
                 ),
                 spawnHitbox: RectangleHitbox.fromRect(184, 131, Vec.create(35, 21.50)),
-                scopeHitbox: new GroupHitbox(
+                ceilingHitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(33.50, 72, Vec.create(-32.75, 0)),
                     RectangleHitbox.fromRect(65.50, 29.50, Vec.create(16.75, -21.25))
                 ),
@@ -1429,7 +1430,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(3, 3, Vec.create(8.75, -6.12))
                 ),
                 spawnHitbox: RectangleHitbox.fromRect(80, 80),
-                scopeHitbox: RectangleHitbox.fromRect(60, 56),
+                ceilingHitbox: RectangleHitbox.fromRect(60, 56),
                 floorImages: [
                     {
                         key: "red_house_floor_1",
@@ -1621,7 +1622,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(3, 3, Vec.create(0.8, 10.35))
                 ),
                 spawnHitbox: RectangleHitbox.fromRect(80, 80),
-                scopeHitbox: RectangleHitbox.fromRect(60, 56),
+                ceilingHitbox: RectangleHitbox.fromRect(60, 56),
                 floorImages: [
                     {
                         key: "red_house_v2_floor_1",
@@ -1728,7 +1729,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(3, 3, Vec.create(-7.27, -6.32))
                 ),
                 spawnHitbox: RectangleHitbox.fromRect(110, 70),
-                scopeHitbox: new GroupHitbox(
+                ceilingHitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(83, 58, Vec.create(-8.5, -1.5)),
                     RectangleHitbox.fromRect(14, 19.4, Vec.create(38, 7.1))
                 ),
@@ -1868,7 +1869,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(1.7, 11, Vec.create(-23, 0))
                 ),
                 spawnHitbox: RectangleHitbox.fromRect(50.5, 16, Vec.create(0, 0)),
-                scopeHitbox: RectangleHitbox.fromRect(48, 10.1),
+                ceilingHitbox: RectangleHitbox.fromRect(48, 10.1),
                 floorImages: [
                     {
                         key: "blue_house_basement",
@@ -1911,7 +1912,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 material: "stone",
                 particle: "wall_particle",
                 spawnHitbox: RectangleHitbox.fromRect(90, 90),
-                scopeHitbox: new GroupHitbox(
+                ceilingHitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(68, 53, Vec.create(0, -3.5)),
                     RectangleHitbox.fromRect(11, 10, Vec.create(-28, 27))
                 ),
@@ -2028,7 +2029,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(2, 14, Vec.create(8.7, -6))
                 ),
                 spawnHitbox: RectangleHitbox.fromRect(22.73, 28.32),
-                scopeHitbox: RectangleHitbox.fromRect(14, 24),
+                ceilingHitbox: RectangleHitbox.fromRect(14, 24),
                 ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
                 ceilingImages: [{
                     key: "blue_house_vault_ceiling",
@@ -2039,6 +2040,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 idString: "crane",
                 name: "Crane",
                 reflectBullets: true,
+                ceilingScopeEffect: false,
                 material: "metal_heavy",
                 particle: "container_particle_yellow",
                 hitbox: new GroupHitbox(
@@ -2103,7 +2105,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(9, 1.75, Vec.create(-6.05, 12.19)) // Bottom wall
                 ),
                 spawnHitbox: RectangleHitbox.fromRect(27, 37, Vec.create(-0.8, 0)),
-                scopeHitbox: RectangleHitbox.fromRect(20, 27.5, Vec.create(-0.8, -1.5)),
+                ceilingHitbox: RectangleHitbox.fromRect(20, 27.5, Vec.create(-0.8, -1.5)),
                 floorImages: [
                     {
                         key: "shed_floor_1",
@@ -2231,7 +2233,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 idString: "cargo_ship_center_roof",
                 name: "Cargo Ship Center Roof",
                 spawnHitbox: RectangleHitbox.fromRect(40, 95, Vec.create(0, 0)),
-                scopeHitbox: RectangleHitbox.fromRect(25, 90, Vec.create(0.5, 0)), // why doesn't this work well? (you have to go in full center?)
+                ceilingHitbox: RectangleHitbox.fromRect(25, 90, Vec.create(0.5, 0)), // why doesn't this work well? (you have to go in full center?)
                 ceilingImages: [
                     {
                         key: "cargo_ship_center_ceiling",
@@ -2331,7 +2333,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     new CircleHitbox(4, Vec.create(106, 42.5))
                 ),
                 spawnHitbox: RectangleHitbox.fromRect(320, 130, Vec.create(5, 5)),
-                scopeHitbox: RectangleHitbox.fromRect(34, 51, Vec.create(115, 0)),
+                ceilingHitbox: RectangleHitbox.fromRect(34, 51, Vec.create(115, 0)),
                 puzzle: {
                     triggerOnSolve: "vault_door",
                     delay: 2000
@@ -2613,7 +2615,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     new CircleHitbox(3, Vec.create(143, 42))
                 ),
                 spawnHitbox: RectangleHitbox.fromRect(360, 130, Vec.create(30, 0)),
-                scopeHitbox: RectangleHitbox.fromRect(38, 80, Vec.create(-94, 0)),
+                ceilingHitbox: RectangleHitbox.fromRect(38, 80, Vec.create(-94, 0)),
                 puzzle: {
                     triggerOnSolve: "vault_door",
                     delay: 1500
@@ -2723,7 +2725,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 idString: "oil_tanker_ship_vault",
                 name: "Oil Tanker Ship Vault",
                 spawnHitbox: RectangleHitbox.fromRect(20, 35),
-                scopeHitbox: RectangleHitbox.fromRect(20, 35),
+                ceilingHitbox: RectangleHitbox.fromRect(20, 35),
                 ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
                 ceilingImages: [{
                     key: "oil_tanker_ship_vault_ceiling",
@@ -3216,7 +3218,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     new RectangleHitbox(Vec.create(-24, -20.85), Vec.create(-4, -18.76))
                 ),
                 spawnHitbox: RectangleHitbox.fromRect(50, 84),
-                scopeHitbox: RectangleHitbox.fromRect(50, 84),
+                ceilingHitbox: RectangleHitbox.fromRect(50, 84),
                 floorImages: [
                     {
                         key: "armory_barracks_floor_1",
@@ -3277,7 +3279,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(32.34, 2.07, Vec.create(1.24, 21.88))
                 ),
                 spawnHitbox: RectangleHitbox.fromRect(31, 44, Vec.create(1.5, 0)),
-                scopeHitbox: RectangleHitbox.fromRect(31, 44, Vec.create(1.5, 0)),
+                ceilingHitbox: RectangleHitbox.fromRect(31, 44, Vec.create(1.5, 0)),
                 floorImages: [
                     {
                         key: "armory_center_floor_1",
@@ -3334,7 +3336,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(4.16, 2.09, Vec.create(10.5, 16.52))
                 ),
                 spawnHitbox: RectangleHitbox.fromRect(72, 38, Vec.create(0, -2)),
-                scopeHitbox: RectangleHitbox.fromRect(72, 38, Vec.create(0, -2)),
+                ceilingHitbox: RectangleHitbox.fromRect(72, 38, Vec.create(0, -2)),
                 puzzle: {
                     triggerOnSolve: "vault_door",
                     delay: 1500,
@@ -3401,7 +3403,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 idString: "armory_inner_vault",
                 name: "Armory Inner Vault",
                 spawnHitbox: RectangleHitbox.fromRect(20.87, 36.34),
-                scopeHitbox: RectangleHitbox.fromRect(20.87, 36.34),
+                ceilingHitbox: RectangleHitbox.fromRect(20.87, 36.34),
                 ceilingImages: [
                     {
                         key: "armory_inner_vault_ceiling_1",
@@ -3642,7 +3644,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 idString: "mobile_home",
                 name: "Mobile Home",
                 spawnHitbox: RectangleHitbox.fromRect(65, 40),
-                scopeHitbox: RectangleHitbox.fromRect(43.5, 20, Vec.create(0, -1)),
+                ceilingHitbox: RectangleHitbox.fromRect(43.5, 20, Vec.create(0, -1)),
                 floorImages: [
                     {
                         key: "mobile_home_floor_1",
@@ -3708,7 +3710,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(40.08, 1.78, Vec.create(-1.04, -29.91))
                 ),
                 spawnHitbox: RectangleHitbox.fromRect(48, 98, Vec.create(0, 15)),
-                scopeHitbox: RectangleHitbox.fromRect(40, 55, Vec.create(0, -2)),
+                ceilingHitbox: RectangleHitbox.fromRect(40, 55, Vec.create(0, -2)),
                 spawnMode: MapObjectSpawnMode.Beach,
                 floorImages: [
                     {
@@ -4000,7 +4002,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 idString: "headquarters_vault",
                 name: "Headquarters Vault",
                 spawnHitbox: RectangleHitbox.fromRect(22, 30.6, Vec.create(0, -7.2)),
-                scopeHitbox: RectangleHitbox.fromRect(22, 30.6, Vec.create(0, -7.2)),
+                ceilingHitbox: RectangleHitbox.fromRect(22, 30.6, Vec.create(0, -7.2)),
                 ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
                 ceilingImages: [
                     {
@@ -4014,7 +4016,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 idString: "headquarters_secret_room",
                 name: "Headquarters Secret Room",
                 spawnHitbox: RectangleHitbox.fromRect(20, 20),
-                scopeHitbox: RectangleHitbox.fromRect(20, 20),
+                ceilingHitbox: RectangleHitbox.fromRect(20, 20),
                 ceilingZIndex: ZIndexes.BuildingsCeiling - 1,
                 ceilingImages: [{
                     key: "secret_room_ceiling",
@@ -4094,7 +4096,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(4.1, 4, Vec.create(14.6, 4.5)) // CENT, 6
                 ),
                 spawnHitbox: RectangleHitbox.fromRect(195, 200, Vec.create(0, -26)),
-                scopeHitbox: new GroupHitbox(
+                ceilingHitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(140, 70, Vec.create(-0.5, 1.5)),
                     RectangleHitbox.fromRect(128, 73, Vec.create(5.75, -70)),
                     RectangleHitbox.fromRect(11.5, 43, Vec.create(-64, -84)), // stair
@@ -4207,7 +4209,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "headquarters_main_desk", position: Vec.create(-10.7, -49.5), rotation: 0 },
                     { idString: "headquarters_cafeteria_table", position: Vec.create(45, -82), rotation: 0 },
                     { idString: "headquarters_sinks", position: Vec.create(1, 1.5), rotation: 0 },
-                    { idString: "headquarters_alarm_barriers", position: Vec.create(1, 2), rotation: 0 },
 
                     // i have fully given up at this point
                     { idString: "hq_second_floor_collider_hack", position: Vec.create(0, 0), rotation: 0, layer: 2 },
@@ -4394,7 +4395,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(4.1, 4.15, Vec.create(-3, -54.8)) // C, 2
                 ),
                 spawnHitbox: RectangleHitbox.fromRect(195, 200, Vec.create(0, -26)),
-                scopeHitbox: new GroupHitbox(
+                ceilingHitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(47, 68, Vec.create(-52, 2.5)),
                     RectangleHitbox.fromRect(128, 77.1, Vec.create(0, -66)),
                     RectangleHitbox.fromRect(11.5, 40, Vec.create(-70, -86)),
@@ -4599,7 +4600,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(16, 1.7, Vec.create(13.1, 18))
                 ),
                 spawnHitbox: RectangleHitbox.fromRect(55, 55, Vec.create(0, 5)),
-                scopeHitbox: new GroupHitbox(
+                ceilingHitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(42, 34.5),
                     RectangleHitbox.fromRect(10, 20, Vec.create(0, 20))
                 ),
@@ -4656,7 +4657,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     scale: Vec.create(2.35, 2.1)
                 }],
                 spawnHitbox: RectangleHitbox.fromRect(53, 53, Vec.create(0, 20)),
-                scopeHitbox: RectangleHitbox.fromRect(10, 15, Vec.create(0, 20)),
+                ceilingHitbox: RectangleHitbox.fromRect(10, 15, Vec.create(0, 20)),
                 obstacles: [
                     { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(7.5, 9.8) },
                     { idString: { oak_tree: 1, birch_tree: 1 }, position: Vec.create(10, 23) },
@@ -4704,7 +4705,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(20.5, 55.5, Vec.create(-19.5, 0)),
                     RectangleHitbox.fromRect(60, 14, Vec.create(0, -21))
                 ),
-                scopeHitbox: new GroupHitbox(
+                ceilingHitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(20.5, 55.5, Vec.create(-19.5, 0)),
                     RectangleHitbox.fromRect(61, 14, Vec.create(0, -21))
                 ),
@@ -4753,7 +4754,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 idString: "barn",
                 name: "Barn",
                 spawnHitbox: RectangleHitbox.fromRect(120, 92),
-                scopeHitbox: new GroupHitbox(
+                ceilingHitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(85.5, 56, Vec.create(-11, -11.9)),
                     RectangleHitbox.fromRect(64, 24, Vec.create(-23, 29.5))
                 ),
@@ -4898,7 +4899,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ]
             },
             {
-                idString: "armory_barracks_damaged",
+                idString: "bombed_armory_barracks",
                 name: "Armory Barracks",
                 material: "stone",
                 particle: "rock_particle",
@@ -4919,7 +4920,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     new RectangleHitbox(Vec.create(-24, -20.85), Vec.create(-4, -18.76))
                 ),
                 spawnHitbox: RectangleHitbox.fromRect(50, 84),
-                scopeHitbox: RectangleHitbox.fromRect(50, 84),
+                ceilingHitbox: RectangleHitbox.fromRect(50, 84),
                 floorImages: [
                     {
                         key: "armory_barracks_floor_1",
@@ -4976,7 +4977,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ]
             },
             {
-                idString: "armory_center_damaged",
+                idString: "bombed_armory_center",
                 name: "Armory Center",
                 material: "stone",
                 particle: "rock_particle",
@@ -4990,7 +4991,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(32.34, 2.07, Vec.create(1.24, 21.88))
                 ),
                 spawnHitbox: RectangleHitbox.fromRect(31, 44, Vec.create(1.5, 0)),
-                scopeHitbox: RectangleHitbox.fromRect(31, 44, Vec.create(1.5, 0)),
+                ceilingHitbox: RectangleHitbox.fromRect(31, 44, Vec.create(1.5, 0)),
                 floorImages: [
                     {
                         key: "armory_center_floor_1",
@@ -5063,7 +5064,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ]
             },
             {
-                idString: "armory_vault_damaged",
+                idString: "bombed_armory_vault",
                 name: "Armory Vault",
                 material: "stone",
                 particle: "rock_particle",
@@ -5080,7 +5081,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(4.16, 2.09, Vec.create(10.5, 16.52))
                 ),
                 spawnHitbox: RectangleHitbox.fromRect(72, 38, Vec.create(0, -2)),
-                scopeHitbox: RectangleHitbox.fromRect(72, 38, Vec.create(0, -2)),
+                ceilingHitbox: RectangleHitbox.fromRect(72, 38, Vec.create(0, -2)),
                 floorImages: [
                     {
                         key: "armory_vault_floor_1",
@@ -5145,7 +5146,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "regular_crate", position: Vec.create(-29.77, 10.54) },
                     { idString: "box", position: Vec.create(-21.29, 12.33) },
                     { idString: "box", position: Vec.create(-17.88, 6.72) },
-                    { idString: "armory_damaged_vault_wall", position: Vec.create(-13.94, -2.1), rotation: 1 }
+                    { idString: "bombed_armory_vault_wall", position: Vec.create(-13.94, -2.1), rotation: 1 }
                 ],
                 lootSpawners: [
                     {
@@ -5159,14 +5160,14 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ]
             },
             {
-                idString: "armory_damaged",
-                name: "Armory (Damaged)",
+                idString: "bombed_armory",
+                name: "Bombed Armory",
                 spawnHitbox: RectangleHitbox.fromRect(160, 176),
                 spawnMode: MapObjectSpawnMode.GrassAndSand,
                 subBuildings: [
-                    { idString: "armory_barracks_damaged", position: Vec.create(-41.31, 27.86) },
-                    { idString: "armory_center_damaged", position: Vec.create(55.4, 15.07) },
-                    { idString: "armory_vault_damaged", position: Vec.create(-35.03, -58.37) },
+                    { idString: "bombed_armory_barracks", position: Vec.create(-41.31, 27.86) },
+                    { idString: "bombed_armory_center", position: Vec.create(55.4, 15.07) },
+                    { idString: "bombed_armory_vault", position: Vec.create(-35.03, -58.37) },
                     { idString: "outhouse", position: Vec.create(-60.9, -65.63), orientation: 2 }
                 ],
                 groundGraphics: [
@@ -5421,7 +5422,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         position: Vec.create(33.86, -46.16)
                     },
                     {
-                        table: "armory_damaged_skin",
+                        table: "bombed_armory_skin",
                         position: Vec.create(33.86, -45.6)
                     },
                     {
@@ -5477,10 +5478,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 material: "stone",
                 spawnHitbox: RectangleHitbox.fromRect(110, 140),
                 ceilingHitbox: new GroupHitbox(
-                    RectangleHitbox.fromRect(97.2, 102, Vec.create(0, -9.5)),
-                    RectangleHitbox.fromRect(70.5, 18.5, Vec.create(-13.38, 50))
-                ),
-                scopeHitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(97.2, 102, Vec.create(0, -9.5)),
                     RectangleHitbox.fromRect(70.5, 18.5, Vec.create(-13.38, 50))
                 ),
@@ -5695,11 +5692,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(23.11, 1.91, Vec.create(-37.07, -3.73))
                 ).transform(Vec.create(0, -0.4)),
                 spawnHitbox: RectangleHitbox.fromRect(105, 130),
-                scopeHitbox: new GroupHitbox(
-                    RectangleHitbox.fromRect(48.4, 101.5, Vec.create(-2.61, -8.89)),
-                    RectangleHitbox.fromRect(22.35, 35.02, Vec.create(-37.24, 13.81)),
-                    RectangleHitbox.fromRect(29.6, 32.08, Vec.create(33.77, -19.63))
-                ),
                 ceilingHitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(48.4, 101.5, Vec.create(-2.61, -8.89)),
                     RectangleHitbox.fromRect(22.35, 35.02, Vec.create(-37.24, 13.81)),
@@ -5854,11 +5846,6 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     RectangleHitbox.fromRect(17, 14, Vec.create(-145.11, -52.85))
                 ),
                 ceilingZIndex: ZIndexes.ObstaclesLayer3,
-                scopeHitbox: new GroupHitbox(
-                    RectangleHitbox.fromRect(45, 54, Vec.create(13.43, 101.53)),
-                    RectangleHitbox.fromRect(14, 17, Vec.create(146.55, -32.85)),
-                    RectangleHitbox.fromRect(17, 14, Vec.create(-145.11, -52.85))
-                ),
                 floors: [{
                     type: FloorNames.Stone,
                     hitbox: RectangleHitbox.fromRect(46.52, 55.74, Vec.create(13.43, 101.53))
@@ -6052,7 +6039,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     new CircleHitbox(10.32, Vec.create(-40.12, -82.14)),
                     new CircleHitbox(10.32, Vec.create(14.73, -82.06))
                 ),
-                scopeHitbox: new GroupHitbox(
+                ceilingHitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(14.45, 31.53, Vec.create(18.97, -42.02)),
                     RectangleHitbox.fromRect(26.15, 30.85, Vec.create(-91.47, -65.47)),
                     RectangleHitbox.fromRect(14.45, 31.53, Vec.create(-44.73, -41.96)),
@@ -6244,9 +6231,9 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     // lab
                     { idString: "pumpkin", position: Vec.create(-47.26, -117.89), rotation: 0 },
                     { idString: "pumpkin", position: Vec.create(-53.98, -114.99), rotation: 0 },
-                    { idString: "mini_plumpkin", position: Vec.create(-34.18, -111.23), rotation: 0 },
-                    { idString: "mini_plumpkin", position: Vec.create(-26.74, -114.57), rotation: 0 },
-                    { idString: "mini_plumpkin", position: Vec.create(-31.39, -120.37), rotation: 0 },
+                    { idString: "baby_plumpkin", position: Vec.create(-34.18, -111.23), rotation: 0 },
+                    { idString: "baby_plumpkin", position: Vec.create(-26.74, -114.57), rotation: 0 },
+                    { idString: "baby_plumpkin", position: Vec.create(-31.39, -120.37), rotation: 0 },
                     { idString: "plumpkin", position: Vec.create(3.67, -115.06), rotation: 0 },
                     { idString: "diseased_plumpkin", position: Vec.create(24.92, -114.04), rotation: 0 },
                     { idString: "bulletproof_window", position: Vec.create(-50.37, -104.85), rotation: 0 },

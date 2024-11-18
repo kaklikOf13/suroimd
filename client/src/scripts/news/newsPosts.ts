@@ -2,7 +2,7 @@ import { type NewsPost } from "./newsHelper";
 
 export const news: NewsPost[] = [
     {
-      date: 1730428409000,
+       date: 1730428409000,
       author: "Kaklik",
       title: "Suroi Mod/SuroiMD",
       bannerImage: "../img/news/v0.19.0.png",
@@ -12,7 +12,7 @@ export const news: NewsPost[] = [
 <ul>
 <li><strong>Day And Night!</strong> Day And Night Cicle System</li>
 <li><strong>Rain!</strong> The Rain Is So Beautiful.</li>
-<li><strong>Mirv Grenades!</strong> A Splitting Grenade Created by AEGIS</li>
+<li><strong>Mirv Grenades And Ice Grenades!</strong> A Splitting Grenade Created by AEGIS</li>
 <li><strong>Youtubr Swang</strong> Now Everyone With Youtubr Role Have A Skin</li>
 <li><strong>In Game Music</strong> In Game Music + Rain</li>
 <li><strong>Weapons Selector</strong> Useless Because Don't Have Modes To This</li>
@@ -28,6 +28,14 @@ export const news: NewsPost[] = [
 <li>L115A1 Capacity 5 > 3</li>
 </ul>`
     },
+    {
+      date: 1731370468000,
+      author: "HAZEL",
+      title: "Empty Baskets",
+      content: `Harvest comes to a close and Classic mode returns to the island, but more is soon to come. We will be holding a <strong>closed beta test for accounts</strong> in the not-so-distant future, so stay tuned to official Suroi channels for information on how to participate.
+
+<br><a href="/rules">The rules</a> have been updated. Please take the time to read them.`
+  },
     {
         date: 1730689557000,
         author: "HAZEL",
