@@ -85,48 +85,48 @@ export type ObstacleClump = {
 
 const maps = {
     normal: {
-        width: 1632,
-        height: 1632,
+        width: 1900,
+        height: 1900,
         oceanSize: 128,
         beachSize: 32,
         rivers: {
-            minAmount: 2,
-            maxAmount: 3,
-            maxWideAmount: 1,
+            minAmount: 1,
+            maxAmount: 5,
+            maxWideAmount: 2,
             wideChance: 0.35,
             minWidth: 12,
-            maxWidth: 18,
-            minWideWidth: 25,
-            maxWideWidth: 30
+            maxWidth: 28,
+            minWideWidth: 27,
+            maxWideWidth: 34
         },
         buildings: {
-            large_bridge: 2,
+            large_bridge: 3,
             small_bridge: Infinity,
             port_complex: 1,
             sea_traffic_control: 1,
-            tugboat_red: 1,
-            tugboat_white: 5,
+            tugboat_red: 2,
+            tugboat_white: 10,
             armory: 1,
             headquarters: 1,
-            small_bunker: 1,
+            small_bunker: 2,
             refinery: 1,
-            warehouse: 5,
+            warehouse: 7,
             // firework_warehouse: 1, // birthday mode
-            green_house: 3,
-            blue_house: 3,
-            red_house: 3,
-            red_house_v2: 3,
+            green_house: 4,
+            blue_house: 4,
+            red_house: 4,
+            red_house_v2: 4,
             construction_site: 1,
-            mobile_home: 10,
-            porta_potty: 12,
-            container_3: 2,
-            container_4: 2,
-            container_5: 2,
-            container_6: 2,
-            container_7: 1,
-            container_8: 2,
-            container_9: 1,
-            container_10: 2
+            mobile_home: 16,
+            porta_potty: 23,
+            container_3: 3,
+            container_4: 3,
+            container_5: 3,
+            container_6: 3,
+            container_7: 3,
+            container_8: 3,
+            container_9: 3,
+            container_10: 3
         },
         majorBuildings: ["armory", "refinery", "port_complex", "headquarters"],
         quadBuildingLimit: {
@@ -140,57 +140,58 @@ const maps = {
             construction_site: 1
         },
         obstacles: {
-            oil_tank: 12,
+            oil_tank: 25,
+            survival_crate:3,
             // christmas_tree: 1, // winter mode
-            oak_tree: 100,
-            birch_tree: 20,
-            pine_tree: 10,
-            loot_tree: 1,
-            regular_crate: 160,
-            flint_crate: 5,
-            aegis_crate: 5,
-            grenade_crate: 35,
-            rock: 150,
-            river_chest: 1,
-            river_rock: 45,
-            bush: 110,
+            oak_tree: 60,
+            birch_tree: 40,
+            pine_tree: 30,
+            loot_tree: 4,
+            regular_crate: 320,
+            flint_crate: 12,
+            aegis_crate: 12,
+            grenade_crate: 70,
+            rock: 360,
+            river_chest: 2,
+            river_rock: 70,
+            bush: 180,
             // birthday_cake: 100, // birthday mode
-            lily_pad: 20,
-            blueberry_bush: 30,
-            barrel: 80,
-            viking_chest: 1,
-            super_barrel: 30,
-            melee_crate: 1,
+            lily_pad: 30,
+            blueberry_bush: 50,
+            barrel:100,
+            viking_chest: 2,
+            super_barrel: 60,
+            melee_crate: 2,
             gold_rock: 1,
-            loot_barrel: 1,
+            loot_barrel: 3,
             flint_stone: 1
         },
         obstacleClumps: [
             {
-                clumpAmount: 100,
+                clumpAmount: 140,
                 clump: {
                     minAmount: 2,
-                    maxAmount: 3,
+                    maxAmount: 4,
                     jitter: 5,
                     obstacles: ["oak_tree"],
                     radius: 12
                 }
             },
             {
-                clumpAmount: 25,
+                clumpAmount: 50,
                 clump: {
                     minAmount: 2,
-                    maxAmount: 3,
+                    maxAmount: 4,
                     jitter: 5,
                     obstacles: ["birch_tree"],
                     radius: 12
                 }
             },
             {
-                clumpAmount: 4,
+                clumpAmount: 8,
                 clump: {
                     minAmount: 2,
-                    maxAmount: 3,
+                    maxAmount: 4,
                     jitter: 5,
                     obstacles: ["pine_tree"],
                     radius: 12
@@ -198,7 +199,7 @@ const maps = {
             }
         ],
         loots: {
-            ground_loot: 60
+            ground_loot: 100
         },
         places: [
             { name: "Banana", position: Vec.create(0.23, 0.2) },

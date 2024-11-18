@@ -190,6 +190,30 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
                 { table: "special_healing_items", weight: 0.15 }
             ]
         },
+        survival_crate: [
+            [
+                { item: "model_37", weight: 1 },
+                { item: "hp18", weight: 1 },
+                { item: "flues", weight: .9 },
+                { item: "m3k", weight: .8 },
+                { item: "vepr12", weight: .2 },
+                { item: "m590m", weight: .01 },
+                { item: "usas12", weight: .005 }
+            ],
+            [
+                { item: "ak47", weight: 1 },
+                { item: "aug", weight: 1 },
+                { item: "mp40", weight: 1.05 },
+                { item: "m16a4", weight: .6 },
+                { item: "cz75a", weight: .1 },
+                { item: "mosin_nagant", weight: .05 },
+                { item: "tango_51", weight: .01 },
+            ],
+            [{ table: "helmets", weight: 1 }],
+            [{ table: "vests", weight: 1 }],
+            [{ table: "backpacks", weight: 1 }],
+            [{ table: "special_healing_items", weight: 1 }]
+        ],
         dumpster: {
             min: 1,
             max: 2,
@@ -667,7 +691,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "2x_scope", weight: 1 },
             { item: "4x_scope", weight: 0.5 },
             { item: "8x_scope", weight: 0.1 },
-            { item: "15x_scope", weight: 0.00025 }
+            { item: "15x_scope", weight: 0.001 }
         ],
         equipment: [
             { item: "basic_helmet", weight: 1 },
@@ -682,6 +706,23 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "regular_pack", weight: 0.2 },
             { item: "tactical_pack", weight: 0.01 }
         ],
+
+        helmets: [
+            { item: "basic_helmet", weight: 1 },
+            { item: "regular_helmet", weight: 0.2 },
+            { item: "tactical_helmet", weight: 0.01 },
+        ],
+        vests: [
+            { item: "basic_vest", weight: 1 },
+            { item: "regular_vest", weight: 0.2 },
+            { item: "tactical_vest", weight: 0.01 },
+        ],
+        backpacks: [
+            { item: "basic_pack", weight: 1 },
+            { item: "regular_pack", weight: 0.2 },
+            { item: "tactical_pack", weight: 0.01 }
+        ],
+
         ammo: [
             { item: "12g", count: 10, weight: 0.75 },
             { item: "556mm", count: 60, weight: 1 },
@@ -730,7 +771,9 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "negev", weight: 0.005 },
             { item: "mg5", weight: 0.005 },
             { item: "tango_51", weight: 0.004 },
-            { item: "dual_deagle", weight: 0.003 }
+            { item: "dual_deagle", weight: 0.003 },
+            { item: "m590m", weight: .003 },
+            { item: "usas12", weight: .001 }
         ],
         special_healing_items: [
             { item: "cola", weight: 3 },
@@ -742,7 +785,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "2x_scope", weight: 1 },
             { item: "4x_scope", weight: 0.45 },
             { item: "8x_scope", weight: 0.1 },
-            { item: "15x_scope", weight: 0.005 }
+            { item: "15x_scope", weight: 0.01 }
         ],
         special_equipment: [
             { item: "basic_helmet", weight: 1 },
@@ -770,7 +813,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         airdrop_scopes: [
             { item: "4x_scope", weight: 1 },
             { item: "8x_scope", weight: 0.5 },
-            { item: "15x_scope", weight: 0.0025 }
+            { item: "15x_scope", weight: 0.1 }
         ],
         airdrop_healing_items: [
             { item: "gauze", count: 5, weight: 1.5 },

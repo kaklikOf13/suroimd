@@ -302,6 +302,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     filing_cabinet_particle:       { base: "metal_particle_2", tint: 0x7f714d },
     briefcase_particle:            { base: "metal_particle_2", tint: 0xcfcfcf },
     aegis_crate_particle:          { base: "wood_particle",    tint: 0x2687d9 },
+    survival_crate_particle:       { base: "wood_particle",    tint: 0x12d443 },
     airdrop_crate_particle:        { base: "wood_particle",    tint: 0x4059bf },
     chest_particle:                { base: "wood_particle",    tint: 0xa87e5a },
     cooler_particle:               { base: "wood_particle",    tint: 0x406c65 },
@@ -1395,6 +1396,16 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                         {
                             idString: "aegis_crate",
                             name: "AEGIS Crate",
+                            rotationMode: RotationMode.None,
+                            hideOnMap: true
+                        }
+                    ), 6
+                ],
+                [
+                    crate(
+                        {
+                            idString: "survival_crate",
+                            name: "Survival Crate",
                             rotationMode: RotationMode.None,
                             hideOnMap: true
                         }
