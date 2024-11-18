@@ -3,6 +3,7 @@ import { type Maps } from "./data/maps";
 import { type Game } from "./game";
 import { type GamePlugin } from "./pluginManager";
 import { type Gamemode } from "./data/gamemode";
+import { WeaponSwapPlugin } from "./defaultPlugins/weaponSwapPlugin";
 
 export const Config = {
     host: "0.0.0.0",
@@ -20,8 +21,6 @@ export const Config = {
     gameJoinTime: 60,
 
     tps: 40,
-
-    plugins: [],
 
     roles: {
         developr: { password: "developr", isDev: true },
@@ -115,11 +114,6 @@ export interface ConfigType {
      * The number of game ticks that occur per second.
      */
     readonly tps: number
-
-    /**
-     * List of plugin classes to load.
-     */
-    readonly plugins: Array<new (game: Game) => GamePlugin>
 
     /**
      * Allows scopes and radios to work in buildings.

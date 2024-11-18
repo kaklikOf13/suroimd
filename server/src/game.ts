@@ -210,8 +210,6 @@ export class Game implements GameData {
             startedTime: -1
         });
 
-        this.pluginManager.loadPlugins();
-
         const { width, height } = Maps[Config.map.split(":")[0] as MapName];
         this.grid = new Grid(this, width, height);
 
@@ -224,6 +222,8 @@ export class Game implements GameData {
         }
 
         this.gas = new Gas(this);
+
+        this.pluginManager.loadPlugins();
 
         this.setGameData({ allowJoin: true });
 

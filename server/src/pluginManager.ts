@@ -746,7 +746,7 @@ export class PluginManager {
     }
 
     loadPlugins(): void {
-        for (const plugin of Config.plugins) {
+        for (const plugin of this.game.gamemode.plugins) {
             this.loadPlugin(plugin);
         }
     }
