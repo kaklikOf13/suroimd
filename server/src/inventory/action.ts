@@ -118,6 +118,7 @@ export class ReloadAction extends Action {
         this.player.attacking = false;
         this.player.dirty.weapons = true;
         this.player.dirty.items = true;
+        this.player.dirty.capacity=true
     }
 }
 
@@ -151,5 +152,6 @@ export class HealingAction extends Action {
                 break;
         }
         this.player.dirty.items = true;
+        this.player.dirty.capacity=true;
     }
 }

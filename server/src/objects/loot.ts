@@ -203,9 +203,11 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                     || (inventory.activeWeaponIndex < 2 && definition !== inventory.activeWeapon.definition && !inventory.isLocked(inventory.activeWeaponIndex));
             }
             case ItemType.Healing:
-            case ItemType.Ammo:
+            case ItemType.Ammo:{
+                return inventory.getUCurCap()<inventory.backpack.capacity
+            }
             case ItemType.Throwable: {
-                return true
+                return inventory.backpack.maxCapacity[definition.idString]?inventory.items.getItem(definition.idString)<inventory.backpack.maxCapacity[definition.idString]:false
             }
             case ItemType.Melee: {
                 return definition !== inventory.getWeapon(2)?.definition && !inventory.isLocked(2);
@@ -427,8 +429,8 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
             case ItemType.Backpack: {
                 if (player.inventory.backpack.level > 0) createNewItem({ type: player.inventory.backpack, count: 1 });
                 player.inventory.backpack = definition;
-
                 player.setDirty();
+                player.dirty.capacity=true
                 break;
             }
             case ItemType.Scope: {

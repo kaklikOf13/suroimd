@@ -181,6 +181,9 @@ export class UIManager {
         adrenalineBar: $<HTMLDivElement>("#adrenaline-bar"),
         adrenalineBarAmount: $<HTMLSpanElement>("#adrenaline-bar-amount"),
 
+        capacityBar: $<HTMLDivElement>("#capacity-bar"),
+        capacityBarAmount: $<HTMLSpanElement>("#capacity-bar-amount"),
+
         killFeed: $<HTMLDivElement>("#kill-feed"),
 
         gameUi: $<HTMLDivElement>("#game-ui"),
@@ -489,6 +492,7 @@ export class UIManager {
             minMax,
             health,
             adrenaline,
+            capacity,
             zoom,
             id,
             teammates,
@@ -642,6 +646,12 @@ export class UIManager {
             this.ui.adrenalineBarAmount
                 .text(safeRound(this.adrenaline))
                 .css("color", this.adrenaline < 7 ? "#ffffff" : "#000000");
+        }
+
+        if (capacity !== undefined) {;
+            const percent = Numeric.clamp(capacity,0,100);
+
+            this.ui.capacityBar.width(`${percent}%`);
         }
 
         if (inventory?.weapons) {
@@ -953,10 +963,10 @@ export class UIManager {
 
             countElem.text(count);
 
-            if (this.game.activePlayer) {
+            /*if (this.game.activePlayer) {
                 const backpack = this.game.activePlayer.equipment.backpack;
                 itemSlot.toggleClass("full", count >= backpack.maxCapacity[item]);
-            }
+            }*/
             const isPresent = count > 0;
 
             itemSlot.toggleClass("has-item", isPresent);

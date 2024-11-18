@@ -252,6 +252,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         health: true,
         maxMinStats: true,
         adrenaline: true,
+        capacity:true,
         size: true,
         weapons: true,
         slotLocks: true,
@@ -1241,6 +1242,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 ...(
                     player.dirty.adrenaline || forceInclude
                         ? { adrenaline: player._normalizedAdrenaline }
+                        : {}
+                ),
+                ...(
+                    player.dirty.capacity || forceInclude
+                        ? { capacity: Numeric.clamp(Math.ceil((player.inventory.getUCurCap()/player.inventory.backpack.capacity)*100),0,100) }
                         : {}
                 ),
                 ...(

@@ -514,6 +514,7 @@ export class Inventory {
         this.owner.setDirty();
         this.owner.dirty.items = true;
         this.owner.dirty.weapons = true;
+        this.owner.dirty.capacity=true
 
         return item;
     }
@@ -579,6 +580,8 @@ export class Inventory {
         if (overAmount > 0&&doa) {
             this._dropItem(item, { count: overAmount });
         }
+
+        this.owner.dirty.capacity=true
         return overAmount
     }
 
@@ -664,6 +667,8 @@ export class Inventory {
 
         this.owner.setDirty();
         this.owner.dirty.items = true;
+
+        this.owner.dirty.capacity=true
     }
 
     /**
