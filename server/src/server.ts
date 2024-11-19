@@ -291,15 +291,18 @@ if (isMainThread) {
             player.team.removePlayer(player);
         }
     }).listen(Config.host, Config.port, (): void => {
-        console.log(
-            `
- _____ _   _______ _____ _____
-/  ___| | | | ___ \\  _  |_   _|
-\\ \`--.| | | | |_/ / | | | | |
- \`--. \\ | | |    /| | | | | |
-/\\__/ / |_| | |\\ \\\\ \\_/ /_| |_
-\\____/ \\___/\\_| \\_|\\___/ \\___/
-            `);
+        console.log(" _____  _   _ ______  _____  _____ ");
+        console.log("/  ___|| | | || ___ \\|  _  ||_   _|");
+        console.log("\\ `--. | | | || |_/ /| | | |  | |  ");
+        console.log(" `--. \\| | | ||    / | | | |  | |  ");
+        console.log("/\\__/ /| |_| || |\\ \\ \\ \\_/ / _| |_ ");
+        console.log("\\____/  \\___/ \\_| \\_| \\___/  \\___/ ");
+        console.log("___  _________                     ");
+        console.log("|  \\/  ||  _  \\                    ");
+        console.log("| .  . || | | |                    ");
+        console.log("| |\\/| || | | |                    ");
+        console.log("| |  | || |/ /                     ");
+        console.log("\\_|  |_/|___/                      ");        
 
         Logger.log(`Suroi Server v${version}`);
         Logger.log(`Listening on ${Config.host}:${Config.port}`);

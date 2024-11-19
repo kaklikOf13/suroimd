@@ -1,9 +1,6 @@
 import { TeamSize } from "@common/constants";
 import { type Maps } from "./data/maps";
-import { type Game } from "./game";
-import { type GamePlugin } from "./pluginManager";
 import { type Gamemode } from "./data/gamemode";
-import { WeaponSwapPlugin } from "./defaultPlugins/weaponSwapPlugin";
 
 export const Config = {
     host: "0.0.0.0",
