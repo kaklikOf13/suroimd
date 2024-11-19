@@ -62,11 +62,9 @@ export const goapActions: GOAPAction[] = [
                 agent.player.inventory.activeWeapon.ammo<agent.player.inventory.activeWeapon.definition.capacity
             );
         },
-        execute: (agent) => {
+        execute: (_agent) => {
             return {
                 attacking: false,
-                distanceToMouse: 1,
-                rotation: agent.player.rotation,
                 actions: [{
                     type: InputActions.Reload
                 }],
@@ -78,7 +76,7 @@ export const goapActions: GOAPAction[] = [
                     up: false
                 },
                 turning: false,
-            };
+            } satisfies PlayerInputData;
         },
         subgoal:(agent)=>{
             return agent.player.inventory.activeWeapon instanceof GunItem &&

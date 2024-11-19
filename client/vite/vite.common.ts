@@ -14,7 +14,8 @@ const config: UserConfig = {
                 news: resolve(__dirname, "../news/index.html"),
                 rules: resolve(__dirname, "../rules/index.html"),
                 editor: resolve(__dirname, "../editor/index.html"),
-                wiki: resolve(__dirname, "../wiki/index.html")
+                wiki: resolve(__dirname, "../wiki/index.html"),
+                discord: resolve(__dirname,"../discord/index.html")
             }
         }
     },
