@@ -6,10 +6,14 @@ export const Config = {
             name: "Local Server",
             mainAddress: "http://localhost:8000",
             gameAddress: "ws://localhost:800<ID>"
+        },
+        na: {
+            name: "North America",
+            mainAddress: "https://na.suroimd.io",
+            gameAddress: "wss://<ID>.na.suroimd.io"
         }
     },
-    defaultRegion: "dev",
-    mode: "normal"
+    defaultRegion: "na"
 } satisfies ConfigType as ConfigType;
 
 export interface ConfigType {

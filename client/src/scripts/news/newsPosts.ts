@@ -2,7 +2,7 @@ import { type NewsPost } from "./newsHelper";
 
 export const news: NewsPost[] = [
     {
-       date: 1730428409000,
+      date: 1732035600000,
       author: "Kaklik",
       title: "Suroi Mod/SuroiMD",
       bannerImage: "../img/news/v0.19.0.png",
@@ -12,7 +12,9 @@ export const news: NewsPost[] = [
 <ul>
 <li><strong>Day And Night!</strong> Day And Night Cicle System</li>
 <li><strong>Rain!</strong> The Rain Is So Beautiful.</li>
-<li><strong>Mirv Grenades And Ice Grenades!</strong> A Splitting Grenade Created by AEGIS</li>
+<li><strong>Mirv Grenades</strong> A Splitting Grenade Created by AEGIS.</li>
+<li><strong>Ice Grenades!</strong> A Instant Wall Grenade Created by AEGIS</li>
+<li><strong>Survival Crate!</strong> A Essentials Crate. Always Give The Basic To Start The Match</li>
 <li><strong>Youtubr Swang</strong> Now Everyone With Youtubr Role Have A Skin</li>
 <li><strong>In Game Music</strong> In Game Music + Rain</li>
 <li><strong>Weapons Selector</strong> Useless Because Don't Have Modes To This</li>
@@ -20,9 +22,12 @@ export const news: NewsPost[] = [
 <h3>Changes</h3>
 <ul>
 <li>Better Grenades System</li>
+<li>Realistic Backpacks</li>
 <li>Character Speed</li>
+<li>Biggest Map</li>
 <h4>Guns Changes</h4>
 <li>M3K capicity 6 < 9</li>
+<li>HP18 capicity 5 < 7</li>
 <li>New Shotguns System</li>
 <li>L115A1 Damage 120 < 150</li>
 <li>L115A1 Capacity 5 > 3</li>
