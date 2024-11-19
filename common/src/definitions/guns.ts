@@ -1240,7 +1240,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 extendedCapacity: 12,
                 reloadTime: 0.725,
                 shotsPerReload: 1,
-                fireDelay: 300,
+                fireDelay: 500,
                 switchDelay: 400,
                 recoilMultiplier: 0.6,
                 recoilDuration: 600,

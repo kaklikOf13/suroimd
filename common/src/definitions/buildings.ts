@@ -233,7 +233,9 @@ const randomContainer2 = {
 
 const warehouseObstacle = {
     regular_crate: 2,
-    flint_crate: 1
+    flint_crate: 1,
+    aegis_crate: 1,
+    survival_crate: .5
 };
 
 const fireworkWarehouseObstacle = {
