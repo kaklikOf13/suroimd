@@ -81,8 +81,6 @@ export const JoinPacket = createPacket("JoinPacket")<JoinPacketCreation, JoinPac
             gun2,
             ...emotes
         ] = stream.readBooleanGroup2();
-
-        console.log(melee,gun1,gun2)
         
         return {
             protocolVersion: stream.readUint16(),
