@@ -1,5 +1,32 @@
 # Credits
 
+# Suroimd.io
+
+## Programers
+- Kaklik
+
+## Sound Designers
+- The Italian
+
+## Art
+- Kaklik
+- Bienstar
+
+## Especial Thanks To!
+- TTGetDunkedOn
+- Hasanger
+- Namerio
+- MP220
+- HotDuckWhatsUp
+- Nora
+- Huba
+- Ukraines Dude
+- Shesper
+- PONOSjurafla
+- You
+
+# Suroi.io
+
 ## Developers
 - Henry Sanger \(https://github.com/hsanger)
 - Damien Vesper \(https://github.com/DamienVesper)
