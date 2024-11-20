@@ -10,7 +10,7 @@ export const Config = {
         na: {
             name: "North America",
             mainAddress: "https://na.suroimd.io",
-            gameAddress: "wss://<ID>.na.suroimd.io"
+            gameAddress: "wss://na.suroimd.io:443<ID>"
         }
     },
     defaultRegion: "na"

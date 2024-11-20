@@ -10,6 +10,7 @@ import { PlayerContainer } from "./objects/player";
 import { maxTeamSize } from "./server";
 import { Logger } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
+import { config } from "dotenv";
 
 export interface WorkerInitData {
     readonly id: number
@@ -210,6 +211,10 @@ if (!isMainThread) {
     const simultaneousConnections: Record<string, number> = {};
     let joinAttempts: Record<string, number> = {};
 
+    const ps=Config.port.toString()
+
+    const port=ps.length>0&&ps.at(ps.length-1)=="0"?Config.port+(id+1):parseInt(Config.port.toString()+(id+1).toString())
+
     parentPort?.on("message", (message: WorkerMessage) => {
         switch (message.type) {
             case WorkerMessages.AllowIP: {
@@ -375,8 +380,8 @@ if (!isMainThread) {
             Logger.log(`Game ${id} | "${player.name}" left`);
             game.removePlayer(player);
         }
-    }).listen(Config.host, Config.port + id + 1, (): void => {
-        Logger.log(`Game ${id} | Listening on ${Config.host}:${Config.port + id + 1}`);
+    }).listen(Config.host, port, (): void => {
+        Logger.log(`Game ${id} | Listening on ${Config.host}:${port}`);
     });
 
     if (Config.protection?.maxJoinAttempts) {
