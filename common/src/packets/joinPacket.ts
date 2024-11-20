@@ -31,9 +31,9 @@ export const JoinPacket = createPacket("JoinPacket")<JoinPacketCreation, JoinPac
         stream.writeBooleanGroup2(
             data.isMobile,
             hasBadge,
-            data.melee!==undefined,
-            data.gun1!==undefined,
-            data.gun2!==undefined,
+            (data.melee!==undefined&&data.melee.length>0),
+            (data.gun1!==undefined&&data.gun1.length>0),
+            (data.gun2!==undefined&&data.gun2.length>0),
             emotes[0] !== undefined,
             emotes[1] !== undefined,
             emotes[2] !== undefined,
@@ -82,6 +82,8 @@ export const JoinPacket = createPacket("JoinPacket")<JoinPacketCreation, JoinPac
             ...emotes
         ] = stream.readBooleanGroup2();
 
+        console.log(melee,gun1,gun2)
+        
         return {
             protocolVersion: stream.readUint16(),
             name: stream.readPlayerName().replaceAll(/<[^>]+>/g, "").trim(), // Regex strips out HTML
@@ -93,7 +95,7 @@ export const JoinPacket = createPacket("JoinPacket")<JoinPacketCreation, JoinPac
             melee:melee?stream.readString(stream.readUint16()):undefined,
             gun1:gun1?stream.readString(stream.readUint16()):undefined,
             gun2:gun2?stream.readString(stream.readUint16()):undefined,
-            
+    
             emotes: Array.from({ length: 6 }, (_, i) => emotes[i] ? Emotes.readFromStream(stream) : undefined)
         };
     }
