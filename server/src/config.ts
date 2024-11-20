@@ -31,11 +31,13 @@ export const Config = {
         youtubr: { password: "youtubr" },
         boostr: { password: "boostr" },
 
-        hasanger: { password: "hasanger", isDev: true },
+        beta_tester: { password: "beta_tester" },
+
+        /*hasanger: { password: "hasanger", isDev: true },
         pap: { password: "pap", isDev: true },
         error: { password: "error", isDev: true },
         limenade: { password: "limenade", isDev: true },
-        solstice: { password: "solstice", isDev: true }
+        solstice: { password: "solstice", isDev: true }*/
     },
 
     authServer: {
@@ -176,6 +178,8 @@ export interface ConfigType {
             readonly logURL: string
         }
     }
+
+    readonly allowRoles?:string[]
 
     /**
      * If this option is specified, the given HTTP header will be used to determine IP addresses.

@@ -683,6 +683,11 @@ export class Game implements GameData {
             return;
         }
 
+        if(Config.allowRoles!==undefined&&(!player.role||!Config.allowRoles.includes(player.role))){
+            player.disconnect(`Don't Have Permition To Join(expected ${GameConstants.protocolVersion}, was ${packet.protocolVersion})`);
+            return;
+        }
+
         player.name = cleanUsername(packet.name);
 
         player.isMobile = packet.isMobile;

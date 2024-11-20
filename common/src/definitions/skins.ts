@@ -45,11 +45,11 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
         }));
 
         return [
-            withRole([["hasanger"], ["Hasanger",      0x640000]]),
+            /*withRole([["hasanger"], ["Hasanger",      0x640000]]),
             withRole([["limenade"], ["LimeNade",      0xffffff]]),
             withRole([["solstice"], ["Dragonscale",   0x3f808d]]),
             withRole([["error"],    ["error",         0x1fc462]]),
-            withRole([["pap"],      ["pap",           0x060647]]),
+            withRole([["pap"],      ["pap",           0x060647]]),*/
             withRole([["developr"], ["Developr Swag", 0x007a7f]]),
             withRole([["designr"],  ["Designr Swag",  0x67cf00]]),
             withRole([["composr"],  ["Composr Swag",  0xffd101]]),
@@ -93,7 +93,12 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
                 ["Bee",             0x4a4a4a],
                 ["Armadillo",       0xa68c5e],
                 ["Printer",         0xffffff],
-                ["Distant Shores",  0x7eca83]
+                ["Distant Shores",  0x7eca83],
+                ["Hasanger",        0x640000],
+                ["LimeNade",        0xffffff],
+                ["Dragonscale",     0x3f808d],
+                ["error",           0x1fc462],
+                ["pap",             0x060647]
             ] satisfies ReadonlyArray<readonly [string, number]>).map(([name, tint]) => skin([name, tint])),
             ...([
                 ["Lemon",                 0xebe092],
