@@ -205,7 +205,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
                 { item: "aug", weight: 1 },
                 { item: "mp40", weight: 1.05 },
                 { item: "m16a4", weight: .6 },
-                { item: "cz75a", weight: .1 },
+                { item: "cz600", weight: .1 },
                 { item: "mosin_nagant", weight: .05 },
                 { item: "tango_51", weight: .01 },
             ],

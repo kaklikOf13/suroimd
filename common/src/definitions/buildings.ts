@@ -235,7 +235,7 @@ const warehouseObstacle = {
     regular_crate: 2,
     flint_crate: 1,
     aegis_crate: 1,
-    survival_crate: .5
+    survival_crate: .3
 };
 
 const fireworkWarehouseObstacle = {

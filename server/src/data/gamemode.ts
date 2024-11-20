@@ -60,7 +60,7 @@ export const DefaultGamemode:Gamemode={
         stages:DefaultGasStages
     },
     plugins:[],
-    globalDamage:.8,
+    globalDamage:.73,
     weaponsSelect:false,
     armorProtection:1,
     spawn:{

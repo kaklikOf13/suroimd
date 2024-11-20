@@ -563,7 +563,10 @@ export class Inventory {
         
         //@ts-expect-error
         if(typeof itemDef.size !== "undefined"){
-            if(cc<=this.backpack.capacity){
+            if(amount==Infinity){
+                this.items.setItem(itemString,this.backpack.maxCapacity[itemString])
+                return 0;
+            }else if(cc<=this.backpack.capacity){
                 overAmount=0
             }else{
                 //@ts-expect-error

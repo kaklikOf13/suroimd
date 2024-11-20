@@ -1240,7 +1240,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 extendedCapacity: 12,
                 reloadTime: 0.725,
                 shotsPerReload: 1,
-                fireDelay: 500,
+                fireDelay: 450,
                 switchDelay: 400,
                 recoilMultiplier: 0.6,
                 recoilDuration: 600,
@@ -1262,7 +1262,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 }],
                 gasParticles: gasParticlePresets.shotgun,
                 ballistics: {
-                    damage: 5.5,
+                    damage: 5,
                     obstacleMultiplier: 0.5,
                     speed: 0.2,
                     range: 60,

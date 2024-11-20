@@ -204,7 +204,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
             }
             case ItemType.Healing:
             case ItemType.Ammo:{
-                return inventory.getUCurCap()<inventory.backpack.capacity
+                return inventory.getUCurCap()<inventory.backpack.capacity||this._count===Infinity
             }
             case ItemType.Throwable: {
                 return inventory.backpack.maxCapacity[definition.idString]?inventory.items.getItem(definition.idString)<inventory.backpack.maxCapacity[definition.idString]:false
@@ -502,7 +502,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
             //     break;
             // }
         }
-        this._count -= countToRemove;
+        if(this._count!==Infinity)this._count -= countToRemove;
 
         player.dirty.items = true;
 

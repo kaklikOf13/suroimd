@@ -71,7 +71,7 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
                 ["Basic"],
                 {
                     level: 1,
-                    damageReduction: 0.2,
+                    damageReduction: 0.1,
                     color: 0xc8c8c6
                 }
             ),
@@ -79,7 +79,7 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
                 ["Regular"],
                 {
                     level: 2,
-                    damageReduction: 0.35,
+                    damageReduction: 0.15,
                     color: 0x404d2e
                 }
             ),
@@ -87,7 +87,7 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
                 ["Tactical"],
                 {
                     level: 3,
-                    damageReduction: 0.45,
+                    damageReduction: 0.2,
                     color: 0x0d0d0d
                 }
             ),
