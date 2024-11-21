@@ -144,6 +144,9 @@ export class Inventory {
         for(const r of HealingItems){
             ret+=this.items.hasItem(r.idString)?(this.items.getItem(r.idString)===Infinity?0:this.items.getItem(r.idString)*r.size):0
         }
+        for(const t of Throwables){
+            ret+=this.items.hasItem(t.idString)?(this.items.getItem(t.idString)===Infinity?0:this.items.getItem(t.idString)*t.size):0
+        }
         return ret
     }
 
@@ -560,7 +563,6 @@ export class Inventory {
             To solve this, we just ignore capacity limits when the player is dead.
         */
         let overAmount = 0
-        
         //@ts-expect-error
         if(typeof itemDef.size !== "undefined"){
             if(amount==Infinity){

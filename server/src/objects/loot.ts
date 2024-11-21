@@ -202,13 +202,14 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                     || (!inventory.hasWeapon(1) && !inventory.isLocked(1))
                     || (inventory.activeWeaponIndex < 2 && definition !== inventory.activeWeapon.definition && !inventory.isLocked(inventory.activeWeaponIndex));
             }
+            case ItemType.Throwable:
             case ItemType.Healing:
             case ItemType.Ammo:{
                 return inventory.getUCurCap()<inventory.backpack.capacity||this._count===Infinity
             }
-            case ItemType.Throwable: {
+            /*case ItemType.Throwable: {
                 return inventory.backpack.maxCapacity[definition.idString]?inventory.items.getItem(definition.idString)<inventory.backpack.maxCapacity[definition.idString]:false
-            }
+            }*/
             case ItemType.Melee: {
                 return definition !== inventory.getWeapon(2)?.definition && !inventory.isLocked(2);
             }
@@ -376,7 +377,6 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 const currentCount = inventory.items.getItem(idString);
                 const maxCapacity = inventory.backpack.maxCapacity[idString] ?? 0;
                 const modifyItemCollections = (): void => {
-                    //@ts-expect-error
                     if(typeof definition.size !== "undefined"){
                         countToRemove=this._count-inventory.giveItem(definition,this._count,false)
                     }else{

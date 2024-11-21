@@ -26,6 +26,8 @@ export type ThrowableDefinition = InventoryItemDefinition & {
     readonly zScaleA:number
     readonly zBaseScale:number
 
+    readonly size:number
+
     readonly cookable: boolean
     readonly c4: boolean
     readonly health?: number
@@ -76,6 +78,7 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
     {
         itemType: ItemType.Throwable,
         speedMultiplier: 1,
+        size:0.5,
         cookable: false,
         fuseTime: 4000,
         cookTime: 150,
@@ -130,6 +133,7 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
             idString: "mirv_grenade",
             name: "Mirv Grenade",
             fuseTime: 4000,
+            size:0.52,
             impactDamage: 1,
             obstacleMultiplier: 20,
             cookable: true,
@@ -186,6 +190,7 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
             idString: "ice_grenade",
             name: "Ice Grenade",
             fuseTime: 2000,
+            size:0.6,
             impactDamage: 1,
             obstacleMultiplier: 20,
             cookable: true,
@@ -216,6 +221,7 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
             name: "Smoke Grenade",
             fuseTime: 2000,
             cookTime: 150,
+            size:0.3,
             throwTime: 150,
             impactDamage: 1,
             obstacleMultiplier: 20,
