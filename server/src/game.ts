@@ -1,4 +1,4 @@
-import { GameConstants, KillfeedMessageType, Layer, ObjectCategory, TeamSize } from "@common/constants";
+import { defaultUnlockGuns, defaultUnlockMelees, defaultUnlockWeapons, GameConstants, KillfeedMessageType, Layer, ObjectCategory, TeamSize } from "@common/constants";
 import { type ExplosionDefinition } from "@common/definitions/explosions";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
 import { MapPings, type MapPing } from "@common/definitions/mapPings";
@@ -707,17 +707,18 @@ export class Game implements GameData {
         player.loadout.emotes = packet.emotes;
         
         if(this.gamemode.weaponsSelect){
-            if(packet.gun1&&Guns.fromStringSafe(packet.gun1)){
+            const weapons=[defaultUnlockGuns,defaultUnlockMelees]
+            if(packet.gun1&&Guns.fromStringSafe(packet.gun1)&&weapons[0].includes(packet.gun1)){
                 player.inventory.addOrReplaceWeapon(0,Guns.fromString(packet.gun1 as never))
                 const w=player.inventory.getWeapon(0) as GunItem
                 w.ammo=w.definition.capacity
             }
-            if(packet.gun2&&Guns.fromStringSafe(packet.gun2)){
+            if(packet.gun2&&Guns.fromStringSafe(packet.gun2)&&weapons[0].includes(packet.gun2)){
                 player.inventory.addOrReplaceWeapon(1,Guns.fromString(packet.gun2 as never))
                 const w=player.inventory.getWeapon(1) as GunItem
                 w.ammo=w.definition.capacity
             }
-            if(packet.melee&&Melees.fromStringSafe(packet.melee)){
+            if(packet.melee&&Melees.fromStringSafe(packet.melee)&&weapons[1].includes(packet.melee)){
                 player.inventory.addOrReplaceWeapon(2,Melees.fromString(packet.melee as never))
             }
         }

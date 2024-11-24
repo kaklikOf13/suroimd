@@ -1,5 +1,6 @@
 import { Ammos } from "./definitions/ammos";
 import { HealingItems } from "./definitions/healingItems";
+import { MeleeDefinition } from "./definitions/melees";
 import { Mode } from "./definitions/modes";
 import { Scopes } from "./definitions/scopes";
 import { Throwables } from "./definitions/throwables";
@@ -279,3 +280,18 @@ export const TentTints = {
     orange: 0xc67438,
     purple: 0x994cb2
 };
+
+export const defaultUnlockGuns:string[]=[
+    "ak47",
+    "aug",
+    "model_37",
+    "hp18",
+    "m3k"
+]
+export const defaultUnlockMelees:string[]=[
+    "baseball_bat"
+]
+export const defaultUnlockWeapons:(string)[][]=[
+    defaultUnlockGuns,
+    defaultUnlockMelees
+]

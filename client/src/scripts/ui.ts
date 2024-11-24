@@ -1,4 +1,4 @@
-import { GameConstants, InputActions, ObjectCategory, SpectateActions, TeamSize } from "@common/constants";
+import { defaultUnlockWeapons, GameConstants, InputActions, ObjectCategory, SpectateActions, TeamSize } from "@common/constants";
 import { Ammos, type AmmoDefinition } from "@common/definitions/ammos";
 import { type ArmorDefinition } from "@common/definitions/armors";
 import { Badges, type BadgeDefinition } from "@common/definitions/badges";
@@ -26,8 +26,7 @@ import { EMOTE_SLOTS, MODE, PIXI_SCALE, UI_DEBUG_MODE, weaponsSlots } from "./ut
 import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
 import type { TranslationKeys } from "../typings/translations";
-import { Guns } from "@common/definitions/guns";
-import { Melees } from "@common/definitions/melees";
+import { Loots } from "@common/definitions/loots";
 
 /*
     eslint-disable
@@ -1021,7 +1020,7 @@ export async function setUpUI(game: Game): Promise<void> {
     function updateWeaponsList():void{
         weaponsList.empty()
 
-        const weapons = [[...Guns.definitions],[...Melees.definitions]]
+        const weapons = defaultUnlockWeapons
 
         let lastCategory = -1;
 
@@ -1031,13 +1030,14 @@ export async function setUpUI(game: Game): Promise<void> {
             weaponsList.append(categoryHeader);
 
             for(const weaponDef of weaponC){
+                const weapon=Loots.fromString(weaponDef)
 
                 // noinspection CssUnknownTarget
-                const weaponIdString = `./img/game/shared/weapons/${weaponDef.idString}.svg`;
+                const weaponIdString = `./img/game/shared/weapons/${weaponDef}.svg`;
                 const weaponItem = $<HTMLDivElement>(
-                    `<div id="weapons-${weaponDef.idString}" class="weapons-item-container">
+                    `<div id="weapons-${weaponDef}" class="weapons-item-container">
                         <div class="weapons-item" style="background-image: url(${weaponIdString})"></div>
-                        <span class="weapons-name">${getTranslatedString(weaponDef.idString as TranslationKeys)}</span>
+                        <span class="weapons-name">${getTranslatedString(weaponDef as TranslationKeys)}</span>
                     </div>`
                 );
 
@@ -1054,16 +1054,16 @@ export async function setUpUI(game: Game): Promise<void> {
 
                     const si=weaponsSlotUiCache[selectedWeaponSlot]!
 
-                    if(si.hasClass("weapon-melee")&&weaponDef.itemType!=ItemType.Melee){
+                    if(si.hasClass("weapon-melee")&&weapon.itemType!=ItemType.Melee){
                         return
                     }
-                    if(si.hasClass("weapon-gun")&&weaponDef.itemType!=ItemType.Gun){
+                    if(si.hasClass("weapon-gun")&&weapon.itemType!=ItemType.Gun){
                         return
                     }
 
-                    game.console.setBuiltInCVar(`cv_loadout_${cvarName}`, weaponDef.idString);
+                    game.console.setBuiltInCVar(`cv_loadout_${cvarName}`, weaponDef);
 
-                    changeWeaponSlotImage(selectedWeaponSlot,weaponDef.idString)
+                    changeWeaponSlotImage(selectedWeaponSlot,weaponDef)
 
                     selectedWeaponSlot=undefined
                 })
