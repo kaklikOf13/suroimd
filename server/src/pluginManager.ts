@@ -643,8 +643,8 @@ const pluginDispatchers = new ExtendedMap<
 export abstract class GamePlugin {
     private readonly _events: EventHandlers = {};
 
-    constructor(public readonly game: Game) {
-        this.initListeners();
+    constructor(public readonly game: Game,params:Record<string,any>|undefined) {
+        this.initListeners(params);
         pluginDispatchers.set(
             this,
             <Ev extends EventTypes>(eventType: Ev, ...args: [...ArgsFor<Ev>, ...EventData<Ev>]) => {
@@ -671,7 +671,7 @@ export abstract class GamePlugin {
     /**
      * Method responsible for adding any listeners regulating this plugin's behavior
      */
-    protected abstract initListeners(): void;
+    protected abstract initListeners(params:Record<string,any>|undefined): void;
 
     on<Ev extends EventTypes>(eventType: Ev, cb: EventHandler<Ev>): void {
         ((this._events[eventType] as Set<typeof cb> | undefined) ??= new Set()).add(cb);
@@ -685,6 +685,11 @@ export abstract class GamePlugin {
 
         (this._events[eventType] as Set<typeof cb> | undefined)?.delete(cb);
     }
+}
+
+export type PluginDefinition={
+    params?:Record<string,any>
+    construct: new (game: Game,params:Record<string,any>|undefined) => GamePlugin
 }
 
 /**
@@ -725,19 +730,19 @@ export class PluginManager {
         return cancelSource;
     }
 
-    loadPlugin(pluginClass: new (game: Game) => GamePlugin): void {
+    loadPlugin(pluginD:PluginDefinition): void {
         for (const plugin of this._plugins) {
-            if (plugin instanceof pluginClass) {
-                console.warn(`Plugin ${pluginClass.name} already loaded`);
+            if (plugin instanceof pluginD.construct) {
+                console.warn(`Plugin ${pluginD.construct.name} already loaded`);
                 return;
             }
         }
         try {
-            const plugin = new pluginClass(this.game);
+            const plugin = new pluginD.construct(this.game,pluginD.params);
             this._plugins.add(plugin);
-            Logger.log(`Game ${this.game.id} | Plugin ${pluginClass.name} loaded`);
+            Logger.log(`Game ${this.game.id} | Plugin ${pluginD.construct.name} loaded`);
         } catch (error) {
-            console.error(`Failed to load plugin ${pluginClass.name}, err:`, error);
+            console.error(`Failed to load plugin $pluginD.construct.name}, err:`, error);
         }
     }
 

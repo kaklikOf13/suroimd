@@ -1,8 +1,7 @@
 import { Layer } from "@common/constants"
 import { Vector } from "@common/utils/vector"
 import { DefaultGasStages, GasStage } from "./gasStages"
-import { type GamePlugin } from "../pluginManager"
-import { type Game } from "../game"
+import { type PluginDefinition } from "../pluginManager"
 export const enum GasMode {
     Staged,
     Debug,
@@ -52,7 +51,7 @@ export interface Gamemode{
     readonly gas:GasConfig
     readonly spawn:Spawn
     readonly armorProtection:number
-    readonly plugins:Array<new (game: Game) => GamePlugin>
+    readonly plugins:Array<PluginDefinition>
 }
 export const DefaultGamemode:Gamemode={
     gas:{

@@ -5,7 +5,7 @@ import { GamePlugin } from "../pluginManager";
  * Plugin to toggle the player speed when sending an emote
  */
 export class SpeedTogglePlugin extends GamePlugin {
-    protected override initListeners(): void {
+    protected override initListeners(_params:unknown): void {
         this.on("player_did_emote", ({ player }) => {
             const { player: { baseSpeed } } = GameConstants;
 

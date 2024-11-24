@@ -587,6 +587,7 @@ export class Inventory {
         }
 
         this.owner.dirty.capacity=true
+        this.owner.dirty.weapons=true
         return overAmount
     }
 
