@@ -50,12 +50,12 @@ export const GameConstants = freezeDeep({
     modeName: "normal" satisfies Mode as Mode,
 
     natural_events:{
-        daynightDelay:650,
+        daynightDelay:500,
         rain:{
             raindropsCount:80,
             chance:0.001,
             stopChance:.4,
-            transition:0.02,
+            transition:0.07,
             raindrop:"ripple_particle",
             ambience:"rain_ambience",
         }
