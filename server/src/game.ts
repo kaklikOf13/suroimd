@@ -48,10 +48,9 @@ import { IDAllocator } from "./utils/idAllocator";
 import { cleanUsername, Logger, removeFrom } from "./utils/misc";
 import { GoapAgent } from "./utils/goap";
 import { Building } from "./objects/building";
-import { DefaultGasStages, GasStage } from "./data/gasStages";
 import { Guns } from "@common/definitions/guns";
 import { Melees } from "@common/definitions/melees";
-import { DefaultGamemode, Gamemode, GasMode, SpawnMode } from "./data/gamemode";
+import { DefaultGamemode, Gamemode, Gamemodes, SpawnMode } from "./data/gamemode";
 /*
     eslint-disable
 
@@ -61,6 +60,8 @@ import { DefaultGamemode, Gamemode, GasMode, SpawnMode } from "./data/gamemode";
 /*
     `@stylistic/indent-binary-ops`: eslint sucks at indenting ts types
  */
+
+
 export class Game implements GameData {
     public readonly id: number;
 
@@ -198,7 +199,7 @@ export class Game implements GameData {
         return this._idAllocator.takeNext();
     }
 
-    constructor(id: number, maxTeamSize: TeamSize,gamemode:Partial<Gamemode>=Config.gamemode) {
+    constructor(id: number, maxTeamSize: TeamSize,gamemode?:string) {
         this.id = id;
         this.maxTeamSize = maxTeamSize;
         this.teamMode = this.maxTeamSize > TeamSize.Solo;
@@ -214,7 +215,7 @@ export class Game implements GameData {
         this.grid = new Grid(this, width, height);
 
         if(gamemode){
-            this.gamemode=mergeDeep(DefaultGamemode,gamemode)
+            this.gamemode=mergeDeep(DefaultGamemode,Gamemodes[gamemode])
         }else{
             this.gamemode=DefaultGamemode
         }

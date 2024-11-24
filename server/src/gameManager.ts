@@ -10,11 +10,14 @@ import { PlayerContainer } from "./objects/player";
 import { maxTeamSize } from "./server";
 import { Logger } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
-import { config } from "dotenv";
-
+import Cron from "croner";
+let currentGamemode:string=typeof Config.gamemode==="string"?Config.gamemode:(Config.gamemode.rotation[0]??undefined)
+let gamemodeIndex = 0;
+let gamemodeSwitchCron: Cron | undefined;
 export interface WorkerInitData {
     readonly id: number
     readonly maxTeamSize: number
+    readonly gamemode: string
 }
 
 export enum WorkerMessages {
@@ -74,13 +77,13 @@ export class GameContainer {
 
     private readonly _ipPromiseMap = new Map<string, Array<() => void>>();
 
-    constructor(readonly id: number, resolve: (id: number) => void) {
+    constructor(readonly id: number,readonly gamemode:string, resolve: (id: number) => void) {
         this.resolve = resolve;
         (
             this.worker = new Worker(
                 __filename,
                 {
-                    workerData: { id, maxTeamSize } satisfies WorkerInitData,
+                    workerData: { id, maxTeamSize, gamemode } satisfies WorkerInitData,
                     execArgv: __filename.endsWith(".ts")
                         ? ["-r", "ts-node/register", "-r", "tsconfig-paths/register"]
                         : undefined
@@ -175,7 +178,7 @@ export async function newGame(id?: number): Promise<number> {
             Logger.log(`Game ${id} | Creating...`);
             const game = games[id];
             if (!game) {
-                games[id] = new GameContainer(id, resolve);
+                games[id] = new GameContainer(id,currentGamemode, resolve);
             } else if (game.stopped) {
                 game.resolve = resolve;
                 game.sendMessage({ type: WorkerMessages.Reset });
@@ -199,11 +202,23 @@ export async function newGame(id?: number): Promise<number> {
 
 export const games: Array<GameContainer | undefined> = [];
 
-if (!isMainThread) {
+if (isMainThread) {
+    if(typeof Config.gamemode!=="string"){
+        gamemodeSwitchCron = Cron(Config.gamemode.switchSchedule, () => {
+            //@ts-expect-error
+            currentGamemode = Config.gamemode.rotation[gamemodeIndex = (gamemodeIndex + 1) % Config.gamemode.rotation.length];
+
+            Logger.log(`Switching gamemode to ${currentGamemode}`);
+        });
+    }
+}else{
     const id = (workerData as WorkerInitData).id;
     let maxTeamSize = (workerData as WorkerInitData).maxTeamSize;
 
-    let game = new Game(id, maxTeamSize);
+    let gamemode=(workerData as WorkerInitData).gamemode;
+    console.log(gamemode)
+
+    let game = new Game(id, maxTeamSize,gamemode);
 
     // string = ip, number = expire time
     const allowedIPs = new Map<string, number>();
@@ -226,7 +241,7 @@ if (!isMainThread) {
                 break;
             }
             case WorkerMessages.Reset: {
-                game = new Game(id, maxTeamSize);
+                game = new Game(id, maxTeamSize,gamemode);
                 break;
             }
             case WorkerMessages.UpdateMaxTeamSize: {

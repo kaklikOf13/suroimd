@@ -1,15 +1,12 @@
 import { TeamSize } from "@common/constants";
 import { type Maps } from "./data/maps";
-import { type Gamemode } from "./data/gamemode";
 
 export const Config = {
     host: "0.0.0.0",
     port: 8000,
 
     map: "normal",
-    gamemode:{
-        
-    },
+    gamemode:"normal",
 
     maxTeamSize: TeamSize.Solo,
 
@@ -71,7 +68,16 @@ export interface ConfigType {
      */
     readonly map: `${keyof typeof Maps}${string}`
 
-    readonly gamemode:Partial<Gamemode>,
+    readonly gamemode:string|{
+        /**
+         * The duration between switches. Must be a cron pattern.
+         */
+        readonly switchSchedule: string
+        /**
+         * The team sizes to switch between.
+         */
+        readonly rotation: string[]
+    },
     
     /**
      * The maximum number of players allowed to join a team.
