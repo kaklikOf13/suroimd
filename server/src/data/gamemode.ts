@@ -1,7 +1,9 @@
-import { Layer } from "@common/constants"
+import { GasState, Layer } from "@common/constants"
 import { Vector } from "@common/utils/vector"
 import { DefaultGasStages, GasStage } from "./gasStages"
 import { type PluginDefinition } from "../pluginManager"
+import { InitWithPlugin } from "../defaultPlugins/initWithPlugin"
+import { type Maps } from "./maps"
 export const enum GasMode {
     Staged,
     Debug,
@@ -52,6 +54,9 @@ export interface Gamemode{
     readonly spawn:Spawn
     readonly armorProtection:number
     readonly plugins:Array<PluginDefinition>
+    readonly joinTime:number
+    readonly maxPlayersPerGame:number
+    readonly map?:`${keyof typeof Maps}${string}`
 }
 export const DefaultGamemode:Gamemode={
     gas:{
@@ -62,7 +67,63 @@ export const DefaultGamemode:Gamemode={
     globalDamage:.73,
     weaponsSelect:false,
     armorProtection:1,
+    joinTime:60,
+    maxPlayersPerGame: 70,
     spawn:{
         mode:SpawnMode.Normal
     }
+}
+
+export const DeathMatchMode:Partial<Gamemode>={
+    gas:{
+        mode:GasMode.Staged,
+        stages:[
+            {
+                dps:0,
+                duration:0,
+                newRadius:0.8,
+                oldRadius:0.8,
+                state:GasState.Inactive
+            },
+            {
+                dps:0,
+                duration:60*3,
+                newRadius:0.8,
+                oldRadius:0.8,
+                state:GasState.Waiting,
+                summonAirdrop:true,
+            },
+            {
+                dps:10,
+                duration:45,
+                newRadius:0.5,
+                oldRadius:0.8,
+                state:GasState.Advancing,
+                summonAirdrop:true,
+            },
+            {
+                dps:10,
+                duration:60,
+                newRadius:0.5,
+                oldRadius:0.5,
+                state:GasState.Waiting,
+                summonAirdrop:true,
+            },
+            {
+                dps:13,
+                duration:40,
+                newRadius:0,
+                oldRadius:0.5,
+                state:GasState.Advancing,
+                summonAirdrop:true,
+            },
+        ]
+    },
+    plugins:[
+        {construct:InitWithPlugin}
+    ],
+    joinTime:(60*3)+10,
+    weaponsSelect:true,
+    maxPlayersPerGame:10,
+    map:"deathmatch"
 }

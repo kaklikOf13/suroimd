@@ -13,9 +13,7 @@ export const Config = {
 
     maxTeamSize: TeamSize.Solo,
 
-    maxPlayersPerGame: 70,
     maxGames: 5,
-    gameJoinTime: 60,
 
     tps: 40,
 
@@ -95,19 +93,9 @@ export interface ConfigType {
     }
 
     /**
-     * The maximum number of players allowed to join a game.
-     */
-    readonly maxPlayersPerGame: number
-
-    /**
      * The maximum number of concurrent games.
      */
     readonly maxGames: number
-
-    /**
-     * The number of seconds after which players are prevented from joining a game.
-     */
-    readonly gameJoinTime: number
 
     /**
      * The number of game ticks that occur per second.

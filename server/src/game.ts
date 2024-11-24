@@ -213,13 +213,13 @@ export class Game implements GameData {
         const { width, height } = Maps[Config.map.split(":")[0] as MapName];
         this.grid = new Grid(this, width, height);
 
-        this.map = new GameMap(this, Config.map);
-
         if(gamemode){
             this.gamemode=mergeDeep(DefaultGamemode,gamemode)
         }else{
             this.gamemode=DefaultGamemode
         }
+
+        this.map = new GameMap(this, this.gamemode.map||Config.map);
 
         this.gas = new Gas(this);
 
@@ -448,7 +448,7 @@ export class Game implements GameData {
             }, 2000);
         }
 
-        if (this.aliveCount >= Config.maxPlayersPerGame) {
+        if (this.aliveCount >= this.gamemode.maxPlayersPerGame) {
             this.createNewGame();
         }
 
@@ -794,7 +794,7 @@ export class Game implements GameData {
             this.gas.advanceGasStage();
             this.map.generate_after_start();
 
-            this.addTimeout(this.createNewGame.bind(this), Config.gameJoinTime * 1000);
+            this.addTimeout(this.createNewGame.bind(this), this.gamemode.joinTime * 1000);
 
             this.addTimeout(this.IATargetCheck.bind(this),3000);
         }
