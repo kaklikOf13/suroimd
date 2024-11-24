@@ -42,7 +42,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
     () => [
         {
             name: "Barrel",
-            damage: 110,
+            damage: 130,
             obstacleMultiplier: 1,
             radius: {
                 min: 8,
@@ -54,7 +54,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             },
             animation: {
                 duration: 1000,
-                tint: 0x91140b,
+                tint: 0x91160b,
                 scale: 1.5
             },
             shrapnelCount: 10,
@@ -69,7 +69,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
         },
         {
             name: "Stove",
-            damage: 110,
+            damage: 130,
             obstacleMultiplier: 2,
             radius: {
                 min: 8,
@@ -123,7 +123,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
         },
         {
             name: "Control Panel",
-            damage: 110,
+            damage: 130,
             obstacleMultiplier: 1.5,
             radius: {
                 min: 8,
@@ -150,7 +150,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
         },
         {
             name: "Super Barrel",
-            damage: 140,
+            damage: 160,
             obstacleMultiplier: 1,
             radius: {
                 min: 8,
@@ -177,7 +177,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
         },
         {
             name: "Small Refinery Barrel",
-            damage: 180,
+            damage: 200,
             obstacleMultiplier: 2,
             radius: {
                 min: 16,
@@ -189,7 +189,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             },
             animation: {
                 duration: 1500,
-                tint: 0x91140b,
+                tint: 0x91160b,
                 scale: 2.5
             },
             shrapnelCount: 25,
@@ -355,7 +355,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
         },
         {
             name: "Frag Grenade",
-            damage: 100,
+            damage: 120,
             obstacleMultiplier: 1.15,
             radius: {
                 min: 10,
@@ -367,7 +367,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             },
             animation: {
                 duration: 1000,
-                tint: 0x91140b,
+                tint: 0x91160b,
                 scale: 1.5
             },
             shrapnelCount: 10,
@@ -384,7 +384,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
         },
         {
             name: "Ice Grenade",
-            damage: 60,
+            damage: 70,
             obstacleMultiplier: 1.15,
             radius: {
                 min: 7,
@@ -416,7 +416,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
         },
         {
             name: "Mirv Grenade",
-            damage: 75,
+            damage: 120,
             obstacleMultiplier: 1.2,
             radius: {
                 min: 10,
@@ -451,7 +451,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
         },
         {
             name: "SubMirv Grenade",
-            damage: 40,
+            damage: 50,
             obstacleMultiplier: 1.15,
             radius: {
                 min: 5,
@@ -509,7 +509,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
         },
         {
             name: "C4",
-            damage: 110,
+            damage: 130,
             obstacleMultiplier: 1.15,
             radius: {
                 min: 10,
@@ -521,7 +521,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             },
             animation: {
                 duration: 1000,
-                tint: 0x91140b,
+                tint: 0x91160b,
                 scale: 1.5
             },
             shrapnelCount: 10,
@@ -550,7 +550,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             },
             animation: {
                 duration: 1000,
-                tint: 0x91140b,
+                tint: 0x91160b,
                 scale: 1.5
             },
             sound: "pumpkin_bomb",
