@@ -282,14 +282,46 @@ export const TentTints = {
 };
 
 export const defaultUnlockGuns:string[]=[
+    "g19",
+    "dual_g19",
+    "cz75a",
+    "dual_cz75a",
+    "mp40",
+    "saf200",
+    "micro_uzi",
+    "vector",
+    "vss",
+
+    "m1895",
+    "dual_m1895",
     "ak47",
+    "mcx_spear",
+    "arx160",
+    "lewis_gun",
+    "mosin_nagant",
+    "sr25",
+
     "aug",
-    "model_37",
+    "m16a4",
+    "stoner_63",
+    "mg36",
+    "cz600",
+    "mini14",
+
     "hp18",
-    "m3k"
+    "flues",
+    "model_37",
+    "m3k",
+    "vepr12",
 ]
 export const defaultUnlockMelees:string[]=[
-    "baseball_bat"
+    "baseball_bat",
+    "sickle",
+    "kbar",
+    "hatchet",
+    "fire_hatchet",
+    "crowbar",
+    "gas_can"
 ]
 export const defaultUnlockWeapons:(string)[][]=[
     defaultUnlockGuns,
