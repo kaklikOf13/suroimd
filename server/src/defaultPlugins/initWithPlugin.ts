@@ -21,6 +21,7 @@ export const startsWithD={
 
         "canDrop":true,
         "skin":"",
+        "metalicBody":false,
 
         "perks":[] as PerkIds[],
     },
@@ -81,6 +82,9 @@ export class InitWithPlugin extends GamePlugin {
             if(startsWith.equipaments.infinityAmmo){
                 player.infinityAmmo=true
             }
+            if(startsWith.equipaments.metalicBody){
+                player.metalicBody=true
+            }
             player.canDrop=startsWith.equipaments.canDrop===undefined?true:startsWith.equipaments.canDrop
             if(startsWith.equipaments.gun1&&Guns.fromStringSafe(startsWith.equipaments.gun1)){
                 player.inventory.replaceWeapon(0,startsWith.equipaments.gun1);
@@ -123,6 +127,8 @@ export class InitWithPlugin extends GamePlugin {
         if(startsWith.size>0){
             player.sizeMod=startsWith.size
         }
+        player.canDespawn=false
+        player.invulnerable=false
         //Dirty
         player.setDirty()
         for(const k of Object.keys(player.dirty)){

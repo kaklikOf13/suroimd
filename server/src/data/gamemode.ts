@@ -4,8 +4,9 @@ import { DefaultGasStages, GasStage } from "./gasStages"
 import { type PluginDefinition } from "../pluginManager"
 import { InitWithPlugin, startsWithD } from "../defaultPlugins/initWithPlugin"
 import { type Maps } from "./maps"
-import { mergeDeep } from "@common/utils/misc"
+import { mergeDeep,cloneDeep } from "@common/utils/misc"
 import { PerkIds } from "@common/definitions/perks"
+import { RemoveLootAfterTimePlugin } from "../defaultPlugins/removeLootAfterTime"
 export const enum GasMode {
     Staged,
     Debug,
@@ -129,7 +130,8 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
             ]
         },
         plugins:[
-            {construct:InitWithPlugin}
+            {construct:InitWithPlugin,params:startsWithD},
+            {construct:RemoveLootAfterTimePlugin}
         ],
         joinTime:(60*7)+10,
         weaponsSelect:true,
@@ -146,7 +148,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
             //Monster
             {
                 construct:InitWithPlugin,
-                params:mergeDeep(startsWithD,{
+                params:mergeDeep(cloneDeep(startsWithD),{
                     monster:1,
                     maxHealth:2,
                     group:1,
@@ -156,7 +158,9 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                         gun1:"vepr12",
                         gun2:"l115a1",
                         skin:"hasanger",
-                        perks:[PerkIds.Flechettes,PerkIds.SabotRounds,PerkIds.InfiniteAmmo]
+                        vest:"ultra_vest",
+                        metalicBody:true,
+                        perks:[PerkIds.Flechettes,PerkIds.SabotRounds,PerkIds.InfiniteAmmo,PerkIds.FieldMedic]
                     }
                 })
             }

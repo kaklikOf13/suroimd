@@ -92,6 +92,14 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
                 }
             ),
             vest(
+                ["Ultra"],
+                {
+                    level: 4,
+                    damageReduction: 0.3,
+                    color: 0xde0b51
+                }
+            ),
+            vest(
                 ["Developr"],
                 {
                     level: 99,

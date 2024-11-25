@@ -271,6 +271,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     autoReload:boolean=true
     infinityAmmo:boolean=false
     canDrop:boolean=true
+    metalicBody:boolean=false
 
     readonly inventory = new Inventory(this);
 

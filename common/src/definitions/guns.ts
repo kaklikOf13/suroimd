@@ -1180,7 +1180,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     damage: 8.5,
                     obstacleMultiplier: 1,
                     speed: 0.25,
-                    range: 160
+                    range: 110
                 }
             },
             {
