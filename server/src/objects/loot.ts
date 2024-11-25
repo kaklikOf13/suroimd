@@ -443,7 +443,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 break;
             }
             case ItemType.Skin: {
-                if (player.loadout.skin === definition) {
+                if (player.loadout.skin === definition||!player.canChangeSkin) {
                     countToRemove = 0; // eipi's fix
                     break;
                 }

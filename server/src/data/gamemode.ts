@@ -64,6 +64,11 @@ export interface Gamemode{
     readonly start_after:number
     readonly defaultGroup:number
     readonly adrenalineLoss:number
+    readonly button?:{
+        readonly icon: string,
+        readonly buttonCss: string,
+        readonly buttonText: string,
+    }
 }
 export const DefaultGamemode:Gamemode={
     gas:{
@@ -90,6 +95,11 @@ export const DefaultGamemode:Gamemode={
 export const Gamemodes:Record<string,Partial<Gamemode>>={
     deathmatch:{
         adrenalineLoss:0.0001,
+        button:{
+            buttonCss:"btn-redmode",
+            buttonText:"deathmatch",
+            icon:"img/misc/player_icon.svg"
+        },
         gas:{
             mode:GasMode.Staged,
             stages:[
@@ -149,6 +159,11 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
         start_after:60,
         joinTime:70,
         maxPlayersPerGame:36,
+        button:{
+            buttonCss:"btn-redmode",
+            buttonText:"monster-hunter",
+            icon:""
+        },
         plugins:[
             //Monster
             {
@@ -158,7 +173,12 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                     maxHealth:2,
                     group:1,
                     dropAll:true,
-                    size:1.17,
+                    size:1.2,
+                    dropable:{
+                        vest:false,
+                        perks:false,
+                        skin:false,
+                    },
                     equipaments:{
                         canDrop:false,
                         gun1:"vepr12",

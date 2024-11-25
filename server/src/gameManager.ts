@@ -11,9 +11,9 @@ import { maxTeamSize } from "./server";
 import { Logger } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
 import Cron from "croner";
-let currentGamemode:string=typeof Config.gamemode==="string"?Config.gamemode:(Config.gamemode.rotation[0]??undefined)
+export let currentGamemode:string=typeof Config.gamemode==="string"?Config.gamemode:(Config.gamemode.rotation[0]??undefined)
 let gamemodeIndex = 0;
-let gamemodeSwitchCron: Cron | undefined;
+export let gamemodeSwitchCron: Cron | undefined;
 export interface WorkerInitData {
     readonly id: number
     readonly maxTeamSize: number

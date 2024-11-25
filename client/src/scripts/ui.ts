@@ -46,6 +46,12 @@ interface RegionInfo {
     readonly maxTeamSize?: number
     readonly nextSwitchTime?: number
     readonly ping?: number
+    readonly modeNextSwitchTime?: number,
+    readonly gamemode?:{
+        readonly icon: string,
+        readonly buttonCss: string,
+        readonly buttonText: string
+    }
 }
 
 let selectedRegion: RegionInfo | undefined;
@@ -73,24 +79,44 @@ export function resetPlayButtons(): void {
     $("#splash-options").removeClass("loading");
     $("#loading-text").text(getTranslatedString("loading_connecting"));
 
-    const { maxTeamSize } = selectedRegion ?? regionInfo[Config.defaultRegion];
+    const { maxTeamSize,gamemode,modeNextSwitchTime } = selectedRegion ?? regionInfo[Config.defaultRegion];
 
-    const isSolo = maxTeamSize === TeamSize.Solo;
+    if(modeNextSwitchTime){
+        $("#locked-msg2").toggle(true);
+    }
 
-    for (
-        const [size, btn] of (
-            btnMap ??= [
-                [TeamSize.Solo, $("#btn-play-solo")],
-                [TeamSize.Duo, $("#btn-play-duo")],
-                [TeamSize.Squad, $("#btn-play-squad")]
-            ]
-        )
-    // stfu
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
-    ) btn.toggleClass("locked", maxTeamSize !== undefined && maxTeamSize !== size);
+    if(gamemode){
+        $("#btn-play-solo").toggleClass(gamemode.buttonCss)
+        $("#btn-play-solo").text(getTranslatedString(gamemode.buttonText as TranslationKeys))
 
-    $("#team-option-btns").toggleClass("locked", isSolo);
-    $("#locked-msg").css("top", isSolo ? "225px" : "153px").toggle(maxTeamSize !== undefined);
+        if(gamemode.icon){
+            const icon=document.createElement("div")
+            icon.className="btn-play-icon"
+            document.getElementById("btn-play-solo")?.appendChild(icon)
+            icon.style.backgroundImage=`url("./${gamemode.icon}")`
+        }
+
+        for (const btn of [$("#btn-play-duo"),$("#btn-play-squad")]){
+            btn.toggleClass("locked", true);
+        }
+    }else{
+        const isSolo = maxTeamSize === TeamSize.Solo;
+
+        for (
+            const [size, btn] of (
+                btnMap ??= [
+                    [TeamSize.Solo, $("#btn-play-solo")],
+                    [TeamSize.Duo, $("#btn-play-duo")],
+                    [TeamSize.Squad, $("#btn-play-squad")]
+                ]
+            )
+        // stfu
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-comparison
+        ) btn.toggleClass("locked", maxTeamSize !== undefined && maxTeamSize !== size);
+
+        $("#team-option-btns").toggleClass("locked", isSolo);
+        $("#locked-msg").css("top", isSolo ? "225px" : "153px").toggle(maxTeamSize !== undefined);
+    }
 }
 
 export async function setUpUI(game: Game): Promise<void> {
@@ -188,19 +214,36 @@ export async function setUpUI(game: Game): Promise<void> {
 
     const pad = (n: number): string | number => n < 10 ? `0${n}` : n;
     const updateSwitchTime = (): void => {
-        if (!selectedRegion?.nextSwitchTime) {
+
+        //TEAMS
+        if (selectedRegion?.nextSwitchTime) {
+            const millis = selectedRegion.nextSwitchTime - Date.now();
+            if (millis < 0) {
+                location.reload();
+                return;
+            }
+            const hours = Math.floor(millis / 3600000) % 24;
+            const minutes = Math.floor(millis / 60000) % 60;
+            const seconds = Math.floor(millis / 1000) % 60;
+            ui.lockedTime.text(`${pad(hours)}:${pad(minutes)}:${pad(seconds)}`);
+        }else{
             ui.lockedTime.text("--:--:--");
-            return;
         }
-        const millis = selectedRegion.nextSwitchTime - Date.now();
-        if (millis < 0) {
-            location.reload();
-            return;
+
+        //GAMEMODE
+        if (selectedRegion?.modeNextSwitchTime) {
+            const millis = selectedRegion.modeNextSwitchTime - Date.now();
+            if (millis < 0) {
+                location.reload();
+                return;
+            }
+            const hours = Math.floor(millis / 3600000) % 24;
+            const minutes = Math.floor(millis / 60000) % 60;
+            const seconds = Math.floor(millis / 1000) % 60;
+            ui.lockedTime2.text(`${pad(hours)}:${pad(minutes)}:${pad(seconds)}`);
+        }else{
+            ui.lockedTime2.text("--:--:--");
         }
-        const hours = Math.floor(millis / 3600000) % 24;
-        const minutes = Math.floor(millis / 60000) % 60;
-        const seconds = Math.floor(millis / 1000) % 60;
-        ui.lockedTime.text(`${pad(hours)}:${pad(minutes)}:${pad(seconds)}`);
     };
     setInterval(updateSwitchTime, 1000);
 

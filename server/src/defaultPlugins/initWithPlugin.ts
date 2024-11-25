@@ -31,6 +31,7 @@ export const startsWithD={
     maxHealth:-1,
     size:-1,
     dropAll:false,
+    dropable:{} as Partial<Player["dropable"]>,
     items:{
         "gauze":15,
         "medikit":4,
@@ -105,6 +106,7 @@ export class InitWithPlugin extends GamePlugin {
             }
 
             if(Skins.hasString(startsWith.equipaments.skin)){
+                player.canChangeSkin=false
                 player.loadout.skin=Skins.fromString(startsWith.equipaments.skin)
             }
         }
@@ -127,12 +129,14 @@ export class InitWithPlugin extends GamePlugin {
         if(startsWith.size>0){
             player.sizeChange=startsWith.size
         }
+        for(const k of Object.keys(startsWith.dropable)){
+            //@ts-ignore
+            player.dropable[k]=startsWith.dropable[k]
+        }
         player.canDespawn=false
         player.invulnerable=false
         //Dirty
         player.setDirty()
-        for(const k of Object.keys(player.dirty)){
-            player.dirty[k as keyof typeof player.dirty]=true
-        }
+        player.dirtyUI()
     }
 }

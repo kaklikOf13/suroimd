@@ -11,11 +11,12 @@ import { type WebSocket } from "uWebSockets.js";
 import { isMainThread } from "worker_threads";
 import { version } from "../../package.json";
 import { Config } from "./config";
-import { findGame, games, newGame, WorkerMessages } from "./gameManager";
+import { currentGamemode, findGame, games, newGame, WorkerMessages,gamemodeSwitchCron } from "./gameManager";
 import { CustomTeam, CustomTeamPlayer, type CustomTeamPlayerContainer } from "./team";
 import IPChecker, { Punishment } from "./utils/apiHelper";
 import { cleanUsername, Logger } from "./utils/misc";
 import { cors, createServer, forbidden, getIP, textDecoder } from "./utils/serverHelpers";
+import { Gamemodes } from "./data/gamemode";
 
 let punishments: Punishment[] = [];
 
@@ -83,7 +84,8 @@ if (isMainThread) {
             .end(JSON.stringify({
                 playerCount: games.reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0),
                 maxTeamSize,
-
+                gamemode:Gamemodes[currentGamemode].button,
+                modeNextSwitchTime: gamemodeSwitchCron?.nextRun()?.getTime(),
                 nextSwitchTime: maxTeamSizeSwitchCron?.nextRun()?.getTime(),
                 protocolVersion: GameConstants.protocolVersion
             }));

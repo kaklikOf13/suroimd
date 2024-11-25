@@ -268,11 +268,25 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         perks: true,
         group: true
     };
+    dirtyUI():void{
+        for(const k of Object.keys(this.dirty)){
+            this.dirty[k as keyof typeof this.dirty]=true
+        }
+    }
 
     autoReload:boolean=true
     infinityAmmo:boolean=false
     canDrop:boolean=true
+    canChangeSkin:boolean=true
     metalicBody:boolean=false
+
+    dropable={
+        skin:true,
+        vest:true,
+        helmet:true,
+        backpack:true,
+        perks:true,
+    }
 
     readonly inventory = new Inventory(this);
 
@@ -2207,6 +2221,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         // Drop equipment
         for (const itemType of ["helmet", "vest", "backpack"] as const) {
+            if(!this.dropable[itemType]){
+                continue
+            }
             const item = this.inventory[itemType];
             if (item?.noDrop === false) {
                 this.game.addLoot(item, this.position, this.layer);
@@ -2215,18 +2232,22 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         this.inventory.helmet = this.inventory.vest = undefined;
 
-        // Drop skin
-        const { skin } = this.loadout;
-        if (skin.hideFromLoadout && !skin.noDrop) {
+        if(this.dropable.skin){
+            // Drop skin
+            const { skin } = this.loadout;
+            if (skin.hideFromLoadout && !skin.noDrop) {
 
-            this.game.addLoot(skin, position, layer);
+                this.game.addLoot(skin, position, layer);
+            }
         }
 
-        for (const perk of this.perks) {
-            if (!perk.noDrop) {
-                this.game.addLoot(perk, position, layer);
-            } else if (perk.noDrop && perk.category === PerkCategories.Halloween) {
-                this.game.addLoot(PerkIds.PlumpkinGamble, position, layer);
+        if(this.dropable.perks){
+            for (const perk of this.perks) {
+                if (!perk.noDrop) {
+                    this.game.addLoot(perk, position, layer);
+                } else if (perk.noDrop && perk.category === PerkCategories.Halloween) {
+                    this.game.addLoot(PerkIds.PlumpkinGamble, position, layer);
+                }
             }
         }
     }

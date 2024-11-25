@@ -266,6 +266,10 @@ export class UIManager {
         lockedTooltip: $<HTMLDivElement>("#locked-tooltip"),
         lockedTime: $<HTMLSpanElement>("#locked-time"),
 
+        lockedInfo2: $<HTMLButtonElement>("#locked-info2"),
+        lockedTooltip2: $<HTMLDivElement>("#locked-tooltip2"),
+        lockedTime2: $<HTMLSpanElement>("#locked-time2"),
+
         warningTitle: $<HTMLHeadingElement>("#warning-modal-title"),
         warningText: $<HTMLParagraphElement>("#warning-modal-text"),
         warningAgreeOpts: $<HTMLDivElement>("#warning-modal-agree-options"),
