@@ -112,8 +112,11 @@ export class Game {
 
     activePlayerID = -1;
     teamID = -1;
+    groupID=-1;
 
     teamMode = false;
+    groupMode = false;
+
 
     /**
      * proxy for `activePlayer`'s layer
@@ -678,6 +681,10 @@ export class Game {
         if (this.teamMode = packet.maxTeamSize !== TeamSize.Solo) {
             this.teamID = packet.teamID;
         }
+
+        console.log(packet.groupMode);
+
+        this.groupMode = packet.groupMode;
 
         ui.canvas.addClass("active");
         ui.splashUi.fadeOut(400, resetPlayButtons);

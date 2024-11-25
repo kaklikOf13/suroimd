@@ -42,7 +42,7 @@ import { Player, type PlayerContainer } from "./objects/player";
 import { SyncedParticle } from "./objects/syncedParticle";
 import { ThrowableProjectile } from "./objects/throwableProj";
 import { PluginManager } from "./pluginManager";
-import { Team } from "./team";
+import { Group, Team } from "./team";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { cleanUsername, Logger, removeFrom } from "./utils/misc";
@@ -104,7 +104,8 @@ export class Game implements GameData {
     
 
     readonly teams = new SetArray<Team>();
-    readonly npcTeams=new Map<number,Team>()
+    readonly npcTeams = new Map<number,Team>();
+    readonly groups = new Map<number,Group>();
 
     private _nextTeamID = -1;
     get nextTeamID(): number { return ++this._nextTeamID; }
@@ -423,9 +424,9 @@ export class Game implements GameData {
             this._started
             && !this.over
             && (
-                this.teamMode
+                this.gamemode.group ? new Set([...this.livingPlayers].map(p => p.groupID)).size <= 1:(this.teamMode
                     ? this.aliveCount <= (this.maxTeamSize as number) && new Set([...this.livingPlayers].map(p => p.teamID)).size <= 1
-                    : this.aliveCount <= 1
+                    : this.aliveCount <= 1)
             )
         ) {
             this.pluginManager.emit("game_end", this);
@@ -556,6 +557,17 @@ export class Game implements GameData {
                 ...options
             } as KillFeedPacketData & { readonly messageType: Message })
         );
+    }
+
+    addPlayerIntoGroup(player:Player,id:number){
+        if(id>=this.groups.size){
+            this.groups.set(id,new Group(id))
+            this.groups.get(id)!.addPlayer(player)
+        }else{
+            this.groups.get(id)!.addPlayer(player)
+        }
+        player.dirty.group=true
+        player.setDirty()
     }
 
     addPlayer(socket: WebSocket<PlayerContainer>): Player | undefined {
@@ -741,6 +753,7 @@ export class Game implements GameData {
                 {
                     maxTeamSize: this.maxTeamSize,
                     teamID: player.teamID ?? 0,
+                    groupMode:this.gamemode.group,
                     emotes: player.loadout.emotes
                 }
             )
@@ -763,7 +776,7 @@ export class Game implements GameData {
         ) {
             this.startTimeout = this.addTimeout(() => {
                 this.StartGame()
-            }, 3000);
+            }, this.gamemode.start_after*1000);
         }
 
         Logger.log(`Game ${this.id} | "${player.name}" joined`);
@@ -786,6 +799,11 @@ export class Game implements GameData {
                 ).catch(console.error);
             }
         }
+
+        if(this.gamemode.group){
+            this.addPlayerIntoGroup(player,this.gamemode.defaultGroup)
+        }
+
         this.pluginManager.emit("player_did_join", { player, joinPacket: packet });
     }
     StartGame(){
@@ -795,8 +813,9 @@ export class Game implements GameData {
             this.gas.advanceGasStage();
             this.map.generate_after_start();
 
-            this.addTimeout(this.createNewGame.bind(this), this.gamemode.joinTime * 1000);
+            this.pluginManager.emit("game_started",this)
 
+            this.addTimeout(this.createNewGame.bind(this), this.gamemode.joinTime * 1000);
             this.addTimeout(this.IATargetCheck.bind(this),3000);
         }
     }

@@ -2,8 +2,10 @@ import { GasState, Layer } from "@common/constants"
 import { Vector } from "@common/utils/vector"
 import { DefaultGasStages, GasStage } from "./gasStages"
 import { type PluginDefinition } from "../pluginManager"
-import { InitWithPlugin } from "../defaultPlugins/initWithPlugin"
+import { InitWithPlugin, startsWithD } from "../defaultPlugins/initWithPlugin"
 import { type Maps } from "./maps"
+import { mergeDeep } from "@common/utils/misc"
+import { PerkIds } from "@common/definitions/perks"
 export const enum GasMode {
     Staged,
     Debug,
@@ -57,6 +59,9 @@ export interface Gamemode{
     readonly joinTime:number
     readonly maxPlayersPerGame:number
     readonly map?:`${keyof typeof Maps}${string}`
+    readonly group:boolean
+    readonly start_after:number
+    readonly defaultGroup:number
 }
 export const DefaultGamemode:Gamemode={
     gas:{
@@ -71,7 +76,10 @@ export const DefaultGamemode:Gamemode={
     maxPlayersPerGame: 70,
     spawn:{
         mode:SpawnMode.Normal
-    }
+    },
+    start_after:5,
+    defaultGroup:-1,
+    group:false
 }
 
 export const Gamemodes:Record<string,Partial<Gamemode>>={
@@ -127,6 +135,30 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
         weaponsSelect:true,
         maxPlayersPerGame:10,
         map:"deathmatch"
+    },
+    monster_hunter:{
+        group:true,
+        defaultGroup:0,
+        start_after:30,
+        plugins:[
+            //Monster
+            {
+                construct:InitWithPlugin,
+                params:mergeDeep(startsWithD,{
+                    monster:1,
+                    maxHealth:200,
+                    group:1,
+                    dropAll:true,
+                    equipaments:{
+                        canDrop:false,
+                        gun1:"vepr12",
+                        gun2:"l115a1",
+                        skin:"hasanger",
+                        perks:[PerkIds.Flechettes,PerkIds.SabotRounds,PerkIds.InfiniteAmmo]
+                    }
+                })
+            }
+        ]
     },
     normal:DefaultGamemode
 }

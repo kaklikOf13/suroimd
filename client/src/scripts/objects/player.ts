@@ -37,6 +37,7 @@ import type { AllowedEmoteSources } from "@common/packets/inputPacket";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
+    groupID!: number;
 
     activeItem: WeaponDefinition = Loots.fromString("fists");
 
@@ -163,8 +164,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             body: new SuroiSprite(),
             leftFist: new SuroiSprite(),
             rightFist: new SuroiSprite(),
-            leftLeg: game.teamMode ? new SuroiSprite().setPos(-35, 26).setZIndex(-1) : undefined,
-            rightLeg: game.teamMode ? new SuroiSprite().setPos(-35, -26).setZIndex(-1) : undefined,
+            leftLeg: (game.teamMode||game.groupMode) ? new SuroiSprite().setPos(-35, 26).setZIndex(-1) : undefined,
+            rightLeg: (game.teamMode||game.groupMode) ? new SuroiSprite().setPos(-35, -26).setZIndex(-1) : undefined,
             backpack: new SuroiSprite().setPos(-35, 0).setVisible(false).setZIndex(-1),
             helmet: new SuroiSprite().setPos(-8, 0).setVisible(false).setZIndex(6),
             weapon: new SuroiSprite().setZIndex(3),
@@ -181,7 +182,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.body,
             this.images.leftFist,
             this.images.rightFist,
-            ...(game.teamMode ? [this.images.leftLeg, this.images.rightLeg] as readonly SuroiSprite[] : []),
+            ...((game.teamMode||game.groupMode) ? [this.images.leftLeg, this.images.rightLeg] as readonly SuroiSprite[] : []),
             this.images.backpack,
             this.images.helmet,
             this.images.weapon,
@@ -509,6 +510,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     downed,
                     beingRevived,
                     teamID,
+                    groupID,
                     invulnerable,
                     activeItem,
                     sizeMod,
@@ -567,6 +569,11 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             // this.layer = data.layer; - why assign again?
 
             this.teamID = teamID;
+            this.groupID=groupID;
+            if(this.isActivePlayer){
+                this.game.groupID=this.groupID
+            }
+
             if (
                 !this.isActivePlayer
                 && !this.teammateName
@@ -1267,12 +1274,15 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     }
 
     canInteract(player: Player): boolean {
-        return this.game.teamMode
-            && !player.downed
+        return !player.downed
             && this.downed
             && !this.beingRevived
             && this !== player
-            && this.teamID === player.teamID;
+            && ((this.game.teamMode
+            && this.teamID === player.teamID)||(
+                this.game.groupMode
+                && this.groupID==player.groupID
+            ));
     }
 
     showEmote(type: AllowedEmoteSources): void {

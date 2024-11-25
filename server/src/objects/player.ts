@@ -28,7 +28,7 @@ import { UpdatePacket, type PlayerData, type UpdatePacketDataCommon, type Update
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, isVisibleFromLayer } from "@common/utils/layer";
 import { Collision, EaseFunctions, Geometry, Numeric } from "@common/utils/math";
-import { ExtendedMap, type SDeepMutable, type SMutable, type Timeout } from "@common/utils/misc";
+import { ExtendedMap, Timeout, type SDeepMutable, type SMutable } from "@common/utils/misc";
 import { defaultModifiers, ItemType, type EventModifiers, type ExtendedWearerAttributes, type PlayerModifiers, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { pickRandomInArray, randomPointInsideCircle, weightedRandom } from "@common/utils/random";
@@ -46,7 +46,7 @@ import { CountableInventoryItem, InventoryItem } from "../inventory/inventoryIte
 import { MeleeItem } from "../inventory/meleeItem";
 import { ServerPerkManager, UpdatablePerkDefinition } from "../inventory/perkManager";
 import { ThrowableItem } from "../inventory/throwableItem";
-import { type Team } from "../team";
+import { Group, type Team } from "../team";
 import { removeFrom } from "../utils/misc";
 import { BaseGameObject, DamageParams, GameObject } from "./gameObject";
 import { GoapAgent } from "../utils/goap";
@@ -116,6 +116,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.dirty.teammates = true;
         this._team = value;
     }
+
+    group?: Group;
+    groupID: number=-1;
 
     private _kills = 0;
     get kills(): number { return this._kills; }
@@ -260,11 +263,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         zoom: true,
         layer: true,
         activeC4s: true,
-        perks: true
+        perks: true,
+        group: true
     };
 
     autoReload:boolean=true
     infinityAmmo:boolean=false
+    canDrop:boolean=true
 
     readonly inventory = new Inventory(this);
 
@@ -1684,7 +1689,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 && (source.teamID === this.teamID&&source.isNpc===this.isNpc)
                 && source.id !== this.id
                 && !this.disconnected
-            )
+            ) || (source instanceof Player&&source!==this&&this.game.gamemode.group&&source.groupID==this.groupID)
         ) return;
 
         amount = this._clampDamageAmount(amount);
@@ -1744,14 +1749,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         });
         if (this.health <= 0 && !this.dead) {
             if (
-                this.game.teamMode
-
-                // teamMode hopefully guarantees team's existence
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                && this._team!.players.some(p => !p.dead && !p.downed && !p.disconnected && p !== this)
+                ((this.game.teamMode && this._team!.players.some(p => !p.dead && !p.downed && !p.disconnected && p !== this))
+                ||(this.game.gamemode.group&&this.group&&this.group.players.some(p => !p.dead && !p.downed && !p.disconnected && p !== this)))
                 && !this.downed
             ) {
-                this.down(source, weaponUsed);
+                this.game.addTimeout(this.down.bind(this,source, weaponUsed),90);
             } else {
                 if (canTrackStats) {
                     const kills = ++weaponUsed.stats.kills;
@@ -2120,10 +2122,52 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         this.teamWipe();
 
-        //
-        // Drop loot
-        //
+        this.dropAll()
 
+        // Disguise funnies
+        if (this.activeDisguise !== undefined) {
+            const disguiseObstacle = this.game.map.generateObstacle(this.activeDisguise?.idString, this.position, { layer: this.layer });
+            const disguiseDef = Obstacles.reify(this.activeDisguise);
+
+            if (disguiseObstacle !== undefined) {
+                this.game.addTimeout(() => {
+                    disguiseObstacle.damage({
+                        amount: disguiseObstacle.health
+                    });
+                }, 10); // small delay so sound plays
+            }
+
+            if (disguiseDef.explosion) {
+                this.game.addExplosion(disguiseDef.explosion, this.position, this, this.layer);
+            }
+        }
+
+        // Create death marker
+        this.game.grid.addObject(new DeathMarker(this, this.layer));
+
+        // remove all c4s
+        for (const c4 of this.c4s) {
+            c4.damage({ amount: Infinity });
+        }
+
+        // Send game over to dead player
+        if (!this.disconnected) {
+            this.sendGameOverPacket();
+        }
+
+        // Remove player from kill leader
+        if (this === this.game.killLeader) {
+            this.game.killLeaderDead(sourceIsPlayer ? source : undefined);
+        }
+
+        this.hitbox.radius=GameConstants.player.radius
+
+        this.game.pluginManager.emit("player_did_die", {
+            player: this,
+            ...params
+        });
+    }
+    dropAll(){
         const { position, layer } = this;
 
         // Drop weapons
@@ -2182,49 +2226,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 this.game.addLoot(PerkIds.PlumpkinGamble, position, layer);
             }
         }
-
-        // Disguise funnies
-        if (this.activeDisguise !== undefined) {
-            const disguiseObstacle = this.game.map.generateObstacle(this.activeDisguise?.idString, this.position, { layer: this.layer });
-            const disguiseDef = Obstacles.reify(this.activeDisguise);
-
-            if (disguiseObstacle !== undefined) {
-                this.game.addTimeout(() => {
-                    disguiseObstacle.damage({
-                        amount: disguiseObstacle.health
-                    });
-                }, 10); // small delay so sound plays
-            }
-
-            if (disguiseDef.explosion) {
-                this.game.addExplosion(disguiseDef.explosion, this.position, this, this.layer);
-            }
-        }
-
-        // Create death marker
-        this.game.grid.addObject(new DeathMarker(this, layer));
-
-        // remove all c4s
-        for (const c4 of this.c4s) {
-            c4.damage({ amount: Infinity });
-        }
-
-        // Send game over to dead player
-        if (!this.disconnected) {
-            this.sendGameOverPacket();
-        }
-
-        // Remove player from kill leader
-        if (this === this.game.killLeader) {
-            this.game.killLeaderDead(sourceIsPlayer ? source : undefined);
-        }
-
-        this.hitbox.radius=GameConstants.player.radius
-
-        this.game.pluginManager.emit("player_did_die", {
-            player: this,
-            ...params
-        });
     }
 
     teamWipe(): void {
@@ -2301,7 +2302,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             && this.downed
             && !this.beingRevivedBy
             && this !== player
-            && this.teamID === player.teamID;
+            && ((this.groupID===player.groupID&&this.game.gamemode.group)||(this.teamID === player.teamID&&this.game.teamMode));
     }
 
     interact(reviver: Player): void {
@@ -2384,7 +2385,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     break;
                 }
                 case InputActions.DropItem: {
-                    if (action.item.itemType === ItemType.Perk) break;
+                    if (action.item.itemType === ItemType.Perk||!this.canDrop) break;
                     this.action?.cancel();
                     inventory.dropItem(action.item);
                     break;
@@ -2519,6 +2520,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             position: this.position,
             rotation: this.rotation,
             full: {
+                groupID:Math.max(this.groupID,0),
                 layer: this.layer,
                 dead: this.dead,
                 downed: this.downed,

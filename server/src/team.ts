@@ -277,4 +277,53 @@ export class CustomTeamPlayer {
     }
 }
 
+export class Group {
+    readonly id: number;
+
+    private readonly _players: Player[] = [];
+    get players(): readonly Player[] { return this._players; }
+
+    readonly _indexMapping = new Map<Player, number>();
+
+    constructor(id: number) {
+        this.id = id;
+    }
+
+    addPlayer(player: Player): void {
+        if(player.group){
+            player.group.removePlayer(player);
+        }
+        player.group=this
+        player.groupID=this.id
+        this._indexMapping.set(player, this._players.push(player) - 1);
+    }
+
+    removePlayer(player: Player): boolean {
+        const index = this._indexMapping.get(player);
+        const exists = index !== undefined;
+        if (exists) {
+            this._players.splice(index, 1);
+            this._indexMapping.delete(player);
+
+            player.group=undefined
+            player.groupID=-1
+
+            for (const [player, mapped] of this._indexMapping.entries()) {
+                if (mapped <= index) continue;
+                this._indexMapping.set(player, mapped - 1);
+            }
+        }
+
+        return exists;
+    }
+
+    hasLivingPlayers(): boolean {
+        return this.players.some(player => !player.dead && !player.disconnected);
+    }
+
+    getLivingPlayers(): Player[] {
+        return this.players.filter(player => !player.dead && !player.disconnected);
+    }
+}
+
 export interface CustomTeamPlayerContainer { player: CustomTeamPlayer }

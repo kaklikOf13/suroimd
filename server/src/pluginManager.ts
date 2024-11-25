@@ -406,6 +406,15 @@ export const Events = {
      */
     game_created: makeEvent(),
     /**
+      * Emitted when a game is started, near the end of
+     * {@link Game}'s constructor. Relevant websocket
+     * listeners will have been set up, plugins will have been
+     * loaded, and the {@link Grid grid}, {@link GameMap game map},
+     * and {@link Gas gas} will have been loaded. The game
+     * loop will not have been started
+     */
+    game_started: makeEvent(),
+    /**
      * Emitted at the end of a game tick. All side-effects
      * will have occurred (including the potential dispatch
      * of {@link Events.game_end}), but the next tick will
@@ -592,6 +601,7 @@ export interface EventDataMap {
     readonly airdrop_landed: Airdrop
 
     readonly game_created: Game
+    readonly game_started:Game
     readonly game_tick: Game
     readonly game_end: Game
 }
@@ -731,12 +741,6 @@ export class PluginManager {
     }
 
     loadPlugin(pluginD:PluginDefinition): void {
-        for (const plugin of this._plugins) {
-            if (plugin instanceof pluginD.construct) {
-                console.warn(`Plugin ${pluginD.construct.name} already loaded`);
-                return;
-            }
-        }
         try {
             const plugin = new pluginD.construct(this.game,pluginD.params);
             this._plugins.add(plugin);
