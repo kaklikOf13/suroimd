@@ -682,8 +682,6 @@ export class Game {
             this.teamID = packet.teamID;
         }
 
-        console.log(packet.groupMode);
-
         this.groupMode = packet.groupMode;
 
         ui.canvas.addClass("active");
