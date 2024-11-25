@@ -63,6 +63,7 @@ export interface Gamemode{
     readonly group:boolean
     readonly start_after:number
     readonly defaultGroup:number
+    readonly adrenalineLoss:number
 }
 export const DefaultGamemode:Gamemode={
     gas:{
@@ -70,21 +71,25 @@ export const DefaultGamemode:Gamemode={
         stages:DefaultGasStages
     },
     plugins:[],
-    globalDamage:.73,
-    weaponsSelect:false,
-    armorProtection:1,
     joinTime:60,
     maxPlayersPerGame: 70,
     spawn:{
         mode:SpawnMode.Normal
     },
     start_after:5,
+    weaponsSelect:false,
+
+    adrenalineLoss:0.0004,
+    globalDamage:.73,
+    armorProtection:1,
+
     defaultGroup:-1,
-    group:false
+    group:false,
 }
 
 export const Gamemodes:Record<string,Partial<Gamemode>>={
     deathmatch:{
+        adrenalineLoss:0.0001,
         gas:{
             mode:GasMode.Staged,
             stages:[

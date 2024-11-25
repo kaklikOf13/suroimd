@@ -50,6 +50,7 @@ export class ThrowableItem extends CountableInventoryItem<ThrowableDefinition> {
         this._lastUse = owner.game.now;
         owner.animation = AnimationType.ThrowableCook;
         owner.setPartialDirty();
+        owner.dirty.capacity=true;
 
         owner.action?.cancel();
 
@@ -127,6 +128,7 @@ class GrenadeHandler {
         const owner = this.owner;
 
         owner.dirty.weapons = true;
+        owner.dirty.capacity=true;
 
         if (!owner.dead) {
             owner.inventory.removeThrowable(this.definition, false, 1);
@@ -219,6 +221,8 @@ class GrenadeHandler {
             this.parent.owner.layer,
             this.parent
         );
+
+        this.owner.dirty.capacity=true;
 
         if (!this.definition.c4) {
             projectile.velocity = Vec.add(

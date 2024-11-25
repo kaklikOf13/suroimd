@@ -817,6 +817,10 @@ export class Game implements GameData {
 
             this.addTimeout(this.createNewGame.bind(this), this.gamemode.joinTime * 1000);
             this.addTimeout(this.IATargetCheck.bind(this),3000);
+
+            for(const p of this.livingPlayers.values()){
+                p.setDirty()
+            }
         }
     }
 
