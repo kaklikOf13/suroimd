@@ -128,6 +128,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     private _maxHealth = GameConstants.player.defaultHealth;
+    maxHealthChange:number=1;
     get maxHealth(): number { return this._maxHealth; }
     set maxHealth(maxHealth: number) {
         this._maxHealth = maxHealth;
@@ -1904,7 +1905,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             size
         } = this._modifiers = this._calculateModifiers();
 
-        this.maxHealth = GameConstants.player.defaultHealth * maxHealth;
+        this.maxHealth = (GameConstants.player.defaultHealth * maxHealth)*this.maxHealthChange;
         this.maxAdrenaline = GameConstants.player.maxAdrenaline * maxAdrenaline;
         this.minAdrenaline = minAdrenaline;
         this.sizeMod = size;
@@ -2232,6 +2233,23 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         let team: Team | undefined;
         let players: readonly Player[] | undefined;
         if ((players = (team = this._team)?.players)?.every(p => p.dead || p.disconnected || p.downed)) {
+            for (const player of players) {
+                if (player === this) continue;
+
+                player.health = 0;
+                player.die({
+                    source: KillfeedEventType.FinallyKilled
+                });
+            }
+
+            // team can't be nullish here because if it were, it would fail the conditional this code is wrapped in
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            this.game.teams.delete(team!);
+        }
+
+        let group: Group | undefined;
+        players=[]
+        if ((players = (group = this.group)?.players)?.every(p => p.dead || p.disconnected || p.downed)) {
             for (const player of players) {
                 if (player === this) continue;
 

@@ -139,14 +139,16 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
     monster_hunter:{
         group:true,
         defaultGroup:0,
-        start_after:30,
+        start_after:60,
+        joinTime:70,
+        maxPlayersPerGame:36,
         plugins:[
             //Monster
             {
                 construct:InitWithPlugin,
                 params:mergeDeep(startsWithD,{
                     monster:1,
-                    maxHealth:200,
+                    maxHealth:2,
                     group:1,
                     dropAll:true,
                     equipaments:{

@@ -578,7 +578,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 !this.isActivePlayer
                 && !this.teammateName
                 && !this.dead
-                && this.teamID === game.teamID
+                && ((this.teamID === game.teamID&&game.teamMode)||(this.groupID===game.groupID&&game.groupMode))
             ) {
                 const name = game.playerNames.get(this.id);
                 this.teammateName = {

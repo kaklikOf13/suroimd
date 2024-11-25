@@ -116,8 +116,9 @@ export class InitWithPlugin extends GamePlugin {
             player.game.addPlayerIntoGroup(player,startsWith.group)
         }
         if(startsWith.maxHealth>0){
-            player.maxHealth=startsWith.maxHealth as number
-            player.health=startsWith.maxHealth
+            player.maxHealthChange=startsWith.maxHealth
+            player.updateAndApplyModifiers()
+            player.health=player.maxHealth
         }
         if(startsWith.size>0){
             player.sizeMod=startsWith.size
