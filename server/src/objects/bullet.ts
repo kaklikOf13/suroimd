@@ -143,7 +143,7 @@ export class Bullet extends BaseBullet {
                 const rotation = 2 * Math.atan2(normal.y, normal.x) - this.rotation;
                 this.position = Vec.add(this.position, Vec.create(Math.sin(rotation), -Math.cos(rotation)));
 
-                if (definition.onHitExplosion === undefined || !definition.explodeOnImpact) {
+                if ((definition.onHitExplosion === undefined || !definition.explodeOnImpact)&&!(object.hitbox&&object.hitbox!.isPointInside(this.position))) {
                     this.reflect(rotation);
                     this.reflected = true;
                 }

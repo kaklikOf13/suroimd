@@ -125,7 +125,7 @@ export class InitWithPlugin extends GamePlugin {
             player.health=player.maxHealth
         }
         if(startsWith.size>0){
-            player.sizeMod=startsWith.size
+            player.sizeChange=startsWith.size
         }
         player.canDespawn=false
         player.invulnerable=false

@@ -187,6 +187,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.dirty.size = true;
         this.setDirty();
     }
+    sizeChange=1;
 
     private _modifiers = defaultModifiers();
 
@@ -1909,7 +1910,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.maxHealth = (GameConstants.player.defaultHealth * maxHealth)*this.maxHealthChange;
         this.maxAdrenaline = GameConstants.player.maxAdrenaline * maxAdrenaline;
         this.minAdrenaline = minAdrenaline;
-        this.sizeMod = size;
+        this.sizeMod = size*this.sizeChange;
     }
 
     // dies of death

@@ -158,6 +158,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                     maxHealth:2,
                     group:1,
                     dropAll:true,
+                    size:1.17,
                     equipaments:{
                         canDrop:false,
                         gun1:"vepr12",
