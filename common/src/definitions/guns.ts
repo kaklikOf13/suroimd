@@ -1161,7 +1161,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 fireMode: FireMode.Single,
                 shotSpread: 6.5,
                 moveSpread: 7,
-                jitterRadius: 0.5,
+                jitterRadius: 1,
                 bulletCount: 9,
                 length: 7.75,
                 fists: {
@@ -1177,9 +1177,9 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 gasParticles: gasParticlePresets.shotgun,
                 shotsPerReload: 1,
                 ballistics: {
-                    damage: 9,
+                    damage: 8.5,
                     obstacleMultiplier: 1,
-                    speed: 0.27,
+                    speed: 0.25,
                     range: 160
                 }
             },
@@ -1196,9 +1196,9 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 recoilMultiplier: 0.5,
                 recoilDuration: 550,
                 fireMode: FireMode.Single,
-                shotSpread: 10,
-                moveSpread: 12,
-                jitterRadius: 4,
+                shotSpread: 5,
+                moveSpread: 7,
+                jitterRadius: 3.7,
                 bulletCount: 12,
                 length: 7.85,
                 fists: {
@@ -1367,6 +1367,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoSpawnAmount: 20,
                 reloadTime: 2.4,
                 shotsPerReload: 5,
+                recoilDuration:600,
+                recoilMultiplier:.7,
                 fireMode:FireMode.Auto,
                 fireDelay:450,
                 fists: {

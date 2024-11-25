@@ -216,7 +216,6 @@ if (isMainThread) {
     let maxTeamSize = (workerData as WorkerInitData).maxTeamSize;
 
     let gamemode=(workerData as WorkerInitData).gamemode;
-    console.log(gamemode)
 
     let game = new Game(id, maxTeamSize,gamemode);
 
