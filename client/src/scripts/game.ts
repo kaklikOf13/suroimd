@@ -379,7 +379,7 @@ export class Game {
                     this.raining=this.rainingDest
                     this.rainingDest=Math.random()<=GameConstants.natural_events.rain.stopChance?0:Numeric.round(randomFloat(.1,1),3)
                 }
-                if(this.map.terrainGraphics.visible){
+                if(this.map.terrainGraphics.visible&&this.console.getBuiltInCVar("cv_ambient_particles")){
                     const zoom=this.camera.zoom/70
                     const count=Math.ceil(this.raining*GameConstants.natural_events.rain.raindropsCount*zoom)
                     const This=this
