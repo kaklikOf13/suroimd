@@ -66,6 +66,9 @@ export class InitWithPlugin extends GamePlugin {
         }
     }
     protected giveTo(player:Player,startsWith:typeof startsWithD){
+        if(!player){
+            return
+        }
         if(startsWith.dropAll){
             player.dropAll()
         }

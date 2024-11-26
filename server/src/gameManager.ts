@@ -12,8 +12,8 @@ import { Logger } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
 import Cron from "croner";
 export let currentGamemode:string=typeof Config.gamemode==="string"?Config.gamemode:(Config.gamemode.rotation[0]??undefined)
+export let currentGMSTime=0
 let gamemodeIndex = 0;
-export let gamemodeSwitchCron: Cron | undefined;
 export interface WorkerInitData {
     readonly id: number
     readonly maxTeamSize: number
@@ -204,27 +204,36 @@ export async function newGame(id?: number): Promise<number> {
 
 export const games: Record<string,GameContainer | undefined> = {};
 
+
 if (isMainThread) {
     if(typeof Config.gamemode!=="string"){
-        gamemodeSwitchCron = Cron(Config.gamemode.switchSchedule, () => {
-            //@ts-expect-error
-            currentGamemode = Config.gamemode.rotation[gamemodeIndex = (gamemodeIndex + 1) % Config.gamemode.rotation.length];
+        const base=Config.gamemode.switchSchedule
+        currentGMSTime=Config.gamemode.switchSchedule
+        setInterval(() => {
+            if(currentGMSTime<=0){
+                //@ts-expect-error
+                currentGamemode = Config.gamemode.rotation[gamemodeIndex = (gamemodeIndex + 1) % Config.gamemode.rotation.length];
 
-            for(const g of Object.values(games)){
-                if(g){
-                    g.sendMessage({
-                        type:WorkerMessages.Stop,
-                    })
+                for(const g of Object.values(games)){
+                    if(g){
+                        g.sendMessage({
+                            type:WorkerMessages.Stop,
+                        })
+                    }
                 }
+                setTimeout(async()=>{
+                    for(const k of Object.keys(games)){
+                        delete games[k]
+                    }
+                },1000)
+
+                currentGMSTime=base
+
+                Logger.log(`Switching gamemode to ${currentGamemode}`);
+            }else{
+                currentGMSTime--;
             }
-            setTimeout(async()=>{
-                for(const k of Object.keys(games)){
-                    delete games[k]
-                }
-            },1000)
-
-            Logger.log(`Switching gamemode to ${currentGamemode}`);
-        });
+        },1000);
     }
 }else{
     const id = (workerData as WorkerInitData).id;

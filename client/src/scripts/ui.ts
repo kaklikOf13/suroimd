@@ -212,6 +212,8 @@ export async function setUpUI(game: Game): Promise<void> {
 
     ui.lockedInfo.on("click", () => ui.lockedTooltip.fadeToggle(250));
 
+    let nst2=0
+
     const pad = (n: number): string | number => n < 10 ? `0${n}` : n;
     const updateSwitchTime = (): void => {
 
@@ -232,14 +234,15 @@ export async function setUpUI(game: Game): Promise<void> {
 
         //GAMEMODE
         if (selectedRegion?.modeNextSwitchTime) {
-            const millis = selectedRegion.modeNextSwitchTime - Date.now();
-            if (millis < 0) {
-                reloadRegions()
+            nst2++;
+            const time = selectedRegion.modeNextSwitchTime-nst2;
+            if (time < 0) {
+                setTimeout(reloadRegions,1000)
                 return;
             }
-            const hours = Math.floor(millis / 3600000) % 24;
-            const minutes = Math.floor(millis / 60000) % 60;
-            const seconds = Math.floor(millis / 1000) % 60;
+            const hours = Math.floor(time / 3600) % 24;
+            const minutes = Math.floor(time / 60) % 60;
+            const seconds = Math.floor(time / 1) % 60;
             ui.lockedTime2.text(`${pad(hours)}:${pad(minutes)}:${pad(seconds)}`);
         }else{
             ui.lockedTime2.text("--:--:--");
@@ -282,12 +285,17 @@ export async function setUpUI(game: Game): Promise<void> {
                 ping: Date.now() - pingStartTime
             };
 
+            if((!serverInfo.gamemode)&&regionInfo[regionID].gamemode!==undefined){
+                //@ts-expect-error
+                delete regionInfo[regionID].gamemode
+            }
+
             listItem.find(".server-player-count").text(serverInfo.playerCount ?? "-");
 
             console.log(`Loaded server info for region ${regionID}`);
         }
         selectedRegion = regionInfo[game.console.getBuiltInCVar("cv_region") ?? Config.defaultRegion];
-        updateServerSelectors()
+        updateServerSelectors();
     }
     const regionMap = Object.entries(regionInfo);
     const serverList = $<HTMLUListElement>("#server-list");
@@ -323,7 +331,7 @@ export async function setUpUI(game: Game): Promise<void> {
         }
         playerCount.text(selectedRegion.playerCount ?? "-");
         // $("#server-ping").text(selectedRegion.ping && selectedRegion.ping > 0 ? selectedRegion.ping : "-");
-        updateSwitchTime();
+        nst2=0;
         resetPlayButtons();
     };
     reloadRegions()
@@ -341,6 +349,7 @@ export async function setUpUI(game: Game): Promise<void> {
         if (info === undefined) return;
 
         resetPlayButtons();
+        updateSwitchTime();
 
         selectedRegion = info;
 
@@ -1220,7 +1229,6 @@ export async function setUpUI(game: Game): Promise<void> {
             selectedWeaponSlot = slot;
 
             weaponsSlotUiCache[slot] = $(`#weapons-customize-vals #weapons-${slot}`)
-            console.log($(`#weapons-customize-vals #weapons-${slot}`))
             weaponsSlotUiCache[slot].addClass("selected")
 
             weaponsItemContainer

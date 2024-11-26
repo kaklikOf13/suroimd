@@ -11,7 +11,7 @@ import { type WebSocket } from "uWebSockets.js";
 import { isMainThread } from "worker_threads";
 import { version } from "../../package.json";
 import { Config } from "./config";
-import { currentGamemode, findGame, games, newGame, WorkerMessages,gamemodeSwitchCron } from "./gameManager";
+import { currentGamemode, currentGMSTime, findGame, games, newGame, WorkerMessages } from "./gameManager";
 import { CustomTeam, CustomTeamPlayer, type CustomTeamPlayerContainer } from "./team";
 import IPChecker, { Punishment } from "./utils/apiHelper";
 import { cleanUsername, Logger } from "./utils/misc";
@@ -85,7 +85,7 @@ if (isMainThread) {
                 playerCount: Object.values(games).reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0),
                 maxTeamSize,
                 gamemode:Gamemodes[currentGamemode].button,
-                modeNextSwitchTime: gamemodeSwitchCron?.nextRun()?.getTime(),
+                modeNextSwitchTime: currentGMSTime,
                 nextSwitchTime: maxTeamSizeSwitchCron?.nextRun()?.getTime(),
                 protocolVersion: GameConstants.protocolVersion
             }));

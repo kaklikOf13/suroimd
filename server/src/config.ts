@@ -72,7 +72,7 @@ export interface ConfigType {
         /**
          * The duration between switches. Must be a cron pattern.
          */
-        readonly switchSchedule: string
+        readonly switchSchedule: number
         /**
          * The team sizes to switch between.
          */

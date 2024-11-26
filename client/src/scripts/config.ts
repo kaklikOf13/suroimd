@@ -13,7 +13,7 @@ export const Config = {
             gameAddress: "wss://na.suroimd.io:443<ID>"
         }
     },
-    defaultRegion: "na"
+    defaultRegion: "dev"
 } satisfies ConfigType as ConfigType;
 
 export interface ConfigType {
@@ -44,5 +44,11 @@ export interface ServerInfo {
     readonly protocolVersion: number
     readonly playerCount: number
     readonly maxTeamSize: TeamSize
+    readonly modeNextSwitchTime?: number,
+    readonly gamemode:{
+        readonly icon: string,
+        readonly buttonCss: string,
+        readonly buttonText: string
+    }
     readonly nextSwitchTime: number
 };
