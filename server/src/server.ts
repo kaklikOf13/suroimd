@@ -82,7 +82,7 @@ if (isMainThread) {
         res
             .writeHeader("Content-Type", "application/json")
             .end(JSON.stringify({
-                playerCount: games.reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0),
+                playerCount: Object.values(games).reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0),
                 maxTeamSize,
                 gamemode:Gamemodes[currentGamemode].button,
                 modeNextSwitchTime: gamemodeSwitchCron?.nextRun()?.getTime(),
@@ -331,7 +331,7 @@ if (isMainThread) {
             maxTeamSizeSwitchCron = Cron(teamSize.switchSchedule, () => {
                 maxTeamSize = teamSize.rotation[teamSizeRotationIndex = (teamSizeRotationIndex + 1) % teamSize.rotation.length];
 
-                for (const game of games) {
+                for (const game of Object.values(games)) {
                     game?.worker.postMessage({ type: WorkerMessages.UpdateMaxTeamSize, maxTeamSize });
                 }
 

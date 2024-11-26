@@ -200,6 +200,14 @@ export class Game implements GameData {
         return this._idAllocator.takeNext();
     }
 
+    killEveryone(){
+        for(const p of this.livingPlayers.values()){
+            p.die({
+                
+            })
+        }
+    }
+
     constructor(id: number, maxTeamSize: TeamSize,gamemode?:string) {
         this.id = id;
         this.maxTeamSize = maxTeamSize;

@@ -219,6 +219,7 @@ export async function setUpUI(game: Game): Promise<void> {
         if (selectedRegion?.nextSwitchTime) {
             const millis = selectedRegion.nextSwitchTime - Date.now();
             if (millis < 0) {
+                reloadRegions()
                 return;
             }
             const hours = Math.floor(millis / 3600000) % 24;
@@ -233,6 +234,7 @@ export async function setUpUI(game: Game): Promise<void> {
         if (selectedRegion?.modeNextSwitchTime) {
             const millis = selectedRegion.modeNextSwitchTime - Date.now();
             if (millis < 0) {
+                reloadRegions()
                 return;
             }
             const hours = Math.floor(millis / 3600000) % 24;
@@ -243,8 +245,50 @@ export async function setUpUI(game: Game): Promise<void> {
             ui.lockedTime2.text("--:--:--");
         }
     };
-    setInterval(updateSwitchTime, 1000);
+    const reloadRegions=async()=>{
+        for(const [regionID,region] of Object.entries(Config.regions)){
+            const listItem = regionUICache[regionID];
 
+            const pingStartTime = Date.now();
+
+            let serverInfo: ServerInfo | undefined;
+
+            for (let attempts = 0; attempts < 3; attempts++) {
+                console.log(`Loading server info for region ${regionID}: ${region.mainAddress} (attempt ${attempts + 1} of 3)`);
+                try {
+                    if (
+                        serverInfo = await (
+                            await fetch(`${region.mainAddress}/api/serverInfo`, { signal: AbortSignal.timeout(10000) })
+                        )?.json() as ServerInfo
+                    ) break;
+                } catch (e) {
+                    console.error(`Error loading server info for region ${regionID}. Details:`, e);
+                }
+            }
+
+            if (!serverInfo) {
+                console.error(`Unable to load server info for region ${regionID} after 3 attempts`);
+                return;
+            }
+
+            if (serverInfo.protocolVersion !== GameConstants.protocolVersion) {
+                console.error(`Protocol version mismatch for region ${regionID}. Expected ${GameConstants.protocolVersion} (ours), got ${serverInfo.protocolVersion} (theirs)`);
+                return;
+            }
+
+            regionInfo[regionID] = {
+                ...region,
+                ...serverInfo,
+                ping: Date.now() - pingStartTime
+            };
+
+            listItem.find(".server-player-count").text(serverInfo.playerCount ?? "-");
+
+            console.log(`Loaded server info for region ${regionID}`);
+        }
+        selectedRegion = regionInfo[game.console.getBuiltInCVar("cv_region") ?? Config.defaultRegion];
+        updateServerSelectors()
+    }
     const regionMap = Object.entries(regionInfo);
     const serverList = $<HTMLUListElement>("#server-list");
 
@@ -264,50 +308,6 @@ export async function setUpUI(game: Game): Promise<void> {
             `)
         );
     }
-
-    ui.loadingText.text(getTranslatedString("loading_fetching_data"));
-    const regionPromises = Object.entries(regionMap).map(async([_, [regionID, region]]) => {
-        const listItem = regionUICache[regionID];
-
-        const pingStartTime = Date.now();
-
-        let serverInfo: ServerInfo | undefined;
-
-        for (let attempts = 0; attempts < 3; attempts++) {
-            console.log(`Loading server info for region ${regionID}: ${region.mainAddress} (attempt ${attempts + 1} of 3)`);
-            try {
-                if (
-                    serverInfo = await (
-                        await fetch(`${region.mainAddress}/api/serverInfo`, { signal: AbortSignal.timeout(10000) })
-                    )?.json() as ServerInfo
-                ) break;
-            } catch (e) {
-                console.error(`Error loading server info for region ${regionID}. Details:`, e);
-            }
-        }
-
-        if (!serverInfo) {
-            console.error(`Unable to load server info for region ${regionID} after 3 attempts`);
-            return;
-        }
-
-        if (serverInfo.protocolVersion !== GameConstants.protocolVersion) {
-            console.error(`Protocol version mismatch for region ${regionID}. Expected ${GameConstants.protocolVersion} (ours), got ${serverInfo.protocolVersion} (theirs)`);
-            return;
-        }
-
-        regionInfo[regionID] = {
-            ...region,
-            ...serverInfo,
-            ping: Date.now() - pingStartTime
-        };
-
-        listItem.find(".server-player-count").text(serverInfo.playerCount ?? "-");
-
-        console.log(`Loaded server info for region ${regionID}`);
-    });
-    await Promise.all(regionPromises);
-
     const serverName = $<HTMLSpanElement>("#server-name");
     const playerCount = $<HTMLSpanElement>("#server-player-count");
     const updateServerSelectors = (): void => {
@@ -326,9 +326,10 @@ export async function setUpUI(game: Game): Promise<void> {
         updateSwitchTime();
         resetPlayButtons();
     };
+    reloadRegions()
+    setInterval(updateSwitchTime, 1000);
 
-    selectedRegion = regionInfo[game.console.getBuiltInCVar("cv_region") ?? Config.defaultRegion];
-    updateServerSelectors();
+    ui.loadingText.text(getTranslatedString("loading_fetching_data"));
 
     // eslint-disable-next-line @typescript-eslint/no-deprecated
     serverList.children("li.server-list-item").on("click", function(this: HTMLLIElement) {

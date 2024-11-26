@@ -26,7 +26,8 @@ export enum WorkerMessages {
     UpdateGameData,
     UpdateMaxTeamSize,
     CreateNewGame,
-    Reset
+    Reset,
+    Stop
 }
 
 export type WorkerMessage =
@@ -43,9 +44,10 @@ export type WorkerMessage =
         readonly maxTeamSize: TeamSize
     }
     | {
-        readonly type:
-            | WorkerMessages.CreateNewGame
-            | WorkerMessages.Reset
+        readonly type: WorkerMessages.CreateNewGame|WorkerMessages.Stop
+    }| {
+        readonly type: WorkerMessages.Reset
+        readonly gamemode: string
     };
 
 export interface GameData {
@@ -135,7 +137,7 @@ export class GameContainer {
 
 export async function findGame(): Promise<GetGameResponse> {
     let gameID: number;
-    let eligibleGames = games.filter((g?: GameContainer): g is GameContainer => !!g && g.allowJoin && !g.over);
+    let eligibleGames = Object.values(games).filter((g?: GameContainer): g is GameContainer => !!g && g.allowJoin && !g.over);
 
     // Attempt to create a new game if one isn't available
     if (!eligibleGames.length) {
@@ -143,7 +145,7 @@ export async function findGame(): Promise<GetGameResponse> {
         if (gameID !== -1) {
             return { success: true, gameID };
         } else {
-            eligibleGames = games.filter((g?: GameContainer): g is GameContainer => !!g && !g.over);
+            eligibleGames = Object.values(games).filter((g?: GameContainer): g is GameContainer => !!g && !g.over);
         }
     }
 
@@ -181,7 +183,7 @@ export async function newGame(id?: number): Promise<number> {
                 games[id] = new GameContainer(id,currentGamemode, resolve);
             } else if (game.stopped) {
                 game.resolve = resolve;
-                game.sendMessage({ type: WorkerMessages.Reset });
+                game.sendMessage({ type: WorkerMessages.Reset,gamemode:currentGamemode });
             } else {
                 Logger.warn(`Game ${id} | Already exists`);
                 resolve(id);
@@ -200,13 +202,26 @@ export async function newGame(id?: number): Promise<number> {
     });
 }
 
-export const games: Array<GameContainer | undefined> = [];
+export const games: Record<string,GameContainer | undefined> = {};
 
 if (isMainThread) {
     if(typeof Config.gamemode!=="string"){
         gamemodeSwitchCron = Cron(Config.gamemode.switchSchedule, () => {
             //@ts-expect-error
             currentGamemode = Config.gamemode.rotation[gamemodeIndex = (gamemodeIndex + 1) % Config.gamemode.rotation.length];
+
+            for(const g of Object.values(games)){
+                if(g){
+                    g.sendMessage({
+                        type:WorkerMessages.Stop,
+                    })
+                }
+            }
+            setTimeout(async()=>{
+                for(const k of Object.keys(games)){
+                    delete games[k]
+                }
+            },1000)
 
             Logger.log(`Switching gamemode to ${currentGamemode}`);
         });
@@ -240,7 +255,16 @@ if (isMainThread) {
                 break;
             }
             case WorkerMessages.Reset: {
+                gamemode=message.gamemode
+                game.killEveryone()
+                game.StartGame()
                 game = new Game(id, maxTeamSize,gamemode);
+                break;
+            }
+            case WorkerMessages.Stop:{
+                game.killEveryone()
+                game.StartGame()
+                s.close()
                 break;
             }
             case WorkerMessages.UpdateMaxTeamSize: {
@@ -250,7 +274,7 @@ if (isMainThread) {
         }
     });
 
-    createServer().ws("/play", {
+    const s=createServer().ws("/play", {
         idleTimeout: 30,
 
         /**
