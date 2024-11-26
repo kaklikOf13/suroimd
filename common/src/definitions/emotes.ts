@@ -70,6 +70,7 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>("Emotes", [
         "Frustrated Face"
     ].map(name => emote([name, EmoteCategory.People])),
     ...[
+        "Suroimd Logo",
         "Suroi Logo",
         "AEGIS Logo",
         "Flint Logo",

@@ -1085,7 +1085,7 @@ export class Game {
                 if(this.music.instances[0].progress==1){
                     this.music=undefined
                 }
-            }else if(this.playing&&this.gameStarted&&Math.random()<=0.01&&Math.random()<=.1){
+            }else if(this.playing&&this.gameStarted&&Math.random()<=0.01&&Math.random()<=.03){
                 if(this.music&&this.music.instances.length==0){
                     this.music=undefined
                 }

@@ -17,7 +17,6 @@ import { PerkCategories } from "@common/definitions/perks";
 import { Skins } from "@common/definitions/skins";
 import { Backpacks } from "@common/definitions/backpacks";
 import { Guns } from "@common/definitions/guns";
-import { GasStage } from "./gasStages";
 
 export interface RiverDefinition {
     readonly minAmount: number
@@ -105,7 +104,7 @@ const maps = {
             port_complex: 1,
             sea_traffic_control: 1,
             tugboat_red: 2,
-            tugboat_white: 10,
+            tugboat_white: 7,
             armory: 1,
             headquarters: 1,
             small_bunker: 2,
@@ -143,24 +142,24 @@ const maps = {
             oil_tank: 25,
             survival_crate:3,
             // christmas_tree: 1, // winter mode
-            oak_tree: 60,
-            birch_tree: 40,
-            pine_tree: 30,
+            oak_tree: 40,
+            birch_tree: 30,
+            pine_tree: 20,
             loot_tree: 5,
-            regular_crate: 270,
+            regular_crate: 200,
             flint_crate: 12,
             aegis_crate: 12,
-            grenade_crate: 65,
-            rock: 360,
+            grenade_crate: 55,
+            rock: 430,
             river_chest: 2,
             river_rock: 70,
             bush: 180,
             // birthday_cake: 100, // birthday mode
             lily_pad: 30,
             blueberry_bush: 50,
-            barrel:100,
+            barrel:70,
             viking_chest: 2,
-            super_barrel: 60,
+            super_barrel: 30,
             melee_crate: 2,
             gold_rock: 1,
             loot_barrel: 3,
@@ -193,7 +192,7 @@ const maps = {
                     minAmount: 2,
                     maxAmount: 4,
                     jitter: 5,
-                    obstacles: ["pine_tree"],
+                    obstacles: ["pine_tree","birch_tree"],
                     radius: 12
                 }
             }
@@ -219,7 +218,7 @@ const maps = {
             minAmount: 1,
             maxAmount: 2,
             maxWideAmount: 2,
-            wideChance: 0.35,
+            wideChance: 0,
             minWidth: 5,
             maxWidth: 9,
             minWideWidth: 3,
@@ -270,7 +269,7 @@ const maps = {
             regular_crate: 10,
             flint_crate: 3,
             aegis_crate: 3,
-            grenade_crate: 4,
+            grenade_crate: 7,
             rock: 20,
             river_chest: 1,
             river_rock: 10,

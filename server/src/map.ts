@@ -7,7 +7,7 @@ import { type Orientation, type Variation } from "@common/typings";
 import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { equalLayer } from "@common/utils/layer";
 import { Angle, Collision, Geometry, Numeric, τ } from "@common/utils/math";
-import { type Mutable, type SMutable } from "@common/utils/misc";
+import { cloneDeep, mergeDeep, type Mutable, type SMutable } from "@common/utils/misc";
 import { MapObjectSpawnMode, NullString, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { SeededRandom, pickRandomInArray, random, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "@common/utils/random";
 import { River, Terrain } from "@common/utils/terrain";
@@ -96,8 +96,8 @@ export class GameMap {
     constructor(game: Game, mapData: typeof Config["map"]) {
         this.game = game;
 
-        const [name, ...params] = mapData.split(":") as [MapName, ...string[]];
-        const mapDef: MapDefinition = Maps[name];
+        const [name, ...params] = typeof mapData === "string"?mapData.split(":") as [MapName, ...string[]]:mapData.extends.split(":") as [MapName, ...string[]];
+        const mapDef: MapDefinition = typeof mapData === "string"?Maps[name]:mergeDeep(cloneDeep(Maps[name]),mapData);
 
         // @ts-expect-error I don't know why this rule exists
         type PacketType = this["_packet"];

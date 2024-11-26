@@ -976,7 +976,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         for (let step = 0; step < 10; step++) {
             let collided = false;
-
             for (const potential of this.nearObjects) {
                 const { isObstacle, isBuilding } = potential;
 
@@ -1075,6 +1074,19 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 amount: GameConstants.player.bleedOutDPMs * dt,
                 source: KillfeedEventType.BleedOut
             });
+        }
+
+        if(this.activeStair){
+            if(!this.activeStair.hitbox.collidesWith(this.hitbox)){
+                this.activeStair=undefined
+            }
+        }else{
+            if(FloorTypes[this.floor].instaKill){
+                this.piercingDamage({
+                    source:KillfeedEventType.BleedOut,
+                    amount:this.health+1
+                })
+            }
         }
 
         // Determine if player is inside building + reduce scope in buildings

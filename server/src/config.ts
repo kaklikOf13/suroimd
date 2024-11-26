@@ -1,5 +1,5 @@
 import { TeamSize } from "@common/constants";
-import { type Maps } from "./data/maps";
+import { GamemodeMap } from "./data/gamemode";
 
 export const Config = {
     host: "0.0.0.0",
@@ -66,7 +66,7 @@ export interface ConfigType {
      * Example: `"main"` for the main map or `"debug"` for the debug map.
      * Parameters can also be specified for certain maps, separated by colons (e.g. `singleObstacle:rock`)
      */
-    readonly map: `${keyof typeof Maps}${string}`
+    readonly map: GamemodeMap
 
     readonly gamemode:string|{
         /**

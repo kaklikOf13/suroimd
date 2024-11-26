@@ -3,7 +3,7 @@ import { Vector } from "@common/utils/vector"
 import { DefaultGasStages, GasStage } from "./gasStages"
 import { type PluginDefinition } from "../pluginManager"
 import { InitWithPlugin, startsWithD } from "../defaultPlugins/initWithPlugin"
-import { type Maps } from "./maps"
+import { type MapDefinition, type Maps } from "./maps"
 import { mergeDeep,cloneDeep } from "@common/utils/misc"
 import { PerkIds } from "@common/definitions/perks"
 import { RemoveLootAfterTimePlugin } from "../defaultPlugins/removeLootAfterTime"
@@ -50,6 +50,9 @@ export type Spawn={ readonly mode: SpawnMode.Normal }
     readonly layer?: Layer
 }
 | { readonly mode: SpawnMode.Center }
+export type GamemodeMap=`${keyof typeof Maps}${string}`|({
+        readonly extends:`${keyof typeof Maps}${string}`
+    }&Partial<MapDefinition>)
 export interface Gamemode{
     readonly weaponsSelect:boolean,
     readonly globalDamage:number,
@@ -59,7 +62,7 @@ export interface Gamemode{
     readonly plugins:Array<PluginDefinition>
     readonly joinTime:number
     readonly maxPlayersPerGame:number
-    readonly map?:`${keyof typeof Maps}${string}`
+    readonly map?:GamemodeMap
     readonly group:boolean
     readonly start_after:number
     readonly defaultGroup:number
@@ -191,6 +194,14 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                 })
             }
         ]
+    },
+    apple:{
+        map:{
+            extends:"normal",
+            obstacles:{
+                birthday_cake:400,
+            }
+        }
     },
     normal:DefaultGamemode
 }

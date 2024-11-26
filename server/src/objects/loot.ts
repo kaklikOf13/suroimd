@@ -10,7 +10,7 @@ import { Collision, Geometry, Numeric } from "@common/utils/math";
 import { ItemType, LootRadius, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { randomRotation } from "@common/utils/random";
-import { FloorNames } from "@common/utils/terrain";
+import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
@@ -54,6 +54,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
     set position(pos: Vector) { this.hitbox.position = pos; }
 
     private _oldPosition = Vec.create(0, 0);
+    hasStair:boolean=false
 
     constructor(
         game: Game,
@@ -97,7 +98,8 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
         this._oldPosition = Vec.clone(this.position);
 
         const { terrain } = this.game.map;
-        if (terrain.getFloor(this.position, this.layer) === FloorNames.Water && terrain.groundRect.isPointInside(this.position)) {
+        const floor=terrain.getFloor(this.position, this.layer)
+        if (floor === FloorNames.Water && terrain.groundRect.isPointInside(this.position)) {
             for (const river of terrain.getRiversInPosition(this.position)) {
                 if (river.waterHitbox?.isPointInside(this.position)) {
                     const tangent = river.getTangent(
@@ -130,6 +132,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
         this.position.y = Numeric.clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
 
         const objects = this.game.grid.intersectsHitbox(this.hitbox);
+        this.hasStair=false
         for (const object of objects) {
             if (
                 (object.isObstacle || object.isBuilding)
@@ -138,6 +141,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
             ) {
                 if (object.isObstacle && object.definition.isStair) {
                     object.handleStairInteraction(this);
+                    this.hasStair=true
                 } else if (adjacentOrEqualLayer(object.layer, this.layer)) {
                     this.hitbox.resolveCollision(object.hitbox);
                 }
@@ -167,6 +171,10 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 object.velocity.x += speed * vecCollisionNorm.x;
                 object.velocity.y += speed * vecCollisionNorm.y;
             }
+        }
+
+        if(!this.hasStair&&FloorTypes[floor].instaKill){
+            this.game.removeLoot(this)
         }
 
         if (!Vec.equals(this._oldPosition, this.position)) {

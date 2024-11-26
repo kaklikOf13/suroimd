@@ -1010,10 +1010,10 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 name: "Ice Rock",
                 material: "stone",
                 health: 550,
-                decay:.4,
+                decay:.2,
                 scale: {
                     spawnMin: 0.7,
-                    spawnMax: .8,
+                    spawnMax: 1,
                     destroy: 0.7
                 },
                 

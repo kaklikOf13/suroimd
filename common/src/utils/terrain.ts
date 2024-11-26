@@ -9,6 +9,7 @@ export interface FloorDefinition {
     readonly speedMultiplier?: number
     readonly overlay?: boolean
     readonly particles?: boolean
+    readonly instaKill?: boolean
 }
 
 export const enum FloorNames {
@@ -48,7 +49,8 @@ export const FloorTypes: Record<FloorNames, FloorDefinition> = {
         particles: true
     },
     void: {
-        debugColor: 0x77390d
+        debugColor: 0x77390d,
+        instaKill:true,
     }
 };
 
