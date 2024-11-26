@@ -57,7 +57,7 @@ import { GameConsole } from "./utils/console/gameConsole";
 import { COLORS, EMOTE_SLOTS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
-import { randomVector, randomFloat } from "../../../common/src/utils/random";
+import { randomVector, randomFloat, pickRandomInArray } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 
 /* eslint-disable @stylistic/indent */
@@ -223,7 +223,7 @@ export class Game {
 
     menu_music!: Sound;
 
-    gameplay_music!:Sound;
+    gameplay_musics:Sound[]=[];
 
     readonly tweens = new Set<Tween<unknown>>();
 
@@ -334,13 +334,27 @@ export class Game {
             volume: game.console.getBuiltInCVar("cv_music_volume")
         });
 
-        game.gameplay_music = sound.add("gameplay_music", {
-            url: `./audio/music/gameplay_music.mp3`,
+        game.gameplay_musics.push(sound.add("gameplay_music", {
+            url: `./audio/music/gameplay_music-1.mp3`,
             singleInstance: true,
             preload: true,
             autoPlay: false,
             volume: game.console.getBuiltInCVar("cv_music_volume")
-        });
+        }));
+        game.gameplay_musics.push(sound.add("gameplay_music", {
+            url: `./audio/music/gameplay_music-2.mp3`,
+            singleInstance: true,
+            preload: true,
+            autoPlay: false,
+            volume: game.console.getBuiltInCVar("cv_music_volume")
+        }));
+        game.gameplay_musics.push(sound.add("gameplay_music", {
+            url: `./audio/music/gameplay_music-3.mp3`,
+            singleInstance: true,
+            preload: true,
+            autoPlay: false,
+            volume: game.console.getBuiltInCVar("cv_music_volume")
+        }));
 
         game.music=undefined
 
@@ -1071,12 +1085,12 @@ export class Game {
                 if(this.music.instances[0].progress==1){
                     this.music=undefined
                 }
-            }else if(this.playing&&this.gameStarted&&Math.random()<=0.01&&Math.random()<=0.05){
+            }else if(this.playing&&this.gameStarted&&Math.random()<=0.01&&Math.random()<=1){
                 if(this.music&&this.music.instances.length==0){
                     this.music=undefined
                 }
                 //Ambientation Music
-                this.change_music(this.gameplay_music,undefined,0.6)
+                this.change_music(pickRandomInArray(this.gameplay_musics),undefined,0.6)
             }
             if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
             this.soundManager.update();
