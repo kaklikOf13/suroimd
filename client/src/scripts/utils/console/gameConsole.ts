@@ -188,7 +188,7 @@ export class GameConsole {
 
     private readonly _entries: ConsoleData[] = [];
 
-    private readonly _localStorageKey = "suroi_config";
+    private readonly _localStorageKey = "suroimd_config";
 
     private readonly _history = new (class HistoryManager<T> {
         private readonly _backingSet = new Set<T>();

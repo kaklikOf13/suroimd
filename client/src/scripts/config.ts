@@ -13,7 +13,7 @@ export const Config = {
             gameAddress: "wss://na.suroimd.io:443<ID>"
         }
     },
-    defaultRegion: "dev"
+    defaultRegion: "na"
 } satisfies ConfigType as ConfigType;
 
 export interface ConfigType {
