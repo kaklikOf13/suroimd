@@ -219,7 +219,6 @@ export async function setUpUI(game: Game): Promise<void> {
         if (selectedRegion?.nextSwitchTime) {
             const millis = selectedRegion.nextSwitchTime - Date.now();
             if (millis < 0) {
-                location.reload();
                 return;
             }
             const hours = Math.floor(millis / 3600000) % 24;
@@ -234,7 +233,6 @@ export async function setUpUI(game: Game): Promise<void> {
         if (selectedRegion?.modeNextSwitchTime) {
             const millis = selectedRegion.modeNextSwitchTime - Date.now();
             if (millis < 0) {
-                location.reload();
                 return;
             }
             const hours = Math.floor(millis / 3600000) % 24;
