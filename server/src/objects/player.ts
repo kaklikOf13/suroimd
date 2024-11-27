@@ -2438,7 +2438,18 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     break;
                 }
                 case InputActions.DropItem: {
-                    if (action.item.itemType === ItemType.Perk||!this.canDrop) break;
+                    let bb=true
+                    switch(action.item.itemType){
+                        default:
+                            break
+                        case ItemType.Armor:
+                            bb=action.item.armorType==ArmorType.Vest?this.dropable.vest:this.dropable.helmet
+                            break
+                        case ItemType.Perk:
+                            bb=this.dropable.perks
+                            break
+                    }
+                    if (!this.canDrop||!bb) break;
                     this.action?.cancel();
                     inventory.dropItem(action.item);
                     break;

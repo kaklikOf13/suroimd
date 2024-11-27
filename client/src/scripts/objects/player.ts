@@ -166,7 +166,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             rightFist: new SuroiSprite(),
             leftLeg: (game.teamMode||game.groupMode) ? new SuroiSprite().setPos(-35, 26).setZIndex(-1) : undefined,
             rightLeg: (game.teamMode||game.groupMode) ? new SuroiSprite().setPos(-35, -26).setZIndex(-1) : undefined,
-            backpack: new SuroiSprite().setPos(-35, 0).setVisible(false).setZIndex(-1),
+            backpack: new SuroiSprite().setPos(-60, 0).setVisible(false).setZIndex(5),
             helmet: new SuroiSprite().setPos(-8, 0).setVisible(false).setZIndex(6),
             weapon: new SuroiSprite().setZIndex(3),
             altWeapon: new SuroiSprite().setZIndex(3),
@@ -704,11 +704,11 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.vestLevel = (this.equipment.vest = vest)?.level ?? 0;
             this.backpackLevel = (this.equipment.backpack = backpack).level;
 
-            const backpackTint = skinDef.backpackTint
+            /*const backpackTint = skinDef.backpackTint
                 ?? this.equipment.backpack?.defaultTint
                 ?? 0xffffff;
 
-            this.images.backpack.setTint(backpackTint);
+            this.images.backpack.setTint(backpackTint);*/
 
             if (
                 hideEquipment !== this.hideEquipment

@@ -184,7 +184,6 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                         skin:false,
                     },
                     equipaments:{
-                        canDrop:false,
                         gun1:"vepr12",
                         gun2:"l115a1",
                         skin:"hasanger",
