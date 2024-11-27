@@ -2254,6 +2254,11 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     left: Vec.create(112, -3)
                 },
                 length: 7.28,
+                summonAirdrop:true,
+                fireDelay:100,
+                capacity:100,
+                shotsPerReload:100,
+                fireMode:FireMode.Auto,
                 wearerAttributes: {
                     passive: {
                         maxHealth: 0.51,
