@@ -9,53 +9,63 @@ import { Player } from "../objects/player";
 import { GamePlugin } from "../pluginManager";
 import { Numeric } from "../../../common/src/utils/math";
 
-const selectableGuns = Guns.definitions.filter(g => !g.killstreak && !g.wearerAttributes);
-const selectableMelees = Melees.definitions.filter(g => !g.killstreak && !g.wearerAttributes);
-const selectableThrowables = Throwables.definitions.filter(g => !g.killstreak && !g.wearerAttributes);
+
+export const weaponSwapArgsD={
+    obstacles:[] as string[],
+    selectableGuns: Guns.definitions.filter(g => !g.killstreak && !g.wearerAttributes) as (string|GunDefinition)[],
+    selectableMelees: Melees.definitions.filter(g => !g.killstreak && !g.wearerAttributes) as (string|MeleeDefinition)[],
+    selectableThrowables: Throwables.definitions.filter(g => !g.killstreak && !g.wearerAttributes) as (string|ThrowableDefinition)[]
+}
 
 /**
  * Plugin that swaps the player weapon when the player gets a kill
  */
 export class WeaponSwapPlugin extends GamePlugin {
-    protected override initListeners(_params:unknown): void {
+    protected override initListeners(params:typeof weaponSwapArgsD): void {
+        const args=params??weaponSwapArgsD
+        this.on("obstacle_did_destroy",({source,obstacle})=>{
+            if(!args.obstacles.includes(obstacle.definition.idString))return;
+            if (!(source instanceof Player)) return;
+            this.switchWeapon(source,args)
+        })
         this.on("player_will_die", ({ source }) => {
             if (!(source instanceof Player)) return;
-
-            const inventory = source.inventory;
-            const index = source.activeItemIndex;
-
-            let item: GunDefinition | MeleeDefinition | ThrowableDefinition;
-            const itemType = source.activeItemDefinition.itemType;
-            switch (itemType) {
-                case ItemType.Gun: {
-                    const gun = pickRandomInArray(selectableGuns);
-                    item = gun;
-                    const { ammoType } = gun;
-                    if (gun.ammoSpawnAmount) {
-                        const amount = Numeric.min(
-                            inventory.backpack.maxCapacity[ammoType],
-                            inventory.items.getItem(ammoType) + gun.ammoSpawnAmount
-                        );
-                        inventory.items.setItem(ammoType, amount);
-                        source.dirty.items = true;
-                    }
-                    break;
-                }
-                case ItemType.Melee: {
-                    item = pickRandomInArray(selectableMelees);
-                    break;
-                }
-                case ItemType.Throwable: {
-                    item = pickRandomInArray(selectableThrowables);
-                    inventory.items.setItem(item.idString, source.inventory.backpack.maxCapacity[item.idString]);
-                }
-            }
-
-            inventory.replaceWeapon(index, item);
-
-            if (source.activeItem instanceof GunItem) {
-                source.activeItem.ammo = source.activeItem.definition.capacity;
-            }
+            this.switchWeapon(source,args)
         });
+    }
+    switchWeapon(source:Player,args:typeof weaponSwapArgsD){
+        const inventory = source.inventory;
+        const index = source.activeItemIndex;
+
+        let item: GunDefinition | MeleeDefinition | ThrowableDefinition;
+        const itemType = source.activeItemDefinition.itemType;
+        switch (itemType) {
+            case ItemType.Gun: {
+                const r=pickRandomInArray(args.selectableGuns)
+                const gun = typeof r==="string"?Guns.fromString(r):r;
+                item = gun;
+                const { ammoType } = gun;
+                if (gun.ammoSpawnAmount) {
+                    inventory.giveItem(ammoType,gun.ammoSpawnAmount)
+                }
+                break;
+            }
+            case ItemType.Melee: {
+                const r=pickRandomInArray(args.selectableMelees)
+                item = typeof r==="string"?Melees.fromString(r):r;
+                break;
+            }
+            case ItemType.Throwable: {
+                const r=pickRandomInArray(args.selectableThrowables)
+                item = typeof r==="string"?Throwables.fromString(r):r;
+                inventory.items.setItem(item.idString, source.inventory.backpack.maxCapacity[item.idString]);
+            }
+        }
+
+        inventory.replaceWeapon(index, item);
+
+        if (source.activeItem instanceof GunItem) {
+            source.activeItem.ammo = source.activeItem.definition.capacity;
+        }
     }
 }

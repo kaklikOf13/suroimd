@@ -366,6 +366,8 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     plumpkin_particle:             { base: "pumpkin_particle_base", tint: 0x8a4c70 },
     diseased_plumpkin_particle:    { base: "pumpkin_particle_base", tint: 0x654646 },
 
+    apple_particle:                { base: "pumpkin_particle_base", tint: 0xed2929 },
+
     tent_particle_1:               { base: "ceiling_particle", tint: TentTints.red },
     tent_particle_2:               { base: "ceiling_particle", tint: TentTints.green },
     tent_particle_3:               { base: "ceiling_particle", tint: TentTints.blue },
@@ -1215,6 +1217,21 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 rotationMode: RotationMode.Full,
                 allowFlyover: FlyoverPref.Always,
                 hasLoot: true
+            },
+            {
+                idString: "apple",
+                name: "Apple",
+                material: "pumpkin",
+                health: 70,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1.1,
+                    destroy: 0.8
+                },
+                hitbox: new CircleHitbox(1.9),
+                spawnHitbox: new CircleHitbox(2.9),
+                rotationMode: RotationMode.Full,
+                allowFlyover: FlyoverPref.Always
             },
             {
                 idString: "cobweb",

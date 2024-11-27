@@ -7,6 +7,7 @@ import { type MapDefinition, type Maps } from "./maps"
 import { mergeDeep,cloneDeep } from "@common/utils/misc"
 import { PerkIds } from "@common/definitions/perks"
 import { RemoveLootAfterTimePlugin } from "../defaultPlugins/removeLootAfterTime"
+import { weaponSwapArgsD, WeaponSwapPlugin } from "../defaultPlugins/weaponSwapPlugin"
 export const enum GasMode {
     Staged,
     Debug,
@@ -88,7 +89,7 @@ export const DefaultGamemode:Gamemode={
     weaponsSelect:false,
 
     adrenalineLoss:0.0004,
-    globalDamage:.73,
+    globalDamage:.75,
     armorProtection:1,
 
     defaultGroup:-1,
@@ -199,9 +200,94 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
         map:{
             extends:"normal",
             obstacles:{
-                birthday_cake:400,
+                apple:250,
             }
-        }
+        },
+        button:{
+            buttonCss:"btn-redmode",
+            buttonText:"apples-mode",
+            icon:""
+        },
+        plugins:[
+            {construct:WeaponSwapPlugin,params:mergeDeep(cloneDeep(weaponSwapArgsD),{
+                obstacles:[
+                    "apple"
+                ],
+                selectableGuns:[
+                    "g19",
+                    "dual_g19",
+                    "cz75a",
+                    "dual_cz75a",
+                    "mp40",
+                    "saf200",
+                    "micro_uzi",
+                    "vector",
+                    "vss",
+                    "pp19",
+
+                    "m1895",
+                    "dual_m1895",
+                    "ak47",
+                    "mcx_spear",
+                    "arx160",
+                    "lewis_gun",
+                    "mosin_nagant",
+                    "sr25",
+                    "tango_51",
+                    "mg5",
+
+                    "aug",
+                    "m16a4",
+                    "stoner_63",
+                    "mg36",
+                    "cz600",
+                    "mini14",
+                    "acr",
+                    "negev",
+
+                    "hp18",
+                    "flues",
+                    "model_37",
+                    "m3k",
+                    "vepr12",
+                    "usas12",
+                    "m590m",
+
+                    "l11a1",
+                    "mk18",
+
+                    "deagle",
+                    "dual_deagle",
+                    "model_89",
+                    "rsh12",
+                    "dual_rsh12",
+
+                    "g17_scoped",
+                    "dual_g17_scoped",
+                ],
+                selectableMelees:[
+                    "baseball_bat",
+                    "maul",
+                    "steelfang",
+                    "seax",
+                    "falchion",
+                    "ice_pick",
+                    "feral_claws",
+                    "sickle",
+                    "kbar",
+                    "hatchet",
+                    "fire_hatchet",
+                    "crowbar",
+                    "gas_can"
+                ],
+                selectableThrowables:[
+                    "frag_grenade",
+                    "smoke_grenade",
+                    "mirv_grenade",
+                    "ice_grenade"
+                ]
+            })}
+        ]
     },
     normal:DefaultGamemode
 }
