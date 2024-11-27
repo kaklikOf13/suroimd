@@ -288,5 +288,16 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
             })}
         ]
     },
-    normal:DefaultGamemode
+    debug:{
+        map:"debug",
+        gas:{mode:GasMode.Disabled},
+        weaponsSelect:true,
+        plugins:[
+            {
+                construct:InitWithPlugin,
+            }
+        ],
+        spawn:{mode:SpawnMode.Center}
+    },
+    normal:DefaultGamemode,
 }

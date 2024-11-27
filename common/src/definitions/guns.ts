@@ -2255,9 +2255,9 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 },
                 length: 7.28,
                 summonAirdrop:true,
-                fireDelay:100,
-                capacity:100,
-                shotsPerReload:100,
+                fireDelay:0,
+                capacity:1000,
+                shotsPerReload:1000,
                 fireMode:FireMode.Auto,
                 wearerAttributes: {
                     passive: {
