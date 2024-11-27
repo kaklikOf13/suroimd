@@ -1,5 +1,5 @@
 import { TeamSize } from "@common/constants";
-import { GamemodeMap } from "./data/gamemode";
+import { type GamemodeMap } from "./data/gamemode";
 
 export const Config = {
     host: "0.0.0.0",

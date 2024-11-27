@@ -220,7 +220,7 @@ export class Game implements GameData {
             startedTime: -1
         });
 
-        const { width, height } = Maps[Config.map.split(":")[0] as MapName];
+        const { width, height } = Maps[typeof Config.map==="string"?Config.map.split(":")[0] as MapName:Config.map.extends.split(":")[0] as MapName];
         this.grid = new Grid(this, width, height);
 
         if(gamemode){
