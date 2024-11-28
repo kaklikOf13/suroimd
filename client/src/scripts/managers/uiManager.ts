@@ -228,6 +228,7 @@ export class UIManager {
         gameOverText: $<HTMLHeadingElement>("#game-over-text"),
         gameOverPlayerName: $<HTMLHeadingElement>("#game-over-player-name"),
         gameOverKills: $<HTMLSpanElement>("#game-over-kills"),
+        gameOverScore: $<HTMLSpanElement>("#game-over-score"),
         gameOverDamageDone: $<HTMLSpanElement>("#game-over-damage-done"),
         gameOverDamageTaken: $<HTMLSpanElement>("#game-over-damage-taken"),
         gameOverTime: $<HTMLSpanElement>("#game-over-time"),
@@ -406,6 +407,7 @@ export class UIManager {
             gameOverRank,
             gameOverPlayerName,
             gameOverKills,
+            gameOverScore,
             gameOverDamageDone,
             gameOverDamageTaken,
             gameOverTime
@@ -441,6 +443,7 @@ export class UIManager {
         gameOverPlayerName.html(playerName + playerBadgeText);
 
         gameOverKills.text(packet.kills);
+        gameOverScore.text(packet.score);
         gameOverDamageDone.text(packet.damageDone);
         gameOverDamageTaken.text(packet.damageTaken);
         gameOverTime.text(formatDate(packet.timeAlive));

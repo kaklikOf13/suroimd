@@ -7,6 +7,7 @@ import { PerkIds, Perks } from "@common/definitions/perks";
 import { Guns } from "@common/definitions/guns";
 import { GunItem } from "../inventory/gunItem";
 import { Skins } from "@common/definitions/skins";
+import { MapPing, MapPings } from "@common/definitions/mapPings";
 
 export const startsWithD={
     equipaments:{
@@ -15,15 +16,18 @@ export const startsWithD={
         "backpack":"tactical_pack",
         "infinityAmmo":true,
         
-        "gun1":"",
-        "gun2":"",
-        "melee":"",
+        "gun1":"" as (string|string[]),
+        "gun2":"" as (string|string[]),
+        "melee":"" as (string|string[]),
 
         "canDrop":true,
         "skin":"",
         "metalicBody":false,
 
-        "perks":[] as PerkIds[],
+        "perks":[] as (PerkIds|PerkIds[])[],
+
+        "ping":"",
+        "repeatPing":0
     },
     group:-1,
     monster:0,
@@ -89,22 +93,38 @@ export class InitWithPlugin extends GamePlugin {
             if(startsWith.equipaments.metalicBody){
                 player.metalicBody=true
             }
+            if(startsWith.equipaments.ping){
+                const pinng=()=>{
+                    if(player.dead||player.game.stopped)return
+                    this.game.mapPings.push({
+                        definition:MapPings.fromString<MapPing>(startsWith.equipaments.ping),
+                        position:player.position
+                    })
+                    if(startsWith.equipaments.repeatPing){
+                        player.game.addTimeout(pinng,startsWith.equipaments.repeatPing*1000)
+                    }
+                }
+                pinng()
+            }
             player.canDrop=startsWith.equipaments.canDrop===undefined?true:startsWith.equipaments.canDrop
-            if(startsWith.equipaments.gun1&&Guns.fromStringSafe(startsWith.equipaments.gun1)){
-                player.inventory.replaceWeapon(0,startsWith.equipaments.gun1);
-                (player.inventory.weapons[0] as GunItem).ammo=(player.inventory.weapons[0] as GunItem).definition.capacity
+            const gun1=Guns.fromStringSafe(typeof startsWith.equipaments.gun1==="string"?startsWith.equipaments.gun1:pickRandomInArray(startsWith.equipaments.gun1))
+            if(gun1){
+                player.inventory.replaceWeapon(0,gun1);
+                (player.inventory.weapons[0] as GunItem).ammo=gun1.capacity
             }
-            if(startsWith.equipaments.gun2&&Guns.fromStringSafe(startsWith.equipaments.gun2)){
-                player.inventory.replaceWeapon(1,startsWith.equipaments.gun2);
-                (player.inventory.weapons[1] as GunItem).ammo=(player.inventory.weapons[1] as GunItem).definition.capacity
+            const gun2=Guns.fromStringSafe(typeof startsWith.equipaments.gun2==="string"?startsWith.equipaments.gun2:pickRandomInArray(startsWith.equipaments.gun2))
+            if(gun2){
+                player.inventory.replaceWeapon(1,gun2);
+                (player.inventory.weapons[1] as GunItem).ammo=gun2.capacity
             }
-            if(startsWith.equipaments.melee&&Guns.fromStringSafe(startsWith.equipaments.melee)){
-                player.inventory.replaceWeapon(2,startsWith.equipaments.melee)
+            const melee=Guns.fromStringSafe(typeof startsWith.equipaments.melee==="string"?startsWith.equipaments.melee:pickRandomInArray(startsWith.equipaments.melee))
+            if(melee){
+                player.inventory.replaceWeapon(0,melee);
             }
 
             if(startsWith.equipaments.perks){
                 for(const v of startsWith.equipaments.perks){
-                    player.perks.addPerk(Perks.fromString(v))
+                    player.perks.addPerk(Perks.fromString(typeof v === "object" ? pickRandomInArray(v):v))
                 }
             }
 
@@ -139,7 +159,8 @@ export class InitWithPlugin extends GamePlugin {
         player.canDespawn=false
         player.invulnerable=false
         //Dirty
-        player.setDirty()
         player.dirtyUI()
+        player.setDirty()
+        player.updateAndApplyModifiers()
     }
 }

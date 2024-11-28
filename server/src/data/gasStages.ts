@@ -66,7 +66,7 @@ export const DefaultGasStages: GasStage[] = [
         state: GasState.Waiting,
         duration: 45,
         oldRadius: 0.238,
-        newRadius: 0.095,
+        newRadius: 0.120,
         dps: 3,
         summonAirdrop: true
     },
@@ -74,6 +74,21 @@ export const DefaultGasStages: GasStage[] = [
         state: GasState.Advancing,
         duration: 10,
         oldRadius: 0.238,
+        newRadius: 0.130,
+        dps: 3
+    },
+    {
+        state: GasState.Waiting,
+        duration: 45,
+        oldRadius: 0.130,
+        newRadius: 0.095,
+        dps: 4,
+        summonAirdrop: true
+    },
+    {
+        state: GasState.Advancing,
+        duration: 10,
+        oldRadius: 0.130,
         newRadius: 0.095,
         dps: 4
     },

@@ -73,6 +73,14 @@ export interface Gamemode{
         readonly buttonCss: string,
         readonly buttonText: string,
     }
+    readonly score:{
+        readonly kill:number
+        readonly becomeKillLeader:number,
+        readonly killKillLeader:number,
+        readonly reviveFriend:number
+        readonly position:number
+        readonly win:number
+    }
 }
 export const DefaultGamemode:Gamemode={
     gas:{
@@ -94,6 +102,15 @@ export const DefaultGamemode:Gamemode={
 
     defaultGroup:-1,
     group:false,
+
+    score:{
+        kill:5,
+        position:0.1,
+        becomeKillLeader:10,
+        killKillLeader:10,
+        reviveFriend:3,
+        win:10,
+    }
 }
 
 export const Gamemodes:Record<string,Partial<Gamemode>>={
@@ -116,7 +133,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                 },
                 {
                     dps:0,
-                    duration:60*7,
+                    duration:60*3,
                     newRadius:0.8,
                     oldRadius:0.8,
                     state:GasState.Waiting,
@@ -125,7 +142,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                 {
                     dps:10,
                     duration:45,
-                    newRadius:0.5,
+                    newRadius:0.4,
                     oldRadius:0.8,
                     state:GasState.Advancing,
                     summonAirdrop:true,
@@ -133,8 +150,8 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                 {
                     dps:10,
                     duration:60,
-                    newRadius:0.5,
-                    oldRadius:0.5,
+                    newRadius:0,
+                    oldRadius:0.4,
                     state:GasState.Waiting,
                     summonAirdrop:true,
                 },
@@ -142,7 +159,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                     dps:13,
                     duration:40,
                     newRadius:0,
-                    oldRadius:0.5,
+                    oldRadius:0.4,
                     state:GasState.Advancing,
                     summonAirdrop:true,
                 },
@@ -152,7 +169,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
             {construct:InitWithPlugin,params:startsWithD},
             {construct:RemoveLootAfterTimePlugin}
         ],
-        joinTime:(60*7)+10,
+        joinTime:(60*3)+10,
         weaponsSelect:true,
         maxPlayersPerGame:10,
         map:"deathmatch"
@@ -177,19 +194,21 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                     maxHealth:2,
                     group:1,
                     dropAll:true,
-                    size:1.2,
                     dropable:{
                         vest:false,
                         perks:false,
                         skin:false,
                     },
                     equipaments:{
-                        gun1:"vepr12",
-                        gun2:"l115a1",
+                        gun1:["vepr12","m3k","usas12","m590m"],
+                        gun2:["l115a1","mg5","negev"],
                         skin:"hasanger",
                         vest:"ultra_vest",
                         metalicBody:true,
-                        perks:[PerkIds.Flechettes,PerkIds.SabotRounds,PerkIds.InfiniteAmmo,PerkIds.FieldMedic]
+                        ping:"warning_ping",
+                        repeatPing:20,
+                        infinityAmmo:true,
+                        perks:[[PerkIds.Flechettes,PerkIds.AdvancedAthletics],PerkIds.SabotRounds,PerkIds.FieldMedic]
                     }
                 })
             }

@@ -126,6 +126,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this._kills = kills;
         this.game.updateKillLeader(this);
     }
+    private _score=0;
+    get score():number {return this._score; }
+    set score(score: number) {
+        this._score = score;
+    }
 
     private _maxHealth = GameConstants.player.defaultHealth;
     maxHealthChange:number=1;
@@ -218,6 +223,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         moving: false,
         angle: 0
     };
+
+    speedV:Vector=Vec.create(0,0)
 
     isMobile!: boolean;
 
@@ -949,8 +956,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         // Update position
         const oldPosition = Vec.clone(this.position);
-        const movementVector = Vec.scale(movement, speed);
+        const movementVector = Vec.add(Vec.scale(movement, speed),this.speedV);
         this._movementVector = movementVector;
+
+        this.speedV=Vec.scale(this.speedV,.85)
 
         this.position = Vec.add(
             this.position,
@@ -1692,7 +1701,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         // Reductions are merged additively
         amount *= this.game.gamemode.globalDamage - ((
             (this.inventory.helmet?.damageReduction ?? 0) + (this.inventory.vest?.damageReduction ?? 0)
-        )*this.game.gamemode.armorProtection);
+        )*this.game.gamemode.armorProtection)*(this.downed?.8:1);
 
         amount = this._clampDamageAmount(amount);
 
@@ -1966,7 +1975,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         if (sourceIsPlayer) {
             this.killedBy = source;
-            if (source !== this && (!this.game.teamMode || source.teamID !== this.teamID)) source.kills++;
+            if (source !== this && (!this.game.teamMode || source.teamID !== this.teamID)) {source.kills++;source.score+=this.game.gamemode.score.kill};
 
             for (const perk of source.perks) {
                 switch (perk.idString) {
@@ -2054,6 +2063,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 const { player, item } = downer;
 
                 ++player.kills;
+                player.score+=this.game.gamemode.score.reviveFriend;
                 if (
                     (item instanceof GunItem || item instanceof MeleeItem)
                     && player.inventory.weapons.includes(item)
@@ -2191,6 +2201,18 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         this.hitbox.radius=GameConstants.player.radius
 
+        if(this.group){
+            if(this.group.hasLivingPlayers()){
+                this.game.giveScoreToAll(this.game.gamemode.score.position)
+            }
+        }else if(this.team){
+            if(this.team.hasLivingPlayers()){
+                this.game.giveScoreToAll(this.game.gamemode.score.position*this.game.maxTeamSize)
+            }
+        }else{
+            this.game.giveScoreToAll(this.game.gamemode.score.position)
+        }
+
         this.game.pluginManager.emit("player_did_die", {
             player: this,
             ...params
@@ -2322,6 +2344,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         .attackerId(source.id)
                         .weaponUsed(weaponUsed?.definition);
                 }
+
+                this.speedV=Vec.addComponent(this.speedV,Math.cos(source.rotation)*.002,Math.sin(source.rotation)*.002)
             } else {
                 message.eventType(source);
             }
@@ -2343,6 +2367,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     revive(): void {
         this.downed = false;
+        if(this.beingRevivedBy){
+            this.beingRevivedBy.score+=this.game.gamemode.score.reviveFriend;
+        }
         this.beingRevivedBy = undefined;
         this.downedBy = undefined;
         this.health = 30;
@@ -2366,6 +2393,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     sendGameOverPacket(won = false): void {
+        if(won){
+            this.score+=this.game.gamemode.score.win
+        } 
         const packet = GameOverPacket.create({
             won,
             playerID: this.id,
@@ -2373,7 +2403,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             damageDone: this.damageDone,
             damageTaken: this.damageTaken,
             timeAlive: (this.game.now - this.joinTime) / 1000,
-            rank: won ? 1 as const : this.game.aliveCount + 1
+            rank: won ? 1 as const : this.game.aliveCount + 1,
+            score:this.score,
         } as GameOverData);
 
         this.sendPacket(packet);

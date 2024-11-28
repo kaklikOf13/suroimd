@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Tue, 19 Nov 2024 20:05:52 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Thu, 28 Nov 2024 01:16:56 GMT
 
 ## 🇦🇱 Shqip (86% Complete) - ab.hjson
 
@@ -42,10 +42,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off` is not defined
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
+- Key `go_score` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
-## 🇨🇿 Čeština (93% Complete) - cz.hjson
+## 🇨🇿 Čeština (92% Complete) - cz.hjson
 
 ### (No Invalid Keys)
 
@@ -68,6 +69,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_radio_overused` is not defined
 - Key `interact_speaker` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `go_score` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
@@ -111,6 +113,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off` is not defined
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
+- Key `go_score` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 - Key `region_dev` is not defined
@@ -119,7 +122,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_sa` is not defined
 - Key `region_as` is not defined
 
-## 🇪🇪 Eesti (92% Complete) - et.hjson
+## 🇪🇪 Eesti (91% Complete) - et.hjson
 
 ### (No Invalid Keys)
 
@@ -144,10 +147,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_radio_overused` is not defined
 - Key `interact_speaker` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `go_score` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
-## 🇫🇷 Français (91% Complete) - fr.hjson
+## 🇫🇷 Français (90% Complete) - fr.hjson
 
 ### (No Invalid Keys)
 
@@ -175,10 +179,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_kl_killed` is not defined
 - Key `kf_kl_dead` is not defined
 - Key `kf_kl_suicide` is not defined
+- Key `go_score` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
-## 🇬🇷 Ελληνικά (92% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (91% Complete) - gr.hjson
 
 ### (No Invalid Keys)
 
@@ -203,6 +208,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_speaker` is not defined
 - Key `bindings_explode_c4` is not defined
 - Key `bindings_+map_ping` is not defined
+- Key `go_score` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
@@ -233,6 +239,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `kf_finished_off_kill` is not defined
 - Key `kf_finished_off_down` is not defined
+- Key `go_score` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
@@ -261,34 +268,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `weapon_gun_tp` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
+- Key `go_score` is not defined
 
-## 🇯🇵 日本語 (93% Complete) - jp.hjson
-
-### (No Invalid Keys)
-
-### Undefined Keys
-
-- Key `msg_punishment_vpn` is not defined
-- Key `msg_punishment_vpn_reason` is not defined
-- Key `donate` is not defined
-- Key `settings_ambience_volume` is not defined
-- Key `settings_ambient_particles` is not defined
-- Key `loadout_weapons` is not defined
-- Key `weapon_melee_tp` is not defined
-- Key `weapon_gun_tp` is not defined
-- Key `weapon_category_0` is not defined
-- Key `weapon_category_1` is not defined
-- Key `msg_not_enough_space` is not defined
-- Key `msg_item_already_equipped` is not defined
-- Key `msg_better_item_equipped` is not defined
-- Key `msg_cannot_use_radio` is not defined
-- Key `msg_radio_overused` is not defined
-- Key `interact_speaker` is not defined
-- Key `bindings_explode_c4` is not defined
-- Key `create_team_ready` is not defined
-- Key `deathray` is not defined
-
-## 🇱🇹 Lietuvių (93% Complete) - lt.hjson
+## 🇯🇵 日本語 (92% Complete) - jp.hjson
 
 ### (No Invalid Keys)
 
@@ -311,10 +293,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_radio_overused` is not defined
 - Key `interact_speaker` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `go_score` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
-## 🇱🇻 Latviešu (93% Complete) - lv.hjson
+## 🇱🇹 Lietuvių (92% Complete) - lt.hjson
 
 ### (No Invalid Keys)
 
@@ -337,10 +320,38 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_radio_overused` is not defined
 - Key `interact_speaker` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `go_score` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
-## 🎀 Cute Engwish (91% Complete) - qen.hjson
+## 🇱🇻 Latviešu (92% Complete) - lv.hjson
+
+### (No Invalid Keys)
+
+### Undefined Keys
+
+- Key `msg_punishment_vpn` is not defined
+- Key `msg_punishment_vpn_reason` is not defined
+- Key `donate` is not defined
+- Key `settings_ambience_volume` is not defined
+- Key `settings_ambient_particles` is not defined
+- Key `loadout_weapons` is not defined
+- Key `weapon_melee_tp` is not defined
+- Key `weapon_gun_tp` is not defined
+- Key `weapon_category_0` is not defined
+- Key `weapon_category_1` is not defined
+- Key `msg_not_enough_space` is not defined
+- Key `msg_item_already_equipped` is not defined
+- Key `msg_better_item_equipped` is not defined
+- Key `msg_cannot_use_radio` is not defined
+- Key `msg_radio_overused` is not defined
+- Key `interact_speaker` is not defined
+- Key `bindings_explode_c4` is not defined
+- Key `go_score` is not defined
+- Key `create_team_ready` is not defined
+- Key `deathray` is not defined
+
+## 🎀 Cute Engwish (90% Complete) - qen.hjson
 
 ### (No Invalid Keys)
 
@@ -368,10 +379,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_radio_overused` is not defined
 - Key `interact_speaker` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `go_score` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
-## 🇷🇴 Română (87% Complete) - ro.hjson
+## 🇷🇴 Română (86% Complete) - ro.hjson
 
 ### (No Invalid Keys)
 
@@ -410,9 +422,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off` is not defined
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
+- Key `go_score` is not defined
 - Key `create_team_ready` is not defined
 
-## 🇷🇺 Русский (95% Complete) - ru.hjson
+## 🇷🇺 Русский (94% Complete) - ru.hjson
 
 ### (No Invalid Keys)
 
@@ -430,10 +443,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `weapon_category_1` is not defined
 - Key `kf_finished_off_kill` is not defined
 - Key `kf_finished_off_down` is not defined
+- Key `go_score` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
-## 🇮🇳 தமிழ் (90% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (89% Complete) - ta.hjson
 
 ### (No Invalid Keys)
 
@@ -462,11 +476,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_button` is not defined
 - Key `interact_speaker` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `go_score` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_waiting` is not defined
 - Key `deathray` is not defined
 
-## 🇹🇷 Turkısh (93% Complete) - tr.hjson
+## 🇹🇷 Turkısh (92% Complete) - tr.hjson
 
 ### (No Invalid Keys)
 
@@ -489,6 +504,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_radio_overused` is not defined
 - Key `interact_speaker` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `go_score` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
@@ -534,10 +550,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off` is not defined
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
+- Key `go_score` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
-## 🇻🇳 Tiếng Việt (93% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (92% Complete) - vi.hjson
 
 ### (No Invalid Keys)
 
@@ -560,10 +577,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_radio_overused` is not defined
 - Key `interact_speaker` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `go_score` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 
-## 🇨🇳 中文（简体） (93% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (92% Complete) - zh.hjson
 
 ### (No Invalid Keys)
 
@@ -586,6 +604,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_radio_overused` is not defined
 - Key `interact_speaker` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `go_score` is not defined
 - Key `create_team_ready` is not defined
 - Key `deathray` is not defined
 

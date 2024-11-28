@@ -221,6 +221,7 @@
   "tt_restores": "<item> restores <amount> <type>"
   "tt_reduces": "<item> reduces <percent>% damage"
   "go_kills": "Kills:"
+  "go_score": "Score:"
   "go_damage_done": "Damage Done:"
   "go_damage_taken": "Damage Taken:"
   "go_time_alive": "Time Alive:"

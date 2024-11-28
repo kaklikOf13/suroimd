@@ -512,6 +512,7 @@ export class Game implements GameData {
             this._killLeader = player;
 
             if (oldKillLeader !== this._killLeader) {
+                this._killLeader.score+=this.gamemode.score.becomeKillLeader
                 this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderAssigned);
             }
         } else if (player === oldKillLeader) {
@@ -521,6 +522,9 @@ export class Game implements GameData {
 
     killLeaderDead(killer?: Player): void {
         this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderDeadOrDisconnected, { attackerId: killer?.id });
+        if(killer){
+            killer.score+=this.gamemode.score.killKillLeader
+        }
         let newKillLeader: Player | undefined;
         for (const player of this.livingPlayers) {
             if (player.kills > (newKillLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1)) && !player.dead) {
@@ -529,6 +533,12 @@ export class Game implements GameData {
         }
         this._killLeader = newKillLeader;
         this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderAssigned);
+    }
+
+    giveScoreToAll(score:number){
+        for(const p of this.livingPlayers){
+            p.score+=score
+        }
     }
 
     killLeaderDisconnected(leader: Player): void {
