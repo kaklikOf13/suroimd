@@ -190,7 +190,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
             {
                 construct:InitWithPlugin,
                 params:mergeDeep(cloneDeep(startsWithD),{
-                    monster:1,
+                    giveTo:1,
                     maxHealth:2,
                     group:1,
                     dropAll:true,

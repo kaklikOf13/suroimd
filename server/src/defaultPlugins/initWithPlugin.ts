@@ -30,7 +30,7 @@ export const startsWithD={
         "repeatPing":0
     },
     group:-1,
-    monster:0,
+    giveTo:0,
     adrenaline:100,
     maxHealth:-1,
     size:-1,
@@ -56,14 +56,19 @@ export const startsWithD={
 export class InitWithPlugin extends GamePlugin {
     protected override initListeners(params:typeof startsWithD): void {
         const startsWith=params??startsWithD
-        if(startsWith.monster<=0){
+        if(startsWith.giveTo<=0){
             this.on("player_did_join", ({ player }) => {
+                if(player.isNpc)return;
                 this.giveTo(player,startsWith)
             });
         }else{
             this.on("game_started",(g)=>{
-                for(let i=0;i<startsWith.monster;i++){
+                for(let i=0;i<startsWith.giveTo;i++){
                     const p=pickRandomInArray(Array.from(g.livingPlayers.values()))
+                    if(p.isNpc||p.disconnected){
+                        i--;
+                        continue;
+                    }
                     this.giveTo(p,startsWith)
                 }
             })
