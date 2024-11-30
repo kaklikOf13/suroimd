@@ -2504,6 +2504,511 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     range: 230
                 }
             },
+            {
+                idString: "an94",
+                name: "AN-94",
+                itemType: ItemType.Gun,
+                ammoType: "762mm",
+                ammoSpawnAmount: 90,
+                capacity: 45,
+                reloadTime: 2.35,
+                fireDelay: 25,
+                switchDelay: 750,
+                speedMultiplier: 1,
+                recoilMultiplier: 0.5,
+                recoilDuration: 300,
+                fireMode: FireMode.Burst,
+                burstProperties: {
+                    shotsPerBurst: 2,
+                    burstCooldown: 240
+                },
+                shotSpread: 1.5,
+                moveSpread: 5.5,
+                length: 7.5,
+                fists: {
+                    left: Vec.create(120, -2),
+                    right: Vec.create(45, 0),
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                image: { position: Vec.create(90, 2) },
+                gasParticles:gasParticlePresets.automatic,
+                casingParticles: [{
+                    position: Vec.create(4, 0.6)
+                }],
+                ballistics: {
+                    damage: 19,
+                    obstacleMultiplier: 1,
+                    speed: 0.2475,
+                    range: 675
+                }
+            },
+            /*{
+                idString: "fort_17",
+                name: "Fort-17",
+                itemType: ItemType.Gun,
+                ammoType: "45acp",
+                ammoSpawnAmount: 48,
+                capacity: 12,
+                reloadTime: 1.2,
+                switchDelay: 250,
+                fireDelay: 140,
+                ballistics: {
+                    damage: 21,
+                    obstacleMultiplier: 1,
+                    range: 220 * 2.25,
+                    speed: 0.28125
+                },
+                fireMode: FireMode.Single,
+                fists: {
+                    left: Vec.create(40, 0),
+                    right: Vec.create(40, 0),
+                    rightZIndex: 4,
+                    leftZIndex: 4,
+                    animationDuration: 250
+                },
+                image: {
+                    position: Vec.create(65, 0)
+                },
+                gasParticles:gasParticlePresets.pistol,
+                shotSpread: 2,
+                moveSpread: 6.5,
+                length: 5.2,
+                speedMultiplier: 0.92,
+                recoilMultiplier: 0.8,
+                recoilDuration: 90,
+                dual: {
+                    leftRightOffset: 1.3,
+                    fireDelay: 120,
+                    shotSpread: 8,
+                    moveSpread: 12,
+                    capacity: 24,
+                    reloadTime: 2.4
+                }
+            },*/
+        
+            {
+                idString: "p90",
+                name: "P90",
+                itemType: ItemType.Gun,
+                ammoType: "45acp",
+                ammoSpawnAmount: 200,
+                capacity: 100,
+                reloadTime: 2.9,
+                fireDelay: 40,
+                switchDelay: 100,
+                speedMultiplier: 1,
+                recoilMultiplier: 0.6,
+                recoilDuration: 100,
+                fireMode: FireMode.Auto,
+                shotSpread: 4,
+                moveSpread: 10,
+                length: 7.1,
+                fists: {
+                    left: Vec.create(40, 0),
+                    right: Vec.create(40, 0),
+                    rightZIndex: 4,
+                    leftZIndex: 4,
+                    animationDuration: 100
+                },
+                casingParticles: [{
+                    position: Vec.create(4.5, 0.6)
+                }],
+                gasParticles:gasParticlePresets.automatic,
+                image: { position: Vec.create(80, 0) },
+                ballistics: {
+                    damage: 8,
+                    obstacleMultiplier: 1,
+                    speed: 0.20,
+                    range: 70
+                }
+            },
+            {
+                idString: "m134",
+                name: "M134",
+                itemType: ItemType.Gun,
+                ammoType: "762mm",
+                ammoSpawnAmount: 200,
+                capacity: 200,
+                reloadTime: 8,
+                switchDelay: 900,
+                fireDelay: 55,
+                ballistics: {
+                    damage: 10.8,
+                    obstacleMultiplier: 5,
+                    range: 200 * 2.25,
+                    speed: 0.2925
+                },
+                fireMode: FireMode.Auto,
+                fists: {
+                    left: Vec.create(105, 0),
+                    right: Vec.create(40, 3),
+                    rightZIndex: 4,
+                    leftZIndex: 4,
+                    animationDuration: 120
+                },
+                image: {
+                    position: Vec.create(120, 0)
+                },
+                shotSpread: 1,
+                moveSpread: 2,
+                length: 10.79,
+                recoilDuration: 175,
+                recoilMultiplier: 0.25,
+                speedMultiplier: 0.75,
+                casingParticles: [{
+                    position: Vec.create(5, 0.6),
+                    velocity: {
+                        y: {
+                            min: 4,
+                            max: 15
+                        }
+                    }
+                }],
+                gasParticles:gasParticlePresets.automatic,
+            },
+            {
+                idString: "sv98",
+                name: "SV-98",
+                itemType: ItemType.Gun,
+                ammoType: "762mm",
+                ammoSpawnAmount: 30,
+                capacity: 10,
+                reloadTime: 2.7,
+                fireDelay: 1500,
+                switchDelay: 500,
+                speedMultiplier: 0.92,
+                recoilMultiplier: 0.4,
+                recoilDuration: 1000,
+                fireMode: FireMode.Single,
+                shotSpread: 1,
+                moveSpread: 3.5,
+                length: 8.9,
+                shootOnRelease: true,
+                fists: {
+                    left: Vec.create(106, -1),
+                    right: Vec.create(40, 0),
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                image: { position: Vec.create(90, 5) },
+                casingParticles: [{
+                    position: Vec.create(4, 0.6),
+                    ejectionDelay: 450
+                }],
+                gasParticles:gasParticlePresets.rifle,
+                ballistics: {
+                    damage: 89,
+                    obstacleMultiplier: 1.5,
+                    speed: 0.4095,
+                    range: 1170,
+                    tracer: {
+                        width: 2.4,
+                        length: 2.25
+                    }
+                }
+            },
+            {
+                idString: "awms",
+                name: "AWM-S",
+                itemType: ItemType.Gun,
+                ammoType: "338lap",
+                ammoSpawnAmount: 20,
+                capacity: 5,
+                reloadTime: 3.5,
+                fireDelay: 1500,
+                switchDelay: 1000,
+                speedMultiplier: 0.92,
+                recoilMultiplier: 0.3,
+                recoilDuration: 1500,
+                fireMode: FireMode.Auto,
+                shotSpread: 0.5,
+                moveSpread: 4.5,
+                length: 10.2,
+                shootOnRelease: true,
+                fists: {
+                    left: Vec.create(115, -4),
+                    right: Vec.create(40, 0),
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                image: { position: Vec.create(120, 5) },
+                casingParticles: [{
+                    position: Vec.create(15, 0.6),
+                    ejectionDelay: 700
+                }],
+                gasParticles:gasParticlePresets.rifle,
+                ballistics: {
+                    damage: 185,
+                    obstacleMultiplier: 1.5,
+                    speed: 0.306,
+                    range: 675,
+                    tracer: {
+                        width: 2.3,
+                        length: 2.25
+                    }
+                }
+            },
+            {
+                idString: "super90",
+                name: "Super 90",
+                itemType: ItemType.Gun,
+                ammoType: "12g",
+                ammoSpawnAmount: 16,
+                capacity: 8,
+                reloadTime: 0.52,
+                shotsPerReload: 1,
+                fireDelay: 400,
+                switchDelay: 750,
+                speedMultiplier: 1,
+                recoilMultiplier: 0.5,
+                recoilDuration: 500,
+                fireMode: FireMode.Single,
+                shotSpread: 4,
+                moveSpread: 8,
+                length: 8.9,
+                fists: {
+                    left: Vec.create(106, 0),
+                    right: Vec.create(40, 0),
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                image: { position: Vec.create(90, 5) },
+                casingParticles: [{
+                    position: Vec.create(4, 0.6)
+                }],
+                gasParticles:gasParticlePresets.shotgun,
+                ballistics: {
+                    damage: 80,
+                    obstacleMultiplier: 1,
+                    speed: 0.2655,
+                    range: 135,
+                    tracer: {
+                        width: 3,
+                        length: 0.7,
+                        color: 0xFEDCDC
+                    }
+                }
+            },
+            {
+                idString: "pkp",
+                name: "PKP Pecheneg",
+                itemType: ItemType.Gun,
+                ammoType: "762mm",
+                ammoSpawnAmount: 200,
+                capacity: 200,
+                reloadTime: 5,
+                switchDelay: 750,
+                fireDelay: 100,
+                ballistics: {
+                    damage: 19,
+                    obstacleMultiplier: 2,
+                    range: 200 * 2.25,
+                    speed: 0.27
+                },
+                fireMode: FireMode.Auto,
+                fists: {
+                    left: Vec.create(130, -3),
+                    right: Vec.create(40, 0),
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                image: {
+                    position: Vec.create(110, 0)
+                },
+                gasParticles:gasParticlePresets.automatic,
+                shotSpread: 2.5,
+                moveSpread: 10,
+                length: 8.9,
+                recoilDuration: 175,
+                recoilMultiplier: 0.7,
+                speedMultiplier: 0.9
+            },
+        
+            {
+                idString: "bar",
+                name: "BAR M1918",
+                itemType: ItemType.Gun,
+                ammoType: "762mm",
+                ammoSpawnAmount: 80,
+                capacity: 20,
+                reloadTime: 2.7,
+                switchDelay: 750,
+                fireDelay: 120,
+                ballistics: {
+                    damage: 18,
+                    obstacleMultiplier: 2,
+                    range: 275 * 2.25,
+                    speed: 0.2565
+                },
+                fireMode: FireMode.Auto,
+                gasParticles:gasParticlePresets.pistol,
+                fists: {
+                    left: Vec.create(105, -3),
+                    right: Vec.create(40, 0),
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                image: {
+                    position: Vec.create(100, 0)
+                },
+                shotSpread: 2,
+                moveSpread: 10,
+                length: 8.5,
+                recoilDuration: 175,
+                recoilMultiplier: 0.7,
+                speedMultiplier: 0.9
+            },
+            {
+                idString: "m249",
+                name: "M249",
+                itemType: ItemType.Gun,
+                ammoType: "556mm",
+                ammoSpawnAmount: 200,
+                capacity: 100,
+                reloadTime: 6.7,
+                switchDelay: 750,
+                fireDelay: 80,
+                ballistics: {
+                    damage: 15,
+                    obstacleMultiplier: 2,
+                    range: 220 * 2.25,
+                    speed: 0.28125
+                },
+                gasParticles:gasParticlePresets.shotgun,
+                fireMode: FireMode.Auto,
+                fists: {
+                    left: Vec.create(105, -3),
+                    right: Vec.create(40, 0),
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                image: {
+                    position: Vec.create(100, 0)
+                },
+                shotSpread: 1.5,
+                moveSpread: 7.5,
+                length: 8.5,
+                recoilDuration: 175,
+                recoilMultiplier: 0.7,
+                speedMultiplier: 0.9
+            },
+            {
+                idString: "vickers",
+                name: "Vickers No.2 Mk.1",
+                itemType: ItemType.Gun,
+                ammoType: "762mm",
+                ammoSpawnAmount: 200,
+                capacity: 100,
+                reloadTime: 4.2,
+                fireDelay: 80,
+                switchDelay: 400,
+                speedMultiplier: 0.9,
+                recoilMultiplier: 0.65,
+                recoilDuration: 175,
+                fireMode: FireMode.Auto,
+                shotSpread: 3,
+                moveSpread: 5,
+                length: 7,
+                fists: {
+                    left: Vec.create(105, -3),
+                    right: Vec.create(40, 0),
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                image: { position: Vec.create(80, 0) },
+                casingParticles: [{
+                    position: Vec.create(4, 0.6)
+                }],
+                gasParticles:gasParticlePresets.automatic,
+                ballistics: {
+                    damage: 14,
+                    obstacleMultiplier: 2,
+                    speed: 0.3,
+                    range: 180,
+                    tracer: {
+                        width: 1.1,
+                        length: 1.4
+                    }
+                }
+            },
+            {
+                idString: "tommy",
+                name: "Tommy Gun",
+                itemType: ItemType.Gun,
+                ammoType: "45acp",
+                ammoSpawnAmount: 100,
+                capacity: 50,
+                reloadTime: 3,
+                fireDelay: 75,
+                switchDelay: 350,
+                speedMultiplier: 0.92,
+                recoilMultiplier: 0.7,
+                recoilDuration: 170,
+                fireMode: FireMode.Auto,
+                shotSpread: 6,
+                moveSpread: 10,
+                length: 6.55,
+                fists: {
+                    left: Vec.create(103, -2),
+                    right: Vec.create(40, 0),
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                image: { position: Vec.create(76, -3) },
+                casingParticles: [{
+                    position: Vec.create(4, 0.6)
+                }],
+                gasParticles:gasParticlePresets.automatic,
+                ballistics: {
+                    damage: 12.9,
+                    obstacleMultiplier: 1,
+                    speed: 0.25,
+                    range: 120
+                }
+            },
+            {
+                idString: "delisle",
+                name: "De Lisle",
+                itemType: ItemType.Gun,
+                ammoType: "45acp",
+                ammoSpawnAmount: 44,
+                capacity: 11,
+                reloadTime: 2.3,
+                fireDelay: 700,
+                switchDelay: 700,
+                speedMultiplier: 0.92,
+                recoilMultiplier: 0.6,
+                recoilDuration: 300,
+                fireMode: FireMode.Single,
+                shotSpread: 1.5,
+                moveSpread: 2.5,
+                length: 8.7,
+                shootOnRelease: true,
+                fists: {
+                    left: Vec.create(113, 0),
+                    right: Vec.create(40, 0),
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                image: { position: Vec.create(85, 0) },
+                casingParticles: [{
+                    position: Vec.create(4, 0.6),
+                    ejectionDelay: 300
+                }],
+                gasParticles:gasParticlePresets.automatic,
+                ballistics: {
+                    damage: 70,
+                    obstacleMultiplier: 1,
+                    speed: 0.21,
+                    range: 150,
+                    tracer: {
+                        opacity: 0.15,
+                        length: 2
+                    }
+                },
+                noMuzzleFlash: true
+            }
         ] satisfies ReadonlyArray<RawDefinition<RawGunDefinition>>).map(e => {
             if (e.dual === undefined) {
                 return [e];
