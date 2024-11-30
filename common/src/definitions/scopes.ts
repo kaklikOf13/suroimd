@@ -28,10 +28,11 @@ export const Scopes = ObjectDefinitions.withDefault<ScopeDefinition>()(
                     giveByDefault: true
                 }
             ),
-            scope([2], { zoomLevel: 100 }),
-            scope([4], { zoomLevel: 135 }),
-            scope([8], { zoomLevel: 185 }),
-            scope([15], { zoomLevel: 255 })
+            scope([2], { zoomLevel: 80 }),
+            scope([4], { zoomLevel: 100 }),
+            scope([8], { zoomLevel: 120 }),
+            scope([15], { zoomLevel: 140 }),
+            scope([20], { zoomLevel: 165 }),
         ];
     }
 );

@@ -258,7 +258,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             [
                 { item: "4x_scope", weight: 1 },
                 { item: "8x_scope", weight: 0.1 },
-                { item: "15x_scope", weight: 0.0025 }
+                { item: "15x_scope", weight: 0.025 },
+                { item: "20x_scope", weight: 0.009 },
             ],
             [
                 { item: "tango_51", weight: 60 },
@@ -691,7 +692,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "2x_scope", weight: 1 },
             { item: "4x_scope", weight: 0.5 },
             { item: "8x_scope", weight: 0.1 },
-            { item: "15x_scope", weight: 0.001 }
+            { item: "15x_scope", weight: 0.025 },
+            { item: "20x_scope", weight: 0.01 },
         ],
         equipment: [
             { item: "basic_helmet", weight: 1 },
@@ -785,7 +787,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "2x_scope", weight: 1 },
             { item: "4x_scope", weight: 0.45 },
             { item: "8x_scope", weight: 0.1 },
-            { item: "15x_scope", weight: 0.01 }
+            { item: "15x_scope", weight: 0.03 },
+            { item: "20x_scope", weight: 0.01 }
         ],
         special_equipment: [
             { item: "basic_helmet", weight: 1 },
@@ -813,7 +816,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         airdrop_scopes: [
             { item: "4x_scope", weight: 1 },
             { item: "8x_scope", weight: 0.5 },
-            { item: "15x_scope", weight: 0.1 }
+            { item: "15x_scope", weight: 0.1 },
+            { item: "20x_scope", weight: 0.08 }
         ],
         airdrop_healing_items: [
             { item: "gauze", count: 5, weight: 1.5 },
@@ -1166,7 +1170,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         ],
         airdrop_scopes: [
             { item: "8x_scope", weight: 1 },
-            { item: "15x_scope", weight: 0.005 }
+            { item: "15x_scope", weight: 0.4 },
+            { item: "20x_scope", weight: 0.1 }
         ],
         airdrop_melee: [
             { item: NullString, weight: 1 },
@@ -1268,12 +1273,14 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         scopes: [
             { item: "4x_scope", weight: 1 },
             { item: "8x_scope", weight: 0.1 },
-            { item: "15x_scope", weight: 0.00025 }
+            { item: "15x_scope", weight: 0.025 },
+            { item: "20x_scope", weight: 0.009 },
         ],
         special_scopes: [
             { item: "4x_scope", weight: 1 },
             { item: "8x_scope", weight: 0.2 },
-            { item: "15x_scope", weight: 0.0005 }
+            { item: "15x_scope", weight: 0.05 },
+            { item: "20x_scope", weight: 0.02 },
         ],
         melee: [
             { item: "hatchet", weight: 3 },
@@ -1494,7 +1501,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         ],
         airdrop_scopes: [
             { item: "8x_scope", weight: 1 },
-            { item: "15x_scope", weight: 0.005 }
+            { item: "15x_scope", weight: 0.3 },
+            { item: "20x_scope", weight: 0.09 },
         ],
         airdrop_melee: [
             { item: NullString, weight: 1 },
@@ -1602,7 +1610,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         special_scopes: [
             { item: "4x_scope", weight: 1 },
             { item: "8x_scope", weight: 0.2 },
-            { item: "15x_scope", weight: 0.0005 }
+            { item: "15x_scope", weight: 0.05 },
+            { item: "20x_scope", weight: 0.025 },
         ],
         melee: [
             { item: "hatchet", weight: 3 },
