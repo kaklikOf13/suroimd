@@ -2404,6 +2404,19 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     {
                         position: Vec.create(3.5, 0.5),
                         frame: "casing_45acp",
+                        count: 7,
+                        velocity: {
+                            x: {
+                                min: -8,
+                                max: -2
+                            },
+                            y: {
+                                min: 2,
+                                max: 9,
+                                randomSign: true
+                            }
+                        },
+                        on: "reload"
                     }
                 ] as NonNullable<SingleGunNarrowing["casingParticles"]>,
                 capacity: 6,
@@ -2612,9 +2625,11 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     animationDuration: 100
                 },
                 casingParticles: [{
-                    position: Vec.create(4.5, 0.6)
+                    position: Vec.create(4.5, 0.6),
+                    ejectionDelay:35,
+                    frame: "casing_45acp",
                 }],
-                gasParticles:gasParticlePresets.automatic,
+                gasParticles:gasParticlePresets.pistol,
                 image: { position: Vec.create(80, 0) },
                 ballistics: {
                     damage: 8,
@@ -2724,7 +2739,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 fireMode: FireMode.Auto,
                 shotSpread: 0.5,
                 moveSpread: 4.5,
-                length: 10.2,
+                length: 8.9,
                 shootOnRelease: true,
                 fists: {
                     left: Vec.create(115, -4),
@@ -2732,9 +2747,9 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     rightZIndex: 4,
                     animationDuration: 100
                 },
-                image: { position: Vec.create(120, 5) },
+                image: { position: Vec.create(90, 5) },
                 casingParticles: [{
-                    position: Vec.create(15, 0.6),
+                    position: Vec.create(4, 0.6),
                     ejectionDelay: 700
                 }],
                 gasParticles:gasParticlePresets.rifle,
@@ -2817,6 +2832,10 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     position: Vec.create(110, 0)
                 },
                 gasParticles:gasParticlePresets.automatic,
+                casingParticles: [{
+                    position: Vec.create(4.5, 0.6),
+                    ejectionDelay: 90
+                }],
                 shotSpread: 2.5,
                 moveSpread: 10,
                 length: 8.9,
@@ -2842,7 +2861,11 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     speed: 0.2565
                 },
                 fireMode: FireMode.Auto,
-                gasParticles:gasParticlePresets.pistol,
+                gasParticles:gasParticlePresets.automatic,
+                casingParticles: [{
+                    position: Vec.create(4, 0.6),
+                    ejectionDelay: 110
+                }],
                 fists: {
                     left: Vec.create(105, -3),
                     right: Vec.create(40, 0),
@@ -2875,7 +2898,11 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     range: 220 * 2.25,
                     speed: 0.28125
                 },
-                gasParticles:gasParticlePresets.shotgun,
+                gasParticles:gasParticlePresets.automatic,
+                casingParticles: [{
+                    position: Vec.create(4.5, 0.6),
+                    ejectionDelay: 70
+                }],
                 fireMode: FireMode.Auto,
                 fists: {
                     left: Vec.create(105, -3),
@@ -2957,7 +2984,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 },
                 image: { position: Vec.create(76, -3) },
                 casingParticles: [{
-                    position: Vec.create(4, 0.6)
+                    position: Vec.create(4, 0.6),
+                    frame: "casing_45acp"
                 }],
                 gasParticles:gasParticlePresets.automatic,
                 ballistics: {
@@ -2994,7 +3022,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 image: { position: Vec.create(85, 0) },
                 casingParticles: [{
                     position: Vec.create(4, 0.6),
-                    ejectionDelay: 300
+                    ejectionDelay: 300,
+                    frame: "casing_45acp"
                 }],
                 gasParticles:gasParticlePresets.automatic,
                 ballistics: {
