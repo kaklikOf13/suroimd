@@ -465,7 +465,7 @@ export class UIManager {
 
     updateEmoteWheel(): void {
         const { pingWheelActive } = this.game.inputManager;
-        if (this.game.teamMode) {
+        if (this.game.teamMode||this.game.groupMode) {
             $("#ammos-container, #healing-items-container").toggleClass("active", pingWheelActive);
             for (const ammo of Ammos) {
                 const itemSlot = this._itemSlotCache[ammo.idString] ??= $(`#${ammo.idString}-slot`);

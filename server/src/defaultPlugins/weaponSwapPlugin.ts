@@ -67,5 +67,8 @@ export class WeaponSwapPlugin extends GamePlugin {
         if (source.activeItem instanceof GunItem) {
             source.activeItem.ammo = source.activeItem.definition.capacity;
         }
+
+        source.dirtyUI()
+        source.setDirty()
     }
 }

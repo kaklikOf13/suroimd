@@ -141,12 +141,12 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { table: "scopes", weight: 0.3 }
         ],
         regular_crate: [
-            { table: "guns", weight: 1.25 },
+            { table: "guns", weight: 1.4 },
             { table: "equipment", weight: 1 },
-            { table: "healing_items", weight: 1 },
+            { table: "healing_items", weight: 0.9 },
             { table: "ammo", weight: 0.5 },
             { table: "scopes", weight: 0.3 },
-            { table: "throwables", weight: 0.3 },
+            { table: "throwables", weight: 0.2 },
             { table: "melee", weight: 0.04 }
         ],
         hazel_crate: [
@@ -184,7 +184,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             min: 3,
             max: 5,
             loot: [
-                { table: "special_guns", weight: 1 },
+                { table: "special_guns", weight: 1.1 },
                 { table: "special_equipment", weight: 0.65 },
                 { table: "special_scopes", weight: 0.3 },
                 { table: "special_healing_items", weight: 0.15 }
@@ -229,7 +229,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             min: 3,
             max: 5,
             loot: [
-                { table: "special_guns", weight: 1 },
+                { table: "special_guns", weight: 1.1 },
                 { table: "special_equipment", weight: 0.65 },
                 { table: "special_healing_items", weight: 0.15 },
                 { table: "special_scopes", weight: 0.3 }
@@ -243,7 +243,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         ],
         melee_crate: {
             min: 2,
-            max: 2,
+            max: 3,
             loot: [
                 { table: "melee", weight: 1 }
             ]
@@ -606,40 +606,46 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { table: "special_scopes", weight: 0.3 }
         ],
         briefcase: [
-            { item: "vector", weight: 3 },
+            { item: "vector", weight: 2.5 },
             { item: "arx160", weight: 1 },
             { item: "vepr12", weight: 1 },
+            { item: "super90", weight: 0.8 },
             { item: "stoner_63", weight: 0.2 },
             { item: "negev", weight: 0.15 },
+            { item: "m249", weight: 0.15 },
             { item: "mg5", weight: 0.15 },
-            { item: "g19", weight: 0.05 }
+            { item: "pkp", weight: 0.15 },
+            { item: "g19", weight: 0.02 }
         ],
         sink: [
             { table: "healing_items", weight: 1.2 },
-            { table: "ammo", weight: 1 }
+            { table: "ammo", weight: 1 },
+            { table: "guns", weight: 0.2 }
         ],
         sink2: [
             { table: "healing_items", weight: 1.2 },
             { table: "ammo", weight: 1 },
-            { table: "guns", weight: 0.8 }
+            { table: "guns", weight: 0.83 }
         ],
         kitchen_unit_1: [
             { table: "healing_items", weight: 1.2 },
             { table: "ammo", weight: 1 },
-            { table: "guns", weight: 0.9 }
+            { table: "guns", weight: 0.95 }
         ],
         kitchen_unit_2: [
             { table: "healing_items", weight: 1.2 },
             { table: "ammo", weight: 1 },
-            { table: "guns", weight: 0.9 },
+            { table: "guns", weight: 0.95 },
             { table: "special_guns", weight: 0.5 }
         ],
         kitchen_unit_3: [
             { table: "healing_items", weight: 1.2 },
-            { table: "ammo", weight: 1 }
+            { table: "ammo", weight: 1 },
+            { table: "guns", weight: 0.2 }
         ],
         sea_traffic_control_floor: [
-            { item: "radio", weight: 1 }
+            [{ item: NullString,weight: 0.9 },{ item: "curadell", weight: 0.2, count:1},{ item: "curadell", weight: 0.09, count:2},{ item: "curadell", weight: 0.02, count:3}],
+            [{ item: "radio", weight: 1 }]
         ],
         sea_traffic_control_outside: [
             { item: "peachy_breeze", weight: 1 }
@@ -650,19 +656,20 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         potted_plant: [
             { table: "ammo", weight: 1 },
             { table: "healing_items", weight: 0.5 },
-            { table: "equipment", weight: 0.3 }
+            { table: "equipment", weight: 0.3 },
+            { table: "guns", weight: 0.05 },
         ],
 
         guns: [
-            { item: "g19", weight: 2 },
-            { item: "m1895", weight: 1.75 },
+            { item: "g19", weight: 1.77 },
+            { item: "m1895", weight: 1.72 },
             { item: "mp40", weight: 1.7 },
             { item: "saf200", weight: 1.5 },
-            { item: "cz75a", weight: 1.5 },
-            { item: "hp18", weight: 1.25 },
+            { item: "cz75a", weight: 1.4 },
+            { item: "hp18", weight: 1.2 },
             { item: "micro_uzi", weight: 1 },
             { item: "ak47", weight: 1 },
-            { item: "model_37", weight: 0.95 },
+            { item: "model_37", weight: 0.99 },
             { item: "aug", weight: 0.7 },
             { item: "sks", weight: 0.7 },
             { item: "m3k", weight: 0.3 },
@@ -1004,17 +1011,17 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
 
     halloween: {
         ground_loot: [
+            { table: "guns", weight: 1.1 },
             { table: "healing_items", weight: 1 },
             { table: "ammo", weight: 1 },
-            { table: "guns", weight: 1 },
             { table: "equipment", weight: 0.6 },
             { table: "scopes", weight: 0.3 },
             { item: "deer_season", weight: 0.2 }
         ],
         regular_crate: [
-            { table: "guns", weight: 1.25 },
-            { table: "healing_items", weight: 1 },
-            { table: "equipment", weight: 0.6 },
+            { table: "guns", weight: 1.4 },
+            { table: "equipment", weight: 0.7 },
+            { table: "healing_items", weight: 0.7 },
             { table: "ammo", weight: 0.5 },
             { table: "scopes", weight: 0.3 },
             { table: "throwables", weight: 0.3 },
@@ -1061,7 +1068,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             [
                 { item: NullString, weight: 1 },
                 { item: "50cal", count: 20, weight: 0.7 },
-                { item: "338lap", count: 6, weight: 0.2 },
+                { item: "338lap", count: 6, weight: 0.23 },
                 { item: "curadell", weight: 0.1 }
             ]
         ],

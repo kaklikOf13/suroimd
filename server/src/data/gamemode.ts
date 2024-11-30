@@ -331,6 +331,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
         map:"debug",
         gas:{mode:GasMode.Disabled},
         weaponsSelect:true,
+        adrenalineLoss:0,
         plugins:[
             {
                 construct:InitWithPlugin,

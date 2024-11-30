@@ -981,7 +981,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 scale: {
                     spawnMin: 0.9,
                     spawnMax: 1.1,
-                    destroy: 0.5
+                    destroy: 0.7
                 },
                 spawnMode: MapObjectSpawnMode.GrassAndSand,
                 hitbox: new CircleHitbox(4),
@@ -998,7 +998,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 scale: {
                     spawnMin: 0.9,
                     spawnMax: 1.1,
-                    destroy: 0.5
+                    destroy: 0.7
                 },
                 spawnMode: MapObjectSpawnMode.River,
                 zIndex: ZIndexes.UnderwaterPlayers - 1,
@@ -1012,12 +1012,12 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 idString: "ice_rock",
                 name: "Ice Rock",
                 material: "stone",
-                health: 550,
+                health: 1000,
                 decay:.2,
                 scale: {
                     spawnMin: 0.7,
                     spawnMax: 1,
-                    destroy: 0.7
+                    destroy: 0.35
                 },
                 
                 frames: {
@@ -1784,11 +1784,11 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 name: "Gold Rock",
                 material: "stone",
                 hideOnMap: true,
-                health: 250,
+                health: 150,
                 scale: {
                     spawnMin: 0.9,
                     spawnMax: 1.1,
-                    destroy: 0.3
+                    destroy: 0.7
                 },
                 hitbox: new CircleHitbox(4),
                 spawnHitbox: new CircleHitbox(4.5),
