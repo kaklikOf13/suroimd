@@ -122,6 +122,7 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
                 saturation: 94,
                 lightness: 21
             },
+            defaultCasingFrame: "casing_45acp",
             hideUnlessPresent: true,
             maxStackSize: 60,
             dropAmmout:49,

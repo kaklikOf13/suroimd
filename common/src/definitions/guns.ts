@@ -2403,8 +2403,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 casingParticles: [
                     {
                         position: Vec.create(3.5, 0.5),
-                        frame: "casing_45acp",
-                        count: 7,
+                        count: 6,
                         velocity: {
                             x: {
                                 min: -8,
@@ -2467,7 +2466,6 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 casingParticles: [
                     {
                         position: Vec.create(4, 0.6),
-                        frame: "casing_762x39mm",
                     }
                 ] as NonNullable<SingleGunNarrowing["casingParticles"]>,
                 ballistics: {
@@ -2627,7 +2625,6 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 casingParticles: [{
                     position: Vec.create(4.5, 0.6),
                     ejectionDelay:35,
-                    frame: "casing_45acp",
                 }],
                 gasParticles:gasParticlePresets.pistol,
                 image: { position: Vec.create(80, 0) },
@@ -2985,7 +2982,6 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 image: { position: Vec.create(76, -3) },
                 casingParticles: [{
                     position: Vec.create(4, 0.6),
-                    frame: "casing_45acp"
                 }],
                 gasParticles:gasParticlePresets.automatic,
                 ballistics: {
@@ -3023,7 +3019,6 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 casingParticles: [{
                     position: Vec.create(4, 0.6),
                     ejectionDelay: 300,
-                    frame: "casing_45acp"
                 }],
                 gasParticles:gasParticlePresets.automatic,
                 ballistics: {
@@ -3037,7 +3032,42 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     }
                 },
                 noMuzzleFlash: true
-            }
+            },
+            //Originals
+            {
+                idString: "vector_acp",
+                name: "Vector ACP",
+                ammoType: "45acp",
+                ammoSpawnAmount: 99,
+                capacity: 29,
+                extendedCapacity: 50,
+                reloadTime: 1.7,
+                fireDelay: 38,
+                switchDelay: 300,
+                recoilMultiplier: 0.75,
+                recoilDuration: 60,
+                fireMode: FireMode.Auto,
+                shotSpread: 2,
+                moveSpread: 7,
+                length: 7.2,
+                fists: {
+                    left: Vec.create(85, -6),
+                    right: Vec.create(40, 0),
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                casingParticles: [{
+                    position: Vec.create(4.7, 0.3)
+                }],
+                gasParticles: gasParticlePresets.automatic,
+                image: { position: Vec.create(80, 0) },
+                ballistics: {
+                    damage: 13,
+                    obstacleMultiplier: 1,
+                    speed: 0.27,
+                    range: 130
+                }
+            },
         ] satisfies ReadonlyArray<RawDefinition<RawGunDefinition>>).map(e => {
             if (e.dual === undefined) {
                 return [e];
