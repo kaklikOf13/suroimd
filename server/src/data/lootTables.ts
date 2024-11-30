@@ -208,6 +208,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
                 { item: "cz600", weight: .1 },
                 { item: "mosin_nagant", weight: .05 },
                 { item: "tango_51", weight: .01 },
+                { item: "sv98", weight: 0.005 },
             ],
             [{ table: "helmets", weight: 1 }],
             [{ table: "vests", weight: 1 }],
@@ -263,10 +264,15 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             ],
             [
                 { item: "tango_51", weight: 60 },
+                { item: "sv98", weight: 30 },
                 { item: "tango_51", spawnSeparately: true, count: 2, weight: 30 },
+                { item: "sv98", spawnSeparately: true, count:     2, weight: 15 },
                 { item: "tango_51", spawnSeparately: true, count: 3, weight: 3.5 },
+                { item: "sv98", spawnSeparately: true, count:     3, weight: 1.5 },
                 { item: "tango_51", spawnSeparately: true, count: 4, weight: 0.1 },
-                { item: "tango_51", spawnSeparately: true, count: 5, weight: 0.0000001 }
+                { item: "sv98", spawnSeparately: true, count:     4, weight: 0.05 },
+                { item: "tango_51", spawnSeparately: true, count: 5, weight: 0.00001 },
+                { item: "sv98", spawnSeparately: true, count:     5, weight: 0.000005 },
             ]
         ],
         lux_crate: [
@@ -550,7 +556,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
                 { item: "stoner_63", weight: 0.05 },
                 { item: "vector", weight: 0.05 },
                 { item: "tango_51", weight: 0.05 },
-                { item: "model_89", weight: 0.05 }
+                { item: "model_89", weight: 0.05 },
+                { item: "sv98", weight: 0.025 }
             ]
         },
         ammo_crate: [
@@ -680,6 +687,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "negev", weight: 0.003 },
             { item: "mg5", weight: 0.003 },
             { item: "tango_51", weight: 0.002 },
+            { item: "sv98", weight: 0.001 },
             { item: "dual_deagle", weight: 0.001 }
         ],
         healing_items: [
@@ -773,6 +781,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "negev", weight: 0.005 },
             { item: "mg5", weight: 0.005 },
             { item: "tango_51", weight: 0.004 },
+            { item: "sv98", weight: 0.003 },
             { item: "dual_deagle", weight: 0.003 },
             { item: "m590m", weight: .003 },
             { item: "usas12", weight: .001 }
@@ -848,22 +857,35 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "vepr12", weight: 1 },
             { item: "deagle", weight: 1 },
             { item: "cz600", weight: 1 },
+            { item: "blr", weight: 1 },
             { item: "mcx_spear", weight: 0.95 },
             { item: "mosin_nagant", weight: 0.95 },
             { item: "tango_51", weight: 0.9 },
             { item: "stoner_63", weight: 0.9 },
+            { item: "L86A2", weight: 0.8 },
+            { item: "sv98", weight: 0.6 },
             { item: "model_89", weight: 0.6 },
             { item: "vks", weight: 0.6 },
+            { item: "svd", weight: 0.6 },
+            { item: "an94", weight: 0.5 },
             { item: "radio", weight: 0.1 }
         ],
         gold_airdrop_guns: [
             { item: "m1_garand", weight: 1.1 },
+            { item: "vickers", weight: 1.05 },
             { item: "acr", weight: 1 },
             { item: "pp19", weight: 1 },
             { item: "negev", weight: 1 },
+            { item: "m249", weight: 1 },
             { item: "mg5", weight: 1 },
+            { item: "pkp", weight: 1 },
+            { item: "super90", weight: 0.8 },
+            { item: "m590m", weight: 0.8 },
+            { item: "m134", weight: 0.7 },
+            { item: "usas12", weight: 0.7 },
             { item: "mk18", weight: 0.5 },
             { item: "l115a1", weight: 0.5 },
+            { item: "awms", weight: 0.4 },
             { item: "dual_rsh12", weight: 0.5 },
             { item: "g19", weight: 0.0005 }
         ],
@@ -898,6 +920,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "mg5", weight: 0.1 },
             { item: "tango_51", weight: 0.1 },
             { item: "deagle", weight: 0.1 },
+            { item: "sv98", weight: 0.08 },
             { item: "g19", weight: 0.05 },
             { item: "dual_deagle", weight: 0.04 }
         ],
@@ -913,7 +936,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "vector", weight: 0.4 },
             { item: "stoner_63", weight: 0.08 },
             { item: "tango_51", weight: 0.08 },
-            { item: "g19", weight: 0.08 }
+            { item: "sv98", weight: 0.06 },
+            { item: "g19", weight: 0.01 },
         ],
         jack_o_lantern: [
             [{ table: "pumpkin", weight: 1 }],

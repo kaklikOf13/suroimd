@@ -223,7 +223,9 @@ const randomContainer1 = {
     container_6: 4,
     container_7: 3,
     container_8: 4,
-    container_10: 3
+    container_10: 3,
+    container_13: 3,
+    container_14: 0.1
 };
 
 const randomContainer2 = {
@@ -262,7 +264,8 @@ const ContainerTints = {
     red: 0xa32900,
     green: 0x00a30e,
     blue: 0x005fa3,
-    yellow: 0xcccc00
+    yellow: 0xcccc00,
+    golden:0xa87c03
 };
 
 const ContainerWallOutlineTints = {
@@ -270,7 +273,8 @@ const ContainerWallOutlineTints = {
     red: 0x661900,
     green: 0x006608,
     blue: 0x003b66,
-    yellow: 0x808000
+    yellow: 0x808000,
+    golden:0x825805
 };
 
 const ContainerWallTints = {
@@ -278,7 +282,8 @@ const ContainerWallTints = {
     red: 0x8f2400,
     green: 0x008f0c,
     blue: 0x00538f,
-    yellow: 0xb3b300
+    yellow: 0xb3b300,
+    golden:0xa87c03
 };
 
 export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
@@ -335,9 +340,10 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
 
         const container = derive((
             id: number,
-            color: "white" | "red" | "green" | "blue" | "yellow",
+            color: "white" | "red" | "green" | "blue" | "yellow" | "golden",
             open: "open2" | "open1" | "closed",
-            damaged?: boolean
+            damaged?: boolean,
+            loot?:string,
         ) => {
             const tint = ContainerTints[color];
 
@@ -423,7 +429,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     ? []
                     : [{
                         position: Vec.create(0, 0),
-                        table: "ground_loot"
+                        table: loot??"ground_loot"
                     }]
             } as const;
         });
@@ -2185,6 +2191,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
             container([10, "yellow", "open2"]),
             container([11, "green", "closed"]),
             container([12, "yellow", "closed"]),
+            container([13, "golden", "closed"]),
+            container([14, "golden", "open1",undefined,"tango_crate"]),
 
             bigTent([1, "red"]),
             bigTent([2, "green"]),
