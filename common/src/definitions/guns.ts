@@ -1198,7 +1198,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 fireMode: FireMode.Single,
                 shotSpread: 5,
                 moveSpread: 7,
-                jitterRadius: 3.7,
+                jitterRadius: 4.2,
                 bulletCount: 12,
                 length: 7.85,
                 fists: {
@@ -1225,7 +1225,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     damage: 10,
                     obstacleMultiplier: 1,
                     speed: 0.17,
-                    range: 70,
+                    range: 50,
                     tracer: {
                         length: 0.7
                     }
@@ -1272,22 +1272,19 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 }
             },
             {
+                [inheritFrom]: "model_37",
                 idString: "flues",
                 name: "Flues",
-                ammoType: "12g",
                 ammoSpawnAmount: 10,
                 capacity: 2,
                 reloadTime: 2.6,
                 fireDelay: 250,
                 switchDelay: 250,
-                recoilMultiplier: 0.5,
+                recoilMultiplier: 0.6,
                 recoilDuration: 550,
                 fireMode: FireMode.Single,
-                bulletCount: 10,
-                shotSpread: 10,
-                moveSpread: 12,
-                jitterRadius: 4,
                 length: 6,
+                shotsPerReload:2,
                 fists: {
                     left: Vec.create(95, -2),
                     right: Vec.create(40, 0),
@@ -1307,16 +1304,9 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     },
                     on: "reload"
                 }],
-                gasParticles: gasParticlePresets.shotgun,
-                ballistics: {
-                    damage: 10.7,
-                    obstacleMultiplier: 1,
-                    speed: 0.2,
-                    range: 67,
-                    tracer: {
-                        length: 0.5
-                    }
-                }
+                ballistics:{
+                    damage:11,
+                },
             },
             {
                 idString: "usas12",
@@ -1381,7 +1371,6 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 casingParticles: [{
                     position: Vec.create(4.3, 0.6)
                 }],
-                gasParticles: gasParticlePresets.shotgun,
             },
             {
                 idString: "dt11",
@@ -2480,7 +2469,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 }
             },
             {
-                idString: "L86A2",
+                idString: "l86a2",
                 name: "L86A2",
                 itemType: ItemType.Gun,
                 ammoType: "556mm",

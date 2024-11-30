@@ -23,16 +23,16 @@ export const Scopes = ObjectDefinitions.withDefault<ScopeDefinition>()(
             scope(
                 [1],
                 {
-                    zoomLevel: 70,
+                    zoomLevel: 60,
                     noDrop: true,
                     giveByDefault: true
                 }
             ),
-            scope([2], { zoomLevel: 80 }),
-            scope([4], { zoomLevel: 100 }),
+            scope([2], { zoomLevel: 70 }),
+            scope([4], { zoomLevel: 90 }),
             scope([8], { zoomLevel: 120 }),
-            scope([15], { zoomLevel: 140 }),
-            scope([20], { zoomLevel: 165 }),
+            scope([15], { zoomLevel: 150 }),
+            scope([20], { zoomLevel: 170 }),
         ];
     }
 );
