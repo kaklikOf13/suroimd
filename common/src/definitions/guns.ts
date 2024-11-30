@@ -2286,7 +2286,224 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         ]
                     }
                 }
-            }
+            },
+
+            //SUROIMODES
+            {
+                idString: "blr",
+                name: "BLR 81",
+                itemType: ItemType.Gun,
+                ammoType: "762mm",
+                ammoSpawnAmount: 20,
+                capacity: 3,
+                extendedCapacity:5,
+                reloadTime: 1.7,
+                fireDelay: 900,
+                switchDelay: 900,
+                speedMultiplier: 0.9,
+                recoilMultiplier: 0.55,
+                recoilDuration: 850,
+                fireMode: FireMode.Single,
+                shotSpread: 0.8,
+                moveSpread: 0.5,
+                length: 11.6,
+                fists: {
+                    left: Vec.create(145, -1),
+                    right: Vec.create(40, 0),
+                    animationDuration: 100,
+                    rightZIndex: 4,
+                },
+                image: { position: Vec.create(140, 4) },
+                casingParticles: [
+                    {
+                        position: Vec.create(4, 0.6),
+                        frame: "casing_762x39mm",
+                    }
+                ] as NonNullable<SingleGunNarrowing["casingParticles"]>,
+                gasParticles: gasParticlePresets.rifle,
+                ballistics: {
+                    damage: 61,
+                    obstacleMultiplier: 1,
+                    speed: 0.33,
+                    range: 250,
+                    tracer:{
+                        width:1.4,
+                        length:2.5
+                    }
+                }
+            },
+            {
+                idString: "model_94",
+                name: "Model 94",
+                itemType: ItemType.Gun,
+                ammoType: "45acp",
+                ammoSpawnAmount: 64,
+                capacity: 8,
+                extendedCapacity:13,
+                reloadTime: 0.5,
+                shotsPerReload:1,
+                fireDelay: 900,
+                switchDelay: 900,
+                speedMultiplier: 0.9,
+                recoilMultiplier: 0.45,
+                recoilDuration: 750,
+                fireMode: FireMode.Single,
+                shotSpread: 0.8,
+                moveSpread: 0.5,
+                length: 11,
+                fists: {
+                    left: Vec.create(145, -1),
+                    right: Vec.create(40, 0),
+                    animationDuration: 100,
+                    rightZIndex: 4,
+                },
+                image: { position: Vec.create(105, 4) },
+                gasParticles: gasParticlePresets.rifle,
+                casingParticles: [
+                    {
+                        position: Vec.create(4, 0.6),
+                        frame: "casing_45acp",
+                    }
+                ] as NonNullable<SingleGunNarrowing["casingParticles"]>,
+                ballistics: {
+                    damage: 50,
+                    obstacleMultiplier: 1,
+                    speed: 0.33,
+                    range: 250,
+                    tracer:{
+                        width:1.4,
+                        length:2.5
+                    }
+                }
+            },
+            {
+                idString: "peacemaker",
+                name: "Peacemaker",
+                itemType: ItemType.Gun,
+                ammoType: "45acp",
+                ammoSpawnAmount: 64,
+                fireDelay: 150,
+                switchDelay: 250,
+                speedMultiplier: 0.92,
+                recoilMultiplier: 0.8,
+                recoilDuration: 90,
+                fireMode: FireMode.Auto,
+                shotSpread: 15,
+                moveSpread: 15,
+                length: 4.7,
+                fists: {
+                    left: Vec.create(40, 0),
+                    right: Vec.create(40, 0),
+                    leftZIndex: 4,
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                image: { position: Vec.create(65, 0) },
+                gasParticles: gasParticlePresets.pistol,
+                casingParticles: [
+                    {
+                        position: Vec.create(3.5, 0.5),
+                        frame: "casing_45acp",
+                    }
+                ] as NonNullable<SingleGunNarrowing["casingParticles"]>,
+                capacity: 6,
+                extendedCapacity:9,
+                reloadTime: 3,
+                ballistics: {
+                    damage: 29,
+                    obstacleMultiplier: 1,
+                    speed: 0.22,
+                    range: 108
+                },
+                dual:{
+                    leftRightOffset: 1.3,
+                    fireDelay: 150,
+                    shotSpread: 16,
+                    moveSpread: 16,
+                    capacity: 12,
+                    extendedCapacity: 20,
+                    reloadTime: 5.5
+                },
+            },
+            {
+                idString: "svd",
+                name: "SVD",
+                itemType: ItemType.Gun,
+                ammoType: "762mm",
+                ammoSpawnAmount: 30,
+                capacity: 10,
+                extendedCapacity:15,
+                reloadTime: 2.5,
+                fireDelay: 200,
+                switchDelay: 900,
+                speedMultiplier: 0.9,
+                recoilMultiplier: 0.7,
+                recoilDuration: 140,
+                fireMode: FireMode.Single,
+                shotSpread: 1.3,
+                moveSpread: 2.5,
+                length: 11.1,
+                fists: {
+                    right: Vec.create(40, 0),
+                    left: Vec.create(145, 2),
+                    animationDuration: 100,
+                    rightZIndex: 4,
+                },
+                image: { position: Vec.create(105, 4) },
+                gasParticles: gasParticlePresets.rifle,
+                casingParticles: [
+                    {
+                        position: Vec.create(4, 0.6),
+                        frame: "casing_762x39mm",
+                    }
+                ] as NonNullable<SingleGunNarrowing["casingParticles"]>,
+                ballistics: {
+                    damage: 41,
+                    obstacleMultiplier: 1,
+                    speed: 0.30,
+                    range: 250,
+                    tracer:{
+                        width:1,
+                        length:2.5
+                    }
+                }
+            },
+            {
+                idString: "L86A2",
+                name: "L86A2",
+                itemType: ItemType.Gun,
+                ammoType: "556mm",
+                ammoSpawnAmount: 90,
+                capacity: 30,
+                reloadTime: 3,
+                fireDelay: 150,
+                switchDelay: 400,
+                speedMultiplier: 0.92,
+                recoilMultiplier: 0.8,
+                recoilDuration: 130,
+                fireMode: FireMode.Single,
+                shotSpread: 1,
+                moveSpread: 2.5,
+                length: 11.9,
+                fists: {
+                    right: Vec.create(40, 0),
+                    left: Vec.create(100, -2),
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                image: { position: Vec.create(120, 0) },
+                casingParticles: [
+                    {
+                        position: Vec.create(5, 0.5),
+                    }
+                ] as NonNullable<SingleGunNarrowing["casingParticles"]>,
+                ballistics: {
+                    damage: 26,
+                    obstacleMultiplier: 0.70,
+                    speed: 0.27,
+                    range: 230
+                }
+            },
         ] satisfies ReadonlyArray<RawDefinition<RawGunDefinition>>).map(e => {
             if (e.dual === undefined) {
                 return [e];

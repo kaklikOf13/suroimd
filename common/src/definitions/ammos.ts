@@ -115,6 +115,19 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
             size:0.35
         },
         {
+            idString: "45acp",
+            name: "45 ACP",
+            characteristicColor: {
+                hue: 282,
+                saturation: 94,
+                lightness: 21
+            },
+            hideUnlessPresent: true,
+            maxStackSize: 60,
+            dropAmmout:49,
+            size:0.035
+        },
+        {
             idString: "curadell",
             name: "Curadell",
             maxStackSize: 10,
