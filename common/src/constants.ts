@@ -300,6 +300,8 @@ export const defaultUnlockGuns:string[]=[
     "lewis_gun",
     "mosin_nagant",
     "sr25",
+    "blr",
+    "bar",
 
     "aug",
     "m16a4",
@@ -307,12 +309,15 @@ export const defaultUnlockGuns:string[]=[
     "mg36",
     "cz600",
     "mini14",
+    "l86a2",
+    "an94",
 
     "hp18",
     "flues",
     "model_37",
     "m3k",
     "vepr12",
+    "super90",
 ]
 export const defaultUnlockMelees:string[]=[
     "baseball_bat",
