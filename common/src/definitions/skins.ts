@@ -95,10 +95,12 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
                 ["Printer",         0xffffff],
                 ["Distant Shores",  0x7eca83],
                 ["Hasanger",        0x640000],
+                ["leia",            0x060647],
+                ["radians",         0x060647],
                 ["LimeNade",        0xffffff],
                 ["Dragonscale",     0x3f808d],
                 ["error",           0x1fc462],
-                ["pap",             0x060647]
+                ["pap",             0x060647],
             ] satisfies ReadonlyArray<readonly [string, number]>).map(([name, tint]) => skin([name, tint])),
             ...([
                 ["Lemon",                 0xebe092],
