@@ -7,7 +7,7 @@ export const news: NewsPost[] = [
       title: "Suroi Mod/SuroiMD",
       bannerImage: "../img/news/v0.19.0.png",
       content: `SuroiMD or SuroiMod (placeholder name) is a mod for suroi.io, aiming to create a new game based on suroi.io.`,
-      longContent: `<h2>Suroi v0.19.0</h2>
+      longContent: `<h2>SuroiMD 1.0</h2>
 <h3>New features</h3>
 <ul>
 <li><strong>Day And Night!</strong> Day And Night Cicle System</li>
