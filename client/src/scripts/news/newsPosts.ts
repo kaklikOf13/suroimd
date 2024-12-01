@@ -17,7 +17,33 @@ export const news: NewsPost[] = [
 <li><strong>Survival Crate!</strong> A Essentials Crate. Always Give The Basic To Start The Match</li>
 <li><strong>Youtubr Swang</strong> Now Everyone With Youtubr Role Have A Skin</li>
 <li><strong>In Game Music</strong> In Game Music + Rain</li>
-<li><strong>Weapons Selector</strong> Useless Because Don't Have Modes To This</li>
+<li><strong>Weapons Selector</strong> Select Your favorite Guns To Play On Some Game Modes</li>
+<li><strong>.45ACP Ammo!</strong> Purple Ammo</li>
+<h4>New Guns</h4>
+<h5>Suroimodes</h5>
+<li><strong>Blr 81!</strong> Sniper</li>
+<li><strong>Model 94!</strong> Sniper With .45ACP</li>
+<li><strong>Peacemaker!</strong> The Brother Of M1895 But With Purple Ammo And Another Changes</li>
+<li><strong>SVD!</strong> SR25 2.0</li>
+<li><strong>L86A2</strong> MINI-14 2.0</li>
+<li><strong>AN-94!</strong> Blue Captain Like This</li>
+<li><strong>P90!</strong> P90+Pump = Pure Power - Fortnite 2011-9999</li>
+<li><strong>M134!</strong> F For Your Enemys. This Can Destroy Airplanes</li>
+<li><strong>SV-98!</strong> The Tango 2.0 Return To Us</li>
+<li><strong>AWM-S!</strong> Yes. It Is Back. The AWMS Can Destroy Almost Everyone In Your Front. And You Can Play With Your Enemys</li>
+<li><strong>SUPER-90!</strong> Sniper Shotgun. Cool</li>
+<li><strong>PKP Pecheneg!</strong> Some Lone Peoples Like This.</li>
+<li><strong>BAR M1918!</strong> Ok. I Dont Know What I Said.</li>
+<li><strong>M249!</strong> Green Brother Of PKP With Better Firerate and Less Capacity.</li>
+<li><strong>Vickers No.2 Mk.1!</strong> PKP But With Less Capacity and Less Recoil.</li>
+<li><strong>Tommy Gun!</strong> Tommy Are A Purple Guy(FNAF).</li>
+<li><strong>De Lisle!</strong> Please Dont Give On Videos Of Same Youtubers(Dislike).</li>
+<h5>Originals</h5>
+<li><strong>Vector ACP!</strong> The Purple Tween Brother Of Vector</li>
+<h4>New Modes</h4>
+<li><strong>Monster Hunter!</strong> You Like Play And Watch Lone Surviv Videos Right? You Like Monster Hunter. 35vs1</li>
+<li><strong>Deathmatch!</strong> Do A Epic Battle With Random Peoples. With Your Choosed Gun. You Can Get Score To Share With Another Peoples Your Skills.</li>
+<li><strong>Apples Mode!</strong> Wait. I Already See This In Some Place But I Forgoten.</li>
 </ul>
 <h3>Changes</h3>
 <ul>
@@ -25,12 +51,8 @@ export const news: NewsPost[] = [
 <li>Realistic Backpacks</li>
 <li>Character Speed</li>
 <li>Biggest Map</li>
-<h4>Guns Changes</h4>
-<li>M3K capicity 6 < 9</li>
-<li>HP18 capicity 5 < 7</li>
-<li>New Shotguns System</li>
-<li>L115A1 Damage 120 < 150</li>
-<li>L115A1 Capacity 5 > 3</li>
+<li>Loot Tables</li>
+<li>All Shotguns Have Change</li>
 </ul>`
     },
     {
