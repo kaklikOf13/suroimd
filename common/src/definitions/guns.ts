@@ -3057,6 +3057,74 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     range: 130
                 }
             },
+            {
+                idString: "mp5",
+                name: "MP5",
+                ammoType: "9mm",
+                ammoSpawnAmount: 99,
+                capacity: 30,
+                extendedCapacity: 50,
+                reloadTime: 2,
+                fireDelay: 80,
+                switchDelay: 300,
+                recoilMultiplier: 0.75,
+                recoilDuration: 60,
+                fireMode: FireMode.Auto,
+                shotSpread: 4,
+                moveSpread: 6,
+                length: 6.1,
+                fists: {
+                    left: Vec.create(85, -6),
+                    right: Vec.create(40, 0),
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                casingParticles: [{
+                    position: Vec.create(4, 0.3)
+                }],
+                gasParticles: gasParticlePresets.automatic,
+                image: { position: Vec.create(80, 0) },
+                ballistics: {
+                    damage: 10,
+                    obstacleMultiplier: 1,
+                    speed: 0.27,
+                    range: 160
+                }
+            },
+            {
+                idString: "mp5e",
+                name: "MP5-Extended",
+                ammoType: "9mm",
+                ammoSpawnAmount: 99,
+                capacity: 35,
+                extendedCapacity: 50,
+                reloadTime: 2.1,
+                fireDelay: 80,
+                switchDelay: 300,
+                recoilMultiplier: 0.68,
+                recoilDuration: 60,
+                fireMode: FireMode.Auto,
+                shotSpread: 4,
+                moveSpread: 6,
+                length: 6.7,
+                fists: {
+                    left: Vec.create(85, -6),
+                    right: Vec.create(40, 0),
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                casingParticles: [{
+                    position: Vec.create(4, 0.3)
+                }],
+                gasParticles: gasParticlePresets.automatic,
+                image: { position: Vec.create(70, 0) },
+                ballistics: {
+                    damage: 11,
+                    obstacleMultiplier: 1,
+                    speed: 0.27,
+                    range: 160
+                }
+            }
         ] satisfies ReadonlyArray<RawDefinition<RawGunDefinition>>).map(e => {
             if (e.dual === undefined) {
                 return [e];
