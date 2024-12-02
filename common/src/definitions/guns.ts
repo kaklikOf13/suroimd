@@ -2295,14 +2295,14 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 fireMode: FireMode.Single,
                 shotSpread: 0.8,
                 moveSpread: 0.5,
-                length: 12.5,
+                length: 9,
                 fists: {
-                    left: Vec.create(145, -1),
+                    left: Vec.create(105, -1),
                     right: Vec.create(40, 0),
                     animationDuration: 100,
                     rightZIndex: 4,
                 },
-                image: { position: Vec.create(140, 4) },
+                image: { position: Vec.create(105, 4) },
                 casingParticles: [
                     {
                         position: Vec.create(4, 0.6),
@@ -2339,9 +2339,9 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 fireMode: FireMode.Single,
                 shotSpread: 0.8,
                 moveSpread: 0.5,
-                length: 11,
+                length: 9,
                 fists: {
-                    left: Vec.create(145, -1),
+                    left: Vec.create(105, -1),
                     right: Vec.create(40, 0),
                     animationDuration: 100,
                     rightZIndex: 4,
@@ -2443,10 +2443,10 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 fireMode: FireMode.Single,
                 shotSpread: 1.3,
                 moveSpread: 2.5,
-                length: 11.1,
+                length: 9.5,
                 fists: {
                     right: Vec.create(40, 0),
-                    left: Vec.create(145, 2),
+                    left: Vec.create(110, 2),
                     animationDuration: 100,
                     rightZIndex: 4,
                 },
@@ -2484,7 +2484,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 fireMode: FireMode.Single,
                 shotSpread: 1,
                 moveSpread: 2.5,
-                length: 11.9,
+                length: 10,
                 fists: {
                     right: Vec.create(40, 0),
                     left: Vec.create(100, -2),
