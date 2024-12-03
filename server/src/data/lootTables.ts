@@ -542,6 +542,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
                 { item: "aug", weight: 1 },
                 { item: "model_37", weight: 1 },
                 { item: "mp40", weight: 1 },
+                { item: "mp5", weight: 0.9 },
+                { item: "mp5e", weight: 0.65 },
                 { item: "m3k", weight: 0.6 },
                 { item: "flues", weight: 0.6 },
                 { item: "m16a4", weight: 0.4 },
@@ -641,7 +643,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         kitchen_unit_3: [
             { table: "healing_items", weight: 1.2 },
             { table: "ammo", weight: 1 },
-            { table: "guns", weight: 0.2 }
+            { table: "guns", weight: 0.23 }
         ],
         sea_traffic_control_floor: [
             [{ item: NullString,weight: 0.9 },{ item: "curadell", weight: 0.2, count:1},{ item: "curadell", weight: 0.09, count:2},{ item: "curadell", weight: 0.02, count:3}],
@@ -657,19 +659,21 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { table: "ammo", weight: 1 },
             { table: "healing_items", weight: 0.5 },
             { table: "equipment", weight: 0.3 },
-            { table: "guns", weight: 0.05 },
+            { table: "guns", weight: 0.07 },
         ],
 
         guns: [
             { item: "g19", weight: 1.77 },
             { item: "m1895", weight: 1.72 },
             { item: "mp40", weight: 1.7 },
+            { item: "mp5", weight: 1.6 },
             { item: "saf200", weight: 1.5 },
             { item: "cz75a", weight: 1.4 },
             { item: "hp18", weight: 1.2 },
             { item: "micro_uzi", weight: 1 },
             { item: "ak47", weight: 1 },
             { item: "model_37", weight: 0.99 },
+            { item: "mp5e", weight: 0.7 },
             { item: "aug", weight: 0.7 },
             { item: "sks", weight: 0.7 },
             { item: "m3k", weight: 0.3 },
@@ -683,7 +687,6 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "mini14", weight: 0.01 },
             { item: "mcx_spear", weight: 0.01 },
             { item: "bar", weight: 0.01 },
-            { item: "svd", weight: 0.008 },
             { item: "cz600", weight: 0.008 },
             { item: "vepr12", weight: 0.008 },
             { item: "super90", weight: 0.007 },
@@ -697,6 +700,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "model_89", weight: 0.0035 },
             { item: "an98", weight: 0.003 },
             { item: "vks", weight: 0.003 },
+            { item: "svd", weight: 0.003 },
+            { item: "l86a2", weight: 0.003 },
             { item: "negev", weight: 0.003 },
             { item: "m249", weight: 0.003 },
             { item: "mg5", weight: 0.003 },
@@ -770,9 +775,11 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "mp40", weight: 1 },
             { item: "sks", weight: 1 },
             { item: "model_37", weight: 1 },
+            { item: "mp5", weight: 0.9 },
             { item: "m3k", weight: 0.8 },
             { item: "arx160", weight: 0.8 },
             { item: "flues", weight: 0.8 },
+            { item: "mp5e", weight: 0.75 },
             { item: "saf200", weight: 0.75 },
             { item: "cz75a", weight: 0.75 },
             { item: "m16a4", weight: 0.5 },
@@ -787,8 +794,6 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "mini14", weight: 0.05 },
             { item: "mcx_spear", weight: 0.05 },
             { item: "an94", weight: 0.05 },
-            { item: "svd", weight: 0.04 },
-            { item: "l86a2", weight: 0.04 },
             { item: "vepr12", weight: 0.04 },
             { item: "super90", weight: 0.03 },
             { item: "cz600", weight: 0.03 },
@@ -799,6 +804,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "deagle", weight: 0.008 },
             { item: "model_89", weight: 0.005 },
             { item: "vks", weight: 0.005 },
+            { item: "l86a2", weight: 0.005 },
+            { item: "svd", weight: 0.005 },
             { item: "negev", weight: 0.005 },
             { item: "m249", weight: 0.005 },
             { item: "mg5", weight: 0.005 },
@@ -826,16 +833,16 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         ],
         special_equipment: [
             { item: "basic_helmet", weight: 1 },
-            { item: "regular_helmet", weight: 0.3 },
-            { item: "tactical_helmet", weight: 0.03 },
+            { item: "regular_helmet", weight: 0.35 },
+            { item: "tactical_helmet", weight: 0.05 },
 
             { item: "basic_vest", weight: 1 },
-            { item: "regular_vest", weight: 0.3 },
-            { item: "tactical_vest", weight: 0.03 },
+            { item: "regular_vest", weight: 0.35 },
+            { item: "tactical_vest", weight: 0.05 },
 
-            { item: "basic_pack", weight: 1 },
-            { item: "regular_pack", weight: 0.3 },
-            { item: "tactical_pack", weight: 0.03 }
+            { item: "basic_pack", weight: 1},
+            { item: "regular_pack", weight: 0.37 },
+            { item: "tactical_pack", weight: 0.07 }
         ],
         melee: [
             { item: "baseball_bat", weight: 3 },
@@ -845,7 +852,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         airdrop_equipment: [
             { item: "tactical_helmet", weight: 1 },
             { item: "tactical_vest", weight: 1 },
-            { item: "tactical_pack", weight: 1 }
+            { item: "tactical_pack", weight: 0.85 }
         ],
         airdrop_scopes: [
             { item: "4x_scope", weight: 1 },
@@ -854,10 +861,10 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "20x_scope", weight: 0.08 }
         ],
         airdrop_healing_items: [
-            { item: "gauze", count: 5, weight: 1.5 },
+            { item: "gauze", count: 7, weight: 1.5 },
             { item: "medikit", weight: 1 },
             { item: "cola", weight: 1 },
-            { item: "tablets", weight: 1 }
+            { item: "tablets", count:2, weight: 1 }
         ],
         airdrop_skins: [
             { item: NullString, weight: 1 },
@@ -887,17 +894,17 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "mosin_nagant", weight: 0.95 },
             { item: "tango_51", weight: 0.9 },
             { item: "stoner_63", weight: 0.9 },
-            { item: "l86a2", weight: 0.8 },
             { item: "sv98", weight: 0.6 },
             { item: "model_89", weight: 0.6 },
             { item: "vks", weight: 0.6 },
-            { item: "svd", weight: 0.6 },
             { item: "an94", weight: 0.5 },
             { item: "radio", weight: 0.1 }
         ],
         gold_airdrop_guns: [
             { item: "m1_garand", weight: 1.1 },
-            { item: "vickers", weight: 1.05 },
+            { item: "l86a2", weight: 1.1 },
+            { item: "svd", weight: 0.6 },
+            { item: "vickers", weight: 1 },
             { item: "acr", weight: 1 },
             { item: "pp19", weight: 1 },
             { item: "negev", weight: 1 },
@@ -927,6 +934,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         ],
         viking_chest_guns: [
             { item: "arx160", weight: 1 },
+            { item: "mp5e", weight: 1 },
             { item: "m16a4", weight: 1 },
             { item: "m3k", weight: 1 },
             { item: "flues", weight: 0.9 },
