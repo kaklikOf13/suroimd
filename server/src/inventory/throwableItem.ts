@@ -232,7 +232,7 @@ class GrenadeHandler {
                         ? 0
                         : Numeric.min(
                             definition.maxThrowDistance * this.owner.mapPerkOrDefault(PerkIds.DemoExpert, ({ rangeMod }) => rangeMod, 1),
-                            0.9 * this.owner.distanceToMouse
+                            1.7 * this.owner.distanceToMouse
                         //  ^^^ Grenades will consistently undershoot the mouse by 10% in order to make long-range shots harder
                         //      while not really affecting close-range shots
                         ) / 985
