@@ -7,6 +7,7 @@
 
 ## Sound Designers
 - The Italian
+- Teardrop
 
 ## Art
 - Kaklik
@@ -46,3 +47,4 @@
 ## Sound designers
 - Katloo \(https://github.com/Katloo24)
 - TTGetDunkedOn
+- Teardrop

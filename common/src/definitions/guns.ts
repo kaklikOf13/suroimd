@@ -3106,7 +3106,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 fireMode: FireMode.Auto,
                 shotSpread: 4,
                 moveSpread: 6,
-                length: 6.7,
+                length: 6.1,
                 fists: {
                     left: Vec.create(85, -6),
                     right: Vec.create(40, 0),
