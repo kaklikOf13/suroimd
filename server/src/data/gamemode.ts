@@ -327,6 +327,77 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
             })}
         ]
     },
+    "1v1":{
+        adrenalineLoss:0.0001,
+        maxPlayersPerGame:2,
+        start_after:1,
+        joinTime:5,
+        gas:{
+            mode:GasMode.Staged,
+            stages:[
+                {
+                    dps:0,
+                    duration:0,
+                    newRadius:0.8,
+                    oldRadius:0.8,
+                    state:GasState.Inactive
+                },
+                {
+                    dps:0,
+                    duration:20,
+                    newRadius:0.4,
+                    oldRadius:0.8,
+                    state:GasState.Waiting,
+                },
+                {
+                    dps:10,
+                    duration:20,
+                    newRadius:0.4,
+                    oldRadius:0.8,
+                    state:GasState.Advancing,
+                },
+                {
+                    dps:10,
+                    duration:20,
+                    newRadius:0.2,
+                    oldRadius:0.4,
+                    state:GasState.Waiting,
+                },
+                {
+                    dps:13,
+                    duration:20,
+                    newRadius:0.2,
+                    oldRadius:0.4,
+                    state:GasState.Advancing,
+                },
+                {
+                    dps:13,
+                    duration:60,
+                    newRadius:0,
+                    oldRadius:0.2,
+                    state:GasState.Waiting,
+                },
+                {
+                    dps:4,
+                    duration:20,
+                    newRadius:0,
+                    oldRadius:0.2,
+                    state:GasState.Waiting,
+                },
+            ]
+        },
+        button:{
+            buttonCss:"btn-redmode",
+            buttonText:"1v1",
+            icon:""
+        },
+        plugins:[
+            {construct:InitWithPlugin,params:startsWithD},
+            {construct:RemoveLootAfterTimePlugin}
+        ],
+        weaponsSelect:true,
+        map:"deathmatch"
+    },
     debug:{
         map:"debug",
         gas:{mode:GasMode.Disabled},
