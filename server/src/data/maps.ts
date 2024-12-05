@@ -209,6 +209,130 @@ const maps = {
             { name: "Deepwood", position: Vec.create(0.5, 0.65) }
         ]
     },
+    mini_normal: {
+        width: 1240,
+        height: 1240,
+        oceanSize: 100,
+        beachSize: 29,
+        rivers: {
+            minAmount: 1,
+            maxAmount: 2,
+            maxWideAmount: 1,
+            wideChance: 0.35,
+            minWidth: 10,
+            maxWidth: 14,
+            minWideWidth: 9,
+            maxWideWidth: 12
+        },
+        buildings: {
+            large_bridge: 1,
+            small_bridge: Infinity,
+            port_complex: 1,
+            sea_traffic_control: 1,
+            tugboat_red: 1,
+            tugboat_white: 5,
+            armory: 1,
+            headquarters: 1,
+            small_bunker: 1,
+            refinery: 1,
+            warehouse: 4,
+            // firework_warehouse: 1, // birthday mode
+            green_house: 2,
+            blue_house: 2,
+            red_house: 1,
+            red_house_v2: 1,
+            construction_site: 1,
+            mobile_home: 8,
+            porta_potty: 13,
+            container_3: 2,
+            container_4: 2,
+            container_5: 1,
+            container_6: 2,
+            container_7: 2,
+            container_8: 1,
+            container_9: 2,
+            container_10: 1
+        },
+        majorBuildings: [],
+        quadBuildingLimit: {
+            red_house: 1,
+            red_house_v2: 1,
+            warehouse: 2,
+            green_house: 1,
+            blue_house: 1,
+            mobile_home: 2,
+            porta_potty: 2,
+            construction_site: 1
+        },
+        obstacles: {
+            oil_tank: 12,
+            oak_tree: 19,
+            birch_tree: 19,
+            pine_tree: 9,
+            loot_tree: 3,
+            regular_crate: 55,
+            flint_crate: 5,
+            aegis_crate: 5,
+            survival_crate:2,
+            grenade_crate: 20,
+            rock: 150,
+            river_chest: 1,
+            river_rock: 30,
+            bush: 65,
+            lily_pad: 12,
+            blueberry_bush: 18,
+            barrel:43,
+            viking_chest: 1,
+            super_barrel: 7,
+            melee_crate: 1,
+            gold_rock: 1,
+            loot_barrel: 2,
+            flint_stone: 1
+        },
+        obstacleClumps: [
+            {
+                clumpAmount: 60,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 4,
+                    jitter: 4.5,
+                    obstacles: ["oak_tree"],
+                    radius: 10
+                }
+            },
+            {
+                clumpAmount: 20,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 4,
+                    jitter: 4.5,
+                    obstacles: ["birch_tree"],
+                    radius: 12
+                }
+            },
+            {
+                clumpAmount: 4,
+                clump: {
+                    minAmount: 2,
+                    maxAmount: 3,
+                    jitter: 4.5,
+                    obstacles: ["pine_tree","birch_tree"],
+                    radius: 12
+                }
+            }
+        ],
+        loots: {
+            ground_loot: 60
+        },
+        places: [
+            { name: "Banana", position: Vec.create(0.23, 0.2) },
+            { name: "Takedown", position: Vec.create(0.23, 0.8) },
+            { name: "Lavlandet", position: Vec.create(0.75, 0.2) },
+            { name: "Noskin Narrows", position: Vec.create(0.72, 0.8) },
+            { name: "Mt. Sanger", position: Vec.create(0.5, 0.35) },
+            { name: "Deepwood", position: Vec.create(0.5, 0.65) }
+        ]
+    },
     deathmatch: {
         width: 950,
         height: 950,

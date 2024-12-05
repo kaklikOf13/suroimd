@@ -10,8 +10,8 @@ import { PlayerContainer } from "./objects/player";
 import { maxTeamSize } from "./server";
 import { Logger } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
-import Cron from "croner";
-export let currentGamemode:string=typeof Config.gamemode==="string"?Config.gamemode:(Config.gamemode.rotation[0]??undefined)
+import { pickRandomInArray } from "@common/utils/random";
+export let currentGamemode:string|string[]=(typeof Config.gamemode==="string"||Array.isArray(Config.gamemode))?Config.gamemode:(Config.gamemode.rotation[0]??undefined)
 export let currentGMSTime=0
 let gamemodeIndex = 0;
 export interface WorkerInitData {
@@ -180,10 +180,10 @@ export async function newGame(id?: number): Promise<number> {
             Logger.log(`Game ${id} | Creating...`);
             const game = games[id];
             if (!game) {
-                games[id] = new GameContainer(id,currentGamemode, resolve);
+                games[id] = new GameContainer(id,Array.isArray(currentGamemode)?pickRandomInArray(currentGamemode):currentGamemode, resolve);
             } else if (game.stopped) {
                 game.resolve = resolve;
-                game.sendMessage({ type: WorkerMessages.Reset,gamemode:currentGamemode });
+                game.sendMessage({ type: WorkerMessages.Reset,gamemode:Array.isArray(currentGamemode)?pickRandomInArray(currentGamemode):currentGamemode });
             } else {
                 Logger.warn(`Game ${id} | Already exists`);
                 resolve(id);
@@ -206,7 +206,7 @@ export const games: Record<string,GameContainer | undefined> = {};
 
 
 if (isMainThread) {
-    if(typeof Config.gamemode!=="string"){
+    if(!(typeof Config.gamemode==="string"||Array.isArray(Config.gamemode))){
         const base=Config.gamemode.switchSchedule
         currentGMSTime=Config.gamemode.switchSchedule
         setInterval(() => {

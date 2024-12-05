@@ -411,4 +411,9 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
         spawn:{mode:SpawnMode.Center}
     },
     normal:DefaultGamemode,
+    mini_normal:{
+        map:"mini_normal",
+        maxPlayersPerGame:20,
+
+    }
 }

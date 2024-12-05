@@ -208,7 +208,7 @@ export class Game implements GameData {
         }
     }
 
-    constructor(id: number, maxTeamSize: TeamSize,gamemode?:string) {
+    constructor(id: number, maxTeamSize: TeamSize,gamemode?:string|string[]) {
         this.id = id;
         this.maxTeamSize = maxTeamSize;
         this.teamMode = this.maxTeamSize > TeamSize.Solo;
@@ -224,7 +224,7 @@ export class Game implements GameData {
         this.grid = new Grid(this, width, height);
 
         if(gamemode){
-            this.gamemode=mergeDeep(DefaultGamemode,Gamemodes[gamemode])
+            this.gamemode=mergeDeep(DefaultGamemode,Gamemodes[typeof gamemode==="string"?gamemode:pickRandomInArray(gamemode)])
         }else{
             this.gamemode=DefaultGamemode
         }

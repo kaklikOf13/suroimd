@@ -68,7 +68,7 @@ export interface ConfigType {
      */
     readonly map: GamemodeMap
 
-    readonly gamemode:string|{
+    readonly gamemode:string|string[]|{
         /**
          * The duration between switches. Must be a cron pattern.
          */
@@ -76,7 +76,7 @@ export interface ConfigType {
         /**
          * The team sizes to switch between.
          */
-        readonly rotation: string[]
+        readonly rotation: (string|string[])[]
     },
     
     /**
