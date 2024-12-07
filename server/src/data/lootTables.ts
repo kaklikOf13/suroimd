@@ -506,7 +506,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             [{ table: "airdrop_equipment", weight: 1 }],
             [{ table: "airdrop_scopes", weight: 1 }],
             [{ table: "airdrop_healing_items", weight: 1 }],
-            [{ table: "airdrop_skins", weight: 1 }],
+            [{ table: "airdrop_skins", weight: .6 },{ table: "shiny_skins", weight: 1.1 }],
             [{ table: "airdrop_melee", weight: 1 }],
             [{ table: "ammo", weight: 1 }],
             [{ table: "gold_airdrop_guns", weight: 1 }],
@@ -867,12 +867,18 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "tablets", count:2, weight: 1 }
         ],
         airdrop_skins: [
-            { item: NullString, weight: 1 },
+            { item: NullString, weight: 0.9 },
             { item: "stardust", weight: 0.5 },
             { item: "aurora", weight: 0.5 },
             { item: "nebula", weight: 0.4 },
-            { item: "ghillie_suit", weight: 0.1 },
-            { item: "basic_outfit", weight: 0.001 }
+            { item: "ghillie_suit", weight: 0.15 },
+            { table: "shiny_skins", weight: 0.15 },
+            { item: "basic_outfit", weight: 0.0001 }
+        ],
+        shiny_skins:[
+            { item: "shiny_hasanger", weight: 1 },
+            { item: "shiny_leia", weight: 1 },
+            { item: "shiny_max_mcfly", weight: 0.95  },
         ],
         airdrop_melee: [
             { item: NullString, weight: 1 },

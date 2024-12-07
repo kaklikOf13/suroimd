@@ -17,6 +17,7 @@ export interface SkinDefinition extends ItemDefinition {
     readonly roleRequired?: string
     readonly hideBlood: boolean
     readonly noSwap?: boolean
+    readonly shiny?:boolean
 }
 
 export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
@@ -27,13 +28,15 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
         hideFromLoadout: false,
         grassTint: false,
         hideEquipment: false,
-        hideBlood: false
+        hideBlood: false,
+        shiny:false,
     },
     ([derive, , createTemplate]) => {
-        const skin = derive((name: string, backpackTint?: number) => ({
+        const skin = derive((name: string, backpackTint?: number,shiny?:boolean) => ({
             idString: name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
             backpackTint,
-            name
+            name,
+            shiny
         }));
 
         const hidden = createTemplate(skin, {
@@ -133,7 +136,13 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
                 ["One at NSD",            0x27331a],
                 ["Sky",                   0x002121],
                 ["Diseased",              0x2d1f1f],
-                ["Deer Season",           0x9a3604]
+                ["Deer Season",           0x9a3604],
+                //Originals
+
+                //Aura
+                ["shiny_max_mcfly",       0xff931c],
+                ["shiny_hasanger",        0x640000],
+                ["shiny_leia",            0x060647],
             ] satisfies ReadonlyArray<readonly [string, number]>).map(([name, tint]) => hidden([name, tint])),
             hidden(
                 ["Werewolf", 0x323232],
