@@ -1,8 +1,8 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Thu, 28 Nov 2024 01:16:56 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Sat, 07 Dec 2024 21:24:13 GMT
 
-## 🇦🇱 Shqip (86% Complete) - ab.hjson
+## 🇦🇱 Shqip (85% Complete) - ab.hjson
 
 ### (No Invalid Keys)
 
@@ -44,6 +44,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_message` is not defined
 - Key `go_score` is not defined
 - Key `create_team_ready` is not defined
+- Key `20x_scope` is not defined
+- Key `BLR` is not defined
 - Key `deathray` is not defined
 
 ## 🇨🇿 Čeština (92% Complete) - cz.hjson
@@ -71,9 +73,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `go_score` is not defined
 - Key `create_team_ready` is not defined
+- Key `20x_scope` is not defined
+- Key `BLR` is not defined
 - Key `deathray` is not defined
 
-## 🇩🇪 Deutsch (84% Complete) - de.hjson
+## 🇩🇪 Deutsch (83% Complete) - de.hjson
 
 ### (No Invalid Keys)
 
@@ -115,6 +119,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_message` is not defined
 - Key `go_score` is not defined
 - Key `create_team_ready` is not defined
+- Key `20x_scope` is not defined
+- Key `BLR` is not defined
 - Key `deathray` is not defined
 - Key `region_dev` is not defined
 - Key `region_na` is not defined
@@ -149,6 +155,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `go_score` is not defined
 - Key `create_team_ready` is not defined
+- Key `20x_scope` is not defined
+- Key `BLR` is not defined
 - Key `deathray` is not defined
 
 ## 🇫🇷 Français (90% Complete) - fr.hjson
@@ -181,6 +189,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_kl_suicide` is not defined
 - Key `go_score` is not defined
 - Key `create_team_ready` is not defined
+- Key `20x_scope` is not defined
+- Key `BLR` is not defined
 - Key `deathray` is not defined
 
 ## 🇬🇷 Ελληνικά (91% Complete) - gr.hjson
@@ -210,9 +220,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_+map_ping` is not defined
 - Key `go_score` is not defined
 - Key `create_team_ready` is not defined
+- Key `20x_scope` is not defined
+- Key `BLR` is not defined
 - Key `deathray` is not defined
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (91% Complete) - hk_mo.hjson
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (90% Complete) - hk_mo.hjson
 
 ### (No Invalid Keys)
 
@@ -241,9 +253,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off_down` is not defined
 - Key `go_score` is not defined
 - Key `create_team_ready` is not defined
+- Key `20x_scope` is not defined
+- Key `BLR` is not defined
 - Key `deathray` is not defined
 
-## 🇭🇺 Magyar (98% Complete) - hu.hjson
+## 🇭🇺 Magyar (97% Complete) - hu.hjson
 
 ### Invalid Keys
 
@@ -269,6 +283,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `go_score` is not defined
+- Key `20x_scope` is not defined
+- Key `BLR` is not defined
 
 ## 🇯🇵 日本語 (92% Complete) - jp.hjson
 
@@ -295,6 +311,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `go_score` is not defined
 - Key `create_team_ready` is not defined
+- Key `20x_scope` is not defined
+- Key `BLR` is not defined
 - Key `deathray` is not defined
 
 ## 🇱🇹 Lietuvių (92% Complete) - lt.hjson
@@ -322,6 +340,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `go_score` is not defined
 - Key `create_team_ready` is not defined
+- Key `20x_scope` is not defined
+- Key `BLR` is not defined
 - Key `deathray` is not defined
 
 ## 🇱🇻 Latviešu (92% Complete) - lv.hjson
@@ -349,6 +369,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `go_score` is not defined
 - Key `create_team_ready` is not defined
+- Key `20x_scope` is not defined
+- Key `BLR` is not defined
 - Key `deathray` is not defined
 
 ## 🎀 Cute Engwish (90% Complete) - qen.hjson
@@ -381,6 +403,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `go_score` is not defined
 - Key `create_team_ready` is not defined
+- Key `20x_scope` is not defined
+- Key `BLR` is not defined
 - Key `deathray` is not defined
 
 ## 🇷🇴 Română (86% Complete) - ro.hjson
@@ -424,8 +448,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_message` is not defined
 - Key `go_score` is not defined
 - Key `create_team_ready` is not defined
+- Key `20x_scope` is not defined
+- Key `BLR` is not defined
 
-## 🇷🇺 Русский (94% Complete) - ru.hjson
+## 🇷🇺 Русский (93% Complete) - ru.hjson
 
 ### (No Invalid Keys)
 
@@ -445,6 +471,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off_down` is not defined
 - Key `go_score` is not defined
 - Key `create_team_ready` is not defined
+- Key `20x_scope` is not defined
+- Key `BLR` is not defined
 - Key `deathray` is not defined
 
 ## 🇮🇳 தமிழ் (89% Complete) - ta.hjson
@@ -479,6 +507,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `go_score` is not defined
 - Key `create_team_ready` is not defined
 - Key `create_team_waiting` is not defined
+- Key `20x_scope` is not defined
+- Key `BLR` is not defined
 - Key `deathray` is not defined
 
 ## 🇹🇷 Turkısh (92% Complete) - tr.hjson
@@ -506,9 +536,11 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `go_score` is not defined
 - Key `create_team_ready` is not defined
+- Key `20x_scope` is not defined
+- Key `BLR` is not defined
 - Key `deathray` is not defined
 
-## 🇹🇼 中文（繁體） (85% Complete) - tw.hjson
+## 🇹🇼 中文（繁體） (84% Complete) - tw.hjson
 
 ### (No Invalid Keys)
 
@@ -552,6 +584,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_message` is not defined
 - Key `go_score` is not defined
 - Key `create_team_ready` is not defined
+- Key `20x_scope` is not defined
+- Key `BLR` is not defined
 - Key `deathray` is not defined
 
 ## 🇻🇳 Tiếng Việt (92% Complete) - vi.hjson
@@ -579,6 +613,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `go_score` is not defined
 - Key `create_team_ready` is not defined
+- Key `20x_scope` is not defined
+- Key `BLR` is not defined
 - Key `deathray` is not defined
 
 ## 🇨🇳 中文（简体） (92% Complete) - zh.hjson
@@ -606,5 +642,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `go_score` is not defined
 - Key `create_team_ready` is not defined
+- Key `20x_scope` is not defined
+- Key `BLR` is not defined
 - Key `deathray` is not defined
 

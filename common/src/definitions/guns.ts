@@ -2626,7 +2626,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
             },
             {
                 idString: "m134",
-                name: "M134",
+                name: "M134 Minigun",
                 itemType: ItemType.Gun,
                 ammoType: "762mm",
                 ammoSpawnAmount: 200,
