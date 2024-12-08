@@ -263,7 +263,7 @@ export const defaultBulletTemplate = {
     tracer: {
         opacity: 1,
         width: 1,
-        length: 1,
+        length: 1.3,
         image: "base_trail",
         particle: false,
         zIndex: ZIndexes.Bullets

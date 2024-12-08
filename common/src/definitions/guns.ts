@@ -749,7 +749,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     speed: 0.3,
                     range: 180,
                     tracer: {
-                        length: 1.4
+                        length: 1.6
                     }
                 }
             },
@@ -934,7 +934,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     range: 180,
                     tracer: {
                         width: 1.1,
-                        length: 1.4
+                        length: 1.6
                     }
                 }
             },
@@ -995,7 +995,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     range: 180,
                     tracer: {
                         width: 1.1,
-                        length: 1.4
+                        length: 1.6
                     }
                 }
             },
@@ -1050,7 +1050,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     range: 180,
                     tracer: {
                         width: 1.1,
-                        length: 1.4
+                        length: 1.6
                     }
                 }
             },
@@ -1105,7 +1105,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     range: 180,
                     tracer: {
                         width: 1.1,
-                        length: 1.4
+                        length: 1.6
                     }
                 }
             },
@@ -1500,7 +1500,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     range: 250,
                     tracer: {
                         width: 1.4,
-                        length: 2.5
+                        length: 2.7
                     }
                 }
             },
@@ -1540,7 +1540,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     range: 280,
                     tracer: {
                         width: 1.6,
-                        length: 3.5
+                        length: 3.7
                     }
                 }
             },
@@ -1580,7 +1580,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     range: 250,
                     tracer: {
                         width: 1.3,
-                        length: 2.4
+                        length: 2.6
                     }
                 }
             },
@@ -1619,7 +1619,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     speed: 0.4,
                     tracer: {
                         width: 2.5,
-                        length: 4
+                        length: 4.2
                     },
                     range: 300
                 }
@@ -1699,7 +1699,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     range: 160,
                     tracer: {
                         opacity: 0.5,
-                        length: 1.5
+                        length: 1.7
                     }
                 }
             },
@@ -1736,7 +1736,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     speed: 0.3,
                     range: 230,
                     tracer: {
-                        length: 1.5
+                        length: 1.7
                     }
                 }
             },
@@ -1779,7 +1779,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     speed: 0.3,
                     range: 230,
                     tracer: {
-                        length: 1.5
+                        length: 1.7
                     }
                 }
             },
@@ -1884,7 +1884,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     range: 250,
                     tracer: {
                         width: 1.8,
-                        length: 1.5
+                        length: 1.7
                     }
                 }
             },
@@ -2306,7 +2306,6 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 casingParticles: [
                     {
                         position: Vec.create(4, 0.6),
-                        frame: "casing_762x39mm",
                     }
                 ] as NonNullable<SingleGunNarrowing["casingParticles"]>,
                 gasParticles: gasParticlePresets.rifle,
@@ -2351,7 +2350,6 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 casingParticles: [
                     {
                         position: Vec.create(4, 0.6),
-                        frame: "casing_45acp",
                     }
                 ] as NonNullable<SingleGunNarrowing["casingParticles"]>,
                 ballistics: {
@@ -2464,7 +2462,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     range: 250,
                     tracer:{
                         width:1,
-                        length:2.5
+                        length:2.7
                     }
                 }
             },
@@ -2705,7 +2703,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     range: 1170,
                     tracer: {
                         width: 2.4,
-                        length: 2.25
+                        length: 2.45
                     }
                 }
             },
@@ -2742,11 +2740,12 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ballistics: {
                     damage: 185,
                     obstacleMultiplier: 1.5,
-                    speed: 0.306,
+                    speed: 0.25,
                     range: 675,
                     tracer: {
                         width: 2.3,
-                        length: 2.25
+                        opacity:0.4,
+                        length: 1.3
                     }
                 }
             },
@@ -2783,11 +2782,10 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     damage: 80,
                     obstacleMultiplier: 1,
                     speed: 0.2655,
-                    range: 135,
+                    range: 100,
                     tracer: {
                         width: 3,
                         length: 0.7,
-                        color: 0xFEDCDC
                     }
                 }
             },
@@ -2941,7 +2939,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     range: 180,
                     tracer: {
                         width: 1.1,
-                        length: 1.4
+                        length: 1.6
                     }
                 }
             },
