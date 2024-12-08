@@ -11,7 +11,7 @@ import { type WebSocket } from "uWebSockets.js";
 import { isMainThread } from "worker_threads";
 import { version } from "../../package.json";
 import { Config } from "./config";
-import { currentGamemode, currentGMSTime, findGame, games, newGame, WorkerMessages } from "./gameManager";
+import { currentGamemode, currentGMSTime, findGame, games, GMC, newGame, WorkerMessages } from "./gameManager";
 import { CustomTeam, CustomTeamPlayer, type CustomTeamPlayerContainer } from "./team";
 import IPChecker, { Punishment } from "./utils/apiHelper";
 import { cleanUsername, Logger } from "./utils/misc";
@@ -112,7 +112,7 @@ if (isMainThread) {
             }
             response = { success: false, message: punishment.punishmentType, reason: punishment.reason, reportID: punishment.reportId };
         } else {
-            const teamID = maxTeamSize !== TeamSize.Solo && new URLSearchParams(req.getQuery()).get("teamID"); // must be here or it causes uWS errors
+            const teamID = (maxTeamSize !== TeamSize.Solo||GMC.group) && new URLSearchParams(req.getQuery()).get("teamID"); // must be here or it causes uWS errors
             if (await isVPNCheck(ip)) {
                 response = { success: false, message: "vpn" };
             } else if (teamID) {
@@ -169,7 +169,7 @@ if (isMainThread) {
             const ip = getIP(res, req);
             const maxTeams = Config.protection?.maxTeams;
             if (
-                maxTeamSize === TeamSize.Solo
+                !(GMC.group||maxTeamSize !== TeamSize.Solo)
                 || (maxTeams && teamsCreated[ip] > maxTeams)
             ) {
                 forbidden(res);
@@ -191,7 +191,7 @@ if (isMainThread) {
             }
 
             if (noTeamIdGiven) {
-                if (team.locked || team.players.length >= (maxTeamSize as number)) {
+                if (team.locked || GMC.group?team.players.length >= TeamSize.Squad:(team.players.length >= (maxTeamSize as number))) {
                     forbidden(res); // TODO "Team is locked" and "Team is full" messages
                     return;
                 }

@@ -11,14 +11,17 @@ import { maxTeamSize } from "./server";
 import { Logger } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
 import { pickRandomInArray } from "@common/utils/random";
+import { Gamemode, Gamemodes } from "./data/gamemode";
 export let currentGamemode:string|string[]=(typeof Config.gamemode==="string"||Array.isArray(Config.gamemode))?Config.gamemode:(Config.gamemode.rotation[0]??undefined)
 export let currentGMSTime=0
+export let GMC:Partial<Gamemode>=Gamemodes[typeof currentGamemode==="string"?currentGamemode:currentGamemode[0]]
 let gamemodeIndex = 0;
 export interface WorkerInitData {
     readonly id: number
     readonly maxTeamSize: number
     readonly gamemode: string
 }
+
 
 export enum WorkerMessages {
     AllowIP,
@@ -213,6 +216,8 @@ if (isMainThread) {
             if(currentGMSTime<=0){
                 //@ts-expect-error
                 currentGamemode = Config.gamemode.rotation[gamemodeIndex = (gamemodeIndex + 1) % Config.gamemode.rotation.length];
+
+                GMC=Gamemodes[typeof currentGamemode==="string"?currentGamemode:currentGamemode[0]]
 
                 for(const g of Object.values(games)){
                     if(g){

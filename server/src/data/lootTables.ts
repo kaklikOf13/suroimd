@@ -698,7 +698,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "deagle", weight: 0.004 },
             { item: "vickers", weight: 0.0035 },
             { item: "model_89", weight: 0.0035 },
-            { item: "an98", weight: 0.003 },
+            { item: "an94", weight: 0.003 },
             { item: "vks", weight: 0.003 },
             { item: "svd", weight: 0.003 },
             { item: "l86a2", weight: 0.003 },
@@ -708,7 +708,9 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "pkp", weight: 0.003 },
             { item: "tango_51", weight: 0.002 },
             { item: "sv98", weight: 0.001 },
-            { item: "dual_deagle", weight: 0.001 }
+            { item: "dual_deagle", weight: 0.001 },
+            { item: "l115a1", weight: 0.0006 },
+            { item: "awms", weight: 0.0003 },
         ],
         healing_items: [
             { item: "gauze", count: 5, weight: 3 },
