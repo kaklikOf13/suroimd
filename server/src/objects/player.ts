@@ -1720,9 +1720,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         let { amount } = params;
         if (
             this.invulnerable
-            ||(source instanceof Player&&source.teamID === this.teamID&&source.isNpc===this.isNpc&&this.isNpc)
+            ||(source instanceof Player&&source.teamID === this.teamID&&source.isNpc===this.isNpc&&this.isNpc) //NPC
             || (
                 this.game.teamMode
+                && !this.game.gamemode.group
                 && source instanceof Player
                 && (source.teamID === this.teamID&&source.isNpc===this.isNpc)
                 && source.id !== this.id
@@ -1787,10 +1788,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         });
         if (this.health <= 0 && !this.dead) {
             if (
-                ((this.game.teamMode && this._team!.players.some(p => !p.dead && !p.downed && !p.disconnected && p !== this))
-                ||(this.game.gamemode.group&&this.group&&this.group.players.some(p => !p.dead && !p.downed && !p.disconnected && p !== this)))
+                (this.game.gamemode.group?(this.group&&this.group.players.some(p => !p.dead && !p.downed && !p.disconnected && p !== this)):(this.game.teamMode && this._team!.players.some(p => !p.dead && !p.downed && !p.disconnected && p !== this)))
                 && !this.downed
             ) {
+                if(sourceIsPlayer){
+                    this.speedV=Vec.addComponent(this.speedV,Math.cos(source.rotation)*.001*amount,Math.sin(source.rotation)*.001*amount)
+                }
                 this.game.addTimeout(this.down.bind(this,source, weaponUsed),90);
             } else {
                 if (canTrackStats) {
@@ -2345,7 +2348,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         .weaponUsed(weaponUsed?.definition);
                 }
 
-                this.speedV=Vec.addComponent(this.speedV,Math.cos(source.rotation)*.002,Math.sin(source.rotation)*.002)
             } else {
                 message.eventType(source);
             }
@@ -2382,7 +2384,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             && this.downed
             && !this.beingRevivedBy
             && this !== player
-            && ((this.groupID===player.groupID&&this.game.gamemode.group)||(this.teamID === player.teamID&&this.game.teamMode));
+            && (this.game.gamemode.group?this.groupID===player.groupID:(this.teamID === player.teamID&&this.game.teamMode));
     }
 
     interact(reviver: Player): void {

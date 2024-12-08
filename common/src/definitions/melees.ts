@@ -304,7 +304,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
         {
             idString: "gas_can",
             name: "Gas Can",
-            damage: 22,
+            damage: 26,
             obstacleMultiplier: 1,
             radius: 1.75,
             offset: Vec.create(3.1, 0.5),

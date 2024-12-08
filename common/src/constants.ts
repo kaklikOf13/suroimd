@@ -72,9 +72,9 @@ export const GameConstants = freezeDeep({
         defaultSkin: "hazel_jumpsuit",
         killLeaderMinKills: 3,
         maxMouseDist: 256,
-        reviveTime: 8,
-        maxReviveDist: 5,
-        bleedOutDPMs: 0.002, // === 2 dps
+        reviveTime: 5,
+        maxReviveDist: 7,
+        bleedOutDPMs: 0.001, // === 1 dps
         maxPerkCount: 1
     },
     gas: {

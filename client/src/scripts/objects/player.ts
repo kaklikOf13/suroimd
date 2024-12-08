@@ -1278,11 +1278,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             && this.downed
             && !this.beingRevived
             && this !== player
-            && ((this.game.teamMode
-            && this.teamID === player.teamID)||(
-                this.game.groupMode
-                && this.groupID==player.groupID
-            ));
+            && (this.game.groupMode?this.groupID===player.groupID:(this.teamID === player.teamID&&this.game.teamMode));
     }
 
     showEmote(type: AllowedEmoteSources): void {

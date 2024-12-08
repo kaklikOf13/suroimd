@@ -211,7 +211,6 @@ export class Game implements GameData {
     constructor(id: number, maxTeamSize: TeamSize,gamemode?:string|string[]) {
         this.id = id;
         this.maxTeamSize = maxTeamSize;
-        this.teamMode = this.maxTeamSize > TeamSize.Solo;
         this.updateGameData({
             aliveCount: 0,
             allowJoin: false,
@@ -225,7 +224,10 @@ export class Game implements GameData {
 
         if(gamemode){
             this.gamemode=mergeDeep(DefaultGamemode,Gamemodes[typeof gamemode==="string"?gamemode:pickRandomInArray(gamemode)])
+            this.teamMode=this.gamemode.group?true:this.maxTeamSize > TeamSize.Solo;
+            this.maxTeamSize=this.gamemode.group?TeamSize.Squad:this.maxTeamSize;
         }else{
+            this.teamMode = this.maxTeamSize > TeamSize.Solo;
             this.gamemode=DefaultGamemode
         }
 
@@ -788,7 +790,7 @@ export class Game implements GameData {
         this.addTimeout(() => { player.disableInvulnerability(); }, 5000);
 
         if (
-            (this.teamMode ? this.teams.size : this.aliveCount) > 1
+            ((this.teamMode&&!this.gamemode.group) ? this.teams.size : this.aliveCount) > 1
             && !this._started
             && this.startTimeout === undefined
         ) {

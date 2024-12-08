@@ -8,6 +8,7 @@ import { Guns } from "@common/definitions/guns";
 import { GunItem } from "../inventory/gunItem";
 import { Skins } from "@common/definitions/skins";
 import { MapPing, MapPings } from "@common/definitions/mapPings";
+import { type Game } from "../game";
 
 export const startsWithD={
     equipaments:{
@@ -64,15 +65,21 @@ export class InitWithPlugin extends GamePlugin {
         }else{
             this.on("game_started",(g)=>{
                 for(let i=0;i<startsWith.giveTo;i++){
-                    const p=pickRandomInArray(Array.from(g.livingPlayers.values()))
-                    if(p.isNpc||p.disconnected){
+                    const ret=this.giveToRandom(g,startsWith)
+                    if(!ret){
                         i--;
-                        continue;
                     }
-                    this.giveTo(p,startsWith)
                 }
             })
         }
+    }
+    protected giveToRandom(g:Game,startsWith:typeof startsWithD):boolean{
+        const p:Player=pickRandomInArray(Array.from(g.livingPlayers.values()))
+        if(p.isNpc||p.disconnected){
+            return false;
+        }
+        this.giveTo(p,startsWith)
+        return true
     }
     protected giveTo(player:Player,startsWith:typeof startsWithD){
         if(!player){
