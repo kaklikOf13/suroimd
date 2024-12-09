@@ -8,9 +8,9 @@
    version="1.1"
    id="svg1"
    xml:space="preserve"
-   sodipodi:docname="vinheta.svg"
+   sodipodi:docname="vignetting.svg"
    inkscape:version="1.4 (86a8ad7, 2024-10-11)"
-   inkscape:export-filename="vinheta.png"
+   inkscape:export-filename="vignetting.png"
    inkscape:export-xdpi="64"
    inkscape:export-ydpi="64"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -28,7 +28,7 @@
      inkscape:deskcolor="#505050"
      inkscape:document-units="px"
      inkscape:zoom="0.27260328"
-     inkscape:cx="818.03858"
+     inkscape:cx="821.70691"
      inkscape:cy="1065.6512"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
@@ -41,7 +41,7 @@
      id="defs1"><linearGradient
        id="linearGradient1"
        inkscape:collect="always"><stop
-         style="stop-color:#363636;stop-opacity:0;"
+         style="stop-color:#000000;stop-opacity:0;"
          offset="0.60553277"
          id="stop1" /><stop
          style="stop-color:#000000;stop-opacity:0.1201923;"
