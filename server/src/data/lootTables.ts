@@ -711,6 +711,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "sv98", weight: 0.001 },
             { item: "dual_deagle", weight: 0.001 },
             { item: "l115a1", weight: 0.0006 },
+            { item: "pfeifer_zeliska", weight: 0.0006 },
             { item: "awms", weight: 0.0003 },
         ],
         healing_items: [
@@ -820,7 +821,9 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "dual_deagle", weight: 0.003 },
             { item: "m590m", weight: .003 },
             { item: "usas12", weight: .001 },
-            { item: "awms", weight: .001 },
+            { item: "l115a1", weight: 0.001 },
+            { item: "pfeifer_zeliska", weight: 0.001 },
+            { item: "awms", weight: .0005 },
         ],
         special_healing_items: [
             { item: "cola", weight: 3 },
@@ -926,9 +929,10 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "usas12", weight: 0.7 },
             { item: "mk18", weight: 0.5 },
             { item: "l115a1", weight: 0.5 },
+            { item: "pfeifer_zeliska", weight: 0.5 },
             { item: "awms", weight: 0.4 },
             { item: "dual_rsh12", weight: 0.5 },
-            { item: "g19", weight: 0.0005 }
+            { item: "g19", weight: 0.0001 }
         ],
         winter_skins: [
             { item: "peppermint", weight: 1 },

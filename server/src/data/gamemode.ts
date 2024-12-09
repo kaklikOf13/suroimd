@@ -201,7 +201,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                     },
                     equipaments:{
                         gun1:["vepr12","m3k","super90","usas12","m590m"],
-                        gun2:["l115a1","awms","mg5","pkp","m134","negev","m249","vickers"],
+                        gun2:["l115a1","awms","pfeifer_zeliska","mg5","pkp","m134","negev","m249","vickers"],
                         skin:"shiny_max_mcfly",
                         vest:"ultra_vest",
                         metalicBody:true,
