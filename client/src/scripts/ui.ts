@@ -1751,6 +1751,18 @@ export async function setUpUI(game: Game): Promise<void> {
             }
         }
     );
+    addCheckboxListener("#toggle-vignetting", "cv_vignetting");
+    const vignetting=$("#vignetting-gfx")
+    game.console.variables.addChangeListener(
+        "cv_vignetting",
+        (_, newVal, oldVal) => {
+            if(newVal){
+                vignetting.css("display","block")
+            }else{
+                vignetting.css("display","none")
+            }
+        }
+    );
     addCheckboxListener("#toggle-ambient-particles", "cv_ambient_particles");
 
     const { gameUi } = game.uiManager.ui;

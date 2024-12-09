@@ -1822,7 +1822,17 @@
         }
     }
 }
-
+#vignetting-gfx{
+    position: absolute;
+    background-image: url("/img/backgrounds/vignetting.svg");
+    width: 100%;
+    height: 100%;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    pointer-events: none;
+}
 #emote-wheel,
 #emote-customize-wheel {
     position: absolute;
