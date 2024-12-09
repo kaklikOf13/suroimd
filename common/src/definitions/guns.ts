@@ -3123,7 +3123,64 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     speed: 0.27,
                     range: 160
                 }
-            }
+            },
+            {
+                idString: "pfeifer_zeliska",
+                name: "Pfeifer Zeliska",
+                ammoType: "338lap",
+                ammoSpawnAmount: 30,
+                fireDelay: 1200,
+                switchDelay: 1000,
+                speedMultiplier: 0.85,
+                recoilMultiplier: 0.2,
+                recoilDuration: 1200,
+                fireMode: FireMode.Single,
+                shotSpread: 0.5,
+                moveSpread: 2,
+                length: 5.9,
+                fists: {
+                    left: Vec.create(40, 0),
+                    right: Vec.create(40, 0),
+                    leftZIndex: 4,
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                image: { position: Vec.create(70, 0) },
+                casingParticles: [{
+                    position: Vec.create(3.5, 0.5),
+                    count: 5,
+                    velocity: {
+                        x: {
+                            min: -8,
+                            max: -2
+                        },
+                        y: {
+                            min: 2,
+                            max: 9,
+                            randomSign: true
+                        }
+                    },
+                    on: "reload"
+                }],
+                gasParticles: gasParticlePresets.rifle,
+                capacity: 5,
+                reloadTime: 3,
+                ballistics: {
+                    damage: 90,
+                    obstacleMultiplier: 1.6,
+                    speed: 0.26,
+                    range: 1000
+                },
+                dual: {
+                    ammoSpawnAmount:65,
+                    leftRightOffset: 1.3,
+                    fireDelay: 850,
+                    shotSpread: 1,
+                    moveSpread: 2,
+                    capacity: 10,
+                    reloadTime: 6
+                },
+            },
         ] satisfies ReadonlyArray<RawDefinition<RawGunDefinition>>).map(e => {
             if (e.dual === undefined) {
                 return [e];
