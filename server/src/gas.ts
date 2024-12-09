@@ -34,6 +34,8 @@ export class Gas {
     readonly game: Game;
     readonly mapSize: number;
 
+    clearing:boolean=false;
+
     constructor(game: Game) {
         this.game = game;
         this.mapSize = (this.game.map.width + this.game.map.height) / 2;
@@ -57,7 +59,7 @@ export class Gas {
     }
 
     tick(): void {
-        if (this.state !== GasState.Inactive) {
+        if (this.state !== GasState.Inactive&&!(this.completionRatio>1&&this.clearing)) {
             this.completionRatio = (this.game.now - this.countdownStart) / (1000 * this.currentDuration);
             this.completionRatioDirty = true;
         }
@@ -73,6 +75,21 @@ export class Gas {
                 this.currentRadius = Numeric.lerp(this.oldRadius, this.newRadius, this.completionRatio);
             }
         }
+    }
+    clearGas(transition:number=1){
+        if(this.clearing)return
+        this.state=GasState.Advancing
+        this.clearing=true;
+        this.oldRadius=this.currentRadius;
+        this.newRadius=0.95*this.mapSize;
+        this.oldPosition=this.currentPosition;
+        this.newPosition=Vec.create(this.game.map.width / 2, this.game.map.height / 2)
+        this.countdownStart=this.game.now
+        this.currentDuration=transition
+        this.completionRatio=0
+        this.dps=0
+        this.dirty=true
+        this.completionRatioDirty = true;
     }
 
     // Generate random coordinate within quadrant
@@ -111,7 +128,7 @@ export class Gas {
 
     advanceGasStage(): void {
         const gas = this.game.gamemode.gas;
-        if (gas.mode === GasMode.Disabled) return;
+        if (gas.mode === GasMode.Disabled||this.clearing) return;
 
         if(this.game.gamemode.gas.mode===GasMode.Staged){
             const currentStage = this.game.gamemode.gas.stages[this.stage + 1];
@@ -180,7 +197,8 @@ export class Gas {
 
             // Start the next stage
             if (duration !== 0) {
-                this.game.addTimeout(() => this.advanceGasStage(), duration * 1000);
+                this.completionRatio=0
+                this.game.addTimeout(() => {if(!this.clearing){this.advanceGasStage()}}, duration * 1000);
             }
         }
     }

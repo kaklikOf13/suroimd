@@ -441,6 +441,8 @@ export class Game implements GameData {
         ) {
             this.pluginManager.emit("game_end", this);
 
+            this.gas.clearGas(12)
+
             this.setGameData({ allowJoin: false, over: true });
 
             // End the game in 1 second
@@ -457,7 +459,7 @@ export class Game implements GameData {
                     this.setGameData({ stopped: true });
                     Logger.log(`Game ${this.id} | Ended`);
                 },100)
-            }, 2000);
+            }, 11500);
         }
 
         if (this.aliveCount >= this.gamemode.maxPlayersPerGame) {

@@ -163,6 +163,13 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                     state:GasState.Advancing,
                     summonAirdrop:true,
                 },
+                {
+                    dps:14,
+                    duration:0,
+                    newRadius:0,
+                    oldRadius:0,
+                    state:GasState.Waiting,
+                },
             ]
         },
         plugins:[
@@ -293,6 +300,8 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                     "l11a1",
                     "mk18",
                     "awms",
+                    "pfeifer_zeliska",
+                    "dual_pfeifer_zeliska",
 
                     "deagle",
                     "dual_deagle",
@@ -378,10 +387,17 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                     state:GasState.Waiting,
                 },
                 {
-                    dps:4,
+                    dps:14,
                     duration:20,
                     newRadius:0,
                     oldRadius:0.2,
+                    state:GasState.Advancing,
+                },
+                {
+                    dps:4,
+                    duration:0,
+                    newRadius:0,
+                    oldRadius:0,
                     state:GasState.Waiting,
                 },
             ]
