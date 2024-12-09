@@ -2227,7 +2227,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         // Drop weapons
         this.inventory.unlockAllSlots();
         this.inventory.dropWeapons();
-
         // Drop inventory items
         for (const item in this.inventory.items.asRecord()) {
             const count = this.inventory.items.getItem(item);
@@ -2245,13 +2244,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                     do {
                         left -= subtractAmount = Numeric.min(left, def.maxStackSize);
-                        this.game.addLoot(item, position, layer, { count: subtractAmount });
+                        this.game.addLoot(item, this.hitbox.randomPoint(), layer, { count: subtractAmount,jitterSpawn:true });
                     } while (left > 0);
 
                     continue;
                 }
 
-                this.game.addLoot(item, position, layer, { count });
+                this.game.addLoot(item, this.hitbox.randomPoint(), layer, { count });
                 this.inventory.items.setItem(item, 0);
             }
         }
@@ -2274,16 +2273,16 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             const { skin } = this.loadout;
             if (skin.hideFromLoadout && !skin.noDrop) {
 
-                this.game.addLoot(skin, position, layer);
+                this.game.addLoot(skin, this.hitbox.randomPoint(), layer);
             }
         }
 
         if(this.dropable.perks){
             for (const perk of this.perks) {
                 if (!perk.noDrop) {
-                    this.game.addLoot(perk, position, layer);
+                    this.game.addLoot(perk, this.hitbox.randomPoint(), layer);
                 } else if (perk.noDrop && perk.category === PerkCategories.Halloween) {
-                    this.game.addLoot(PerkIds.PlumpkinGamble, position, layer);
+                    this.game.addLoot(PerkIds.PlumpkinGamble, this.hitbox.randomPoint(), layer);
                 }
             }
         }

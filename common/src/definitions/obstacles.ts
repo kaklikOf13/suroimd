@@ -1744,11 +1744,11 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 idString: "airdrop_crate",
                 name: "Airdrop Crate",
                 material: "crate",
-                health: 150,
+                health: 200,
                 scale: {
                     spawnMin: 1,
                     spawnMax: 1,
-                    destroy: 0.5
+                    destroy: 0.8
                 },
                 hitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(8.7, 8.7)
@@ -1762,11 +1762,11 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 idString: "gold_airdrop_crate",
                 name: "Gold Airdrop Crate",
                 material: "crate",
-                health: 170,
+                health: 230,
                 scale: {
                     spawnMin: 1,
                     spawnMax: 1,
-                    destroy: 0.5
+                    destroy: 0.8
                 },
                 hitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(8.7, 8.7)

@@ -208,14 +208,14 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                     },
                     equipaments:{
                         gun1:["vepr12","m3k","super90","usas12","m590m"],
-                        gun2:["l115a1","awms","pfeifer_zeliska","mg5","pkp","m134","negev","m249","vickers"],
+                        gun2:["l115a1","awms","pfeifer_zeliska","dual_pfeifer_zeliska","mg5","pkp","m134","negev","m249","vickers"],
                         skin:"shiny_max_mcfly",
                         vest:"ultra_vest",
                         metalicBody:true,
                         ping:"warning_ping",
                         repeatPing:20,
                         infinityAmmo:true,
-                        perks:[[PerkIds.Flechettes,PerkIds.AdvancedAthletics],PerkIds.SabotRounds,PerkIds.FieldMedic]
+                        perks:[[PerkIds.SabotRounds,PerkIds.SecondWind,PerkIds.ExtendedMags,PerkIds.AdvancedAthletics],PerkIds.Flechettes,PerkIds.SabotRounds,PerkIds.FieldMedic]
                     }
                 })
             }

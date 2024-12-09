@@ -431,8 +431,7 @@ export class Inventory {
         { count, data }: { count?: number, data?: ItemData<Def> } = {}
     ): void {
         this.owner.game
-            .addLoot(toDrop, this.owner.position, this.owner.layer, { jitterSpawn: false, pushVel: 0, count, data })
-            ?.push(this.owner.rotation + Math.PI, 0.025);
+            .addLoot(toDrop, this.owner.hitbox.randomPoint(), this.owner.layer, { jitterSpawn: false, pushVel: 0, count, data })
     }
 
     removeThrowable(type: ReifiableDef<ThrowableDefinition>, drop = true, removalCount?: number): void {

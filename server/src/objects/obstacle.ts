@@ -16,6 +16,7 @@ import { type Building } from "./building";
 import { type Bullet } from "./bullet";
 import { BaseGameObject, DamageParams, type GameObject } from "./gameObject";
 import { type Player } from "./player";
+import { randomPointInsideCircle } from "@common/utils/random";
 
 export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     override readonly fullAllocBytes = 10;

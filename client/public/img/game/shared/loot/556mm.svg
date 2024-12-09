@@ -2,12 +2,12 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="72"
-   height="49.846001"
-   viewBox="0 0 19.05 13.188422"
+   width="19.049999mm"
+   height="19.049999mm"
+   viewBox="0 0 19.049999 19.05"
    version="1.1"
    id="svg5"
-   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
    sodipodi:docname="556mm.svg"
    inkscape:export-filename="/home/desktopgeek/ammo.png"
    inkscape:export-xdpi="1500.0001"
@@ -27,15 +27,17 @@
      inkscape:document-units="px"
      showgrid="false"
      units="px"
-     inkscape:zoom="13.031249"
-     inkscape:cx="17.573143"
-     inkscape:cy="12.73861"
-     inkscape:window-width="2560"
-     inkscape:window-height="1372"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:zoom="6.5156245"
+     inkscape:cx="40.517989"
+     inkscape:cy="26.474822"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
+     inkscape:current-layer="layer1"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#d1d1d1" />
   <defs
      id="defs2">
     <inkscape:path-effect
@@ -61,10 +63,10 @@
     <rect
        style="fill:#1e8d1e;fill-opacity:1;stroke:#125512;stroke-width:0.711811;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1"
        id="rect846"
-       width="18.338188"
-       height="12.47665"
+       width="18.33819"
+       height="18.33819"
        x="0.35590601"
-       y="0.35590601"
+       y="0.35590598"
        ry="1.0990384"
        rx="1.0990384"
        inkscape:export-filename="/home/desktopgeek/Downloads/Ammo emojis/556mm_ammo.png"
@@ -73,9 +75,10 @@
     <g
        aria-label="5.56"
        id="text6858"
-       style="font-size:6.4968px;line-height:1.25;font-family:Jura;-inkscape-font-specification:Jura;letter-spacing:0px;word-spacing:0px;fill:#0f460f;stroke-width:0.16242">
+       style="font-size:6.4968px;line-height:1.25;font-family:Jura;-inkscape-font-specification:Jura;letter-spacing:0px;word-spacing:0px;fill:#0f460f;stroke-width:0.16242"
+       transform="translate(0,2.9307706)">
       <path
-         d="m 5.3345795,8.9330767 q -1.0849656,0 -2.403816,-0.129936 V 7.9260728 q 1.4357928,0.097452 2.143944,0.097452 0.1494264,0 0.2338848,-0.084458 0.090955,-0.090955 0.090955,-0.2403816 v -0.32484 q 0,-0.389808 -0.389808,-0.389808 h -1.884072 v -2.663688 h 3.118464 v 0.909552 h -1.94904 v 0.844584 h 1.039488 q 0.6366864,0 0.9355392,0.292356 0.2988528,0.2858592 0.2988528,0.877068 v 0.454776 q 0,0.6366864 -0.2988528,0.9355392 -0.2988528,0.2988527 -0.9355392,0.2988527 z"
+         d="m 5.3345795,8.9330767 q -1.0849656,0 -2.403816,-0.129936 V 7.9260728 q 1.4357928,0.097452 2.143944,0.097452 0.1494264,0 0.2338848,-0.084458 0.090955,-0.090955 0.090955,-0.2403816 v -0.32484 q 0,-0.389808 -0.389808,-0.389808 h -1.884072 v -2.663688 h 3.118464 v 0.909552 h -1.94904 v 0.844584 h 1.039488 q 0.6366864,0 0.9355392,0.292356 0.2988528,0.2858592 0.2988528,0.877068 v 0.454776 q 0,0.6366864 -0.2988528,0.9355392 -0.2988528,0.2988527 -0.935539,0.2988523 z"
          style="font-family:'Russo One';-inkscape-font-specification:'Russo One'"
          id="path839" />
       <path
@@ -83,7 +86,7 @@
          style="font-family:'Russo One';-inkscape-font-specification:'Russo One'"
          id="path841" />
       <path
-         d="m 10.79188,8.9330767 q -1.0849654,0 -2.4038158,-0.129936 V 7.9260728 q 1.4357928,0.097452 2.1439438,0.097452 0.149427,0 0.233885,-0.084458 0.09095,-0.090955 0.09095,-0.2403816 v -0.32484 q 0,-0.389808 -0.389808,-0.389808 H 8.5829682 v -2.663688 h 3.1184638 v 0.909552 H 9.7523922 v 0.844584 H 10.79188 q 0.636687,0 0.935539,0.292356 0.298853,0.2858592 0.298853,0.877068 v 0.454776 q 0,0.6366864 -0.298853,0.9355392 -0.298852,0.2988527 -0.935539,0.2988527 z"
+         d="m 10.79188,8.9330767 q -1.0849654,0 -2.4038158,-0.129936 V 7.9260728 q 1.4357928,0.097452 2.1439438,0.097452 0.149427,0 0.233885,-0.084458 0.09095,-0.090955 0.09095,-0.2403816 v -0.32484 q 0,-0.389808 -0.389808,-0.389808 H 8.5829682 v -2.663688 h 3.1184638 v 0.909552 H 9.7523922 v 0.844584 H 10.79188 q 0.636687,0 0.935539,0.292356 0.298853,0.2858592 0.298853,0.877068 v 0.454776 q 0,0.6366864 -0.298853,0.9355392 -0.298852,0.2988527 -0.935539,0.2988523 z"
          style="font-family:'Russo One';-inkscape-font-specification:'Russo One'"
          id="path843" />
       <path
@@ -101,13 +104,13 @@
        style="fill:none;fill-opacity:1;stroke:#125512;stroke-width:0.366346;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path9697-6"
        cx="16.851923"
-       cy="10.990384"
+       cy="16.970516"
        r="0.7326923" />
     <circle
        style="fill:none;fill-opacity:1;stroke:#125512;stroke-width:0.366346;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path9697-7"
        cx="2.1980765"
-       cy="10.990384"
+       cy="16.996866"
        r="0.7326923" />
     <circle
        style="fill:none;fill-opacity:1;stroke:#125512;stroke-width:0.366346;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"

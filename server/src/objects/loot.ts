@@ -162,7 +162,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 const vecCollisionNorm = Vec.create(vecCollision.x / dist, vecCollision.y / dist);
                 const vRelativeVelocity = Vec.create(this.velocity.x - object.velocity.x, this.velocity.y - object.velocity.y);
 
-                const speed = (vRelativeVelocity.x * vecCollisionNorm.x + vRelativeVelocity.y * vecCollisionNorm.y) * 0.4;
+                const speed = (vRelativeVelocity.x * vecCollisionNorm.x + vRelativeVelocity.y * vecCollisionNorm.y) * 0.5;
 
                 if (speed < 0) continue;
 
