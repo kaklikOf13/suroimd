@@ -865,13 +865,13 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 name: "ACR",
                 ammoType: "556mm",
                 ammoSpawnAmount: 90,
-                fireDelay: 72.5,
+                fireDelay: 43,
                 switchDelay: 400,
-                recoilMultiplier: 0.75,
+                recoilMultiplier: 0.68,
                 recoilDuration: 130,
                 fireMode: FireMode.Auto,
-                shotSpread: 2,
-                moveSpread: 7,
+                shotSpread: 9,
+                moveSpread: 13,
                 noMuzzleFlash: true,
                 length: 6.45,
                 fists: {
@@ -884,14 +884,15 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 casingParticles: [{
                     position: Vec.create(4, 0.4)
                 }],
-                capacity: 30,
+                gasParticles: gasParticlePresets.automatic,
+                capacity: 28,
                 extendedCapacity: 45,
                 reloadTime: 3,
                 ballistics: {
-                    damage: 14.5,
-                    obstacleMultiplier: 1.5,
-                    speed: 0.3,
-                    range: 160,
+                    damage: 9,
+                    obstacleMultiplier: 1,
+                    speed: 0.15,
+                    range: 110,
                     tracer: {
                         opacity: 0.5
                     }
@@ -1262,7 +1263,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 }],
                 gasParticles: gasParticlePresets.shotgun,
                 ballistics: {
-                    damage: 5,
+                    damage: 4.5,
                     obstacleMultiplier: 0.5,
                     speed: 0.2,
                     range: 60,

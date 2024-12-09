@@ -304,6 +304,7 @@ export const defaultUnlockGuns:string[]=[
     "bar",
 
     "aug",
+    "acr",
     "m16a4",
     "stoner_63",
     "mg36",
