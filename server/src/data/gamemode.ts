@@ -428,6 +428,40 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
         ],
         spawn:{mode:SpawnMode.Center}
     },
+    gas_debug:{
+        spawn:{mode:SpawnMode.Center},
+        weaponsSelect:true,
+        adrenalineLoss:0,
+        start_after:1,
+        plugins:[
+            {
+                construct:InitWithPlugin,
+            }
+        ],
+        gas:{mode:GasMode.Staged,stages:[
+            {
+                dps:0,
+                duration:0,
+                newRadius:0,
+                oldRadius:1,
+                state:GasState.Inactive,
+            },
+            {
+                dps:0,
+                duration:12,
+                newRadius:0,
+                oldRadius:1,
+                state:GasState.Advancing,
+            },
+            {
+                dps:0,
+                duration:0,
+                newRadius:0,
+                oldRadius:0,
+                state:GasState.Waiting,
+            },
+        ]},
+    },
     normal:DefaultGamemode,
     mini_normal:{
         map:"mini_normal",

@@ -441,7 +441,9 @@ export class Game implements GameData {
         ) {
             this.pluginManager.emit("game_end", this);
 
-            this.gas.clearGas(12)
+            const ct=Math.max(this.gas.currentRadius>0?2000/this.gas.currentRadius:this.gas.mapSize/100,3)
+
+            this.gas.clearGas(ct)   
 
             this.setGameData({ allowJoin: false, over: true });
 
@@ -459,7 +461,7 @@ export class Game implements GameData {
                     this.setGameData({ stopped: true });
                     Logger.log(`Game ${this.id} | Ended`);
                 },100)
-            }, 11500);
+            }, Math.floor(ct*1000)-500);
         }
 
         if (this.aliveCount >= this.gamemode.maxPlayersPerGame) {
