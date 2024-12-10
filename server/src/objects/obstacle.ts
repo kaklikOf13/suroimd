@@ -1,4 +1,4 @@
-import { ObjectCategory } from "@common/constants";
+import { Constants, ObjectCategory } from "@common/constants";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { PerkIds } from "@common/definitions/perks";
 import { type Orientation, type Variation } from "@common/typings";
@@ -175,8 +175,8 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             const oldScale = this.scale;
 
             // Calculate new scale & scale hitbox
-            const destroyScale = definition.scale?.destroy ?? 1;
-            this.scale = this.health / this.maxHealth * (this.maxScale - destroyScale) + destroyScale;
+            const destroyScale = ((definition.scale?.destroy) ?? 1)*this.maxScale;
+            this.scale = Math.max(this.health / this.maxHealth*(this.maxScale - destroyScale) + destroyScale,Constants.MIN_OBJECT_SCALE);
             this.hitbox.scale(this.scale / oldScale);
         }
 

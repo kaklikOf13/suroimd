@@ -475,7 +475,9 @@ export class Inventory {
         } else {
             // only fails if `throwableItemMap` falls out-of-sync… which hopefully shouldn't happen lol
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.throwableItemMap.get(definition.idString)!.count -= removalAmount;
+            if(this.throwableItemMap.get(definition.idString)){
+                this.throwableItemMap.get(definition.idString)!.count -= removalAmount;
+            }
         }
     }
 

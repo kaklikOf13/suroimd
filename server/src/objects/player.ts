@@ -760,6 +760,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 && (source.itemType === ItemType.Ammo || source.itemType === ItemType.Healing)
                 && !(this.game.teamMode||this.game.gamemode.group)
             ) return;
+            if(this.game.gamemode.emotes_replace&&!("itemType" in source&&(source.itemType === ItemType.Gun||source.itemType === ItemType.Melee||source.itemType === ItemType.Throwable))){
+                source=Emotes.fromString(this.game.gamemode.emotes_replace)
+            }
 
             this.game.emotes.push(new Emote(source, this));
 

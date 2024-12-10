@@ -470,7 +470,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             scale: {
                 spawnMin: 1,
                 spawnMax: 1,
-                destroy: 0.5
+                destroy: 0.8
             },
             spawnMode: MapObjectSpawnMode.GrassAndSand,
             rotationMode: RotationMode.Binary,
@@ -830,9 +830,9 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 name: "Oak Tree",
                 health: 180,
                 scaleProps: {
-                    spawnMin: 0.9,
+                    spawnMin: 0.75,
                     spawnMax: 1.2,
-                    destroy: 0.75
+                    destroy: 0.9
                 },
                 spawnHitbox: new CircleHitbox(8.5),
                 rotationMode: RotationMode.Full,
@@ -844,9 +844,9 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 name: "Dormant Oak Tree",
                 health: 120,
                 scaleProps: {
-                    spawnMin: 0.9,
-                    spawnMax: 1.1,
-                    destroy: 0.75
+                    spawnMin: 0.75,
+                    spawnMax: 1.2,
+                    destroy: 0.9
                 },
                 spawnHitbox: new CircleHitbox(8.5),
                 rotationMode: RotationMode.Full,
@@ -860,9 +860,9 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 name: "Maple Tree",
                 health: 290,
                 scaleProps: {
-                    spawnMin: 0.9,
+                    spawnMin: 0.75,
                     spawnMax: 1.2,
-                    destroy: 0.75
+                    destroy: 0.9
                 },
                 spawnHitbox: new CircleHitbox(20),
                 rotationMode: RotationMode.Full,
@@ -875,9 +875,9 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 name: "Pine Tree",
                 health: 180,
                 scaleProps: {
-                    spawnMin: 0.9,
-                    spawnMax: 1.1,
-                    destroy: 0.75
+                    spawnMin: 0.75,
+                    spawnMax: 1.2,
+                    destroy: 0.9
                 },
                 hitbox: new CircleHitbox(2.5),
                 spawnHitbox: new CircleHitbox(8.5),
@@ -889,9 +889,9 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 name: "Birch Tree",
                 health: 240,
                 scaleProps: {
-                    spawnMin: 0.9,
-                    spawnMax: 1.1,
-                    destroy: 0.75
+                    spawnMin: 0.75,
+                    spawnMax: 1.2,
+                    destroy: 0.9
                 },
                 hitbox: new CircleHitbox(3.5),
                 spawnHitbox: new CircleHitbox(8.5),
@@ -904,9 +904,9 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 name: "Christmas Tree",
                 health: 720,
                 scaleProps: {
-                    spawnMin: 0.9,
-                    spawnMax: 1.1,
-                    destroy: 0.75
+                    spawnMin: 0.75,
+                    spawnMax: 1.2,
+                    destroy: 0.9
                 },
                 hitbox: new CircleHitbox(10), // unchanged for now since still uses old textures
                 spawnHitbox: new CircleHitbox(15),
@@ -980,8 +980,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 health: 200,
                 scale: {
                     spawnMin: 0.9,
-                    spawnMax: 1.1,
-                    destroy: 0.7
+                    spawnMax: 1.2,
+                    destroy: 0.85
                 },
                 spawnMode: MapObjectSpawnMode.GrassAndSand,
                 hitbox: new CircleHitbox(4),
@@ -997,8 +997,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 health: 550,
                 scale: {
                     spawnMin: 0.9,
-                    spawnMax: 1.1,
-                    destroy: 0.7
+                    spawnMax: 1.3,
+                    destroy: 0.85
                 },
                 spawnMode: MapObjectSpawnMode.River,
                 zIndex: ZIndexes.UnderwaterPlayers - 1,
@@ -1016,7 +1016,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 decay:.2,
                 scale: {
                     spawnMin: 0.7,
-                    spawnMax: 1,
+                    spawnMax: 1.1,
                     destroy: 0.35
                 },
                 
@@ -1225,8 +1225,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 material: "pumpkin",
                 health: 70,
                 scale: {
-                    spawnMin: 1,
-                    spawnMax: 1.1,
+                    spawnMin: 0.8,
+                    spawnMax: 1.3,
                     destroy: 0.8
                 },
                 hitbox: new CircleHitbox(1.9),
@@ -1265,7 +1265,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     scale: {
                         spawnMin: 1,
                         spawnMax: 1,
-                        destroy: 0.5
+                        destroy: 0.8
                     },
                     spawnMode: MapObjectSpawnMode.GrassAndSand,
                     hitbox: RectangleHitbox.fromRect(6.1, 6.1),
@@ -1277,11 +1277,11 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 idString: "bush",
                 name: "Bush",
                 material: "bush",
-                health: 80,
+                health: 300,
                 scale: {
                     spawnMin: 0.9,
-                    spawnMax: 1.1,
-                    destroy: 0.8
+                    spawnMax: 1.15,
+                    destroy: 1
                 },
                 hitbox: new CircleHitbox(4.2),
                 noCollisions: true,
@@ -1293,11 +1293,11 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 idString: "vibrant_bush",
                 name: "Vibrant Bush",
                 material: "bush",
-                health: 120,
+                health: 320,
                 scale: {
                     spawnMin: 0.9,
-                    spawnMax: 1.1,
-                    destroy: 0.8
+                    spawnMax: 1.15,
+                    destroy: 1
                 },
                 hitbox: new CircleHitbox(5.4),
                 noCollisions: true,
@@ -1347,11 +1347,11 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 idString: "blueberry_bush",
                 name: "Blueberry Bush",
                 material: "bush",
-                health: 80,
+                health: 330,
                 scale: {
-                    spawnMin: 0.9,
-                    spawnMax: 1.1,
-                    destroy: 0.8
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 1
                 },
                 hitbox: new CircleHitbox(4.2),
                 noCollisions: true,
@@ -1471,7 +1471,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 scale: {
                     spawnMin: 1,
                     spawnMax: 1,
-                    destroy: 0.6
+                    destroy: 0.9
                 },
                 spawnMode: MapObjectSpawnMode.GrassAndSand,
                 hitbox: RectangleHitbox.fromRect(8.49, 8.36),
@@ -1660,7 +1660,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     scale: {
                         spawnMin: 1,
                         spawnMax: 1,
-                        destroy: 0.5
+                        destroy: 0.8
                     },
                     spawnMode: MapObjectSpawnMode.GrassAndSand,
 
@@ -1682,7 +1682,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     scale: {
                         spawnMin: 1,
                         spawnMax: 1,
-                        destroy: 0.5
+                        destroy: 0.8
                     },
                     spawnMode: MapObjectSpawnMode.GrassAndSand,
                     hitbox: new CircleHitbox(3.75),
@@ -1787,8 +1787,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 health: 150,
                 scale: {
                     spawnMin: 0.9,
-                    spawnMax: 1.1,
-                    destroy: 0.7
+                    spawnMax: 1.2,
+                    destroy: 0.9
                 },
                 hitbox: new CircleHitbox(4),
                 spawnHitbox: new CircleHitbox(4.5),
@@ -1803,9 +1803,9 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hideOnMap: true,
                 health: 250,
                 scale: {
-                    spawnMin: 0.9,
-                    spawnMax: 1,
-                    destroy: 0.75
+                    spawnMin: 0.75,
+                    spawnMax: 1.2,
+                    destroy: 0.9
                 },
                 hitbox: new CircleHitbox(5.5),
                 spawnHitbox: new CircleHitbox(15),
@@ -4119,7 +4119,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 scale: {
                     spawnMin: 0.9,
                     spawnMax: 1.1,
-                    destroy: 0.8
+                    destroy: 1
                 },
                 hitbox: RectangleHitbox.fromRect(9.5, 16.5),
                 rotationMode: RotationMode.Limited,

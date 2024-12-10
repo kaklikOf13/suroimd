@@ -81,6 +81,7 @@ export interface Gamemode{
         readonly position:number
         readonly win:number
     }
+    readonly emotes_replace?:string
 }
 export const DefaultGamemode:Gamemode={
     gas:{
@@ -334,7 +335,8 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                     "ice_grenade"
                 ]
             })}
-        ]
+        ],
+        emotes_replace:"apple_emote"
     },
     "1v1":{
         adrenalineLoss:0.0001,

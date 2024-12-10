@@ -23,9 +23,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="1.4342732"
-     inkscape:cx="-140.14066"
-     inkscape:cy="115.38945"
+     inkscape:zoom="5.7370928"
+     inkscape:cx="43.66323"
+     inkscape:cy="33.902188"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
      inkscape:window-x="-8"
@@ -35,49 +35,41 @@
   <defs
      id="defs1" />
   <rect
-     style="display:inline;fill:#202020;fill-opacity:1;stroke:#000000;stroke-width:0.711811;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1"
-     id="rect846-1"
-     width="18.338188"
-     height="18.33819"
-     x="0.3559055"
-     y="0.3559055"
-     ry="1.0990384"
-     rx="1.0990384"
-     inkscape:export-filename="/home/desktopgeek/Downloads/Ammo emojis/12g_ammo.png"
-     inkscape:export-xdpi="945.23077"
-     inkscape:export-ydpi="945.23077" />
+     style="fill:#202020;fill-opacity:1;stroke:#000000;stroke-width:1.58485;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
+     id="rect846"
+     width="17.465147"
+     height="17.465147"
+     x="0.79242498"
+     y="0.79242498"
+     ry="1.0990396"
+     rx="1.0990396" />
   <circle
-     style="display:inline;fill:none;fill-opacity:1;stroke:#484848;stroke-width:0.366346;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     id="path9697-1"
-     cx="16.851921"
-     cy="2.1980839"
-     r="0.7326923" />
+     style="fill:none;fill-opacity:1;stroke:#484848;stroke-width:0.631031;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="path9697"
+     cx="16.097973"
+     cy="2.9521501"
+     r="0.73269308" />
   <circle
-     style="display:inline;fill:none;fill-opacity:1;stroke:#484848;stroke-width:0.366346;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     id="path9697-6-5"
-     cx="16.851921"
-     cy="16.996454"
-     r="0.7326923" />
+     style="fill:none;fill-opacity:1;stroke:#484848;stroke-width:0.631031;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="path9697-6"
+     cx="16.150839"
+     cy="16.083685"
+     r="0.73269308" />
   <circle
-     style="display:inline;fill:none;fill-opacity:1;stroke:#484848;stroke-width:0.366346;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     id="path9697-7-2"
-     cx="2.1980753"
-     cy="16.996454"
-     r="0.7326923" />
+     style="fill:none;fill-opacity:1;stroke:#484848;stroke-width:0.631031;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="path9697-7"
+     cx="2.9256918"
+     cy="16.083685"
+     r="0.73269308" />
   <circle
-     style="display:inline;fill:none;fill-opacity:1;stroke:#484848;stroke-width:0.366346;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     id="path9697-5-7"
-     cx="2.1980753"
-     cy="2.1980839"
-     r="0.7326923" />
-  <text
-     xml:space="preserve"
-     style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:9.87778px;font-family:Arial;-inkscape-font-specification:'Arial, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;display:inline;fill:#484848;fill-opacity:1;stroke:#484848;stroke-width:0.140758;stroke-opacity:1;paint-order:markers stroke fill"
-     x="2.4542856"
-     y="13.014536"
-     id="text1-6"><tspan
-       sodipodi:role="line"
-       id="tspan2"
-       x="2.4542856"
-       y="13.014536">.50</tspan></text>
+     style="fill:none;fill-opacity:1;stroke:#484848;stroke-width:0.631031;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="path9697-5"
+     cx="3.0051224"
+     cy="2.9521501"
+     r="0.73269308" />
+  <path
+     d="m 2.6669994,11.429999 h 1.7144999 v 1.42875 H 2.6669994 Z m 5.7149975,1.524 q -1.5906749,0 -3.5242499,-0.1905 v -1.285875 q 2.105025,0.142875 3.1432499,0.142875 0.219075,0 0.3429,-0.123825 0.13335,-0.13335 0.13335,-0.352425 v -0.47625 q 0,-0.571499 -0.5715,-0.571499 H 5.143497 V 6.1912497 H 9.7154969 V 7.5247496 H 6.857997 v 1.23825 h 1.5239999 q 0.93345,0 1.3716,0.4286249 0.4381501,0.4191 0.4381501,1.2858745 v 0.66675 q 0,0.93345 -0.4381501,1.3716 -0.43815,0.43815 -1.3716,0.43815 z M 14.668501,8.0009996 q 0,-0.5715 -0.5715,-0.5715 h -1.04775 q -0.5715,0 -0.5715,0.5715 v 3.0479994 q 0,0.5715 0.5715,0.5715 h 1.04775 q 0.5715,0 0.5715,-0.5715 z m 1.7145,3.0479994 q 0,1.000125 -0.4572,1.457325 -0.447675,0.447675 -1.4478,0.447675 h -1.80975 q -1.000125,0 -1.457325,-0.447675 -0.447675,-0.4572 -0.447675,-1.457325 V 8.0009996 q 0,-1.000125 0.447675,-1.4478 0.4572,-0.4571999 1.457325,-0.4571999 h 1.80975 q 1.000125,0 1.4478,0.4571999 0.4572,0.447675 0.4572,1.4478 z"
+     id="text1"
+     style="font-size:9.525px;font-family:'Russo One';-inkscape-font-specification:'Russo One, Normal';fill:#5f5f5f;stroke-width:0.631031;stroke-linecap:round;stroke-linejoin:round;paint-order:markers stroke fill"
+     aria-label=".50" />
 </svg>

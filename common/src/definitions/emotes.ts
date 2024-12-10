@@ -109,6 +109,7 @@ export const Emotes = ObjectDefinitions.create<EmoteDefinition>("Emotes", [
     ...[
         "Monkey",
         "Carrot",
+        "Apple Emote",
         "Tomato",
         "Egg",
         "Squid",

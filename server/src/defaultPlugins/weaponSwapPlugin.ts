@@ -48,17 +48,17 @@ export class WeaponSwapPlugin extends GamePlugin {
                 if (gun.ammoSpawnAmount) {
                     inventory.giveItem(ammoType,gun.ammoSpawnAmount)
                 }
+                source.sendEmote(gun)
                 break;
             }
             case ItemType.Melee: {
                 const r=pickRandomInArray(args.selectableMelees)
                 item = typeof r==="string"?Melees.fromString(r):r;
+                source.sendEmote(item)
                 break;
             }
             case ItemType.Throwable: {
-                const r=pickRandomInArray(args.selectableThrowables)
-                item = typeof r==="string"?Throwables.fromString(r):r;
-                inventory.items.setItem(item.idString, source.inventory.backpack.maxCapacity[item.idString]);
+                return
             }
         }
 
