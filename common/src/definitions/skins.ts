@@ -98,6 +98,7 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
                 ["Printer",         0xffffff],
                 ["Distant Shores",  0x7eca83],
                 ["Hasanger",        0x640000],
+                ["123OP",           0x0000ff],
                 ["leia",            0x060647],
                 ["radians",         0x060647],
                 ["LimeNade",        0xffffff],
@@ -139,10 +140,12 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
                 ["Deer Season",           0x9a3604],
                 //Originals
 
-                //Aura
+                //Shiny
                 ["shiny_max_mcfly",       0xff931c],
                 ["shiny_hasanger",        0x640000],
                 ["shiny_leia",            0x060647],
+                ["shiny_123OP",           0x0000ff],
+                ["shiny_anonymous",       0x0000ff],
             ] satisfies ReadonlyArray<readonly [string, number]>).map(([name, tint]) => hidden([name, tint])),
             hidden(
                 ["Werewolf", 0x323232],
