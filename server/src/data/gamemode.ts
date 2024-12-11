@@ -480,44 +480,6 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                     "12g":0,
                 }
             })}
-            /*{
-                construct:InitWithPlugin,
-                params:{
-                    giveTo:1,
-                    group:1,
-                    needGroup:true,
-                    dropAll:true,
-                    startAfter:30,
-                    nameColor:0x000064,
-                    dropable:{
-                        vest:false,
-                        helmet:false,
-                        perks:false,
-                        skin:false,
-                    },
-                    equipaments:{
-                        gun1:["an94","mg5","pkp"],
-                        gun2:["radio"],
-                        skin:"shiny_123op",
-                        vest:"tactical_vest",
-                        melee:"fire_hatchet",
-                        backpack:"tactical_pack",
-                        helmet:"captain_helmet",
-                        perks:[PerkIds.Captain]
-                    },
-                    items:{
-                        "762mm":300,
-                        "gauze":15,
-                        "medikit":4,
-                        "cola":8,
-                        "tablets":4,
-                        "12g":90,
-                        "2x_scope":1,
-                        "4x_scope":1,
-                        "8x_scope":1,
-                    }
-                }
-            }*/
         ]
     },
     debug:{
