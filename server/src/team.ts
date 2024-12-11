@@ -10,6 +10,8 @@ import { GOAPGoal } from "./utils/goap";
 export class Team {
     readonly id: number;
 
+    group?:number;
+
     private readonly _players: Player[] = [];
     get players(): readonly Player[] { return this._players; }
 

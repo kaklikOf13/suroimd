@@ -33,7 +33,7 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
         }));
 
         const helmet = derive((name: string) => ({
-            idString: `${name.toLowerCase()}_helmet`,
+            idString: `${name.toLowerCase()}_helmet`.replaceAll(" ","_"),
             name: `${name} Helmet`,
             armorType: ArmorType.Helmet
         }));
@@ -68,14 +68,21 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
                 ["Captain"],
                 {
                     level: 4,
-                    damageReduction: 0.3
+                    damageReduction: 0.25
                 }
             ),
             helmet(
                 ["Medic"],
                 {
                     level: 4,
-                    damageReduction: 0.3
+                    damageReduction: 0.25
+                }
+            ),
+            helmet(
+                ["Last Man"],
+                {
+                    level: 5,
+                    damageReduction: 0.30
                 }
             ),
 
@@ -110,7 +117,7 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
                 ["Ultra"],
                 {
                     level: 4,
-                    damageReduction: 0.3,
+                    damageReduction: 0.25,
                     color: 0x2f0000
                 }
             ),

@@ -264,16 +264,15 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             ],
             [
                 { item: "tango_51", weight: 60 },
-                { item: "sv98", weight: 30 },
                 { item: "tango_51", spawnSeparately: true, count: 2, weight: 30 },
-                { item: "sv98", spawnSeparately: true, count:     2, weight: 15 },
                 { item: "tango_51", spawnSeparately: true, count: 3, weight: 3.5 },
-                { item: "sv98", spawnSeparately: true, count:     3, weight: 1.5 },
                 { item: "tango_51", spawnSeparately: true, count: 4, weight: 0.1 },
-                { item: "sv98", spawnSeparately: true, count:     4, weight: 0.05 },
                 { item: "tango_51", spawnSeparately: true, count: 5, weight: 0.00001 },
-                { item: "sv98", spawnSeparately: true, count:     5, weight: 0.000005 },
             ]
+        ],
+        golden_container:[
+            [{table:"airdrop_scopes",weight:1}],
+            [{ item: "sv98", count:1, weight:1 }],
         ],
         lux_crate: [
             [{ item: "cz600", weight: 1 }],

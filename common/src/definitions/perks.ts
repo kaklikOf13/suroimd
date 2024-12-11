@@ -73,7 +73,10 @@ export const enum PerkIds {
     Claustrophobic = "claustrophobic",
     LacedStimulants = "laced_stimulants",
     RottenPlumpkin = "rotten_plumpkin",
-    PriorityTarget = "priority_target"
+    PriorityTarget = "priority_target",
+
+    //Modes
+    Captain="captain_perk"
 }
 
 export const enum PerkCategories {
@@ -405,7 +408,19 @@ const perks = [
 
         noDrop: true,
         plumpkinGambleIgnore: true
-    }
+    },
+    //Modes
+    {
+        idString: PerkIds.Captain,
+        name: "Captain",
+        description: "Permanent adrenaline. Biggest Size",
+        category: PerkCategories.Normal,
+        type: PerkQualities.Positive,
+
+        adrenDecay: 0,
+        sizeMod: 1.25, // multiplicative
+        noDrop: true
+    },
 ] as const satisfies ReadonlyArray<
     GetMissing<
         BasicPerk,

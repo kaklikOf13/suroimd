@@ -82,6 +82,7 @@ export interface Gamemode{
         readonly win:number
     }
     readonly emotes_replace?:string
+    readonly factions:number
 }
 export const DefaultGamemode:Gamemode={
     gas:{
@@ -94,6 +95,7 @@ export const DefaultGamemode:Gamemode={
     spawn:{
         mode:SpawnMode.Normal
     },
+    factions:0,
     start_after:5,
     weaponsSelect:false,
 
@@ -113,7 +115,46 @@ export const DefaultGamemode:Gamemode={
         win:10,
     }
 }
-
+const RolesDefault={
+    Captain:{
+        construct:InitWithPlugin,
+        params:{
+            giveTo:1,
+            group:0,
+            needGroup:true,
+            dropAll:true,
+            startAfter:30,
+            nameColor:0x640000,
+            dropable:{
+                vest:false,
+                helmet:false,
+                perks:false,
+                skin:false,
+            },
+            equipaments:{
+                gun1:["super90","usas12","m590m"],
+                gun2:["radio"],
+                skin:"shiny_hasanger",
+                vest:"tactical_vest",
+                melee:"fire_hatchet",
+                backpack:"tactical_pack",
+                helmet:"captain_helmet",
+                perks:[PerkIds.Captain]
+            },
+            items:{
+                "gauze":15,
+                "medikit":4,
+                "cola":8,
+                "tablets":4,
+                "12g":90,
+                "762mm":0,
+                "2x_scope":1,
+                "4x_scope":1,
+                "8x_scope":1,
+            }
+        },
+    },
+}
 export const Gamemodes:Record<string,Partial<Gamemode>>={
     deathmatch:{
         adrenalineLoss:0.0001,
@@ -186,7 +227,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
         group:true,
         defaultGroup:0,
         start_after:60,
-        joinTime:70,
+        joinTime:10,
         maxPlayersPerGame:36,
         button:{
             buttonCss:"btn-redmode",
@@ -204,6 +245,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                     dropAll:true,
                     dropable:{
                         vest:false,
+                        helmet:false,
                         perks:false,
                         skin:false,
                     },
@@ -212,6 +254,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                         gun2:["l115a1","awms","pfeifer_zeliska","dual_pfeifer_zeliska","mg5","pkp","m134","negev","m249","vickers"],
                         skin:"shiny_max_mcfly",
                         vest:"ultra_vest",
+                        helmet:"last_man_helmet",
                         metalicBody:true,
                         ping:"warning_ping",
                         repeatPing:20,
@@ -415,6 +458,67 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
         ],
         weaponsSelect:true,
         map:"deathmatch"
+    },
+    factions:{
+        map:"normal",
+        group:true,
+        factions:2,
+        maxPlayersPerGame:80,
+        plugins:[
+            //Red Captain
+            RolesDefault.Captain,
+            //Blue Captain
+            {construct:InitWithPlugin,params:mergeDeep(cloneDeep(RolesDefault.Captain.params),{
+                group:1,
+                nameColor:0x000064,
+                equipaments:{
+                    gun1:["an94","mg5","pkp"],
+                    skin:"shiny_123op",
+                },
+                items:{
+                    "762mm":300,
+                    "12g":0,
+                }
+            })}
+            /*{
+                construct:InitWithPlugin,
+                params:{
+                    giveTo:1,
+                    group:1,
+                    needGroup:true,
+                    dropAll:true,
+                    startAfter:30,
+                    nameColor:0x000064,
+                    dropable:{
+                        vest:false,
+                        helmet:false,
+                        perks:false,
+                        skin:false,
+                    },
+                    equipaments:{
+                        gun1:["an94","mg5","pkp"],
+                        gun2:["radio"],
+                        skin:"shiny_123op",
+                        vest:"tactical_vest",
+                        melee:"fire_hatchet",
+                        backpack:"tactical_pack",
+                        helmet:"captain_helmet",
+                        perks:[PerkIds.Captain]
+                    },
+                    items:{
+                        "762mm":300,
+                        "gauze":15,
+                        "medikit":4,
+                        "cola":8,
+                        "tablets":4,
+                        "12g":90,
+                        "2x_scope":1,
+                        "4x_scope":1,
+                        "8x_scope":1,
+                    }
+                }
+            }*/
+        ]
     },
     debug:{
         map:"debug",

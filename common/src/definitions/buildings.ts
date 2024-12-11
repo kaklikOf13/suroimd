@@ -224,8 +224,8 @@ const randomContainer1 = {
     container_7: 3,
     container_8: 4,
     container_10: 3,
-    container_13: 3,
-    container_14: 0.1
+    container_13: 0.5,
+    container_14: 0.2
 };
 
 const randomContainer2 = {
@@ -2192,7 +2192,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
             container([11, "green", "closed"]),
             container([12, "yellow", "closed"]),
             container([13, "golden", "closed"]),
-            container([14, "golden", "open1",undefined,"tango_crate"]),
+            container([14, "golden", "open1",undefined,"golden_container"]),
 
             bigTent([1, "red"]),
             bigTent([2, "green"]),

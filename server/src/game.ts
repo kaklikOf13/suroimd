@@ -231,6 +231,8 @@ export class Game implements GameData {
             this.gamemode=DefaultGamemode
         }
 
+        this.currentFaction=this.gamemode.factions>0?0:this.gamemode.defaultGroup
+
         this.map = new GameMap(this, this.gamemode.map||Config.map);
 
         this.gas = new Gas(this);
@@ -584,7 +586,7 @@ export class Game implements GameData {
     }
 
     addPlayerIntoGroup(player:Player,id:number){
-        if(id>=this.groups.size){
+        if(id>=this.groups.size||!this.groups.has(id)){
             this.groups.set(id,new Group(id))
             this.groups.get(id)!.addPlayer(player)
         }else{
@@ -601,6 +603,8 @@ export class Game implements GameData {
 
         let spawnPosition = Vec.create(this.map.width / 2, this.map.height / 2);
         let spawnLayer;
+
+        let group=this.currentFaction
 
         let team: Team | undefined;
         if (this.teamMode) {
@@ -623,11 +627,13 @@ export class Game implements GameData {
                         team.autoFill
                         && team.players.length < (this.maxTeamSize as number)
                         && team.hasLivingPlayers()
+                        && (((!this.gamemode.group)||team.group===undefined)||team.group===group)
                 );
                 if (vacantTeams.length) {
                     team = pickRandomInArray(vacantTeams);
                 } else {
                     this.teams.add(team = new Team(this.nextTeamID));
+                    team.group=group
                 }
             }
         }
@@ -637,11 +643,12 @@ export class Game implements GameData {
                 const hitbox = new CircleHitbox(5);
                 const gasPosition = this.gas.currentPosition;
                 const gasRadius = this.gas.newRadius ** 2;
-                const teamPosition = this.teamMode
-                    // teamMode should guarantee the `team` object's existence
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    ? pickRandomInArray(team!.getLivingPlayers())?.position
-                    : undefined;
+                let teamPosition:Vector|undefined=undefined
+                if(this.gamemode.group&&this.groups.get(group)){
+                    teamPosition=(team&&team.players.length>0)?pickRandomInArray(team!.getLivingPlayers())?.position:pickRandomInArray(this.groups.get(group)!.getLivingPlayers())?.position
+                }else if(this.teamMode&&!this.gamemode.group){
+                    teamPosition=pickRandomInArray(team!.getLivingPlayers())?.position
+                }
 
                 let foundPosition = false;
                 for (let tries = 0; !foundPosition && tries < 200; tries++) {
@@ -706,6 +713,8 @@ export class Game implements GameData {
         this.pluginManager.emit("player_did_connect", player);
         return player;
     }
+
+    currentFaction=0
 
     // Called when a JoinPacket is sent by the client
     activatePlayer(player: Player, packet: JoinPacketData): void {
@@ -825,7 +834,12 @@ export class Game implements GameData {
         }
 
         if(this.gamemode.group){
-            this.addPlayerIntoGroup(player,this.gamemode.defaultGroup)
+            if(this.gamemode.factions>0){
+                this.addPlayerIntoGroup(player,this.currentFaction)
+                this.currentFaction=(this.currentFaction+1)%this.gamemode.factions
+            }else{
+                this.addPlayerIntoGroup(player,this.currentFaction)
+            }
         }
 
         this.pluginManager.emit("player_did_join", { player, joinPacket: packet });

@@ -281,6 +281,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
     }
 
+    rolable:boolean=true
+
     autoReload:boolean=true
     infinityAmmo:boolean=false
     canDrop:boolean=true
@@ -578,6 +580,13 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.dirty.weapons = true;
 
         this.updateAndApplyModifiers();
+    }
+
+    fullDirty(){
+        this.dirtyUI()
+        this.setDirty()
+        this.updateAndApplyModifiers()
+        this.game.fullDirtyObjects.add(this)
     }
 
     giveGun(idString: ReferenceTo<GunDefinition>): void {
@@ -1886,6 +1895,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     newModifiers.adrenDrain *= perk.adrenDecay;
                     newModifiers.minAdrenaline += perk.adrenSet * newModifiers.maxAdrenaline * GameConstants.player.maxAdrenaline;
                     newModifiers.maxHealth *= perk.healthMod;
+                    break;
+                }
+                case PerkIds.Captain: {
+                    newModifiers.adrenDrain *= perk.adrenDecay;
+                    newModifiers.size *= perk.sizeMod;
                     break;
                 }
                 case PerkIds.Engorged: {
