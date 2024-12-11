@@ -14,7 +14,8 @@ export const weaponSwapArgsD={
     obstacles:[] as string[],
     selectableGuns: Guns.definitions.filter(g => !g.killstreak && !g.wearerAttributes) as (string|GunDefinition)[],
     selectableMelees: Melees.definitions.filter(g => !g.killstreak && !g.wearerAttributes) as (string|MeleeDefinition)[],
-    selectableThrowables: Throwables.definitions.filter(g => !g.killstreak && !g.wearerAttributes) as (string|ThrowableDefinition)[]
+    selectableThrowables: Throwables.definitions.filter(g => !g.killstreak && !g.wearerAttributes) as (string|ThrowableDefinition)[],
+    blackList:[] as string[]
 }
 
 /**
@@ -39,6 +40,9 @@ export class WeaponSwapPlugin extends GamePlugin {
 
         let item: GunDefinition | MeleeDefinition | ThrowableDefinition;
         const itemType = source.activeItemDefinition.itemType;
+        if(args.blackList.includes(source.activeItemDefinition.idString)){
+            return
+        }
         switch (itemType) {
             case ItemType.Gun: {
                 const r=pickRandomInArray(args.selectableGuns)

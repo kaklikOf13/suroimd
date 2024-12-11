@@ -1307,7 +1307,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hitbox: new CircleHitbox(1.9),
                 spawnHitbox: new CircleHitbox(2.9),
                 rotationMode: RotationMode.Full,
-                allowFlyover: FlyoverPref.Always
+                allowFlyover: FlyoverPref.Always,
+                hasLoot:true,
             },
             {
                 idString: "cobweb",

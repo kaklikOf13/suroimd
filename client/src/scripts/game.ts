@@ -1,4 +1,4 @@
-import { GameConstants, InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize } from "@common/constants";
+import { GameConstants, InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize, ZIndexes } from "@common/constants";
 import { ArmorType } from "@common/definitions/armors";
 import { Badges, type BadgeDefinition } from "@common/definitions/badges";
 import { Emotes } from "@common/definitions/emotes";

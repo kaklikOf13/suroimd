@@ -90,7 +90,7 @@ export class ReloadAction extends Action {
             ? definition.extendedCapacity ?? definition.capacity
             : definition.capacity;
 
-        const hasInfiniteAmmo = this.player.hasPerk(PerkIds.InfiniteAmmo)||this.player.infinityAmmo;
+        const hasInfiniteAmmo = this.player.hasPerk(PerkIds.InfiniteAmmo)||this.player.infinityAmmo||definition.infiniteAmmo;
 
         const desiredLoad = Numeric.min(
             definition.shotsPerReload !== undefined && !this.fullReload

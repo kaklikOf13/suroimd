@@ -508,7 +508,7 @@ export class Inventory {
 
             this._setWeapon(slot, undefined);
 
-            if (item instanceof GunItem && item.ammo > 0) {
+            if (item instanceof GunItem && item.ammo > 0 && !item.definition.infiniteAmmo) {
                 // Put the ammo in the gun back in the inventory
                 this.giveItem((definition as GunDefinition).ammoType, item.ammo);
                 item.ammo = 0;

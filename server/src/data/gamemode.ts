@@ -376,6 +376,9 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                     "smoke_grenade",
                     "mirv_grenade",
                     "ice_grenade"
+                ],
+                blackList:[
+                    "apple_launcher"
                 ]
             })}
         ],

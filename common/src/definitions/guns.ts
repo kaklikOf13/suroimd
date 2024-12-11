@@ -3220,6 +3220,64 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     reloadTime: 6
                 },
             },
+            {
+                idString: "apple_launcher",
+                name: "apple Launcher",
+                ammoType: "firework_rocket",
+                infiniteAmmo:true,
+                capacity: 3,
+                extendedCapacity: 5,
+                reloadTime: 1.25,
+                shotsPerReload: 1,
+                shootOnRelease: true,
+                fireDelay: 1250,
+                switchDelay: 900,
+                noMuzzleFlash: true,
+                speedMultiplier: 0.65,
+                recoilMultiplier: 0.5,
+                recoilDuration: 925,
+                fireMode: FireMode.Single,
+                bulletOffset: 2.7,
+                shotSpread: 2,
+                moveSpread: 5,
+                length: 5.5,
+                fists: {
+                    left: Vec.create(60, 40),
+                    right: Vec.create(20, 55),
+                    animationDuration: 100
+                },
+                image: {
+                    position: Vec.create(30, 50.5),
+                    zIndex: 4
+                },
+                casingParticles: [{
+                    position: Vec.create(0.5, 3),
+                    ejectionDelay: 800
+                }],
+                gasParticles: {
+                    spread: 360,
+                    amount: 50,
+                    minLife: 5000,
+                    maxLife: 10000,
+                    minSpeed: 2,
+                    maxSpeed: 5,
+                    minSize: 0.3,
+                    maxSize: 0.5
+                },
+                ballistics: {
+                    damage: 30,
+                    obstacleMultiplier: 1,
+                    speed: 0.15,
+                    range: 120,
+                    onHitExplosion: "apple_launcher_explosion",
+                    explodeOnImpact: true,
+                    tracer: {
+                        image: "apple_trail",
+                        length: 1,
+                        width: 1,
+                    },
+                }
+            },
         ] satisfies ReadonlyArray<RawDefinition<RawGunDefinition>>).map(e => {
             if (e.dual === undefined) {
                 return [e];

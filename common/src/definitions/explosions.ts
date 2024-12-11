@@ -350,6 +350,38 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             decal: "explosion_decal"
         },
         {
+            name: "Apple Launcher",
+            damage: 80,
+            obstacleMultiplier: 2,
+            radius: {
+                min: 9,
+                max: 19
+            },
+            cameraShake: {
+                duration: 160,
+                intensity: 10
+            },
+            animation: {
+                duration: 1500,
+                tint: 0xED2929,
+                scale: 0.8
+            },
+            shrapnelCount: 0,
+            ballistics: {
+                damage: 3,
+                obstacleMultiplier: 1.5,
+                speed: 0.06,
+                range: 10,
+                rangeVariance: 1,
+                shrapnel: true,
+                tracer: {
+                    color: -1
+                }
+            },
+            sound: "firework_rocket_explode",
+            decal: "explosion_decal"
+        },
+        {
             name: "Confetti Grenade",
             damage: 97,
             obstacleMultiplier: 1,

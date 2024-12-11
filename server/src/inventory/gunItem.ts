@@ -332,9 +332,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
             }
         }
 
-        if (!definition.infiniteAmmo) {
-            --this.ammo;
-        }
+        --this.ammo;
 
         if (this.ammo <= 0) {
             this._consecutiveShots = 0;
@@ -391,9 +389,8 @@ export class GunItem extends InventoryItem<GunDefinition> {
         const { owner, definition } = this;
 
         if (
-            definition.infiniteAmmo
-            || this.ammo >= (this.owner.hasPerk(PerkIds.ExtendedMags) ? definition.extendedCapacity ?? definition.capacity : definition.capacity)
-            || (!owner.inventory.items.hasItem(definition.ammoType) && !(this.owner.hasPerk(PerkIds.InfiniteAmmo)||this.owner.infinityAmmo))
+            this.ammo >= (this.owner.hasPerk(PerkIds.ExtendedMags) ? definition.extendedCapacity ?? definition.capacity : definition.capacity)
+            || (!owner.inventory.items.hasItem(definition.ammoType) && !(this.owner.hasPerk(PerkIds.InfiniteAmmo)||this.owner.infinityAmmo||definition.infiniteAmmo))
             || owner.action !== undefined
             || owner.activeItem !== this
             || (!skipFireDelayCheck && owner.game.now - this._lastUse < definition.fireDelay)
