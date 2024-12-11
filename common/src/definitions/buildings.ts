@@ -1,11 +1,10 @@
-
-import { Layers, TentTints, ZIndexes } from "../constants";
+import { GameConstants, Layers, TentTints, ZIndexes } from "../constants";
 import { JoinPacketData } from "../packets/joinPacket";
 import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type DeepPartial } from "../utils/misc";
 import { MapObjectSpawnMode, NullString, ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
-import { randomBoolean } from "../utils/random";
+import { pickRandomInArray, randomBoolean } from "../utils/random";
 import { FloorNames } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
 import { Badges } from "./badges";
@@ -24,6 +23,7 @@ interface BuildingObstacle {
     readonly puzzlePiece?: string | boolean
     readonly locked?: boolean
     readonly activated?: boolean
+    readonly modeVariant?: boolean
 }
 
 interface BuildingNpcs{
@@ -175,6 +175,20 @@ export interface BuildingDefinition extends ObjectDefinition {
 
     readonly rotationMode: RotationMode.Limited | RotationMode.Binary | RotationMode.None
 }
+
+const randomGift = {
+    red_gift: 1,
+    green_gift: 1,
+    blue_gift: 1,
+    black_gift: 0.25,
+    purple_gift: 0.1
+};
+
+const randomCelebrationWinterTree = {
+    oak_tree: 1,
+    birch_tree: 1,
+    pine_tree: 0.9
+};
 
 enum NPCSTeams{
     aegis=0
@@ -352,6 +366,217 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
             let spawnHitbox: Hitbox;
             let upperCeilingImage;
             let lowerCeilingImage;
+
+            const snowDecalDefinitions = {
+                closed: pickRandomInArray([
+                    [
+                        {
+                            key: "snow_decal_container_closed_1",
+                            position: Vec.create(-2.5, -9.08)
+                        },
+                        {
+                            key: "snow_decal_container_closed_2",
+                            position: Vec.create(4.4, -6.5)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(-6.7, -7),
+                            tint: tint,
+                            rotation: Math.PI / 2,
+                            scale: Vec.create(1.5, 1)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(-1.9, -13.525),
+                            tint: tint,
+                            rotation: Math.PI,
+                            scale: Vec.create(1.1, 1)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(6.65, -7),
+                            tint: tint,
+                            rotation: Math.PI / 2,
+                            scale: Vec.create(1.5, 1)
+                        }
+                    ],
+                    [
+                        {
+                            key: "snow_decal_container_closed_2",
+                            position: Vec.create(-4.4, -6.5),
+                            rotation: Math.PI
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(-6.7, -7),
+                            tint: tint,
+                            rotation: Math.PI / 2,
+                            scale: Vec.create(1.5, 1)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(-1.9, -13.525),
+                            tint: tint,
+                            rotation: Math.PI,
+                            scale: Vec.create(1.1, 1)
+                        },
+                        {
+                            key: "snow_decal_container_open1_2",
+                            position: Vec.create(1.8, 10),
+                            rotation: Math.PI / 2
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(6.6, 7),
+                            tint: tint,
+                            rotation: Math.PI / 2,
+                            scale: Vec.create(1.5, 1)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(1.8, 13.525),
+                            tint: tint,
+                            rotation: Math.PI,
+                            scale: Vec.create(1.1, 1)
+                        }
+                    ]
+                ]),
+                open1: pickRandomInArray([
+                    [
+                        {
+                            key: "snow_decal_container_open1_1",
+                            position: Vec.create(3.5, 8.5),
+                            rotation: Math.PI
+                        },
+                        {
+                            key: "snow_decal_container_open1_2",
+                            position: Vec.create(3.25, -8.5)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(6.7, -8),
+                            tint: tint,
+                            rotation: Math.PI / 2,
+                            scale: Vec.create(1.25, 1.25)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(1, -13.6),
+                            tint: tint,
+                            rotation: Math.PI,
+                            scale: Vec.create(1.25, 1.25)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(6.7, 8),
+                            tint: tint,
+                            rotation: Math.PI / 2,
+                            scale: Vec.create(1.25, 1.25)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(5.9, 13.65),
+                            tint: tint,
+                            rotation: Math.PI,
+                            scale: Vec.create(0.25, 1.4)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(4.5, 13),
+                            tint: tint,
+                            rotation: 45,
+                            scale: Vec.create(0.2125, 1.1)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(0, 12.4),
+                            tint: tint,
+                            rotation: Math.PI,
+                            scale: Vec.create(0.95, 1.4)
+                        }
+                    ],
+                    [
+                        {
+                            key: "snow_decal_container_open1_1",
+                            position: Vec.create(3.5, 8.5),
+                            rotation: Math.PI
+                        },
+                        {
+                            key: "snow_decal_container_open1_2",
+                            position: Vec.create(-2, -10),
+                            rotation: -Math.PI / 2
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(-6.7, -8),
+                            tint: tint,
+                            rotation: Math.PI / 2,
+                            scale: Vec.create(1.25, 1.25)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(-1, -13.6),
+                            tint: tint,
+                            rotation: Math.PI,
+                            scale: Vec.create(1.25, 1.25)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(6.7, 8),
+                            tint: tint,
+                            rotation: Math.PI / 2,
+                            scale: Vec.create(1.25, 1.25)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(5.9, 13.65),
+                            tint: tint,
+                            rotation: Math.PI,
+                            scale: Vec.create(0.25, 1.4)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(4.5, 13),
+                            tint: tint,
+                            rotation: 45,
+                            scale: Vec.create(0.2125, 1.1)
+                        },
+                        {
+                            key: "container_snow_cover_patch",
+                            position: Vec.create(0, 12.4),
+                            tint: tint,
+                            rotation: Math.PI,
+                            scale: Vec.create(0.95, 1.4)
+                        }
+                    ]
+                ]),
+                open2: [
+                    {
+                        key: "snow_decal_container_closed_2",
+                        position: Vec.create(4.4, -6.5)
+                    },
+                    {
+                        key: "snow_decal_container_open2_1",
+                        position: Vec.create(-5, 2.5),
+                        rotation: Math.PI
+                    },
+                    {
+                        key: "container_snow_cover_patch",
+                        position: Vec.create(-6.7, 4.5),
+                        tint: tint,
+                        rotation: Math.PI / 2,
+                        scale: Vec.create(1.5, 1)
+                    },
+                    {
+                        key: "container_snow_cover_patch",
+                        position: Vec.create(6.65, -7),
+                        tint: tint,
+                        rotation: Math.PI / 2,
+                        scale: Vec.create(1.5, 1)
+                    }
+                ]
+            };
+
             switch (open) {
                 case "open2":
                     hitbox = new GroupHitbox(
@@ -389,7 +614,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     break;
             }
 
-            const closed = open === "closed";
+            const closed = open === "closed"; // <-- tf?
 
             return {
                 idString: `container_${id}`,
@@ -419,7 +644,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         position: Vec.create(0, 6.98),
                         rotation: Math.PI,
                         tint
-                    }
+                    },
+                    ...(GameConstants.modeName === "winter" ? snowDecalDefinitions[open] : [])
                 ],
                 floors: [{
                     type: FloorNames.Metal,
@@ -474,9 +700,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         { idString: "pole", position: Vec.create(0, 0) },
                         { idString: `tent_wall_${id}`, position: Vec.create(0, -8), rotation: 0 },
                         { idString: `tent_wall_${id}`, position: Vec.create(0, 8), rotation: 2 },
-                        { idString: "box", position: Vec.create(0, 5) },
-                        { idString: "box", position: Vec.create(-7, 5) },
-                        { idString: "box", position: Vec.create(7, 5) }
+                        { idString: "gun_case", position: Vec.create(0, 5), rotation: 2 }
                     ]
                     : [
                         { idString: "pole", position: Vec.create(0, 0) },
@@ -667,16 +891,16 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 { type: FloorNames.Metal, hitbox: RectangleHitbox.fromRect(10, 8.7, Vec.create(89.9, -46)) }
             ],
             obstacles: [
-                { idString: "tire", position: Vec.create(111.28, 5.18), rotation: 0 },
-                { idString: "tire", position: Vec.create(111.4, 14.57), rotation: 0 },
-                { idString: "tire", position: Vec.create(111.4, 24.17), rotation: 0 },
-                { idString: "tire", position: Vec.create(71.55, 24.17), rotation: 0 },
-                { idString: "tire", position: Vec.create(71.5, 14.57), rotation: 0 },
-                { idString: "tire", position: Vec.create(71.45, 5.12), rotation: 0 },
-                { idString: "regular_crate", position: Vec.create(81.48, -37.36) },
-                { idString: "regular_crate", position: Vec.create(101.49, -11.45) },
-                { idString: "grenade_crate", position: Vec.create(102.3, -38.43) },
-                { idString: "barrel", position: Vec.create(102.74, -26.23) },
+                { idString: "tire", position: Vec.create(111.28, 5.18), rotation: 0, modeVariant: true },
+                { idString: "tire", position: Vec.create(111.4, 14.57), rotation: 0, modeVariant: true },
+                { idString: "tire", position: Vec.create(111.4, 24.17), rotation: 0, modeVariant: true },
+                { idString: "tire", position: Vec.create(71.55, 24.17), rotation: 0, modeVariant: true },
+                { idString: "tire", position: Vec.create(71.5, 14.57), rotation: 0, modeVariant: true },
+                { idString: "tire", position: Vec.create(71.45, 5.12), rotation: 0, modeVariant: true },
+                { idString: "regular_crate", position: Vec.create(81.48, -37.36), modeVariant: true },
+                { idString: "regular_crate", position: Vec.create(101.49, -11.45), modeVariant: true },
+                { idString: "grenade_crate", position: Vec.create(102.3, -38.43), modeVariant: true },
+                { idString: "barrel", position: Vec.create(102.74, -26.23), modeVariant: true },
                 { idString: "tugboat_control_panel", position: Vec.create(90, 24.1), rotation: 0 },
                 { idString: "office_chair", position: Vec.create(90, 16.65), rotation: 0 },
                 { idString: "door", position: Vec.create(90.45, -4.8), rotation: 0 },
@@ -734,7 +958,62 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     position: Vec.create(0, 0),
                     tint,
                     scale: Vec.create(2.01, 2.05)
-                }
+                },
+                ...(GameConstants.modeName === "winter"
+                    ? [
+                        {
+                            key: "snow_decal_1",
+                            position: Vec.create(5, 0),
+                            scale: Vec.create(1.5, 1.5)
+                        },
+                        {
+                            key: "snow_decal_2",
+                            position: Vec.create(12, -39),
+                            scale: Vec.create(1.5, 1.5),
+                            rotation: Math.PI / 2
+                        },
+                        {
+                            key: "snow_decal_3",
+                            position: Vec.create(-15, 33),
+                            scale: Vec.create(2, 2),
+                            rotation: Math.PI
+                        },
+                        {
+                            key: "port_warehouse_snow_decal_1",
+                            position: Vec.create(-28.5, -53.7),
+                            scale: Vec.create(2, 2),
+                            rotation: -Math.PI / 2
+                        },
+                        {
+                            key: "port_warehouse_snow_decal_2",
+                            position: Vec.create(13.1, 53.5),
+                            rotation: Math.PI,
+                            scale: Vec.create(2, 2)
+                        },
+                        {
+                            key: "port_warehouse_snow_decal_3",
+                            position: Vec.create(17.5, -52.25),
+                            scale: Vec.create(2, 2),
+                            rotation: -Math.PI / 2
+                        },
+                        {
+                            key: "port_warehouse_snow_decal_4",
+                            position: Vec.create(-23, -20),
+                            scale: Vec.create(2, 2)
+                        },
+                        {
+                            key: "port_warehouse_snow_decal_5",
+                            position: Vec.create(22.8, -20),
+                            scale: Vec.create(2, 2)
+                        },
+                        {
+                            key: "port_warehouse_snow_decal_1",
+                            position: Vec.create(-23.5, 58.6),
+                            scale: Vec.create(2, 2),
+                            rotation: Math.PI
+                        }
+                    ]
+                    : [])
             ],
             obstacles: [
                 { idString: "super_barrel", position: Vec.create(-10, -52) },
@@ -1024,6 +1303,43 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 { idString: "grenade_box", position: Vec.create(21.96, 38.75) }
             ]]),
 
+            warehouseLayout([4, [
+                // top left
+                { idString: "barrel", position: Vec.create(-19.39, -26.33) },
+
+                // top right
+                { idString: "ammo_crate", position: Vec.create(19.39, -36.48) },
+
+                // center
+                { idString: "super_barrel", position: Vec.create(0, 0) },
+
+                { idString: "box", position: Vec.create(-7.84, -1.9) },
+                { idString: "box", position: Vec.create(-12.28, 2.68) },
+                { idString: "pallet", position: Vec.create(-10.21, 0.18), rotation: 1 },
+
+                { idString: "pallet", position: Vec.create(10.21, 0.18), rotation: 1 },
+                { idString: "grenade_crate", position: Vec.create(11.43, -2.41) },
+                { idString: "box", position: Vec.create(7.84, 3.5) },
+
+                { idString: "regular_crate", position: Vec.create(0, 10) },
+
+                { idString: "pallet", position: Vec.create(0, -10), rotation: 0 },
+                { idString: "box", position: Vec.create(-2.32, -12.17) },
+                { idString: "grenade_box", position: Vec.create(-0.36, -7.65) },
+                { idString: "box", position: Vec.create(2.79, -12.25) },
+
+                // sides
+                { idString: "ammo_crate", position: Vec.create(19.7, 0) },
+                { idString: "ammo_crate", position: Vec.create(-19.7, 0) },
+
+                // bottom right
+                { idString: "barrel", position: Vec.create(19.39, 36.48) },
+                { idString: "pallet", position: Vec.create(19.53, 26.04), rotation: 1 },
+                { idString: "box", position: Vec.create(21.19, 23.6) },
+                { idString: "grenade_box", position: Vec.create(17.61, 28.33) }
+
+            ]]),
+
             {
                 idString: "warehouse",
                 name: "Warehouse",
@@ -1074,7 +1390,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     idString: {
                         warehouse_layout_1: 1,
                         warehouse_layout_2: 1,
-                        warehouse_layout_3: 1
+                        warehouse_layout_3: 1,
+                        warehouse_layout_4: 1
                     },
                     position: Vec.create(0, 0)
                 }]
@@ -1300,30 +1617,37 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     {
                         idString: "oil_tank",
                         position: Vec.create(-38, 73),
-                        rotation: 0
+                        rotation: 0,
+                        modeVariant: true
                     },
                     {
                         idString: "barrel",
                         position: Vec.create(-20.5, 77.5),
-                        rotation: 0
+                        rotation: 0,
+                        modeVariant: true
                     },
                     {
                         idString: "barrel",
                         position: Vec.create(-21.5, 67),
-                        rotation: 0
+                        rotation: 0,
+                        modeVariant: true
                     },
                     {
                         idString: "regular_crate",
-                        position: Vec.create(-46.5, 45.5)
+                        position: Vec.create(-46.5, 45.5),
+                        modeVariant: true
                     },
                     {
                         idString: "regular_crate",
-                        position: Vec.create(-36, 48)
+                        position: Vec.create(-36, 48),
+                        modeVariant: true
                     },
                     // Bottom right
                     {
                         idString: "large_refinery_barrel",
-                        position: Vec.create(45.5, 59.1)
+                        position: Vec.create(45.5, 59.1),
+                        modeVariant: true
+                        //           ^^^^ One large refinery barrel is a mode variant and the other is a reskin. This ensures they will never use the same texture.
                     },
                     {
                         idString: "large_refinery_barrel",
@@ -1331,65 +1655,80 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     },
                     {
                         idString: "regular_crate",
-                        position: Vec.create(69, 62)
+                        position: Vec.create(69, 62),
+                        modeVariant: true
                     },
                     {
                         idString: "aegis_crate",
-                        position: Vec.create(64, 75)
+                        position: Vec.create(64, 75),
+                        modeVariant: true
                     },
                     {
                         idString: "aegis_crate",
-                        position: Vec.create(77, 73)
+                        position: Vec.create(77, 73),
+                        modeVariant: true
                     },
                     {
                         idString: "barrel",
-                        position: Vec.create(117.5, 77.5)
+                        position: Vec.create(117.5, 77.5),
+                        modeVariant: true
                     },
                     {
                         idString: "regular_crate",
-                        position: Vec.create(117, 40)
+                        position: Vec.create(117, 40),
+                        modeVariant: true
                     },
                     {
                         idString: "super_barrel",
-                        position: Vec.create(27.5, 39)
+                        position: Vec.create(27.5, 39),
+                        modeVariant: true
                     },
                     {
                         idString: "barrel",
-                        position: Vec.create(-10, 0)
+                        position: Vec.create(-10, 0),
+                        modeVariant: true
                     },
                     // Top right
                     {
                         idString: "oil_tank",
                         position: Vec.create(113, -25),
-                        rotation: 1
+                        rotation: 1,
+                        modeVariant: true
                     },
                     {
                         idString: "barrel",
-                        position: Vec.create(117.5, -7)
+                        position: Vec.create(117.5, -7),
+                        modeVariant: true
                     },
                     {
                         idString: "regular_crate",
-                        position: Vec.create(95, -33)
+                        position: Vec.create(95, -33),
+                        modeVariant: true
                     },
                     {
                         idString: "aegis_crate",
-                        position: Vec.create(76.25, -33.5)
+                        position: Vec.create(76.25, -33.5),
+                        modeVariant: true
                     },
                     {
                         idString: "super_barrel",
-                        position: Vec.create(85.25, -33.5)
+                        position: Vec.create(85.25, -33.5),
+                        modeVariant: true
                     },
                     {
                         idString: { barrel: 1, super_barrel: 1 },
-                        position: Vec.create(83, -25)
+                        position: Vec.create(83, -25),
+                        modeVariant: true
                     },
                     {
                         idString: "super_barrel",
-                        position: Vec.create(75, -23)
+                        position: Vec.create(75, -23),
+                        modeVariant: true
                     },
                     {
                         idString: "regular_crate",
-                        position: Vec.create(76.25, -12)
+                        position: Vec.create(76.25, -12),
+                        modeVariant: true
                     },
                     //
                     // Inner walls
@@ -1860,8 +2199,20 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
             ]]),
 
             blueHouseVaultLayout([5, [
-                { idString: "box", position: Vec.create(14, 10.5) },
-                { idString: "bookshelf", position: Vec.create(16, 16), rotation: 0 }
+                { idString: "box", position: Vec.create(11.97, 9.53) },
+                { idString: "bookshelf", position: Vec.create(15.85, 17.01), rotation: 0 }
+            ]]),
+
+            blueHouseVaultLayout([6, [
+                { idString: "grenade_crate", position: Vec.create(13.4, 10.5) },
+                { idString: "box", position: Vec.create(19.25, 9.3) },
+                { idString: "box", position: Vec.create(12.71, 16.6) }
+            ]]),
+
+            blueHouseVaultLayout([7, [
+                { idString: "melee_crate", position: Vec.create(13.4, 10.5) },
+                { idString: "box", position: Vec.create(19.25, 9.3) },
+                { idString: "box", position: Vec.create(12.71, 16.6) }
             ]]),
             // -------------------------------------------------------------------------
 
@@ -1976,9 +2327,9 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "door", position: Vec.create(-29, 22.6), rotation: 2 },
 
                     // outside part
-                    { idString: "barrel", position: Vec.create(-7, 29) },
+                    { idString: "barrel", position: Vec.create(-7, 29), modeVariant: true },
                     { idString: { box: 1, trash_bag: 0.6 }, position: Vec.create(25, 27) },
-                    { idString: "box", position: Vec.create(19, 28.5) },
+                    { idString: "box", position: Vec.create(19, 28.5), modeVariant: true },
 
                     // top right
                     { idString: "house_wall_6", position: Vec.create(7.5, -21.5), rotation: 1 },
@@ -2018,7 +2369,10 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                             //  blue_house_vault_layout_2: 3, // TODO: add on v0.19.1 and rework layout
                             blue_house_vault_layout_3: 1,
                             blue_house_vault_layout_4: 1,
-                            blue_house_vault_layout_5: 1
+                            blue_house_vault_layout_5: 1,
+                            blue_house_vault_layout_6: 1,
+                            blue_house_vault_layout_7: 0.5
+
                         },
                         position: Vec.create(0, 0)
                     }
@@ -2420,30 +2774,30 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
 
                     // front
                     { idString: "vault_door", position: Vec.create(98.25, 1), rotation: 1 },
-                    { idString: "aegis_crate", position: Vec.create(91, -29) },
-                    { idString: "barrel", position: Vec.create(85, -39) },
-                    { idString: "generator", position: Vec.create(91, -18.5), rotation: 0, puzzlePiece: true },
+                    { idString: "aegis_crate", position: Vec.create(91, -29), modeVariant: true },
+                    { idString: "barrel", position: Vec.create(85, -39), modeVariant: true },
+                    { idString: "generator", position: Vec.create(91, -18.5), rotation: 0, puzzlePiece: true, modeVariant: true },
 
-                    { idString: "regular_crate", position: Vec.create(35, -37) },
+                    { idString: "regular_crate", position: Vec.create(35, -37), modeVariant: true },
 
-                    { idString: "regular_crate", position: Vec.create(91, 38.5) },
-                    { idString: "regular_crate", position: Vec.create(80, 36.5) },
-                    { idString: "sandbags", position: Vec.create(79.5, 21), rotation: 0 },
+                    { idString: "regular_crate", position: Vec.create(91, 38.5), modeVariant: true },
+                    { idString: "regular_crate", position: Vec.create(80, 36.5), modeVariant: true },
+                    { idString: "sandbags", position: Vec.create(79.5, 21), rotation: 0, modeVariant: true },
 
-                    { idString: "sandbags", position: Vec.create(61, -5.25), rotation: 1 },
-                    { idString: "gun_case", position: Vec.create(53.5, -7), rotation: 3 },
-                    { idString: "regular_crate", position: Vec.create(66, 7.1) },
-                    { idString: "regular_crate", position: Vec.create(55.5, 7.1) },
+                    { idString: "sandbags", position: Vec.create(61, -5.25), rotation: 1, modeVariant: true },
+                    { idString: "gun_case", position: Vec.create(53.5, -7), rotation: 3, modeVariant: true },
+                    { idString: "regular_crate", position: Vec.create(66, 7.1), modeVariant: true },
+                    { idString: "regular_crate", position: Vec.create(55.5, 7.1), modeVariant: true },
                     { idString: "ship_oil_tank", position: Vec.create(58, 20), rotation: 0 },
 
-                    { idString: "sandbags", position: Vec.create(22, 22), rotation: 1 },
-                    { idString: "regular_crate", position: Vec.create(12.5, 23) },
-                    { idString: "sandbags", position: Vec.create(18, -5.5), rotation: 1 },
-                    { idString: "grenade_crate", position: Vec.create(10, -7.8) },
-                    { idString: "barrel", position: Vec.create(28, -7.8) },
+                    { idString: "sandbags", position: Vec.create(22, 22), rotation: 1, modeVariant: true },
+                    { idString: "regular_crate", position: Vec.create(12.5, 23), modeVariant: true },
+                    { idString: "sandbags", position: Vec.create(18, -5.5), rotation: 1, modeVariant: true },
+                    { idString: "grenade_crate", position: Vec.create(10, -7.8), modeVariant: true },
+                    { idString: "barrel", position: Vec.create(28, -7.8), modeVariant: true },
 
                     // middle (gas can room)
-                    { idString: "tear_gas_crate", position: Vec.create(-11.5, -3.8), rotation: 3 },
+                    { idString: "tear_gas_crate", position: Vec.create(-11.5, -3.8), rotation: 3, modeVariant: true },
                     { idString: "bookshelf", position: Vec.create(-43.25, -23.5), rotation: 1 },
                     { idString: "barrel", position: Vec.create(-22.5, -26) },
                     { idString: "tugboat_control_panel", position: Vec.create(-23, -5.5), rotation: 1 },
@@ -2460,22 +2814,22 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
 
                     // back
 
-                    { idString: "sandbags", position: Vec.create(-66.25, 5.5), rotation: 1 },
-                    { idString: "tear_gas_crate", position: Vec.create(-76, 8), rotation: 0 },
+                    { idString: "sandbags", position: Vec.create(-66.25, 5.5), rotation: 1, modeVariant: true },
+                    { idString: "tear_gas_crate", position: Vec.create(-76, 8), rotation: 0, modeVariant: true },
 
                     // top left corner
-                    { idString: "aegis_crate", position: Vec.create(-126.5, -35) },
-                    { idString: "barrel", position: Vec.create(-115, -38) },
+                    { idString: "aegis_crate", position: Vec.create(-126.5, -35), modeVariant: true },
+                    { idString: "barrel", position: Vec.create(-115, -38), modeVariant: true },
                     { idString: "ship_oil_tank", position: Vec.create(-119.5, -20), rotation: 0 },
 
-                    { idString: "aegis_crate", position: Vec.create(-69.5, -19.5) },
-                    { idString: "regular_crate", position: Vec.create(-82.5, -22) },
-                    { idString: "super_barrel", position: Vec.create(-80, -12.5) },
+                    { idString: "aegis_crate", position: Vec.create(-69.5, -19.5), modeVariant: true },
+                    { idString: "regular_crate", position: Vec.create(-82.5, -22), modeVariant: true },
+                    { idString: "super_barrel", position: Vec.create(-80, -12.5), modeVariant: true },
 
                     // bottom left
-                    { idString: "regular_crate", position: Vec.create(-129, 7) },
-                    { idString: "sandbags", position: Vec.create(-114, -5.5), rotation: 1 },
-                    { idString: "gun_case", position: Vec.create(-124, -8.5), rotation: 0 }
+                    { idString: "regular_crate", position: Vec.create(-129, 7), modeVariant: true },
+                    { idString: "sandbags", position: Vec.create(-114, -5.5), rotation: 1, modeVariant: true },
+                    { idString: "gun_case", position: Vec.create(-124, -8.5), rotation: 0, modeVariant: true }
                 ],
 
                 subBuildings: [
@@ -2687,23 +3041,23 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ],
                 obstacles: [
                     // back
-                    { idString: "regular_crate", position: Vec.create(-55.9, 32.7) },
-                    { idString: "barrel", position: Vec.create(-62, 23) },
-                    { idString: "aegis_crate", position: Vec.create(-59, -32.25) },
-                    { idString: "grenade_crate", position: Vec.create(-50, -35) },
-                    { idString: "flint_crate", position: Vec.create(-17.5, -35) },
-                    { idString: "barrel", position: Vec.create(-8.5, -36) },
-                    { idString: "regular_crate", position: Vec.create(1, 24) },
-                    { idString: "super_barrel", position: Vec.create(11, 24) },
-                    { idString: "fire_hatchet_case", position: Vec.create(2, -24), rotation: 2 },
+                    { idString: "regular_crate", position: Vec.create(-55.9, 32.7), modeVariant: true },
+                    { idString: "barrel", position: Vec.create(-62, 23), modeVariant: true },
+                    { idString: "aegis_crate", position: Vec.create(-59, -32.25), modeVariant: true },
+                    { idString: "grenade_crate", position: Vec.create(-50, -35), modeVariant: true },
+                    { idString: "aegis_crate", position: Vec.create(-17.5, -35), modeVariant: true },
+                    { idString: "barrel", position: Vec.create(-8.5, -36), modeVariant: true },
+                    { idString: "regular_crate", position: Vec.create(1, 24), modeVariant: true },
+                    { idString: "super_barrel", position: Vec.create(11, 24), modeVariant: true },
+                    { idString: "fire_hatchet_case", position: Vec.create(2, -24), rotation: 2, modeVariant: true },
 
                     // front
-                    { idString: "grenade_crate", position: Vec.create(128, -34) },
-                    { idString: "aegis_crate", position: Vec.create(129.5, 34) },
-                    { idString: "barrel", position: Vec.create(74.5, -35) },
-                    { idString: "regular_crate", position: Vec.create(84.25, -34) },
-                    { idString: "regular_crate", position: Vec.create(75, -6.5) },
-                    { idString: "regular_crate", position: Vec.create(75, 4) },
+                    { idString: "grenade_crate", position: Vec.create(128, -34), modeVariant: true },
+                    { idString: "aegis_crate", position: Vec.create(129.5, 34), modeVariant: true },
+                    { idString: "barrel", position: Vec.create(74.5, -35), modeVariant: true },
+                    { idString: "regular_crate", position: Vec.create(84.25, -34), modeVariant: true },
+                    { idString: "regular_crate", position: Vec.create(75, -6.5), modeVariant: true },
+                    { idString: "regular_crate", position: Vec.create(75, 4), modeVariant: true },
 
                     // vault
                     { idString: "vault_door", position: Vec.create(-105.9, 17.7), rotation: 0 },
@@ -2872,69 +3226,71 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ],
                 obstacles: [
                     // Parking lot
-                    { idString: "regular_crate", position: Vec.create(67.36, 58.18) },
+                    { idString: "regular_crate", position: Vec.create(67.36, 58.18), modeVariant: true },
 
-                    { idString: "forklift", position: Vec.create(95, 64), rotation: 1 },
+                    { idString: "forklift", position: Vec.create(95, 64), rotation: 1, modeVariant: true },
                     { idString: "pallet", position: Vec.create(107.5, 64), rotation: 1 },
-                    { idString: "barrel", position: Vec.create(107.5, 64) },
+                    { idString: "barrel", position: Vec.create(107.5, 64), modeVariant: true },
 
                     { idString: "trailer", position: Vec.create(100, 84), rotation: 3 },
                     { idString: "truck", position: Vec.create(72, 84), rotation: 3 },
 
-                    { idString: "regular_crate", position: Vec.create(120, 110) },
+                    { idString: "regular_crate", position: Vec.create(120, 110), modeVariant: true },
                     { idString: { regular_crate: 3, grenade_crate: 1 }, position: Vec.create(110, 115) },
 
-                    { idString: "box", position: Vec.create(87, 123) },
-                    { idString: "box", position: Vec.create(92, 120) },
-                    { idString: "box", position: Vec.create(85, 117) },
-                    { idString: "box", position: Vec.create(92, 114) },
+                    { idString: "box", position: Vec.create(87, 123), modeVariant: true },
+                    { idString: "box", position: Vec.create(92, 120), modeVariant: true },
+                    { idString: "box", position: Vec.create(85, 117), modeVariant: true },
+                    { idString: "box", position: Vec.create(92, 114), modeVariant: true },
 
-                    { idString: "forklift", position: Vec.create(90, 102.5), rotation: 1 },
+                    { idString: "forklift", position: Vec.create(90, 102.5), rotation: 1, modeVariant: true },
                     { idString: "pallet", position: Vec.create(100, 102.5), rotation: 1 },
-                    { idString: "regular_crate", position: Vec.create(100, 102.5) },
+                    { idString: "regular_crate", position: Vec.create(100, 102.5), modeVariant: true },
 
                     // Above red warehouse
                     { idString: "truck", position: Vec.create(12.5, 40), rotation: 3 },
                     { idString: "trailer", position: Vec.create(40, 40), rotation: 3 },
 
                     // next to red warehouse
-                    { idString: "dumpster", position: Vec.create(-7, -62), rotation: 1 },
-                    { idString: "dumpster", position: Vec.create(-22, -62), rotation: 1 },
+                    { idString: "dumpster", position: Vec.create(-7, -62), rotation: 3, modeVariant: true },
+                    { idString: "dumpster", position: Vec.create(-22, -62), rotation: 3, modeVariant: true },
 
                     // The main entrance
                     { idString: "barrier", position: Vec.create(-124, -10), rotation: 0 },
 
                     // Secret loot area sort of
-                    { idString: "sandbags", position: Vec.create(-144, 65), rotation: 1 },
-                    { idString: "sandbags", position: Vec.create(-132, 60), rotation: 2 },
+                    { idString: "sandbags", position: Vec.create(-144, 65), rotation: 1, modeVariant: true },
+                    { idString: "sandbags", position: Vec.create(-132, 60), rotation: 2, modeVariant: true },
 
-                    { idString: "super_barrel", position: Vec.create(-137, 75) },
-                    { idString: "barrel", position: Vec.create(-147, 80) },
+                    { idString: "super_barrel", position: Vec.create(-137, 75), modeVariant: true },
+                    { idString: "barrel", position: Vec.create(-147, 80), modeVariant: true },
 
-                    { idString: "super_barrel", position: Vec.create(-134, 90) },
-                    { idString: "barrel", position: Vec.create(-126, 85) },
+                    { idString: "super_barrel", position: Vec.create(-134, 90), modeVariant: true },
+                    { idString: "barrel", position: Vec.create(-126, 85), modeVariant: true },
 
                     {
                         idString: {
                             aegis_crate: 1,
                             flint_crate: 1
                         },
-                        position: Vec.create(-126, 100)
+                        position: Vec.create(-126, 100),
+                        modeVariant: true
                     },
                     {
                         idString: {
                             aegis_crate: 1,
                             flint_crate: 1
                         },
-                        position: Vec.create(-136, 105)
+                        position: Vec.create(-136, 105),
+                        modeVariant: true
                     },
 
-                    { idString: "sandbags", position: Vec.create(-132, 117), rotation: 2 },
-                    { idString: "barrel", position: Vec.create(-145, 117) },
+                    { idString: "sandbags", position: Vec.create(-132, 117), rotation: 2, modeVariant: true },
+                    { idString: "barrel", position: Vec.create(-145, 117), modeVariant: true },
 
                     // Top left corner above group 3 of the port.
-                    { idString: "grenade_crate", position: Vec.create(-124, -120) },
-                    { idString: { regular_crate: 3, grenade_crate: 1 }, position: Vec.create(-135, -125) },
+                    { idString: "grenade_crate", position: Vec.create(-124, -120), modeVariant: true },
+                    { idString: { regular_crate: 3, grenade_crate: 1 }, position: Vec.create(-135, -125), modeVariant: true },
                     {
                         idString: {
                             regular_crate: 2,
@@ -2942,40 +3298,42 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                             aegis_crate: 1
                         },
                         position: Vec.create(-140, -115),
-                        rotation: 1
+                        rotation: 1,
+                        modeVariant: true
                     },
 
-                    { idString: "barrel", position: Vec.create(-142, -95) },
-                    { idString: "super_barrel", position: Vec.create(-147, -87) },
+                    { idString: "barrel", position: Vec.create(-142, -95), modeVariant: true },
+                    { idString: "super_barrel", position: Vec.create(-147, -87), modeVariant: true },
 
-                    { idString: "regular_crate", position: Vec.create(54.57, -72.34) },
+                    { idString: "regular_crate", position: Vec.create(54.57, -72.34), modeVariant: true },
 
                     // Below Blue Warehouse
-                    { idString: "forklift", position: Vec.create(-60, -55), rotation: 1 },
+                    { idString: "forklift", position: Vec.create(-60, -55), rotation: 1, modeVariant: true },
                     { idString: "pallet", position: Vec.create(-50, -55), rotation: 1 },
 
-                    { idString: { flint_crate: 1, regular_crate: 1 }, position: Vec.create(-75, -45) },
-                    { idString: "flint_crate", position: Vec.create(-50, -55) },
+                    { idString: { flint_crate: 1, regular_crate: 1 }, position: Vec.create(-75, -45), modeVariant: true },
+                    { idString: "flint_crate", position: Vec.create(-50, -55), modeVariant: true },
 
                     // Top right corner above crane of the port
-                    { idString: { regular_crate: 3, grenade_crate: 1 }, position: Vec.create(108, -110) },
-                    { idString: "regular_crate", position: Vec.create(97, -100) },
-                    { idString: "grenade_crate", position: Vec.create(99, -90) },
-                    { idString: "forklift", position: Vec.create(110, -95), rotation: 2 },
+                    { idString: { regular_crate: 3, grenade_crate: 1 }, position: Vec.create(108, -110), modeVariant: true },
+                    { idString: "regular_crate", position: Vec.create(97, -100), modeVariant: true },
+                    { idString: "grenade_crate", position: Vec.create(99, -90), modeVariant: true },
+                    { idString: "forklift", position: Vec.create(110, -95), rotation: 2, modeVariant: true },
                     { idString: "pallet", position: Vec.create(110, -107.5), rotation: 2 },
-                    { idString: "box", position: Vec.create(115.28, -104.85) },
-                    { idString: { barrel: 2, super_barrel: 1 }, position: Vec.create(93.77, -72.33) },
-                    { idString: { barrel: 2, super_barrel: 1 }, position: Vec.create(75.38, -68.72) },
+                    { idString: "box", position: Vec.create(115.28, -104.85), modeVariant: true },
+                    { idString: { barrel: 2, super_barrel: 1 }, position: Vec.create(93.77, -72.33), modeVariant: true },
+                    { idString: { barrel: 2, super_barrel: 1 }, position: Vec.create(75.38, -68.72), modeVariant: true },
 
-                    { idString: "aegis_crate", position: Vec.create(54.48, -118.9) },
-                    { idString: { aegis_crate: 1, regular_crate: 1 }, position: Vec.create(64.96, -123.57) },
+                    { idString: "aegis_crate", position: Vec.create(54.48, -118.9), modeVariant: true },
+                    { idString: { aegis_crate: 1, regular_crate: 1 }, position: Vec.create(64.96, -123.57), modeVariant: true },
 
                     ...(() => Array.from(
                         { length: 5 },
                         (_, i) => ({
                             idString: "bollard",
                             position: Vec.create(140.4, 50 - (41.5 * i)),
-                            rotation: 0
+                            rotation: 0,
+                            modeVariant: true
                         })
                     ))(),
 
@@ -3336,7 +3694,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 particleVariations: 2,
                 hitbox: new GroupHitbox(
                     RectangleHitbox.fromRect(2.09, 36, Vec.create(36.03, -2)),
-                    RectangleHitbox.fromRect(2.09, 11.67, Vec.create(-13.96, -15.16)),
+                    RectangleHitbox.fromRect(2.09, 11.67, Vec.create(-13.96, -15.1)),
                     RectangleHitbox.fromRect(13.4, 2.09, Vec.create(30.37, 16.52)),
                     RectangleHitbox.fromRect(74.12, 2.09, Vec.create(0.01, -20.98)),
                     RectangleHitbox.fromRect(2.09, 11.07, Vec.create(-13.96, 10.47)),
@@ -3542,36 +3900,36 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     ])
                 }],
                 obstacles: [
-                    { idString: "regular_crate", position: Vec.create(63.13, -15.17) },
-                    { idString: "regular_crate", position: Vec.create(-7.99, 2.28) },
-                    { idString: "regular_crate", position: Vec.create(7.06, 30.07) },
-                    { idString: "regular_crate", position: Vec.create(18.06, 27.86) },
-                    { idString: "regular_crate", position: Vec.create(-64.29, 76.5) },
-                    { idString: "regular_crate", position: Vec.create(65.01, -56.73) },
-                    { idString: "regular_crate", position: Vec.create(8.45, -66.79) },
-                    { idString: "flint_crate", position: Vec.create(33.86, -46.16) },
-                    { idString: "barrel", position: Vec.create(-10.72, -7.93) },
-                    { idString: "barrel", position: Vec.create(9.13, 40.34) },
-                    { idString: "barrel", position: Vec.create(69.75, 42.55) },
-                    { idString: "barrel", position: Vec.create(24.36, -46.95) },
-                    { idString: "barrel", position: Vec.create(70.01, -72.17) },
-                    { idString: "super_barrel", position: Vec.create(34.44, -55.28), rotation: 0 },
-                    { idString: "super_barrel", position: Vec.create(44.51, 78.15), rotation: 0 },
-                    { idString: "sandbags", position: Vec.create(15.15, 17.92), rotation: 0 },
-                    { idString: "sandbags", position: Vec.create(-10, 78.77), rotation: 0 },
-                    { idString: "sandbags", position: Vec.create(44.5, 65), rotation: 1 },
-                    { idString: "sandbags", position: Vec.create(31.6, -36.18), rotation: 0 },
-                    { idString: "sandbags", position: Vec.create(30.66, -70.69), rotation: 0 },
-                    { idString: "sandbags", position: Vec.create(18.54, -67.73), rotation: 1 },
+                    { idString: "regular_crate", position: Vec.create(63.13, -15.17), modeVariant: true },
+                    { idString: "regular_crate", position: Vec.create(-7.99, 2.28), modeVariant: true },
+                    { idString: "regular_crate", position: Vec.create(7.06, 30.07), modeVariant: true },
+                    { idString: "regular_crate", position: Vec.create(18.06, 27.86), modeVariant: true },
+                    { idString: "regular_crate", position: Vec.create(-64.29, 76.5), modeVariant: true },
+                    { idString: "regular_crate", position: Vec.create(65.01, -56.73), modeVariant: true },
+                    { idString: "regular_crate", position: Vec.create(8.45, -66.79), modeVariant: true },
+                    { idString: "flint_crate", position: Vec.create(33.86, -46.16), modeVariant: true },
+                    { idString: "barrel", position: Vec.create(-10.72, -7.93), modeVariant: true },
+                    { idString: "barrel", position: Vec.create(9.13, 40.34), modeVariant: true },
+                    { idString: "barrel", position: Vec.create(69.75, 42.55), modeVariant: true },
+                    { idString: "barrel", position: Vec.create(24.36, -46.95), modeVariant: true },
+                    { idString: "barrel", position: Vec.create(70.01, -72.17), modeVariant: true },
+                    { idString: "super_barrel", position: Vec.create(34.44, -55.28), rotation: 0, modeVariant: true },
+                    { idString: "super_barrel", position: Vec.create(44.51, 78.15), rotation: 0, modeVariant: true },
+                    { idString: "sandbags", position: Vec.create(15.15, 17.92), rotation: 0, modeVariant: true },
+                    { idString: "sandbags", position: Vec.create(-10, 78.77), rotation: 0, modeVariant: true },
+                    { idString: "sandbags", position: Vec.create(44.5, 65), rotation: 1, modeVariant: true },
+                    { idString: "sandbags", position: Vec.create(31.6, -36.18), rotation: 0, modeVariant: true },
+                    { idString: "sandbags", position: Vec.create(30.66, -70.69), rotation: 0, modeVariant: true },
+                    { idString: "sandbags", position: Vec.create(18.54, -67.73), rotation: 1, modeVariant: true },
                     { idString: "m1117", position: Vec.create(48.93, -53.75), rotation: 0, variation: 0 },
-                    { idString: "gun_case", position: Vec.create(30.66, -28.84), rotation: 0 },
-                    { idString: "gun_case", position: Vec.create(63.16, -36.39), rotation: 1 },
-                    { idString: "gun_case", position: Vec.create(19.48, 36.69), rotation: 0 },
-                    { idString: "tear_gas_crate", position: Vec.create(16.55, 9.68), rotation: 0 },
-                    { idString: "tear_gas_crate", position: Vec.create(33.06, -62.76), rotation: 0 },
-                    { idString: "grenade_crate", position: Vec.create(-55.29, 78.02) },
-                    { idString: "grenade_crate", position: Vec.create(69.81, -34.24) },
-                    { idString: "ammo_crate", position: Vec.create(50.07, -20.07), rotation: 0 },
+                    { idString: "gun_case", position: Vec.create(30.66, -28.84), rotation: 0, modeVariant: true },
+                    { idString: "gun_case", position: Vec.create(63.16, -36.39), rotation: 1, modeVariant: true },
+                    { idString: "gun_case", position: Vec.create(19.48, 36.69), rotation: 0, modeVariant: true },
+                    { idString: "tear_gas_crate", position: Vec.create(16.55, 9.68), rotation: 0, modeVariant: true },
+                    { idString: "tear_gas_crate", position: Vec.create(33.06, -62.76), rotation: 0, modeVariant: true },
+                    { idString: "grenade_crate", position: Vec.create(-55.29, 78.02), modeVariant: true },
+                    { idString: "grenade_crate", position: Vec.create(69.81, -34.24), modeVariant: true },
+                    { idString: "ammo_crate", position: Vec.create(50.07, -20.07), rotation: 0, modeVariant: true },
                     { idString: "barrier", position: Vec.create(13.91, 70.32), rotation: 1 },
 
                     { idString: "fence", position: Vec.create(70.5, -83.93), rotation: 0 },
@@ -3691,15 +4049,15 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "door", position: Vec.create(4.5, 8.45), rotation: 2 },
                     { idString: "mobile_home_wall_4", position: Vec.create(15.5, 8.45), rotation: 0 },
                     { idString: "mobile_home_wall_2", position: Vec.create(-10.5, 8.45), rotation: 0 },
-                    { idString: "tire", position: Vec.create(-24.25, 4.85), rotation: 0 },
+                    { idString: "tire", position: Vec.create(-24.25, 4.85), rotation: 0, modeVariant: true },
                     { idString: "small_bed", position: Vec.create(16.8, -1), rotation: 0 },
                     { idString: "mobile_home_window", position: Vec.create(-6.6, -10.5), rotation: 0 },
                     { idString: "mobile_home_wall_1", position: Vec.create(-17.25, -10.5), rotation: 0 },
                     { idString: "mobile_home_wall_2", position: Vec.create(21.7, -1), rotation: 1 },
                     { idString: "mobile_home_wall_2", position: Vec.create(-21.7, -1), rotation: 1 },
                     { idString: "mobile_home_wall_3", position: Vec.create(10.6, -10.5), rotation: 0 },
-                    { idString: "box", position: Vec.create(25.7, -3.5), rotation: 0 },
-                    { idString: "box", position: Vec.create(27.5, 1.55), rotation: 0 }
+                    { idString: "box", position: Vec.create(25.7, -3.5), modeVariant: true },
+                    { idString: "box", position: Vec.create(27.5, 1.55), modeVariant: true }
                 ]
             },
             tugboat(["red", "lux_crate"]),
@@ -3744,12 +4102,12 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { type: FloorNames.Stone, hitbox: RectangleHitbox.fromRect(10.5, 5.2, Vec.create(-1.7, 28.2)) }
                 ],
                 obstacles: [
-                    { idString: "sandbags", position: Vec.create(-16.79, 33.53), rotation: 1 },
-                    { idString: "sandbags", position: Vec.create(-16.79, 47.1), rotation: 1 },
-                    { idString: "sandbags", position: Vec.create(-14.15, 58.27), rotation: 2 },
-                    { idString: "barrel", position: Vec.create(-7.67, 47.77) },
-                    { idString: "barrel", position: Vec.create(14.07, 42) },
-                    { idString: "regular_crate", position: Vec.create(11.03, 32.15) },
+                    { idString: "sandbags", position: Vec.create(-16.79, 33.53), rotation: 1, modeVariant: true },
+                    { idString: "sandbags", position: Vec.create(-16.79, 47.1), rotation: 1, modeVariant: true },
+                    { idString: "sandbags", position: Vec.create(-14.15, 58.27), rotation: 2, modeVariant: true },
+                    { idString: "barrel", position: Vec.create(-7.67, 47.77), modeVariant: true },
+                    { idString: "barrel", position: Vec.create(14.07, 42), modeVariant: true },
+                    { idString: "regular_crate", position: Vec.create(11.03, 32.15), modeVariant: true },
                     { idString: "door", position: Vec.create(-1.35, 25.19), rotation: 0 },
                     { idString: "gun_case", position: Vec.create(-13.41, 20.92), rotation: 2 },
                     { idString: "large_drawer", position: Vec.create(13.83, 1.1), rotation: 3 },
@@ -3889,39 +4247,39 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     // North End of Bridge
                     { idString: "barrel", position: Vec.create(-17.5, -80), rotation: 0 },
 
-                    { idString: "sandbags", position: Vec.create(25, -80), rotation: 0 },
-                    { idString: "sandbags", position: Vec.create(36, -82.5), rotation: 1 },
-                    { idString: "sandbags", position: Vec.create(36, -96.5), rotation: 1 },
+                    { idString: "sandbags", position: Vec.create(25, -80), rotation: 0, modeVariant: true },
+                    { idString: "sandbags", position: Vec.create(36, -82.5), rotation: 1, modeVariant: true },
+                    { idString: "sandbags", position: Vec.create(36, -96.5), rotation: 1, modeVariant: true },
 
-                    { idString: "grenade_crate", position: Vec.create(27.5, -88.5) },
+                    { idString: "grenade_crate", position: Vec.create(27.5, -88.5), modeVariant: true },
 
                     // North-Center of the Bridge
-                    { idString: "regular_crate", position: Vec.create(13.5, -55), rotation: 1 },
-                    { idString: "barrel", position: Vec.create(4, -51), rotation: 1 },
-                    { idString: "gun_case", position: Vec.create(13.5, -47), rotation: 2 },
-                    { idString: "sandbags", position: Vec.create(12.5, -40), rotation: 2 },
-                    { idString: "aegis_crate", position: Vec.create(14.5, -30.5) },
+                    { idString: "regular_crate", position: Vec.create(13.5, -55), rotation: 1, modeVariant: true },
+                    { idString: "barrel", position: Vec.create(4, -51), rotation: 1, modeVariant: true },
+                    { idString: "gun_case", position: Vec.create(13.5, -47), rotation: 2, modeVariant: true },
+                    { idString: "sandbags", position: Vec.create(12.5, -40), rotation: 2, modeVariant: true },
+                    { idString: "aegis_crate", position: Vec.create(14.5, -30.5), modeVariant: true },
 
                     // Center of the Bridge
                     { idString: "m1117", position: Vec.create(-8.5, -4), rotation: 0, variation: 1 },
-                    { idString: "regular_crate", position: Vec.create(7, -20), rotation: 0 },
-                    { idString: "gun_case", position: Vec.create(14, 10), rotation: 0 },
+                    { idString: "regular_crate", position: Vec.create(7, -20), rotation: 0, modeVariant: true },
+                    { idString: "gun_case", position: Vec.create(14, 10), rotation: 0, modeVariant: true },
 
                     // South-Center of the Bridge
-                    { idString: "gun_case", position: Vec.create(6, 26), rotation: 3 },
-                    { idString: "ammo_crate", position: Vec.create(14, 26) },
-                    { idString: "sandbags", position: Vec.create(12.5, 35.5), rotation: 2 },
-                    { idString: "barrel", position: Vec.create(15.5, 43.5), rotation: 2 },
-                    { idString: "tear_gas_crate", position: Vec.create(15.5, 52.5), rotation: 1 },
+                    { idString: "gun_case", position: Vec.create(6, 26), rotation: 3, modeVariant: true },
+                    { idString: "ammo_crate", position: Vec.create(14, 26), modeVariant: true },
+                    { idString: "sandbags", position: Vec.create(12.5, 35.5), rotation: 2, modeVariant: true },
+                    { idString: "barrel", position: Vec.create(15.5, 43.5), rotation: 2, modeVariant: true },
+                    { idString: "tear_gas_crate", position: Vec.create(15.5, 52.5), rotation: 1, modeVariant: true },
 
                     // South End of the Bridge
-                    { idString: "barrel", position: Vec.create(17.5, 80), rotation: 0 },
+                    { idString: "barrel", position: Vec.create(17.5, 80), rotation: 0, modeVariant: true },
 
-                    { idString: "sandbags", position: Vec.create(-25, 77), rotation: 0 },
-                    { idString: "sandbags", position: Vec.create(-36, 79.5), rotation: 1 },
-                    { idString: "sandbags", position: Vec.create(-36, 93.5), rotation: 1 },
+                    { idString: "sandbags", position: Vec.create(-25, 77), rotation: 0, modeVariant: true },
+                    { idString: "sandbags", position: Vec.create(-36, 79.5), rotation: 1, modeVariant: true },
+                    { idString: "sandbags", position: Vec.create(-36, 93.5), rotation: 1, modeVariant: true },
 
-                    { idString: "grenade_crate", position: Vec.create(-27.5, 85.5) }
+                    { idString: "grenade_crate", position: Vec.create(-27.5, 85.5), modeVariant: true }
                 ],
                 lootSpawners: [],
                 subBuildings: [
@@ -3963,25 +4321,25 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 obstacles: [
                     { idString: "bunker_entrance", position: Vec.create(-10, -16), rotation: 0 },
 
-                    { idString: "sandbags", position: Vec.create(18.42, -27.15), rotation: 0 },
-                    { idString: "sandbags", position: Vec.create(25.28, -15.7), rotation: 1 },
-                    { idString: "flint_crate", position: Vec.create(15, -17) },
-                    { idString: "barrel", position: Vec.create(15, -7.5), rotation: 1 },
-                    { idString: "super_barrel", position: Vec.create(5, -17), rotation: 1 },
+                    { idString: "sandbags", position: Vec.create(18.42, -27.15), rotation: 0, modeVariant: true },
+                    { idString: "sandbags", position: Vec.create(25.28, -15.7), rotation: 1, modeVariant: true },
+                    { idString: "flint_crate", position: Vec.create(15, -17), modeVariant: true },
+                    { idString: "barrel", position: Vec.create(15, -7.5), rotation: 1, modeVariant: true },
+                    { idString: "super_barrel", position: Vec.create(5, -17), rotation: 1, modeVariant: true },
 
-                    { idString: "sandbags", position: Vec.create(-5.5, 7.94), rotation: 1 },
-                    { idString: "sandbags", position: Vec.create(0.72, 19.15), rotation: 0 },
-                    { idString: "cooler", position: Vec.create(2.28, 8.42), rotation: 1 },
+                    { idString: "sandbags", position: Vec.create(-5.5, 7.94), rotation: 1, modeVariant: true },
+                    { idString: "sandbags", position: Vec.create(0.72, 19.15), rotation: 0, modeVariant: true },
+                    { idString: "cooler", position: Vec.create(2.28, 8.42), rotation: 1, modeVariant: true },
 
-                    { idString: "box", position: Vec.create(16.66, 9.9) },
-                    { idString: "box", position: Vec.create(13.45, 16.63) },
-                    { idString: "box", position: Vec.create(19.13, 16.54) },
-                    { idString: "box", position: Vec.create(-20.5, -15.28) },
-                    { idString: "box", position: Vec.create(-25.19, -10.4) },
+                    { idString: "box", position: Vec.create(16.66, 9.9), modeVariant: true },
+                    { idString: "box", position: Vec.create(13.45, 16.63), modeVariant: true },
+                    { idString: "box", position: Vec.create(19.13, 16.54), modeVariant: true },
+                    { idString: "box", position: Vec.create(-20.5, -15.28), modeVariant: true },
+                    { idString: "box", position: Vec.create(-25.19, -10.4), modeVariant: true },
 
-                    { idString: "regular_crate", position: Vec.create(-17.34, 6.54) },
-                    { idString: "regular_crate", position: Vec.create(-16.5, 17.85) },
-                    { idString: "regular_crate", position: Vec.create(-24.02, -23.2) },
+                    { idString: "regular_crate", position: Vec.create(-17.34, 6.54), modeVariant: true },
+                    { idString: "regular_crate", position: Vec.create(-16.5, 17.85), modeVariant: true },
+                    { idString: "regular_crate", position: Vec.create(-24.02, -23.2), modeVariant: true },
 
                     { idString: "roadblock", position: Vec.create(-10.07, -29.04), rotation: 1 },
 
@@ -4260,8 +4618,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "window", position: Vec.create(18.5, 36.75), rotation: 1 },
                     { idString: "window", position: Vec.create(41.6, 36.75), rotation: 1 },
                     { idString: "window", position: Vec.create(70.7, -6), rotation: 0 },
-                    { idString: "dumpster", position: Vec.create(-63, -54.1), rotation: 2 },
-                    { idString: "trash_bag", position: Vec.create(-69.5, -57.3) },
+                    { idString: "dumpster", position: Vec.create(-63, -54.1), rotation: 2, modeVariant: true },
+                    { idString: "trash_bag", position: Vec.create(-69.5, -57.3), modeVariant: true },
 
                     // office room
                     { idString: "hq_desk_left", position: Vec.create(-8, -17.3), rotation: 0 },
@@ -4500,9 +4858,9 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "couch_end_left", position: Vec.create(24.9, -100.6), rotation: 3 },
                     { idString: "small_table", position: Vec.create(31.45, -90.5), rotation: 1, variation: 1 },
                     { idString: "couch_corner", position: Vec.create(1.5, -79), rotation: 0 },
-                    { idString: "couch_part", position: Vec.create(7.45, -78.9), rotation: 3 },
+                    { idString: "couch_part", position: Vec.create(7.45, -78.93), rotation: 3 },
                     { idString: "couch_end_right", position: Vec.create(14, -78.6), rotation: 0 },
-                    { idString: "couch_end_left", position: Vec.create(1.9, -72.25), rotation: 0 },
+                    { idString: "couch_end_left", position: Vec.create(1.98, -72.25), rotation: 0 },
                     { idString: "door", position: Vec.create(24.27, -56), rotation: 0 },
                     { idString: "headquarters_wall_1", position: Vec.create(-11.15, -54.5), rotation: 0 },
                     { idString: "door", position: Vec.create(-22.4, -54.5), rotation: 2 },
@@ -4646,7 +5004,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "fridge", position: Vec.create(6.5, -13), lootSpawnOffset: Vec.create(0, 2), rotation: 0 },
                     { idString: "small_bed", position: Vec.create(16, -8.5), rotation: 0 },
                     { idString: "small_drawer", position: Vec.create(16, 3.3), lootSpawnOffset: Vec.create(-2, 0), rotation: 3 },
-                    { idString: "aegis_crate", position: Vec.create(15, 11.5), lootSpawnOffset: Vec.create(-2, -2) }
+                    { idString: "flint_crate", position: Vec.create(15, 11.5), lootSpawnOffset: Vec.create(-2, -2) }
                 ],
                 lootSpawners: [
                     { table: "ground_loot", position: Vec.create(0, -0.5) }
@@ -6432,6 +6790,71 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     key: "plumpkin_bunker_vault_ceiling",
                     position: Vec.create(-67.67, 85.03)
                 }]
+            },
+
+            {
+                idString: "christmas_camp",
+                name: "Christmas Camp",
+                spawnHitbox: RectangleHitbox.fromRect(150, 75, Vec.create(0, -1)),
+                obstacles: [
+                    { idString: "christmas_tree", position: Vec.create(0, 0) },
+                    { idString: "ice_pick_case", position: Vec.create(65.8, 24.41), rotation: 3 },
+                    { idString: "regular_crate", position: Vec.create(64.3, -10.79), modeVariant: true },
+                    { idString: "regular_crate", position: Vec.create(51.78, -23.32), modeVariant: true },
+                    { idString: randomCelebrationWinterTree, position: Vec.create(-60.37, 23.31) },
+                    { idString: randomCelebrationWinterTree, position: Vec.create(-56.15, 0.58) },
+                    { idString: "pine_tree", position: Vec.create(54.24, -12.53) },
+                    { idString: "box", position: Vec.create(-44.79, 21.76), modeVariant: true },
+                    { idString: "box", position: Vec.create(-40.17, 15.6), modeVariant: true },
+                    { idString: randomBarrel, position: Vec.create(-65.99, -14.17), modeVariant: true },
+                    { idString: "office_chair", position: Vec.create(38.01, 15.69), rotation: 0 },
+                    { idString: "fire_pit", position: Vec.create(35.73, -6.19) },
+                    { idString: { frozen_crate: 1, regular_crate_winter: 1 }, position: Vec.create(0.4, -32.01) },
+                    { idString: { frozen_crate: 0.25, regular_crate_winter: 1, grenade_crate_winter: 0.5, barrel_winter: 0.5 }, position: Vec.create(-27.8, 29.06) },
+                    { idString: "blueberry_bush", position: Vec.create(67.77, -31.64) },
+                    { idString: "bush", position: Vec.create(-23.21, -25.42) },
+                    { idString: { frozen_crate: 0.25, regular_crate_winter: 1, box_winter: 0.5 }, position: Vec.create(-66.54, 10.5) },
+
+                    { idString: randomCelebrationWinterTree, position: Vec.create(22.07, 31.78) },
+                    { idString: "box", position: Vec.create(13.6, 34.06), modeVariant: true },
+
+                    // Hidden gift(s)
+                    { idString: randomGift, position: Vec.create(-67.1, -32.45) },
+                    { idString: randomGift, position: Vec.create(49.29, -7.59) },
+
+                    // Around the christmas tree (gift placements)
+                    ...pickRandomInArray([
+                        [
+                            { idString: randomGift, position: Vec.create(-8.77, -8.43) },
+                            { idString: randomGift, position: Vec.create(8.77, -8.43) },
+                            { idString: randomGift, position: Vec.create(-8.77, 8.43) },
+                            { idString: randomGift, position: Vec.create(8.77, 8.43) },
+                            { idString: randomGift, position: Vec.create(-12, 0) },
+                            { idString: randomGift, position: Vec.create(12, 0) }
+                        ],
+                        [
+                            { idString: randomGift, position: Vec.create(-12, 0) },
+                            { idString: randomGift, position: Vec.create(12, 0) },
+                            { idString: randomGift, position: Vec.create(0, -12) },
+                            { idString: randomGift, position: Vec.create(0, 12) }
+                        ],
+                        [
+                            { idString: randomGift, position: Vec.create(-9.85, -10.12) },
+                            { idString: randomGift, position: Vec.create(9.85, -10.12) },
+                            { idString: randomGift, position: Vec.create(-9.85, 10.12) },
+                            { idString: randomGift, position: Vec.create(9.85, 10.12) }
+                        ]
+                    ])
+                ],
+                subBuildings: [
+                    { idString: "shed", position: Vec.create(22, -55), orientation: 3 },
+                    { idString: {
+                        container_3: 1,
+                        container_4: 1,
+                        container_5: 1,
+                        container_6: 1
+                    }, position: Vec.create(30, -58), orientation: 1 }
+                ]
             }
         ] satisfies Missing[];
     }

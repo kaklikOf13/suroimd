@@ -44,7 +44,7 @@ const inventorySlotTypings = Object.freeze([ItemType.Gun, ItemType.Gun, ItemType
 export const GameConstants = freezeDeep({
     // !!!!! NOTE: Increase this every time a bit stream change is made between latest release and master
     // or a new item is added to a definition list
-    protocolVersion: 37,
+    protocolVersion: 38,
     gridSize: 32,
     maxPosition: Constants.MAX_POSITION,
     modeName: "normal" satisfies Mode as Mode,
@@ -75,7 +75,10 @@ export const GameConstants = freezeDeep({
         reviveTime: 5,
         maxReviveDist: 7,
         bleedOutDPMs: 0.001, // === 1 dps
-        maxPerkCount: 1
+        maxPerkCount: 1,
+        rateLimitPunishmentTrigger: 10,
+        emotePunishmentTime: 5000, // ms
+        rateLimitInterval: 1000
     },
     gas: {
         damageScaleFactor: 0.005, // Extra damage, linear per distance unit into the gas

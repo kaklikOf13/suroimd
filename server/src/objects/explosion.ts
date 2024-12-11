@@ -98,6 +98,12 @@ export class Explosion {
                             source: this.source,
                             weaponUsed: this
                         });
+
+                        // Destroy pallets
+                        if (object.isObstacle && object.definition.pallet) {
+                            object.dead = true;
+                            object.setDirty();
+                        }
                     }
 
                     if ((isLoot || isThrowableProjectile) && adjacentOrEqualLayer(object.layer, this.layer)) {

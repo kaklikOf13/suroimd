@@ -19,12 +19,13 @@ export const Config = {
         designr: { password: "designr" },
         lead_designr: { password: "lead_designr" },
         vip_designr: { password: "vip_designr" },
-        composr: { password: "composr" },
         lead_composr: { password: "lead_composr" },
+        composr: { password: "composr" },
+        sound_designr: { password: "sound_designr" },
         moderatr: { password: "moderatr" },
         administratr: { password: "administratr" },
-        youtubr: { password: "youtubr" },
-        boostr: { password: "boostr" },
+        content_creatr: { password: "content_creatr" },
+        donatr: { password: "donatr" },
 
         beta_tester: { password: "beta_tester" },
 

@@ -1,6 +1,7 @@
 import { GameConstants, Layer, ObjectCategory } from "@common/constants";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
+import { ObstacleModeVariations } from "@common/definitions/modes";
 import { MapPacket, type MapPacketData } from "@common/packets/mapPacket";
 import { PacketStream } from "@common/packets/packetStream";
 import { type Orientation, type Variation } from "@common/typings";
@@ -381,7 +382,8 @@ export class GameMap {
                 }
                 attempts++;
             }
-            if (attempts >= 100) {
+
+            if (attempts >= 100 && !validPositionFound) {
                 Logger.warn("Failed to find valid position for clearing");
                 continue;
             }
@@ -453,7 +455,7 @@ export class GameMap {
                     validPositionFound = true;
                 }
 
-                if (!validPositionFound) {
+                if (!validPositionFound && position === undefined) {
                     Logger.warn(`Failed to place building ${idString} after ${attempts} attempts`);
                 }
 
@@ -540,11 +542,15 @@ export class GameMap {
         const building = new Building(this.game, definition, Vec.clone(position), orientation, layer);
 
         for (const obstacleData of definition.obstacles) {
-            const idString = getRandomIDString<
+            let idString = getRandomIDString<
                 ObstacleDefinition,
                 ReferenceTo<ObstacleDefinition> | typeof NullString
             >(obstacleData.idString);
             if (idString === NullString) continue;
+            const gameMode = GameConstants.modeName;
+            if (obstacleData.modeVariant) {
+                idString = `${idString}${ObstacleModeVariations[gameMode] ?? ""}`;
+            }
 
             const obstacleDef = Obstacles.fromString(idString);
             let obstacleRotation = obstacleData.rotation ?? GameMap.getRandomRotation(obstacleDef.rotationMode);

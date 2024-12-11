@@ -2191,7 +2191,7 @@ logger.indent("Validating melees", () => {
 
             logger.indent("Validating fists", () => {
                 const errorPath2 = tester.createPath(errorPath, "fists");
-                const fists = melee.fists;
+                const { fists, rotationalAnimation } = melee;
 
                 tester.assertIsPositiveReal({
                     obj: fists,
@@ -2209,7 +2209,7 @@ logger.indent("Validating melees", () => {
                 validators.vector(tester.createPath(errorPath2, "left"), fists.left);
                 validators.vector(tester.createPath(errorPath2, "right"), fists.right);
 
-                if (!melee.rotationalAnimation) {
+                if (!rotationalAnimation) {
                     validators.vector(tester.createPath(errorPath2, "use left"), fists.useLeft);
                     validators.vector(tester.createPath(errorPath2, "use right"), fists.useRight);
                 }
@@ -2681,14 +2681,19 @@ logger.indent("Validating skins", () => {
                 validators.color(tester.createPath(errorPath, "backpack tint"), skin.backpackTint);
             }
 
-            if (skin.roleRequired !== undefined) {
-                tester.assertReferenceExistsObject({
-                    obj: skin,
-                    field: "roleRequired",
-                    collection: Config.roles,
-                    collectionName: "roles",
-                    baseErrorPath: errorPath
-                });
+            if (skin.rolesRequired !== undefined) {
+                tester.runTestOnArray(
+                    skin.rolesRequired,
+                    (role, errorPath) => {
+                        tester.assertReferenceExistsObject({
+                            value: role,
+                            collection: Config.roles,
+                            collectionName: "roles",
+                            errorPath
+                        });
+                    },
+                    errorPath
+                );
             }
         });
     }
