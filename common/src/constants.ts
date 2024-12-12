@@ -90,7 +90,7 @@ export const GameConstants = freezeDeep({
         flyTime: 30000,
         damage: 300
     },
-    riverPadding: 64,
+    riverPadding: 30,
     trailPadding: 384
 });
 

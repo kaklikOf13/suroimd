@@ -3,7 +3,7 @@ import { Buildings } from "../definitions/buildings";
 import { Obstacles, RotationMode } from "../definitions/obstacles";
 import { type Orientation, type Variation } from "../typings";
 import type { CommonGameObject } from "../utils/gameObject";
-import { BaseHitbox, Hitbox } from "../utils/hitbox";
+import { BaseHitbox, Hitbox, PolygonHitbox, RectangleHitbox } from "../utils/hitbox";
 import { Angle, halfπ } from "../utils/math";
 import { FloorNames } from "../utils/terrain";
 import { type Vector } from "../utils/vector";
@@ -24,7 +24,7 @@ export type MapPacketData = {
     readonly width: number
     readonly height: number
 
-    readonly rivers: ReadonlyArray<{ readonly width: number, readonly points: readonly Vector[], readonly isTrail: boolean,floor:FloorNames,outline:FloorNames }>
+    readonly rivers: ReadonlyArray<{ readonly width: number, readonly points: readonly Vector[], readonly isTrail: boolean,floor:FloorNames,outline:FloorNames,bounds:RectangleHitbox,waterHitbox?:PolygonHitbox,bankHitbox:PolygonHitbox }>
     readonly floors: MapFloor[]
     readonly objects: readonly MapObject[]
     readonly places: ReadonlyArray<{ readonly position: Vector, readonly name: string }>
@@ -47,6 +47,10 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
                     .writeString(river.floor.length,river.floor)
                     .writeUint16(river.outline.length)
                     .writeString(river.outline.length,river.outline)
+                    river.bounds.writeStream(strm)
+                    river.bankHitbox.writeStream(strm)
+                    strm.writeBooleanGroup(river.waterHitbox!==undefined)
+                    if(river.waterHitbox!==undefined)river.waterHitbox.writeStream(strm)
             }, 1)
             .writeArray(data.objects, object => {
                 strm.writeObjectType(object.type)
@@ -111,13 +115,25 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
             seed: stream.readUint32(),
             width: stream.readUint16(),
             height: stream.readUint16(),
-            rivers: stream.readArray(() => ({
-                width: stream.readUint8(),
-                points: stream.readArray(() => stream.readPosition(), 1),
-                isTrail: stream.readUint8() !== 0,
-                floor:stream.readString(stream.readUint16()),
-                outline:stream.readString(stream.readUint16())
-            }), 1),
+            rivers: stream.readArray(() => 
+            {
+                const ret={
+                    width: stream.readUint8(),
+                    points: stream.readArray(() => stream.readPosition(), 1),
+                    isTrail: stream.readUint8() !== 0,
+                    floor:stream.readString(stream.readUint16()),
+                    outline:stream.readString(stream.readUint16()),
+                    bounds:BaseHitbox.fromStream(stream),
+                    bankHitbox:BaseHitbox.fromStream(stream),
+                    waterHitbox:undefined as (undefined | PolygonHitbox)
+                }
+
+                const bools=stream.readBooleanGroup()
+                if(bools[0]){
+                    ret.waterHitbox=BaseHitbox.fromStream(stream) as PolygonHitbox
+                }
+                return ret
+            }, 1),
             objects: stream.readArray(() => {
                 const type = stream.readObjectType() as ObjectCategory.Obstacle | ObjectCategory.Building;
                 const position = stream.readPosition();

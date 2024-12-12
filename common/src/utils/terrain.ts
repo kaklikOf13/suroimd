@@ -14,18 +14,24 @@ export interface FloorDefinition {
 
 export const enum FloorNames {
     Grass = "grass",
+    Dirt = "dirt",
     Stone = "stone",
     Wood = "wood",
     Sand = "sand",
     Metal = "metal",
     Carpet = "carpet",
     Water = "water",
-    Void = "void"
+    Void = "void",
+    Snow = "snow",
+    SnowSand="snow_sand"
 }
 
 export const FloorTypes: Record<FloorNames, FloorDefinition> = {
     grass: {
         color: 0x5a8939
+    },
+    dirt: {
+        color: 0x604320
     },
     stone: {
         color: 0x121212
@@ -51,6 +57,13 @@ export const FloorTypes: Record<FloorNames, FloorDefinition> = {
     void: {
         color: 0x77390d,
         instaKill:true,
+    },
+    //Snow
+    snow: {
+        color:0xc9d1d9
+    },
+    snow_sand: {
+        color:0xb4bfcb
     }
 };
 
@@ -98,6 +111,8 @@ export interface FloorBase{
 export interface IslandReturn{
     beachHB: Hitbox;
     grassHB: Hitbox;
+    beachHBR: RectangleHitbox;
+    grassHBR: RectangleHitbox;
     beachHBGroup: GroupHitbox;
     rivers:River[]
 }
@@ -176,7 +191,7 @@ export class Terrain {
         if(island.beach)this.addFloor(island.beach,beachHitbox,Layer.Ground)
         if(island.grass)this.addFloor(island.grass,grassHitbox,Layer.Ground)
 
-        return {beachHB:beachHitbox,grassHB:grassHitbox,beachHBGroup:new GroupHitbox(
+        return {beachHB:beachHitbox,grassHB:grassHitbox,beachHBR:beachRect.toRectangle(),grassHBR:grassHitbox.toRectangle(),beachHBGroup:new GroupHitbox(
             new RectangleHitbox(
                 Vec.create(beachRect.max.x-island.beachSize, beachRect.min.y),
                 Vec.create(beachRect.max.x, beachRect.max.y)
@@ -333,6 +348,8 @@ export class River {
     readonly floor:FloorNames
     readonly outline:FloorNames
 
+    readonly bounds:RectangleHitbox
+
     constructor(
         readonly width: number,
         readonly points: readonly Vector[],
@@ -340,12 +357,15 @@ export class River {
         bounds: RectangleHitbox,
         isTrail: boolean,
         floor:FloorNames=FloorNames.Water,
-        outline:FloorNames=FloorNames.Sand
+        outline:FloorNames=FloorNames.Dirt,
+        waterHB?:PolygonHitbox,
+        bankHB?:PolygonHitbox
     ) {
         this.isTrail = isTrail;
         const isRiver = !isTrail;
         this.floor=floor
         this.outline=outline
+        this.bounds=bounds
 
         const length = this.points.length - 1;
 
@@ -356,62 +376,63 @@ export class River {
 
         const endsOnMapBounds = !bounds.isPointInside(this.points[this.points.length - 1]);
 
-        for (let i = 0; i < this.points.length; i++) {
-            const current = this.points[i];
-            const normal = this.getNormal(i / length);
+        if(!(bankHB&&waterHB)){
+            for (let i = 0; i < this.points.length; i++) {
+                const current = this.points[i];
+                const normal = this.getNormal(i / length);
 
-            let bankWidth = this.bankWidth;
+                let bankWidth = this.bankWidth;
 
-            // find closest colliding river to adjust the bank width and clip this river
-            let collidingRiver: River | null = null;
-            for (const river of otherRivers) {
-                if (river.isTrail !== isTrail) continue;
-                const length = Vec.length(
-                    Vec.sub(
-                        river.getPosition(river.getClosestT(current)),
-                        current
-                    )
-                );
+                // find closest colliding river to adjust the bank width and clip this river
+                let collidingRiver: River | null = null;
+                for (const river of otherRivers) {
+                    if (river.isTrail !== isTrail) continue;
+                    const length = Vec.length(
+                        Vec.sub(
+                            river.getPosition(river.getClosestT(current)),
+                            current
+                        )
+                    );
 
-                if (length < river.width * 2) {
-                    bankWidth = Numeric.max(bankWidth, river.bankWidth);
+                    if (length < river.width * 2) {
+                        bankWidth = Numeric.max(bankWidth, river.bankWidth);
+                    }
+
+                    if ((i === 0 || i === this.points.length - 1) && length < 48) {
+                        collidingRiver = river;
+                    }
                 }
 
-                if ((i === 0 || i === this.points.length - 1) && length < 48) {
-                    collidingRiver = river;
-                }
-            }
+                let width = this.width;
 
-            let width = this.width;
-
-            const end = 2 * (Numeric.max(1 - i / length, i / length) - 0.5);
-            // increase river width near map bounds
-            if (isRiver && (i < (this.points.length / 2) || endsOnMapBounds)) {
-                width = (1 + end ** 3 * 1.5) * this.width;
-            }
-
-            const calculatePoints = (width: number, hitbox: PolygonHitbox | undefined, points: Vector[]): void => {
-                let ray1 = Vec.scale(normal, width);
-                let ray2 = Vec.scale(normal, -width);
-
-                if (hitbox) {
-                    ray1 = clipRayToPoly(current, ray1, hitbox);
-                    ray2 = clipRayToPoly(current, ray2, hitbox);
+                const end = 2 * (Numeric.max(1 - i / length, i / length) - 0.5);
+                // increase river width near map bounds
+                if (isRiver && (i < (this.points.length / 2) || endsOnMapBounds)) {
+                    width = (1 + end ** 3 * 1.5) * this.width;
                 }
 
-                points[i] = Vec.add(current, ray1);
-                points[this.points.length + length - i] = Vec.add(current, ray2);
-            };
+                const calculatePoints = (width: number, hitbox: PolygonHitbox | undefined, points: Vector[]): void => {
+                    let ray1 = Vec.scale(normal, width);
+                    let ray2 = Vec.scale(normal, -width);
 
-            if (isRiver) {
-                calculatePoints(width, collidingRiver?.waterHitbox, waterPoints);
+                    if (hitbox) {
+                        ray1 = clipRayToPoly(current, ray1, hitbox);
+                        ray2 = clipRayToPoly(current, ray2, hitbox);
+                    }
+
+                    points[i] = Vec.add(current, ray1);
+                    points[this.points.length + length - i] = Vec.add(current, ray2);
+                };
+
+                if (isRiver&&!waterHB) {
+                    calculatePoints(width, collidingRiver?.waterHitbox, waterPoints);
+                }
+
+                calculatePoints(width + bankWidth, collidingRiver?.bankHitbox, bankPoints);
             }
-
-            calculatePoints(width + bankWidth, collidingRiver?.bankHitbox, bankPoints);
         }
-
-        this.waterHitbox = isRiver ? new PolygonHitbox(waterPoints) : undefined;
-        this.bankHitbox = new PolygonHitbox(bankPoints);
+        this.waterHitbox = isRiver ? (waterHB??new PolygonHitbox(waterPoints)) : undefined;
+        this.bankHitbox = bankHB??new PolygonHitbox(bankPoints);
     }
 
     getControlPoints(t: number): {

@@ -2,7 +2,7 @@ import { GameConstants, GasState, Layer, ObjectCategory, ZIndexes } from "@commo
 import { type MapPingDefinition } from "@common/definitions/mapPings";
 import { type MapPacketData } from "@common/packets/mapPacket";
 import { type PingSerialization, type PlayerPingSerialization } from "@common/packets/updatePacket";
-import { BaseHitbox, HitboxType, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
+import { BaseHitbox, HitboxType, PolygonHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { Numeric } from "@common/utils/math";
 import { FloorNames, FloorTypes, River, Terrain, type FloorBase } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
@@ -165,28 +165,25 @@ export class Minimap {
         }
 
         const radius = 20 * scale;
-        /*
-        const [
-            { points: beachPoints },
-            { points: grassPoints }
-        ] = [this._terrain.beachHitbox, this._terrain.grassHitbox];
-
-        const beach = scale === 1 ? beachPoints : beachPoints.map(point => Vec.scale(point, scale));
-        // The grass is a hole in the map shape, the background clear color is the grass color
-        ctx.roundShape(beach, radius);
-        ctx.cut();
-
-        ctx.roundShape?.(beach, radius);
-        ctx.fill(COLORS.beach);
-
-        const grass = scale === 1 ? grassPoints : grassPoints.map(point => Vec.scale(point, scale));
-        ctx.roundShape(grass, radius);
-        ctx.cut();*/
-
-        // gets the river polygon with the middle 2 points not rounded
-        // so it joins nicely with other rivers
-        function getRiverPoly(points: readonly Vector[]): Array<Vector & { readonly radius: number }> {
+        const getRiverPoly=(points: readonly Vector[]): Array<Vector & { readonly radius: number }>=>{
             const half = points.length / 2;
+            //@ts-ignore
+            /*const ret=[]
+            let lastP:Vector=points[0]
+            for(let index=0;index<points.length;index++){
+                const point=points[index]
+                if(!(this.beachs[beach].isPointInside(point))){
+                    continue
+                }
+                ret.push({
+                    x: point.x * scale,
+                    y: point.y * scale,
+                    radius: (index === half || index === half - 1) ? 0 : radius
+                })
+                lastP=point
+            }
+            //@ts-ignore
+            return ret*/
             return points.map(
                 (point, index) => ({
                     x: point.x * scale,
@@ -197,12 +194,12 @@ export class Minimap {
         }
 
         // river bank needs to be draw first
-        for (const river of this._terrain.rivers) {
+        /*for (const river of this._terrain.rivers) {
             ctx
                 .beginPath()
                 .roundShape(getRiverPoly(river.bankHitbox.points), 0, true)
                 .fill(this.getFloorColor(river.outline));
-        }
+        }*/
 
         for (const river of this._terrain.rivers) {
             ctx.beginPath();
@@ -211,13 +208,15 @@ export class Minimap {
             }
             ctx.fill(this.getFloorColor(river.floor));
         }
-
-        /*
-        ctx.beginPath();
-        ctx.rect(0, 0, this._width * scale, this._height * scale);
-        ctx.fill(COLORS.void);
-        ctx.roundShape(beach, radius);
-        ctx.cut();*/
+        /*for(const b of this.beachs){
+            const br=b.toRectangle()
+            ctx.beginPath();
+            ctx.rect(br.min.x*scale, br.min.y*scale, br.max.x*scale, br.max.y*scale);
+            ctx.fill(COLORS.water);
+            const beach = scale === 1 ? b.points : b.points.map(point => Vec.scale(point, scale));
+            ctx.roundShape(beach, 5*radius);
+            ctx.cut();
+        }*/
 
         ctx.setStrokeStyle({
             color: 0x000000,
@@ -441,6 +440,8 @@ export class Minimap {
         this.game.camera.addObject(debugGraphics);
     }
 
+    beachs:PolygonHitbox[]=[]
+
     updateFromPacket(mapPacket: MapPacketData): void {
         console.log(`Joining game with seed: ${mapPacket.seed}`);
         this.game.uiManager.ui.loadingText.text(getTranslatedString("loading_joining_game"));
@@ -450,13 +451,8 @@ export class Minimap {
         this._objects = mapPacket.objects;
         this._places = mapPacket.places;
 
-        const mapBounds = new RectangleHitbox(
-            Vec.create(0, 0),
-            Vec.create(mapPacket.width, mapPacket.height)
-        );
-
         const rivers: River[] = [];
-        rivers.push(...mapPacket.rivers.map(({ width, points, isTrail,floor,outline }) => new River(width, points, rivers, mapBounds, isTrail,floor,outline)));//
+        rivers.push(...mapPacket.rivers.map(({ width, points, isTrail,floor,outline,bounds,waterHitbox,bankHitbox }) => new River(width, points, rivers, bounds, isTrail,floor,outline,waterHitbox,bankHitbox)));
 
         this._terrain = new Terrain(
             width,

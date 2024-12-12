@@ -5,7 +5,7 @@ import { ObstacleModeVariations } from "@common/definitions/modes";
 import { MapPacket, type MapPacketData } from "@common/packets/mapPacket";
 import { PacketStream } from "@common/packets/packetStream";
 import { type Orientation, type Variation } from "@common/typings";
-import { CircleHitbox, GroupHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
+import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { equalLayer } from "@common/utils/layer";
 import { Angle, Collision, Geometry, Numeric, τ } from "@common/utils/math";
 import { cloneDeep, mergeDeep, type Mutable, type SMutable } from "@common/utils/misc";
@@ -94,9 +94,9 @@ export class GameMap {
         }
     }
 
-    islands:Hitbox[]=[]
+    islands:IslandReturn[]=[]
 
-    generateIsland(def:IslandDef,position:Vector,hitboxSize:number=20){
+    generateIsland(def:IslandDef,position:Vector,hitboxSize:number=20,seededRandom = new SeededRandom(this.seed)){
         const rivers: River[] = [];
 
         const ir=this.terrain.generateIsland({
@@ -105,24 +105,28 @@ export class GameMap {
             grass:def.grass,
             interiorSize:def.interiorSize,
         },position)
-        if (def.rivers) {
-            const seededRandom = new SeededRandom(this.seed);
-
-            //if (def.trails) rivers.push(...this._generateRivers(def.trails, seededRandom, true));
-            if (def.rivers) rivers.push(...this._generateRivers(def.rivers, seededRandom,false,ir.beachHB));
-            //console.log("river:",this._generateRivers(def.rivers, seededRandom,false,ir.grassHB))
-        }
-        this.terrain.addRivers(rivers)
-        ir.rivers.push(...rivers)
-        const irh=ir.beachHB.toRectangle()
+        const irh=ir.beachHBR.clone()
         irh.min=Vec.subComponent(irh.min,hitboxSize,hitboxSize)
         irh.max=Vec.addComponent(irh.max,hitboxSize,hitboxSize)
-        this.islands.push(irh)
+        if (def.rivers) {
+            //if (def.trails) rivers.push(...this._generateRivers(def.trails, seededRandom, true));
+            if (def.rivers) rivers.push(...this._generateRivers(def.rivers, seededRandom,false,ir.beachHBR));
+        }
+
+        this.terrain.addRivers(rivers)
+        ir.rivers.push(...rivers)
+        this.islands.push(ir)
+        this._generateClearings(def.clearings,ir);
         Object.entries(def.buildings ?? {}).forEach(([building, count]) => this._generateBuildings(building, count,ir));
+        for (const clump of def.obstacleClumps ?? []) {
+            this._generateObstacleClumps(clump,ir);
+        }
+        Object.entries(def.loots ?? {}).forEach(([loot, count]) => this._generateLoots(loot, count,ir));
         Object.entries(def.obstacles ?? {}).forEach(([obstacle, count]) => this._generateObstacles(obstacle, count,undefined,ir));
+        def.onGenerate?.(this,ir);
     }
 
-    constructor(game: Game, mapData: typeof Config["map"]) {
+    constructor(game: Game, mapData: typeof Config["map"], seed=random(0, 2 ** 31)) {
         this.game = game;
 
         const [name, ...params] = typeof mapData === "string"?mapData.split(":") as [MapName, ...string[]]:mapData.extends.split(":") as [MapName, ...string[]];
@@ -137,7 +141,7 @@ export class GameMap {
         } as SMutable<PacketType>;
         this._packet = packet;
 
-        this.seed = packet.seed = random(0, 2 ** 31);
+        this.seed = packet.seed = seed;
 
         Logger.log(`Game ${game.id} | Map seed: ${this.seed}`);
 
@@ -171,6 +175,7 @@ export class GameMap {
             )
         );
 
+        const seededRandom = new SeededRandom(this.seed)
 
         this.terrain = new Terrain(
             this.width,
@@ -191,7 +196,7 @@ export class GameMap {
                     let col=false
                     const irthb=ihb.transform(position)
                     for(const hb of this.islands){
-                        if(hb.collidesWith(irthb)){
+                        if(hb.beachHBR.collidesWith(irthb)){
                             col=true
                             break
                         }
@@ -199,22 +204,12 @@ export class GameMap {
                     if(col||irthb.min.x<0||irthb.min.y<0||irthb.max.x>=this.width||irthb.max.y>=this.height){
                         continue
                     }
-                    this.generateIsland(isd,position)
+                    this.generateIsland(isd,position,undefined,seededRandom)
                     break
                 }
             }
         }
         packet.rivers = this.terrain.rivers;
-
-        this._generateClearings(mapDef.clearings);
-
-        //Object.entries(mapDef.buildings ?? {}).forEach(([building, count]) => this._generateBuildings(building, count));
-
-        /*for (const clump of mapDef.obstacleClumps ?? []) {
-            this._generateObstacleClumps(clump);
-        }*/
-
-        //Object.entries(mapDef.loots ?? {}).forEach(([loot, count]) => this._generateLoots(loot, count));
 
         mapDef.onGenerate?.(this, params);
 
@@ -240,7 +235,7 @@ export class GameMap {
         this.buffer = stream.getBuffer();
     }
 
-    private _generateRivers(definition: RiverDefinition, randomGenerator: SeededRandom, isTrail = false,area:Hitbox): River[] {
+    private _generateRivers(definition: RiverDefinition, randomGenerator: SeededRandom, isTrail = false,area:RectangleHitbox): River[] {
         const {
             minAmount,
             maxAmount,
@@ -269,17 +264,17 @@ export class GameMap {
                 }
             }
         ).sort((a, b) => b - a);
-
-        const ra=area.toRectangle()
-
-        const halfWidth = (ra.max.x-ra.min.x) / 2;
-        const halfHeight = (ra.max.y-ra.min.y) / 2;
-        const center = ra.getCenter();
+        const halfWidth = (area.max.x-area.min.x) / 2;
+        const halfHeight = (area.max.y-area.min.y) / 2;
+        const center = area.getCenter();
 
         const padding = isTrail ? GameConstants.trailPadding : GameConstants.riverPadding;
-        const width = ra.max.x - padding;
-        const height = ra.max.y - padding;
-        const bounds = ra
+        const width = (area.max.x-area.min.x)+padding;
+        const height= (area.max.y-area.min.y)+padding;
+        const bounds = new RectangleHitbox(
+            Vec.create(area.min.x-padding, area.min.y-padding),
+            Vec.create(area.min.x+width, area.min.y+height)
+        );
 
         let i = 0;
         let attempts = 0;
@@ -291,13 +286,13 @@ export class GameMap {
             const reverse = !!randomGenerator.getInt();
 
             if (horizontal) {
-                const topHalf = randomGenerator.get(padding+ra.min.y, halfHeight);
-                const bottomHalf = randomGenerator.get(halfHeight+ra.min.y, height);
-                start = Vec.create(padding, reverse ? bottomHalf : topHalf);
+                const topHalf = randomGenerator.get(0, halfHeight);
+                const bottomHalf = randomGenerator.get(halfHeight, height);
+                start = Vec.create(bounds.min.x, bounds.min.y+(reverse ? bottomHalf : topHalf));
             } else {
-                const leftHalf = randomGenerator.get(padding+ra.min.y, halfWidth);
-                const rightHalf = randomGenerator.get(halfWidth+ra.min.y, width);
-                start = Vec.create(reverse ? rightHalf : leftHalf, padding);
+                const leftHalf = randomGenerator.get(0, halfWidth);
+                const rightHalf = randomGenerator.get(halfWidth, width);
+                start = Vec.create(bounds.min.x+(reverse ? rightHalf : leftHalf), bounds.min.y);
             }
 
             const startAngle = Angle.betweenPoints(center, start) + (reverse ? 0 : Math.PI);
@@ -312,9 +307,9 @@ export class GameMap {
                 isTrail,
                 rivers,
                 randomGenerator,
-                ra,
                 floor,
-                outline
+                outline,
+                area
             )) i++;
         }
 
@@ -329,16 +324,19 @@ export class GameMap {
         isTrail: boolean,
         rivers: River[],
         randomGenerator: SeededRandom,
-        area:RectangleHitbox,
         floor?:FloorNames,
-        outline?:FloorNames
+        outline?:FloorNames,
+        area?: RectangleHitbox
     ): boolean {
+        if(!area){
+            return false
+        }
         const riverPoints: Vector[] = [];
 
         riverPoints.push(startPos);
 
         let angle = startAngle;
-        const points = isTrail ? 25 : 60;
+        const points = isTrail ? 25 : 100;
 
         for (let i = 1; i < points; i++) {
             const lastPoint = riverPoints[i - 1];
@@ -384,15 +382,11 @@ export class GameMap {
 
             riverPoints[i] = pos;
         }
-        if (riverPoints.length < 2 || riverPoints.length > 59) return false;
+        if (riverPoints.length > 99 || riverPoints.length < 3) return false;
 
-        const mapBounds = area
-
-        const r=new River(width, riverPoints, rivers, mapBounds, isTrail)
-        //@ts-ignore
-        r.outline=outline??FloorNames.Sand
-        //@ts-ignore
-        r.floor=floor??FloorNames.Water
+        const mapBounds = area;
+        
+        const r=new River(width, riverPoints, rivers, mapBounds, isTrail,floor,outline)
         rivers.push(r);
 
         return true;
@@ -411,7 +405,7 @@ export class GameMap {
         }
     }
 
-    private _generateClearings(clearingDef: MapDefinition["clearings"]): void {
+    private _generateClearings(clearingDef: MapDefinition["clearings"],ir:IslandReturn): void {
         if (!clearingDef) return;
 
         const {
@@ -449,7 +443,8 @@ export class GameMap {
                 this._generateObstacles(
                     obstacle.idString,
                     random(obstacle.min, obstacle.max),
-                    () => hitbox.randomPoint()
+                    () => hitbox.randomPoint(),
+                    ir
                 );
             }
         }
@@ -850,7 +845,7 @@ export class GameMap {
         return obstacle;
     }
 
-    private _generateObstacleClumps(clumpDef: ObstacleClump): void {
+    private _generateObstacleClumps(clumpDef: ObstacleClump,ir:IslandReturn): void {
         const clumpAmount = clumpDef.clumpAmount;
         const firstObstacle = Obstacles.reify(clumpDef.clump.obstacles[0]);
 
@@ -860,7 +855,8 @@ export class GameMap {
             const position = this.getRandomPosition(
                 new CircleHitbox(radius + jitter),
                 {
-                    spawnMode: firstObstacle.spawnMode
+                    spawnMode: firstObstacle.spawnMode,
+                    ir
                 }
             );
 
@@ -879,19 +875,19 @@ export class GameMap {
                     Vec.add(
                         randomPointInsideCircle(position, jitter),
                         Vec.fromPolar(j * step + offset, radius)
-                    )
+                    ),
                 );
             }
         }
     }
 
-    private _generateLoots(table: string, count: number): void {
+    private _generateLoots(table: string, count: number,ir:IslandReturn): void {
         for (let i = 0; i < count; i++) {
             const loot = getLootFromTable(table);
 
             const position = this.getRandomPosition(
                 new CircleHitbox(5),
-                { spawnMode: MapObjectSpawnMode.GrassAndSand }
+                { spawnMode: MapObjectSpawnMode.GrassAndSand,ir:ir }
             );
 
             if (!position) {
@@ -944,14 +940,19 @@ export class GameMap {
         };
 
         const spawnMode = params?.spawnMode ?? MapObjectSpawnMode.Grass;
-
         const getPosition = params?.getPosition ?? (() => {
             switch (spawnMode) {
                 case MapObjectSpawnMode.Grass: {
                     return () => params?.ir?.grassHB.randomPoint()
                 }
                 case MapObjectSpawnMode.GrassAndSand: {
-                    return () => params?.ir?.beachHB.randomPoint()
+                    return () => {
+                        const rp=params?.ir?.beachHB.randomPoint()
+                        return Vec.create(
+                            Numeric.clamp(rp?.x??0,(params?.ir?.beachHBR.min.x)??0-width*1.1,(params?.ir?.beachHBR.max.x)??this.width+width*1.1),
+                            Numeric.clamp(rp?.y??0,(params?.ir?.beachHBR.min.y)??0-height*1.1,(params?.ir?.beachHBR.max.y)??this.height+height*1.1),
+                        )
+                    }
                 }
                 // TODO: evenly distribute objects based on river size
                 case MapObjectSpawnMode.River: {

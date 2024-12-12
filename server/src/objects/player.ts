@@ -76,7 +76,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     private static readonly baseHitbox = new CircleHitbox(GameConstants.player.radius);
 
     override readonly fullAllocBytes = 16;
-    override readonly partialAllocBytes = 12;
+    override readonly partialAllocBytes = 16;
     override readonly damageable = true;
 
     private _hitbox: CircleHitbox;

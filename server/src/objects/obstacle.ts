@@ -16,10 +16,9 @@ import { type Building } from "./building";
 import { type Bullet } from "./bullet";
 import { BaseGameObject, DamageParams, type GameObject } from "./gameObject";
 import { type Player } from "./player";
-import { randomPointInsideCircle } from "@common/utils/random";
 
 export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
-    override readonly fullAllocBytes = 10;
+    override readonly fullAllocBytes = 14;
     override readonly partialAllocBytes = 6;
     override readonly damageable = true;
 
@@ -227,19 +226,22 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             }
 
             const lootSpawnPosition = position ?? (source as { readonly position?: Vector } | undefined)?.position ?? this.position;
+            const thb=this.hitbox.clone()
+            const tcenter=thb.getCenter()
+            thb.scale(0.3)
             for (const item of this.loot) {
                 this.game.addLoot(
                     item.idString,
                     this.lootSpawnOffset
-                        ? Vec.add(this.position, this.lootSpawnOffset)
+                        ? Vec.add(tcenter, this.lootSpawnOffset)
                         : this.loot.length > 1
-                            ? this.hitbox.randomPoint()
-                            : this.position,
+                            ? thb.randomPoint()
+                            : tcenter,
                     this.layer,
                     { count: item.count }
                 )?.push(
-                    Angle.betweenPoints(this.position, lootSpawnPosition),
-                    0.02
+                    Angle.betweenPoints(tcenter, lootSpawnPosition),
+                    0.025
                 );
             }
 

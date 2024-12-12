@@ -4294,7 +4294,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 spawnHitbox: RectangleHitbox.fromRect(75, 75, Vec.create(0, 0)),
                 spawnMode: MapObjectSpawnMode.Grass,
                 floorImages: [
-                    {
+                    /*{
                         key: "construction_site_floor_1_left",
                         position: Vec.create(-16.5, -16.5),
                         scale: Vec.create(2, 2)
@@ -4313,7 +4313,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         key: "construction_site_floor_2_left",
                         position: Vec.create(16.5, 16),
                         scale: Vec.create(2, 2)
-                    }
+                    }*/
                 ],
                 floors: [
                     { type: FloorNames.Sand, hitbox: RectangleHitbox.fromRect(65, 65, Vec.create(0, 0)) }

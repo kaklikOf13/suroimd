@@ -660,7 +660,8 @@ export class Game implements GameData {
                             getPosition: this.teamMode && teamPosition
                                 ? () => randomPointInsideCircle(teamPosition, 20, 10)
                                 : undefined,
-                            collides: position => Geometry.distanceSquared(position, gasPosition) >= gasRadius
+                            collides: position => Geometry.distanceSquared(position, gasPosition) >= gasRadius,
+                            ir:pickRandomInArray(this.map.islands)
                         }
                     );
 
