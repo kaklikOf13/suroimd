@@ -73,18 +73,18 @@ export abstract class BaseHitbox<T extends HitboxType = HitboxType> implements D
             case HitboxType.Circle:
                 return new CircleHitbox(strm.readFloat64(),strm.readPosition())
             case HitboxType.Rect:
-                return new RectangleHitbox(strm.readPosition(),strm.readPosition())
+                return new RectangleHitbox(strm.readFullPosition(),strm.readFullPosition())
             case HitboxType.Group:
                 const g=new GroupHitbox()
-                g.position=strm.readPosition()
+                g.position=strm.readFullPosition()
                 g.hitboxes=strm.readArray((st)=>{
                     return this.fromStream(st)
                 },2) as []
                 return g
             case HitboxType.Polygon:
-                const pos=strm.readPosition()
+                const pos=strm.readFullPosition()
                 const points=strm.readArray(()=>{
-                    return strm.readPosition()
+                    return strm.readFullPosition()
                 },2)
                 return new PolygonHitbox(points,pos)
         }
@@ -179,7 +179,7 @@ export class CircleHitbox extends BaseHitbox<HitboxType.Circle> {
     writeStream(strm:SuroiByteStream):void{
         strm.writeUint8(this.type)
         strm.writeFloat64(this.radius)
-        strm.writePosition(this.position)
+        strm.writeFullPosition(this.position)
     }
 
     constructor(radius: number, position?: Vector) {
@@ -305,8 +305,8 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
     }
     writeStream(strm:SuroiByteStream):void{
         strm.writeUint8(this.type)
-        strm.writePosition(this.min)
-        strm.writePosition(this.max)
+        strm.writeFullPosition(this.min)
+        strm.writeFullPosition(this.max)
     }
 
     static fromRect(width: number, height: number, center = Vec.create(0, 0)): RectangleHitbox {
@@ -459,7 +459,7 @@ export class GroupHitbox<GroupType extends Array<RectangleHitbox | CircleHitbox>
     hitboxes: GroupType;
     writeStream(strm:SuroiByteStream):void{
         strm.writeUint8(this.type)
-        strm.writePosition(this.position);
+        strm.writeFullPosition(this.position);
         strm.writeArray(this.hitboxes,(v)=>{
             v.writeStream(strm)
         },2);
@@ -612,9 +612,9 @@ export class PolygonHitbox extends BaseHitbox<HitboxType.Polygon> {
     }
     writeStream(strm:SuroiByteStream):void{
         strm.writeUint8(this.type)
-        strm.writePosition(this.center);
+        strm.writeFullPosition(this.center);
         strm.writeArray(this.points,(v)=>{
-            strm.writePosition(v)
+            strm.writeFullPosition(v)
         },2);
     }
 

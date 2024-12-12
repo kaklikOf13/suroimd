@@ -404,7 +404,7 @@ const maps = {
                 ],
                 major:false,
                 max:3,
-                min:6,
+                min:5,
                 spawnAttempts:150,
             },
             {
@@ -459,8 +459,8 @@ const maps = {
                     }
                 ],
                 major:false,
-                max:6,
-                min:9
+                max:5,
+                min:7
             },
             {
                 chooses:[
@@ -468,7 +468,7 @@ const maps = {
                         beach:FloorNames.Sand,
                         beachSize:10,
                         grass:FloorNames.Grass,
-                        interiorSize:100,
+                        interiorSize:130,
                         obstacles:{
                             aegis_crate: 1,
                             regular_crate: 1,
@@ -487,7 +487,7 @@ const maps = {
                         beach:FloorNames.Sand,
                         beachSize:2,
                         grass:FloorNames.Sand,
-                        interiorSize:100,
+                        interiorSize:130,
                         buildings:{
                             container_7: 1,
                             container_10: 1
@@ -502,9 +502,39 @@ const maps = {
                     }
                 ],
                 major:false,
-                max:7,
-                min:12,
-                spawnAttempts:18,
+                max:13,
+                min:18,
+                spawnAttempts:30,
+            },
+            {
+                chooses:[
+                    //Grass
+                    {
+                        beach:FloorNames.Sand,
+                        beachSize:2,
+                        grass:FloorNames.Grass,
+                        interiorSize:50,
+                        obstacles:{
+                            oak_tree:1,
+                            rock:1
+                        }
+                    },
+                    //Sand
+                    {
+                        beach:FloorNames.Sand,
+                        beachSize:2,
+                        grass:FloorNames.Sand,
+                        interiorSize:50,
+                        obstacles:{
+                            rock:3,
+                            barrel:1,
+                        }
+                    }
+                ],
+                major:false,
+                max:10,
+                min:17,
+                spawnAttempts:20,
             }
         ],
         rivers: {
