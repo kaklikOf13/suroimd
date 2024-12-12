@@ -139,17 +139,15 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
         this._oldPosition = Vec.clone(this.position);
 
         const { terrain } = this.game.map;
-        const floor=terrain.getFloor(this.position, this.layer)
-        if (floor === FloorNames.Water && terrain.groundRect.isPointInside(this.position)) {
-            for (const river of terrain.getRiversInPosition(this.position)) {
-                if (river.waterHitbox?.isPointInside(this.position)) {
-                    const tangent = river.getTangent(
-                        river.getClosestT(this.position)
-                    );
+        const floor=terrain.getFloor(this.position,this.layer)
+        for (const river of terrain.getRiversInPosition(this.position,this.layer)) {
+            if (river.waterHitbox?.isPointInside(this.position)) {
+                const tangent = river.getTangent(
+                    river.getClosestT(this.position)
+                );
 
-                    this.push(Math.atan2(tangent.y, tangent.x), -0.001);
-                    break;
-                }
+                this.push(Math.atan2(tangent.y, tangent.x), -0.001);
+                break;
             }
         }
 

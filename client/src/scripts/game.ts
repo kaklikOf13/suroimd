@@ -59,6 +59,7 @@ import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
 import { randomVector, randomFloat, pickRandomInArray } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
+import { FloorNames } from "@common/utils/terrain";
 
 /* eslint-disable @stylistic/indent */
 
@@ -255,7 +256,7 @@ export class Game {
 
             await game.pixi.init({
                 resizeTo: window,
-                background: COLORS.grass,
+                background: COLORS.void,
                 antialias: game.console.getBuiltInCVar("cv_antialias"),
                 autoDensity: true,
                 preferWebGLVersion: renderMode === "webgl1" ? 1 : 2,
@@ -1032,7 +1033,7 @@ export class Game {
         this.map.terrainGraphics.visible = !basement;
         const { red, green, blue } = this.pixi.renderer.background.color;
         const color = { r: red * 255, g: green * 255, b: blue * 255 };
-        const targetColor = basement ? COLORS.void : COLORS.grass;
+        const targetColor = this.map.getFloorColor(FloorNames.Void);
 
         this.backgroundTween?.kill();
         this.backgroundTween = this.addTween({

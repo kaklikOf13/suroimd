@@ -1,7 +1,7 @@
 import { ReferenceTo } from "../utils/objectDefinitions";
 import { ScopeDefinition } from "./scopes";
 
-export type ColorKeys = "grass" | "water" | "border" | "beach" | "riverBank" | "trail" | "gas" | "void";
+export type ColorKeys = "grass" | "water"| "border" | "beach" | "riverBank" | "trail" | "gas" | "void";
 
 export interface ModeDefinition {
     readonly idString: string
@@ -44,7 +44,8 @@ export const Modes: Record<Mode, ModeDefinition> = {
         ambience: "wind_ambience",
         reskin: "normal",
         particleEffects: {
-            frames: ["leaf_particle_1", "leaf_particle_2", "leaf_particle_3", "leaf_particle_4", "leaf_particle_5", "leaf_particle_6"]
+            frames: ["leaf_particle_1", "leaf_particle_2", "leaf_particle_3", "leaf_particle_4", "leaf_particle_5", "leaf_particle_6"],
+            delay:1000,
         }
     },
     fall: {

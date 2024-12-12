@@ -17,6 +17,7 @@ import { PerkCategories } from "@common/definitions/perks";
 import { Skins } from "@common/definitions/skins";
 import { Backpacks } from "@common/definitions/backpacks";
 import { Guns } from "@common/definitions/guns";
+import { FloorNames } from "@common/utils/terrain";
 
 export interface RiverDefinition {
     readonly minAmount: number
@@ -27,8 +28,18 @@ export interface RiverDefinition {
     readonly maxWidth: number
     readonly minWideWidth: number
     readonly maxWideWidth: number
+    readonly outline?:FloorNames
+    readonly floor?:FloorNames
 }
-
+export interface IslandDef{
+    readonly rivers?: RiverDefinition
+    readonly grass:(FloorNames|undefined),
+    readonly beachSize: number,
+    readonly beach:(FloorNames|undefined)
+    readonly interiorSize:number
+    readonly obstacles?: Record<ReferenceTo<ObstacleDefinition>, number>
+    readonly buildings?: Record<ReferenceTo<BuildingDefinition>, number>
+}
 export interface MapDefinition {
     readonly width: number
     readonly height: number
@@ -45,6 +56,14 @@ export interface MapDefinition {
         readonly allowedObstacles: Array<ReferenceTo<ObstacleDefinition>>
         readonly obstacles: Array<{ idString: ReferenceTo<ObstacleDefinition>, min: number, max: number }>
     }
+    readonly islands?: {
+        readonly chooses:IslandDef[],
+        readonly major:boolean
+        readonly centerSpawn?:boolean
+        readonly min?:number
+        readonly max?:number
+        readonly spawnAttempts?:number
+    }[]
 
     readonly bridges?: ReadonlyArray<ReferenceTo<BuildingDefinition>>
     readonly majorBuildings?: ReadonlyArray<ReferenceTo<BuildingDefinition>>
@@ -88,6 +107,158 @@ const maps = {
         height: 1900,
         oceanSize: 128,
         beachSize: 32,
+        islands:[
+            {
+                centerSpawn:true,
+                chooses:[
+                    //Vanilla
+                    {
+                        /*rivers: {
+                            minAmount: 1,
+                            maxAmount: 5,
+                            maxWideAmount: 2,
+                            wideChance: 0.35,
+                            minWidth: 12,
+                            maxWidth: 28,
+                            minWideWidth: 27,
+                            maxWideWidth: 34
+                        },*/
+                        beachSize:32,
+                        interiorSize:1620,
+                        beach:FloorNames.Sand,
+                        grass:FloorNames.Grass,
+                        buildings:{
+                            large_bridge: 3,
+                            small_bridge: Infinity,
+                            port_complex: 1,
+                            sea_traffic_control: 1,
+                            armory: 1,
+                            headquarters: 1,
+                            small_bunker: 2,
+                            refinery: 1,
+                            warehouse: 7,
+                            green_house: 4,
+                            blue_house: 4,
+                            red_house: 4,
+                            red_house_v2: 4,
+                            construction_site: 1,
+                            mobile_home: 16,
+                            porta_potty: 23,
+                            container_3: 3,
+                            container_4: 3,
+                            container_5: 3,
+                            container_6: 3,
+                            container_7: 3,
+                            container_8: 3,
+                            container_9: 3,
+                            container_10: 3
+                            /*
+                            tugboat_red: 2,
+                            tugboat_white: 7,
+                            // firework_warehouse: 1, // birthday mode
+
+                            */
+                        },
+                        obstacles:{
+                            oil_tank: 25,
+                            // christmas_tree: 1, // winter mode
+                            oak_tree: 40,
+                            small_oak_tree: 100,
+                            birch_tree: 30,
+                            pine_tree: 20,
+                            loot_tree: 5,
+                            regular_crate: 150,
+                            flint_crate: 12,
+                            aegis_crate: 12,
+                            survival_crate:3,
+                            grenade_crate: 55,
+                            rock: 430,
+                            river_chest: 2,
+                            river_rock: 70,
+                            bush: 180,
+                            // birthday_cake: 100, // birthday mode
+                            lily_pad: 30,
+                            blueberry_bush: 50,
+                            barrel:70,
+                            viking_chest: 2,
+                            super_barrel: 20,
+                            melee_crate: 2,
+                            gold_rock: 1,
+                            loot_barrel: 3,
+                            flint_stone: 1
+                        }
+                    },
+                    //Desert
+                    {
+                        beachSize:32,
+                        interiorSize:1620,
+                        beach:FloorNames.Sand,
+                        grass:FloorNames.Sand,
+                        buildings:{
+                            large_bridge: 3,
+                            small_bridge: Infinity,
+                            port_complex: 1,
+                            sea_traffic_control: 1,
+                            armory: 1,
+                            headquarters: 1,
+                            small_bunker: 2,
+                            refinery: 1,
+                            warehouse: 7,
+                            green_house: 4,
+                            blue_house: 4,
+                            red_house: 4,
+                            red_house_v2: 4,
+                            construction_site: 1,
+                            mobile_home: 16,
+                            porta_potty: 23,
+                            container_3: 3,
+                            container_4: 3,
+                            container_5: 3,
+                            container_6: 3,
+                            container_7: 3,
+                            container_8: 3,
+                            container_9: 3,
+                            container_10: 3
+                            /*
+                            tugboat_red: 2,
+                            tugboat_white: 7,
+                            // firework_warehouse: 1, // birthday mode
+
+                            */
+                        },
+                        obstacles:{
+                            oil_tank: 25,
+                            // christmas_tree: 1, // winter mode
+                            oak_tree: 40,
+                            small_oak_tree: 100,
+                            birch_tree: 30,
+                            pine_tree: 20,
+                            loot_tree: 5,
+                            regular_crate: 150,
+                            flint_crate: 12,
+                            aegis_crate: 12,
+                            survival_crate:3,
+                            grenade_crate: 55,
+                            rock: 430,
+                            river_chest: 2,
+                            river_rock: 70,
+                            bush: 180,
+                            // birthday_cake: 100, // birthday mode
+                            lily_pad: 30,
+                            blueberry_bush: 50,
+                            barrel:70,
+                            viking_chest: 2,
+                            super_barrel: 20,
+                            melee_crate: 2,
+                            gold_rock: 1,
+                            loot_barrel: 3,
+                            flint_stone: 1
+                        }
+                    },
+                ],
+                major:true
+            },
+        ],
         rivers: {
             minAmount: 1,
             maxAmount: 5,
@@ -99,33 +270,7 @@ const maps = {
             maxWideWidth: 34
         },
         buildings: {
-            large_bridge: 3,
-            small_bridge: Infinity,
-            port_complex: 1,
-            sea_traffic_control: 1,
-            tugboat_red: 2,
-            tugboat_white: 7,
-            armory: 1,
-            headquarters: 1,
-            small_bunker: 2,
-            refinery: 1,
-            warehouse: 7,
-            // firework_warehouse: 1, // birthday mode
-            green_house: 4,
-            blue_house: 4,
-            red_house: 4,
-            red_house_v2: 4,
-            construction_site: 1,
-            mobile_home: 16,
-            porta_potty: 23,
-            container_3: 3,
-            container_4: 3,
-            container_5: 3,
-            container_6: 3,
-            container_7: 3,
-            container_8: 3,
-            container_9: 3,
-            container_10: 3
+            
         },
         majorBuildings: ["armory", "refinery", "port_complex", "headquarters"],
         quadBuildingLimit: {
@@ -139,32 +284,7 @@ const maps = {
             construction_site: 1
         },
         obstacles: {
-            oil_tank: 25,
-            // christmas_tree: 1, // winter mode
-            oak_tree: 40,
-            small_oak_tree: 100,
-            birch_tree: 30,
-            pine_tree: 20,
-            loot_tree: 5,
-            regular_crate: 150,
-            flint_crate: 12,
-            aegis_crate: 12,
-            survival_crate:3,
-            grenade_crate: 55,
-            rock: 430,
-            river_chest: 2,
-            river_rock: 70,
-            bush: 180,
-            // birthday_cake: 100, // birthday mode
-            lily_pad: 30,
-            blueberry_bush: 50,
-            barrel:70,
-            viking_chest: 2,
-            super_barrel: 20,
-            melee_crate: 2,
-            gold_rock: 1,
-            loot_barrel: 3,
-            flint_stone: 1
+            
         },
         obstacleClumps: [
             {
@@ -210,11 +330,183 @@ const maps = {
             { name: "Deepwood", position: Vec.create(0.5, 0.65) }
         ]
     },
-    mini_normal: {
-        width: 1240,
-        height: 1240,
+    islands: {
+        width: 1900,
+        height: 1900,
         oceanSize: 100,
         beachSize: 29,
+        islands:[
+            {
+                chooses:[
+                    //Normal
+                    {
+                        beach:FloorNames.Sand,
+                        beachSize:32,
+                        grass:FloorNames.Grass,
+                        interiorSize:600,
+                        buildings:{
+                            red_house: 1,
+                            red_house_v2: 1,
+                            blue_house: 1,
+                            container_3: 1,
+                            container_4: 1,
+                            container_5: 1,
+                            container_6: 1,
+                            container_7: 1,
+                            container_8: 1,
+                            container_9: 1,
+                            container_10: 1
+                        },
+                        obstacles:{
+                            flint_crate: 5,
+                            aegis_crate: 5,
+                            survival_crate:1,
+                            regular_crate: 50,
+                            rock:40,
+                            oak_tree: 20,
+                            small_oak_tree: 50,
+                            birch_tree: 10,
+                            pine_tree: 5,
+                            loot_tree: 2,
+                        }
+                    },
+                    //Sand
+                    {
+                        beach:FloorNames.Sand,
+                        beachSize:2,
+                        grass:FloorNames.Sand,
+                        interiorSize:600,
+                        buildings:{
+                            warehouse: 2,
+                            red_house_v2: 1,
+                            container_3: 1,
+                            container_4: 1,
+                            container_5: 1,
+                            container_6: 1,
+                            container_7: 1,
+                            container_8: 1,
+                            container_9: 1,
+                            container_10: 1
+                        },
+                        obstacles:{
+                            regular_crate: 30,
+                            flint_crate: 3,
+                            aegis_crate: 3,
+                            survival_crate:1,
+                            grenade_crate: 10,
+                            rock:50,
+                            oil_tank:5,
+                            barrel:40,
+                            loot_barrel: 1,
+                            gold_rock: 1,
+                        }
+                    }
+                ],
+                major:false,
+                max:3,
+                min:6,
+                spawnAttempts:150,
+            },
+            {
+                chooses:[
+                    {
+                        beach:FloorNames.Sand,
+                        beachSize:20,
+                        grass:FloorNames.Grass,
+                        interiorSize:300,
+                        obstacles:{
+                            flint_crate: 1,
+                            aegis_crate: 1,
+                            regular_crate: 5,
+                            oak_tree: 8,
+                            small_oak_tree: 10,
+                            birch_tree: 5,
+                            pine_tree: 2,
+                            rock:30
+                        },
+                        buildings:{
+                            red_house:1,
+                            red_house_v2:1,
+                            container_3: 1,
+                            container_4: 1,
+                            container_5: 1,
+                            container_6: 1,
+                        },
+                    },
+                    //Sand
+                    {
+                        beach:FloorNames.Sand,
+                        beachSize:2,
+                        grass:FloorNames.Sand,
+                        interiorSize:300,
+                        buildings:{
+                            warehouse: 2,
+                            container_7: 1,
+                            container_8: 1,
+                            container_9: 1,
+                            container_10: 1
+                        },
+                        obstacles:{
+                            regular_crate: 10,
+                            flint_crate: 1,
+                            aegis_crate: 1,
+                            grenade_crate: 5,
+                            rock:20,
+                            oil_tank:2,
+                            barrel:20,
+                            loot_barrel: 1,
+                        }
+                    }
+                ],
+                major:false,
+                max:6,
+                min:9
+            },
+            {
+                chooses:[
+                    {
+                        beach:FloorNames.Sand,
+                        beachSize:10,
+                        grass:FloorNames.Grass,
+                        interiorSize:100,
+                        obstacles:{
+                            aegis_crate: 1,
+                            regular_crate: 1,
+                            oak_tree: 4,
+                            birch_tree: 2,
+                            rock:7
+                        },
+                        buildings:{
+                            //red_house:1,
+                            container_3: 1,
+                            container_4: 1,
+                        },
+                    },
+                    //Sand
+                    {
+                        beach:FloorNames.Sand,
+                        beachSize:2,
+                        grass:FloorNames.Sand,
+                        interiorSize:100,
+                        buildings:{
+                            container_7: 1,
+                            container_10: 1
+                        },
+                        obstacles:{
+                            regular_crate: 2,
+                            flint_crate: 1,
+                            grenade_crate: 1,
+                            rock:5,
+                            barrel:5,
+                        }
+                    }
+                ],
+                major:false,
+                max:7,
+                min:12,
+                spawnAttempts:18,
+            }
+        ],
         rivers: {
             minAmount: 1,
             maxAmount: 2,
@@ -224,106 +516,6 @@ const maps = {
             maxWidth: 14,
             minWideWidth: 9,
             maxWideWidth: 12
-        },
-        buildings: {
-            large_bridge: 1,
-            small_bridge: Infinity,
-            port_complex: 1,
-            sea_traffic_control: 1,
-            tugboat_red: 1,
-            tugboat_white: 5,
-            armory: 1,
-            headquarters: 1,
-            small_bunker: 1,
-            refinery: 1,
-            warehouse: 4,
-            // firework_warehouse: 1, // birthday mode
-            green_house: 2,
-            blue_house: 2,
-            red_house: 1,
-            red_house_v2: 1,
-            construction_site: 1,
-            mobile_home: 8,
-            porta_potty: 13,
-            container_3: 2,
-            container_4: 2,
-            container_5: 1,
-            container_6: 2,
-            container_7: 2,
-            container_8: 1,
-            container_9: 2,
-            container_10: 1
-        },
-        majorBuildings: [],
-        quadBuildingLimit: {
-            red_house: 1,
-            red_house_v2: 1,
-            warehouse: 2,
-            green_house: 1,
-            blue_house: 1,
-            mobile_home: 2,
-            porta_potty: 2,
-            construction_site: 1
-        },
-        obstacles: {
-            oil_tank: 12,
-            oak_tree: 19,
-            birch_tree: 19,
-            pine_tree: 9,
-            loot_tree: 3,
-            regular_crate: 55,
-            flint_crate: 5,
-            aegis_crate: 5,
-            survival_crate:2,
-            grenade_crate: 20,
-            rock: 150,
-            river_chest: 1,
-            river_rock: 30,
-            bush: 65,
-            lily_pad: 12,
-            blueberry_bush: 18,
-            barrel:43,
-            viking_chest: 1,
-            super_barrel: 7,
-            melee_crate: 1,
-            gold_rock: 1,
-            loot_barrel: 2,
-            flint_stone: 1
-        },
-        obstacleClumps: [
-            {
-                clumpAmount: 60,
-                clump: {
-                    minAmount: 2,
-                    maxAmount: 4,
-                    jitter: 4.5,
-                    obstacles: ["oak_tree"],
-                    radius: 10
-                }
-            },
-            {
-                clumpAmount: 20,
-                clump: {
-                    minAmount: 2,
-                    maxAmount: 4,
-                    jitter: 4.5,
-                    obstacles: ["birch_tree"],
-                    radius: 12
-                }
-            },
-            {
-                clumpAmount: 4,
-                clump: {
-                    minAmount: 2,
-                    maxAmount: 3,
-                    jitter: 4.5,
-                    obstacles: ["pine_tree","birch_tree"],
-                    radius: 12
-                }
-            }
-        ],
-        loots: {
-            ground_loot: 60
         },
         places: [
             { name: "Banana", position: Vec.create(0.23, 0.2) },

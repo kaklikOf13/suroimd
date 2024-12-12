@@ -1,11 +1,11 @@
 import { GameConstants, Layer } from "../constants";
-import { PolygonHitbox, RectangleHitbox, type Hitbox } from "./hitbox";
+import { GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "./hitbox";
 import { Collision, Numeric } from "./math";
 import { SeededRandom } from "./random";
 import { Vec, type Vector } from "./vector";
 
 export interface FloorDefinition {
-    readonly debugColor: number
+    readonly color: number
     readonly speedMultiplier?: number
     readonly overlay?: boolean
     readonly particles?: boolean
@@ -25,31 +25,31 @@ export const enum FloorNames {
 
 export const FloorTypes: Record<FloorNames, FloorDefinition> = {
     grass: {
-        debugColor: 0x005500
+        color: 0x5a8939
     },
     stone: {
-        debugColor: 0x121212
+        color: 0x121212
     },
     wood: {
-        debugColor: 0x7f5500
+        color: 0x7f5500
     },
     sand: {
-        debugColor: 0xff5500
+        color: 0xb99b5f
     },
     metal: {
-        debugColor: 0x808080
+        color: 0x808080
     },
     carpet: {
-        debugColor: 0x32a868
+        color: 0x32a868
     },
     water: {
-        debugColor: 0x00ddff,
+        color: 0x00ddff,
         speedMultiplier: 0.7,
         overlay: true,
         particles: true
     },
     void: {
-        debugColor: 0x77390d,
+        color: 0x77390d,
         instaKill:true,
     }
 };
@@ -85,72 +85,117 @@ function jaggedRectangle(
 
     return points;
 }
-
+export interface Island{
+    readonly grass:(FloorNames|undefined),
+    readonly beachSize: number,
+    readonly beach:(FloorNames|undefined)
+    readonly interiorSize:number
+}
+export interface FloorBase{
+    readonly type: FloorNames,
+    readonly hitbox: Hitbox
+}
+export interface IslandReturn{
+    beachHB: Hitbox;
+    grassHB: Hitbox;
+    beachHBGroup: GroupHitbox;
+    rivers:River[]
+}
 export class Terrain {
-    readonly width: number;
-    readonly height: number;
+    readonly width: number
+    readonly height: number
+    readonly widthC: number;
+    readonly heightC: number;
     readonly cellSize = 64;
 
-    readonly floors = new Map<Hitbox, { readonly floorType: FloorNames, readonly layer: Layer | number }>();
+    //@ts-ignore
+    readonly floors: Record<Layer,{hitbox:Hitbox, type:FloorNames}[]>={};
 
-    readonly rivers: readonly River[];
+    readonly rivers: River[]=[];
 
-    readonly beachHitbox: PolygonHitbox;
-    readonly grassHitbox: PolygonHitbox;
-
-    readonly groundRect: RectangleHitbox;
-
-    private readonly _grid: Array<
-        Array<{
+    //@ts-ignore
+    private readonly _grid: Record<Layer,({
             readonly rivers: River[]
-            readonly floors: Array<{ readonly type: FloorNames, readonly hitbox: Hitbox, readonly layer: number }>
-        }>
-    > = [];
+            readonly floors: FloorBase[]
+    })[][]> = {};
 
+    readonly seed:number
     constructor(
         width: number,
         height: number,
-        oceanSize: number,
-        beachSize: number,
         seed: number,
-        rivers: readonly River[]
+        ocean:(FloorNames|undefined)=FloorNames.Water,
     ) {
-        this.width = Math.floor(width / this.cellSize);
-        this.height = Math.floor(height / this.cellSize);
+        this.width = Math.floor(width);
+        this.height = Math.floor(height);
+        this.widthC = Math.floor(width / this.cellSize);
+        this.heightC = Math.floor(height / this.cellSize);
 
-        for (let x = 0; x <= this.width; x++) {
-            this._grid[x] = [];
-            for (let y = 0; y <= this.height; y++) {
-                this._grid[x][y] = {
-                    rivers: [],
-                    floors: []
-                };
+        this.seed=seed
+
+        //@ts-ignore
+        for(const l of Object.values(Layer)){
+            this._grid[l as Layer]=[]
+            this.floors[l as Layer]=[]
+            for (let x = 0; x <= this.widthC; x++) {
+                //@ts-ignore
+                this._grid[l as Layer]?.push([])
+                for (let y = 0; y <= this.heightC; y++) {
+                    this._grid[l as Layer][x].push({
+                        rivers:[],
+                        floors:[],
+                    })
+                }
             }
         }
 
+        if(ocean)this.addFloor(ocean,new RectangleHitbox(Vec.create(0,0),Vec.create(this.width,this.height)),Layer.Ground)
+    }
+    generateIsland(island:Island,position:Vector=Vec.create(0,0)):IslandReturn{
         // generate beach and grass
-        const beachPadding = oceanSize + beachSize;
+        const beachPadding = island.beachSize;
 
-        const random = new SeededRandom(seed);
+        const random = new SeededRandom(this.seed);
 
         const spacing = 16;
         const variation = 8;
 
-        const beachRect = this.groundRect = new RectangleHitbox(
-            Vec.create(oceanSize, oceanSize),
-            Vec.create(width - oceanSize, height - oceanSize)
+        const beachRect = new RectangleHitbox(
+            Vec.create(position.x, position.y),
+            Vec.create(position.x + island.interiorSize+beachPadding, position.y + island.interiorSize+beachPadding)
         );
 
         const grassRect = new RectangleHitbox(
-            Vec.create(beachPadding, beachPadding),
-            Vec.create(width - beachPadding, height - beachPadding)
+            Vec.create(beachPadding+position.x, beachPadding+position.y),
+            Vec.create(island.interiorSize+position.x, island.interiorSize+position.y)
         );
 
-        this.beachHitbox = new PolygonHitbox(jaggedRectangle(beachRect, spacing, variation, random));
-        this.grassHitbox = new PolygonHitbox(jaggedRectangle(grassRect, spacing, variation, random));
+        const beachHitbox = new PolygonHitbox(jaggedRectangle(beachRect, spacing, variation, random));
+        const grassHitbox = new PolygonHitbox(jaggedRectangle(grassRect, spacing, variation, random));
 
-        this.rivers = rivers;
+        if(island.beach)this.addFloor(island.beach,beachHitbox,Layer.Ground)
+        if(island.grass)this.addFloor(island.grass,grassHitbox,Layer.Ground)
 
+        return {beachHB:beachHitbox,grassHB:grassHitbox,beachHBGroup:new GroupHitbox(
+            new RectangleHitbox(
+                Vec.create(beachRect.max.x-island.beachSize, beachRect.min.y),
+                Vec.create(beachRect.max.x, beachRect.max.y)
+            ),//Right
+            new RectangleHitbox(
+                Vec.create(beachRect.min.x, beachRect.min.y),
+                Vec.create(position.x+beachRect.max.x, position.y+island.beachSize)
+            ),//Top
+            new RectangleHitbox(
+                Vec.create(beachRect.min.x, beachRect.min.y),
+                Vec.create(beachRect.min.x+island.beachSize, beachRect.max.y)
+            ),//Left
+            new RectangleHitbox(
+                Vec.create(beachRect.min.x,beachRect.max.y-island.beachSize),
+                Vec.create(beachRect.max.x,beachRect.max.y)
+            ),//Bottom
+        ),rivers:[]}
+    }
+    addRivers(rivers:River[]){
         // add rivers
         for (const river of rivers) {
             const rect = river.bankHitbox.toRectangle();
@@ -167,15 +212,16 @@ export class Terrain {
                     );
                     // only add it to cells it collides with
                     if (river.bankHitbox.collidesWith(rect)) {
-                        this._grid[x][y].rivers.push(river);
+                        this._grid[Layer.Ground]![x][y].rivers.push(river);
                     }
                 }
             }
+            this.rivers.push(river);
         }
     }
 
-    addFloor(type: FloorNames, hitbox: Hitbox, layer: number): void {
-        this.floors.set(hitbox, { floorType: type, layer });
+    addFloor(type: FloorNames, hitbox: Hitbox, layer: Layer): void {
+        this.floors[layer].push({hitbox, type});
         // get the bounds of the hitbox
         const rect = hitbox.toRectangle();
         // round it to the grid cells
@@ -185,52 +231,31 @@ export class Terrain {
         // add it to all grid cells that it intersects
         for (let x = min.x; x <= max.x; x++) {
             for (let y = min.y; y <= max.y; y++) {
-                this._grid[x][y].floors.push({ type, hitbox, layer });
+                this._grid[layer][x][y].floors.push({ type, hitbox });
             }
         }
     }
 
-    getFloor(position: Vector, layer: number): FloorNames {
+    getFloor(position: Vector, layer: Layer): FloorNames {
         const pos = this._roundToCells(position);
-        let floor: FloorNames = FloorNames.Water;
+        let floor: FloorNames = FloorNames.Void;
 
-        const isInsideMap = this.beachHitbox.isPointInside(position);
-        if (isInsideMap) {
-            if (layer) { // Keeping this commented out until a solution is found
-                /*
-                    grass and sand only exist on layer 0; on other
-                    layers, it's the void
-                */
-                floor = FloorNames.Void;
-            } else {
-                floor = FloorNames.Sand;
+        const cell = this._grid[layer][pos.x][pos.y];
+        for (const river of cell.rivers) {
+            if (river.waterHitbox?.isPointInside(position)) {
+                floor = river.floor;
+                return floor;
+            }
 
-                if (this.grassHitbox.isPointInside(position)) {
-                    // adding a property wont work for some reason in the mode def
-                    floor = GameConstants.modeName === "winter" ? FloorNames.Sand : FloorNames.Grass;
-                }
+            if (river.bankHitbox?.isPointInside(position)) {
+                floor = river.outline;
+                return floor;
             }
         }
 
-        const cell = this._grid[pos.x][pos.y];
-
-        // rivers need to be clipped inside the map polygon
-        if (isInsideMap) {
-            for (const river of cell.rivers) {
-                if (river.bankHitbox.isPointInside(position)) {
-                    floor = FloorNames.Sand;
-                }
-
-                if (river.waterHitbox?.isPointInside(position)) {
-                    floor = FloorNames.Water;
-                    break;
-                }
-            }
-        }
-
-        for (const floor of cell.floors) {
-            if (floor.hitbox.isPointInside(position) && floor.layer === layer) {
-                return floor.type;
+        for (const f of cell.floors) {
+            if (f.hitbox.isPointInside(position)) {
+                floor=f.type
             }
         }
 
@@ -238,21 +263,21 @@ export class Terrain {
             if no floor was found at this position, then it's either the ocean (layer 0)
             or the void (all other floors)
         */
-        return layer ? FloorNames.Void : floor;
+        return floor;
     }
 
     /**
      * Get rivers near a position
      */
-    getRiversInPosition(position: Vector): River[] {
+    getRiversInPosition(position: Vector,layer:Layer=Layer.Ground): River[] {
         const pos = this._roundToCells(position);
-        return this._grid[pos.x][pos.y].rivers;
+        return this._grid[layer][pos.x][pos.y].rivers;
     }
 
     /**
      * Get rivers near a hitbox
      */
-    getRiversInHitbox(hitbox: Hitbox): River[] {
+    getRiversInHitbox(hitbox: Hitbox,layer:Layer=Layer.Ground): River[] {
         const rivers = new Set<River>();
 
         const rect = hitbox.toRectangle();
@@ -261,7 +286,7 @@ export class Terrain {
 
         for (let x = min.x; x <= max.x; x++) {
             for (let y = min.y; y <= max.y; y++) {
-                for (const river of this._grid[x][y].rivers) {
+                for (const river of this._grid[layer][x][y].rivers) {
                     rivers.add(river);
                 }
             }
@@ -271,8 +296,8 @@ export class Terrain {
 
     private _roundToCells(vector: Vector): Vector {
         return Vec.create(
-            Numeric.clamp(Math.floor(vector.x / this.cellSize), 0, this.width),
-            Numeric.clamp(Math.floor(vector.y / this.cellSize), 0, this.height)
+            Numeric.clamp(Math.floor(vector.x / this.cellSize), 0, this.widthC),
+            Numeric.clamp(Math.floor(vector.y / this.cellSize), 0, this.heightC)
         );
     }
 }
@@ -305,15 +330,22 @@ export class River {
 
     readonly isTrail: boolean;
 
+    readonly floor:FloorNames
+    readonly outline:FloorNames
+
     constructor(
         readonly width: number,
         readonly points: readonly Vector[],
         otherRivers: readonly River[],
         bounds: RectangleHitbox,
-        isTrail: boolean
+        isTrail: boolean,
+        floor:FloorNames=FloorNames.Water,
+        outline:FloorNames=FloorNames.Sand
     ) {
         this.isTrail = isTrail;
         const isRiver = !isTrail;
+        this.floor=floor
+        this.outline=outline
 
         const length = this.points.length - 1;
 
