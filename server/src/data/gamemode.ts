@@ -123,7 +123,7 @@ const RolesDefault={
             group:0,
             needGroup:true,
             dropAll:true,
-            startAfter:30,
+            startAfter:5,
             nameColor:0x640000,
             dropable:{
                 vest:false,
@@ -466,7 +466,8 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
         map:"normal",
         group:true,
         factions:2,
-        maxPlayersPerGame:80,
+        joinTime:100,
+        maxPlayersPerGame:60,
         plugins:[
             //Red Captain
             RolesDefault.Captain,
@@ -535,6 +536,5 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
     mini_normal:{
         map:"mini_normal",
         maxPlayersPerGame:20,
-
     }
 }

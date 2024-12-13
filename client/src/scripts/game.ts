@@ -749,6 +749,7 @@ export class Game {
                 this.camera.container.removeChildren();
                 this.particleManager.clear();
                 this.uiManager.clearTeammateCache();
+                this.uiManager.clearGroupCache();
 
                 const map = this.map;
                 map.safeZone.clear();
@@ -757,6 +758,8 @@ export class Game {
                 map.pingsContainer.removeChildren();
                 map.teammateIndicators.clear();
                 map.teammateIndicatorContainer.removeChildren();
+                map.groupIndicators.clear();
+                map.groupIndicatorContainer.removeChildren();
 
                 this.playerNames.clear();
                 this._timeouts.clear();

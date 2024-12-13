@@ -124,6 +124,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     group?: Group;
     groupID: number=-1;
+    groupDirtyDelay:number=0
 
     private _kills = 0;
     get kills(): number { return this._kills; }
@@ -1255,6 +1256,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         if(!this.isNpc){
             const packet: SMutable<Partial<UpdatePacketDataIn>> = {};
 
+            this.dirty.group=true
+
             const player = this.spectating ?? this;
             if (this.spectating) {
                 this.layer = this.spectating.layer;
@@ -1371,6 +1374,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 ...(
                     player.dirty.teammates || forceInclude
                         ? { teammates: player._team?.players ?? [] }
+                        : {}
+                ),
+                ...(
+                    player.dirty.group || forceInclude
+                        ? { groupPlayers: player.group?.players ?? [] }
                         : {}
                 ),
                 ...(

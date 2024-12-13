@@ -46,6 +46,12 @@ export const TEAMMATE_COLORS = [
     new Color("#ffff00"),
     new Color("#ff8000")
 ];
+export const GROUPS_COLORS = [
+    new Color("#ff0000"),
+    new Color("#0000ff"),
+    new Color("#00ff00"),
+    new Color("#ffff00")
+];
 
 export const PIXI_SCALE = 20;
 

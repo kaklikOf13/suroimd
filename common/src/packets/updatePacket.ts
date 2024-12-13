@@ -37,6 +37,7 @@ function serializePlayerData(
         layer,
         id,
         teammates,
+        groupPlayers,
         inventory,
         lockedSlots,
         items,
@@ -53,6 +54,7 @@ function serializePlayerData(
     const hasLayer       = layer !== undefined;
     const hasId          = id !== undefined;
     const hasTeammates   = teammates !== undefined;
+    const hasGroupPlayers= groupPlayers !== undefined;
     const hasInventory   = inventory !== undefined;
     const hasLockedSlots = lockedSlots !== undefined;
     const hasItems       = items !== undefined;
@@ -69,6 +71,7 @@ function serializePlayerData(
         hasLayer,
         hasId,
         hasTeammates,
+        hasGroupPlayers,
         hasInventory,
         hasLockedSlots,
         hasItems,
@@ -127,6 +130,27 @@ function serializePlayerData(
                     .writePosition(position ?? Vec.create(0, 0))
                     .writeFloat(normalizedHealth, 0, 1, 1)
                     .writeUint8(colorIndex);
+            },
+            1
+        );
+    }
+    if (hasGroupPlayers) {
+        strm.writeArray(
+            groupPlayers,
+            ({
+                id,
+                groupID,
+                teamID,
+                position,
+                downed,
+                disconnected,
+                dead,
+            }) => {
+                strm.writeBooleanGroup(downed,disconnected,dead)
+                    .writeObjectId(id)
+                    .writeUint8(groupID)
+                    .writeUint8(teamID??0)
+                    .writePosition(position ?? Vec.create(0, 0))
             },
             1
         );
@@ -271,6 +295,7 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
         hasLayer,
         hasId,
         hasTeammates,
+        hasGroupPlayer,
         hasInventory,
         hasLockedSlots,
         hasItems,
@@ -330,6 +355,23 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
             },
             1
         );
+    }
+    if (hasGroupPlayer) {
+        data.groupPlayers = strm.readArray(
+            () => {
+                const status:boolean[] = strm.readBooleanGroup();
+                return {
+                    id: strm.readObjectId(),
+                    groupID: strm.readUint8(),
+                    teamID: strm.readUint8(),
+                    position: strm.readPosition(),
+                    downed: status[0],
+                    disconnected: status[1],
+                    dead: status[2],
+                };
+            },
+            1
+        )as [];
     }
 
     if (hasInventory) {
@@ -503,6 +545,15 @@ export type PlayerData = {
         readonly downed: boolean
         readonly disconnected: boolean
         readonly colorIndex: number
+    }>
+    readonly groupPlayers?: ReadonlyArray<{
+        readonly id: number
+        readonly groupID: number
+        readonly teamID?: number
+        readonly position: Vector
+        readonly downed: boolean
+        readonly disconnected: boolean
+        readonly dead: boolean
     }>
     readonly inventory?: {
         readonly activeWeaponIndex: number

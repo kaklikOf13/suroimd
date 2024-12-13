@@ -83,8 +83,8 @@ if (isMainThread) {
             .writeHeader("Content-Type", "application/json")
             .end(JSON.stringify({
                 playerCount: Object.values(games).reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0),
-                maxTeamSize,
-                gamemode:Gamemodes[Array.isArray(currentGamemode)?currentGamemode[0]:currentGamemode].button,
+                maxTeamSize:GMC.group?TeamSize.Squad:maxTeamSize,
+                gamemode:GMC.button,
                 modeNextSwitchTime: currentGMSTime,
                 nextSwitchTime: maxTeamSizeSwitchCron?.nextRun()?.getTime(),
                 protocolVersion: GameConstants.protocolVersion

@@ -60,6 +60,9 @@ export class Minimap {
     readonly teammateIndicators = new Map<number, SuroiSprite>();
     readonly teammateIndicatorContainer = new Container();
 
+    readonly groupIndicators = new Map<number, SuroiSprite>();
+    readonly groupIndicatorContainer = new Container();
+
     private _width = 0;
     get width(): number { return this._width; }
 
@@ -107,6 +110,7 @@ export class Minimap {
         this.safeZone.zIndex = 997;
         this.pingsContainer.zIndex = 998;
         this.teammateIndicatorContainer.zIndex = 999;
+        this.groupIndicatorContainer.zIndex = 999;
 
         this._objectsContainer.addChild(
             this.sprite,
@@ -116,7 +120,8 @@ export class Minimap {
             this.pingGraphics,
             this.pingsContainer,
             this.indicator,
-            this.teammateIndicatorContainer
+            this.teammateIndicatorContainer,
+            this.groupIndicatorContainer
         ).sortChildren();
 
         this._borderContainer.on("click", e => {
@@ -599,6 +604,10 @@ export class Minimap {
             for (const [, indicator] of this.teammateIndicators) {
                 indicator.setScale(1);
             }
+
+            for (const [, indicator] of this.groupIndicators) {
+                indicator.setScale(1);
+            }
         } else {
             if (!this._visible) return;
 
@@ -617,6 +626,9 @@ export class Minimap {
 
             this.indicator.scale.set(0.75);
             for (const [, indicator] of this.teammateIndicators) {
+                indicator.setScale(0.75);
+            }
+            for (const [, indicator] of this.groupIndicators) {
                 indicator.setScale(0.75);
             }
         }

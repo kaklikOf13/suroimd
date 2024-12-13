@@ -1,6 +1,5 @@
 import { Ammos } from "./definitions/ammos";
 import { HealingItems } from "./definitions/healingItems";
-import { MeleeDefinition } from "./definitions/melees";
 import { Mode } from "./definitions/modes";
 import { Scopes } from "./definitions/scopes";
 import { Throwables } from "./definitions/throwables";
