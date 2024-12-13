@@ -417,6 +417,7 @@ const perks = [
         category: PerkCategories.Normal,
         type: PerkQualities.Positive,
 
+        adrenSet: 1,
         adrenDecay: 0,
         sizeMod: 1.25, // multiplicative
         noDrop: true
