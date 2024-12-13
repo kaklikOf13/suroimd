@@ -89,7 +89,15 @@ function getLoot(items: WeightedItem[], noDuplicates?: boolean): LootItem[] {
         : weightedRandom(items, items.map(({ weight }) => weight));
 
     if ("table" in selection) {
-        return getLootFromTable(selection.table);
+        if(selection.spawnSeparately){
+            const ret:LootItem[]=[]
+            for(let i=0;i<selection.count;i++){
+                ret.push(...getLootFromTable(selection.table))
+            }
+            return ret
+        }else{
+            return getLootFromTable(selection.table);
+        }
     }
 
     const item = selection.item;
@@ -527,6 +535,56 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             [{ table: "ammo", weight: 1 }],
             [{ table: "gold_airdrop_guns", weight: 1 }],
             [{ item: "frag_grenade", count: 3, weight: 1 },{ item: "mirv_grenade", count: 3, weight: 2 },]
+        ],
+        big_airdrop_crate: [
+            [{ table: "airdrop_equipment",spawnSeparately:true,count:5, weight: 1 }],
+            [{ table: "airdrop_scopes",spawnSeparately:true,count:5, weight: 1 }],
+            [{ table: "airdrop_healing_items",spawnSeparately:true,count:7, weight: 1 }],
+
+            [{ item: NullString, weight: 1.5 },{ table: "airdrop_skins", weight: 1 }],
+            [{ item: NullString, weight: 1.5 },{ table: "airdrop_skins", weight: 1 }],
+            [{ item: NullString, weight: 1.5 },{ table: "airdrop_skins", weight: 1 }],
+            [{ item: NullString, weight: 1.5 },{ table: "airdrop_skins", weight: 1 }],
+            [{ item: NullString, weight: 1.5 },{ table: "airdrop_skins", weight: 1 }],
+            [{ item: NullString, weight: 1.5 },{ table: "airdrop_skins", weight: 1 }],
+
+            [{ table: "airdrop_melee",spawnSeparately:true,count:3, weight: 1 }],
+            [{ table: "ammo",spawnSeparately:true,count:10, weight: 1 }],
+
+            [{ table: "airdrop_guns", weight: 1 },{ table: "gold_airdrop_guns", weight: 0.1 }],
+            [{ table: "airdrop_guns", weight: 1 },{ table: "gold_airdrop_guns", weight: 0.1 }],
+            [{ table: "airdrop_guns", weight: 1 },{ table: "gold_airdrop_guns", weight: 0.1 }],
+            [{ table: "airdrop_guns", weight: 1 },{ table: "gold_airdrop_guns", weight: 0.1 }],
+            [{ table: "airdrop_guns", weight: 1 },{ table: "gold_airdrop_guns", weight: 0.1 }],
+            [{ table: "airdrop_guns", weight: 1 },{ table: "gold_airdrop_guns", weight: 0.1 }],
+            [{ table: "airdrop_guns", weight: 1 },{ table: "gold_airdrop_guns", weight: 0.1 }],
+
+            [{ table: "throwables", count: 5,spawnSeparately:true, weight: 2 }]
+        ],
+        gold_big_airdrop_crate: [
+            [{ table: "airdrop_equipment",spawnSeparately:true,count:5, weight: 1 }],
+            [{ table: "airdrop_scopes",spawnSeparately:true,count:5, weight: 1 }],
+            [{ table: "airdrop_healing_items",spawnSeparately:true,count:7, weight: 1 }],
+
+            [{ item: NullString, weight: 1.5 },{ table: "airdrop_skins", weight: 1 }],
+            [{ item: NullString, weight: 1.5 },{ table: "airdrop_skins", weight: 1 }],
+            [{ item: NullString, weight: 1.5 },{ table: "airdrop_skins", weight: 1 }],
+            [{ item: NullString, weight: 1.5 },{ table: "airdrop_skins", weight: 1 }],
+            [{ item: NullString, weight: 1.5 },{ table: "airdrop_skins", weight: 1 }],
+            [{ item: NullString, weight: 1.5 },{ table: "airdrop_skins", weight: 1 }],
+
+            [{ table: "airdrop_melee",spawnSeparately:true,count:3, weight: 1 }],
+            [{ table: "ammo",spawnSeparately:true,count:10, weight: 1 }],
+
+            [{ table: "gold_airdrop_guns", weight: 1 },{ table: "airdrop_guns", weight: 0.1 }],
+            [{ table: "gold_airdrop_guns", weight: 1 },{ table: "airdrop_guns", weight: 0.1 }],
+            [{ table: "gold_airdrop_guns", weight: 1 },{ table: "airdrop_guns", weight: 0.1 }],
+            [{ table: "gold_airdrop_guns", weight: 1 },{ table: "airdrop_guns", weight: 0.1 }],
+            [{ table: "gold_airdrop_guns", weight: 1 },{ table: "airdrop_guns", weight: 0.1 }],
+            [{ table: "gold_airdrop_guns", weight: 1 },{ table: "airdrop_guns", weight: 0.1 }],
+            [{ table: "gold_airdrop_guns", weight: 1 },{ table: "airdrop_guns", weight: 0.1 }],
+
+            [{ table: "throwables", count: 5,spawnSeparately:true, weight: 2 }]
         ],
         flint_stone: [
             { table: "gold_airdrop_guns", weight: 1 }

@@ -189,6 +189,9 @@ type ActivatableMixin = {
     readonly requiredItem?: ReferenceTo<LootDefinition>
     readonly emitParticles?: boolean
     readonly replaceWith?: {
+        readonly particles?: string
+        readonly middleFrame?: string
+        readonly particlesAmmount?:number
         readonly idString: ReferenceOrRandom<RawObstacleDefinition>
         readonly delay: number
     }
@@ -1846,7 +1849,10 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 },
                 replaceWith: {
                     idString: { airdrop_crate: 0.8, gold_airdrop_crate: 0.2 },
-                    delay: 800
+                    delay: 800,
+                    middleFrame:"airdrop_crate_unlocking",
+                    particles:"airdrop_particle",
+                    particlesAmmount:3
                 },
                 noResidue: true,
                 frames: {
@@ -1891,6 +1897,78 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 frames: {
                     particle: "airdrop_crate_particle"
                 }
+            },
+            {
+                idString: "big_airdrop_crate_locked",
+                name: "Big Airdrop",
+                material: "metal_light",
+                health: 10000,
+                indestructible: true,
+                reflectBullets: true,
+                hitbox: RectangleHitbox.fromRect(15.7, 15.7),
+                spawnHitbox: RectangleHitbox.fromRect(16, 16),
+                rotationMode: RotationMode.None,
+                hideOnMap: true,
+                role: ObstacleSpecialRoles.Activatable,
+                zIndex: ZIndexes.ObstaclesLayer2,
+                sound: {
+                    name: "airdrop_unlock",
+                    maxRange: 64,
+                    falloff: 0.3
+                },
+                replaceWith: {
+                    idString: { big_airdrop_crate: 0.8, gold_big_airdrop_crate: 0.2 },
+                    delay: 800,
+                    middleFrame:"big_airdrop_crate_unlocking",
+                    particles:"big_airdrop_particle",
+                    particlesAmmount:3
+                },
+                noResidue: true,
+                frames: {
+                    particle: "metal_particle",
+                }
+            },
+            {
+                idString: "big_airdrop_crate",
+                name: "Big Airdrop Crate",
+                material: "crate",
+                health: 800,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.8
+                },
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(15.7, 15.7)
+                ),
+                frames:{
+                    particle: "airdrop_crate_particle"
+                },
+                spawnHitbox: RectangleHitbox.fromRect(16, 16),
+                hideOnMap: true,
+                rotationMode: RotationMode.None,
+                hasLoot: true
+            },
+            {
+                idString: "gold_big_airdrop_crate",
+                name: "Gold Big Airdrop Crate",
+                material: "crate",
+                health: 800,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.8
+                },
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(15.7, 15.7)
+                ),
+                frames:{
+                    particle: "airdrop_crate_particle"
+                },
+                spawnHitbox: RectangleHitbox.fromRect(16, 16),
+                hideOnMap: true,
+                rotationMode: RotationMode.None,
+                hasLoot: true
             },
             {
                 idString: "gold_rock",

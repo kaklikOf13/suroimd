@@ -39,11 +39,11 @@ export class Parachute extends BaseGameObject.derive(ObjectCategory.Parachute) {
             // Spawn smoke
             this.game.addSyncedParticles({
                 type: "airdrop_smoke_particle",
-                count: 5,
+                count: this.game.gamemode.airdrop.particlesCount,
                 deployAnimation: {
                     duration: 2000,
                     staggering: {
-                        delay: 100,
+                        delay: this.game.gamemode.airdrop.particlesDelay,
                         initialAmount: 2
                     }
                 },

@@ -1440,6 +1440,21 @@ const maps = {
         height: 1620,
         oceanSize: 128,
         beachSize: 32,
+        islands:[
+            {
+                centerSpawn:true,
+                chooses:[
+                    //Vanilla
+                    {
+                        beachSize:32,
+                        interiorSize:1450,
+                        beach:FloorNames.Sand,
+                        grass:FloorNames.Grass,
+                    },
+                ],
+                major:true
+            },
+        ],
         onGenerate(map) {
             // Generate all buildings
 

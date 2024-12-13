@@ -73,6 +73,11 @@ export interface Gamemode{
         readonly buttonCss: string,
         readonly buttonText: string,
     }
+    readonly airdrop:{
+        readonly particlesCount:number,
+        readonly particlesDelay:number
+        readonly crate:string
+    },
     readonly score:{
         readonly kill:number
         readonly becomeKillLeader:number,
@@ -105,6 +110,12 @@ export const DefaultGamemode:Gamemode={
 
     defaultGroup:-1,
     group:false,
+
+    airdrop:{
+        crate:"airdrop_crate_locked",
+        particlesCount:5,
+        particlesDelay:100
+    },
 
     score:{
         kill:5,
@@ -233,6 +244,11 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
             buttonCss:"btn-redmode",
             buttonText:"monster-hunter",
             icon:""
+        },
+        airdrop:{
+            particlesCount:15,
+            crate:"big_airdrop_crate_locked",
+            particlesDelay:20,
         },
         plugins:[
             //Monster
@@ -468,6 +484,11 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
         factions:2,
         joinTime:100,
         maxPlayersPerGame:60,
+        airdrop:{
+            particlesCount:15,
+            crate:"big_airdrop_crate_locked",
+            particlesDelay:20,
+        },
         plugins:[
             //Red Captain
             RolesDefault.Captain,

@@ -143,7 +143,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
                     // :martletdeadass:
                     // FIXME idString check, hard coded behavior
-                    if (this.definition.idString === "airdrop_crate_locked") {
+                    if(definition.role===ObstacleSpecialRoles.Activatable && definition.replaceWith && definition.replaceWith.middleFrame&&definition.replaceWith.particles){
                         const options = (minSpeed: number, maxSpeed: number): Partial<ParticleOptions> => ({
                             zIndex: Numeric.max((this.definition.zIndex ?? ZIndexes.Players) + 1, 4),
                             lifetime: 1000,
@@ -162,15 +162,15 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                         });
 
                         this.game.particleManager.spawnParticle({
-                            frames: "airdrop_particle_1",
+                            frames: `${definition.replaceWith.particles}_1`,
                             position: this.position,
                             ...options(8, 18),
                             rotation: { start: 0, end: randomFloat(Math.PI / 2, Math.PI * 2) }
                         } as ParticleOptions);
 
-                        texture = "airdrop_crate_unlocking";
+                        texture = definition.replaceWith!.middleFrame;
 
-                        if (GameConstants.modeName === "winter") {
+                        /*if (GameConstants.modeName === "winter") {
                             this.game.particleManager.spawnParticles(1, () => ({
                                 frames: "airdrop_particle_4",
                                 position: this.hitbox.randomPoint(),
@@ -181,19 +181,17 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                                 position: this.hitbox.randomPoint(),
                                 ...options(4, 9)
                             } as ParticleOptions));
-                        }
+                        }*/
 
                         this.addTimeout(() => {
-                            this.game.particleManager.spawnParticles(2, () => ({
-                                frames: "airdrop_particle_2",
-                                position: this.hitbox.randomPoint(),
-                                ...options(4, 9)
-                            } as ParticleOptions));
-                            this.game.particleManager.spawnParticles(2, () => ({
-                                frames: "airdrop_particle_3",
-                                position: this.hitbox.randomPoint(),
-                                ...options(4, 9)
-                            } as ParticleOptions));
+                            const p=(definition.replaceWith!.particlesAmmount)??1
+                            for(let i=2;i<=p;i++){
+                                this.game.particleManager.spawnParticles(2, () => ({
+                                    frames: `${definition.replaceWith!.particles}_${i}`,
+                                    position: this.hitbox.randomPoint(),
+                                    ...options(4, 9)
+                                } as ParticleOptions));
+                            }
                         }, 800);
                     }
                 }
@@ -284,7 +282,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         // Change the texture of the obstacle and play a sound when it's destroyed
         if (!this.dead && data.dead) {
             this.dead = true;
-            if (!isNew && !("replaceWith" in definition && definition.replaceWith) && !definition.noDestroyEffect) {
+            if (!isNew&&!("replaceWith" in definition && definition.replaceWith) && !definition.noDestroyEffect) {
                 const playSound = (name: string): void => {
                     this.playSound(name, {
                         falloff: 0.2,
