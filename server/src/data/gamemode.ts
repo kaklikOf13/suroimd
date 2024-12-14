@@ -284,6 +284,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                     maxHealth:2,
                     group:1,
                     dropAll:true,
+                    startAfter:0,
                     dropable:{
                         vest:false,
                         helmet:false,

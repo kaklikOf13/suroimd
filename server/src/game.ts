@@ -74,6 +74,7 @@ export class Game implements GameData {
     readonly partialDirtyObjects = new Set<BaseGameObject>();
     readonly fullDirtyObjects = new Set<BaseGameObject>();
 
+    canEnd:boolean=true;
     updateObjects = false;
 
     readonly livingPlayers = new Set<Player>();
@@ -435,6 +436,7 @@ export class Game implements GameData {
         if (
             this._started
             && !this.over
+            && this.canEnd
             && (
                 this.gamemode.group ? new Set([...this.livingPlayers].map(p => p.groupID)).size <= 1:(this.teamMode
                     ? this.aliveCount <= (this.maxTeamSize as number) && new Set([...this.livingPlayers].map(p => p.teamID)).size <= 1
