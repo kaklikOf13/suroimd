@@ -52,7 +52,6 @@ import { BaseGameObject, DamageParams, GameObject } from "./gameObject";
 import { GoapAgent } from "../utils/goap";
 import { Obstacle } from "./obstacle";
 import { ThrowableProjectile } from "./throwableProj";
-import { SpawnableLoots } from "../data/lootTables";
 import { Emote } from "./emote";
 import { SyncedParticle } from "./syncedParticle";
 import { Explosion } from "./explosion";
@@ -622,8 +621,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     swapWeaponRandomly(itemOrSlot: InventoryItem | number = this.activeItem, force = false): void {
         if (this.perks.hasPerk(PerkIds.Lycanthropy)) return; // womp womp
+        return
 
-        let slot = itemOrSlot === this.activeItem
+        /*let slot = itemOrSlot === this.activeItem
             ? this.activeItemIndex
             : typeof itemOrSlot === "number"
                 ? itemOrSlot
@@ -714,7 +714,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
         }
 
-        this.sendEmote(Emotes.fromStringSafe(chosenItem.idString));
+        this.sendEmote(Emotes.fromStringSafe(chosenItem.idString));*/
     }
 
     fillInventory(max = false): void {

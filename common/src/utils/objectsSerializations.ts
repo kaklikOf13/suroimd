@@ -637,7 +637,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         },
         serializeFull(stream, { full }): void {
             Buildings.writeToStream(stream, full.definition);
-            stream.writePosition(full.position);
+            stream.writeFullPosition(full.position);
             stream.writeUint8(full.orientation);
         },
         deserializePartial(stream) {
@@ -659,7 +659,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         deserializeFull(stream) {
             return {
                 definition: Buildings.readFromStream(stream),
-                position: stream.readPosition(),
+                position: stream.readFullPosition(),
                 orientation: stream.readUint8() as Orientation
             };
         }
@@ -670,7 +670,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     [ObjectCategory.Decal]: {
         serializePartial(stream, data): void {
             Decals.writeToStream(stream, data.definition);
-            stream.writePosition(data.position);
+            stream.writeFullPosition(data.position);
             stream.writeObstacleRotation(data.rotation, data.definition.rotationMode);
             stream.writeLayer(data.layer);
         },
@@ -679,7 +679,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             const definition = Decals.readFromStream(stream);
             return {
                 definition,
-                position: stream.readPosition(),
+                position: stream.readFullPosition(),
                 rotation: stream.readObstacleRotation(definition.rotationMode).rotation,
                 layer: stream.readLayer()
             };
@@ -691,7 +691,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             stream.writeFloat(data.height, 0, 1, 1);
         },
         serializeFull(stream, { full }) {
-            stream.writePosition(full.position);
+            stream.writeFullPosition(full.position);
         },
         deserializePartial(stream) {
             return {
@@ -701,7 +701,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         deserializeFull(stream) {
             return {
 
-                position: stream.readPosition()
+                position: stream.readFullPosition()
 
             };
         }
@@ -710,7 +710,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         serializePartial(stream, data) {
             const { position, rotation, layer, scale, alpha } = data;
 
-            stream.writePosition(position);
+            stream.writeFullPosition(position);
             stream.writeRotation2(rotation);
             stream.writeLayer(layer);
             const writeScale = scale !== undefined;
@@ -748,7 +748,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         },
         deserializePartial(stream) {
             const data: Mutable<ObjectsNetData[ObjectCategory.SyncedParticle]> = {
-                position: stream.readPosition(),
+                position: stream.readFullPosition(),
                 rotation: stream.readRotation2(),
                 layer: stream.readLayer()
             };

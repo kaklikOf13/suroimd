@@ -45,7 +45,7 @@ interface InternalAnimation<T> {
 
 export class SyncedParticle extends BaseGameObject.derive(ObjectCategory.SyncedParticle) {
     override readonly fullAllocBytes = 4;
-    override readonly partialAllocBytes = 14;
+    override readonly partialAllocBytes = 18;
     override readonly hitbox?: CircleHitbox | undefined;
 
     alpha: number;

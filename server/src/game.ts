@@ -18,7 +18,7 @@ import { CircleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { EaseFunctions, Geometry, Numeric, Statistics } from "@common/utils/math";
 import { mergeDeep, Timeout } from "@common/utils/misc";
 import { ItemType, MapObjectSpawnMode, SetArray, type ReifiableDef } from "@common/utils/objectDefinitions";
-import { pickRandomInArray, randomFloat, randomPointInsideCircle, randomRotation } from "@common/utils/random";
+import { pickRandomInArray, random, randomFloat, randomPointInsideCircle, randomRotation } from "@common/utils/random";
 import { type SuroiByteStream } from "@common/utils/suroiByteStream";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type WebSocket } from "uWebSockets.js";
@@ -231,7 +231,7 @@ export class Game implements GameData {
             this.gamemode=DefaultGamemode
         }
 
-        this.currentFaction=this.gamemode.factions>0?0:this.gamemode.defaultGroup
+        this.currentFaction=this.gamemode.factions?0:this.gamemode.defaultGroup
 
         this.map = new GameMap(this, this.gamemode.map||Config.map);
 
@@ -644,8 +644,20 @@ export class Game implements GameData {
                 const gasPosition = this.gas.currentPosition;
                 const gasRadius = this.gas.newRadius ** 2;
                 let teamPosition:Vector|undefined=undefined
-                if(this.gamemode.group&&this.groups.get(group)){
-                    teamPosition=(team&&team.players.length>0)?pickRandomInArray(team!.getLivingPlayers())?.position:pickRandomInArray(this.groups.get(group)!.getLivingPlayers())?.position
+                let island=random(0,this.map.islands.length-1)
+                const glp=this.groups.get(group)?.getLivingPlayers()
+                if(this.gamemode.group){
+                    if(this.gamemode.factions&&this.gamemode.factions.spawnIslands&&(!glp||glp.length===0)){
+                        island=this.gamemode.factions.spawnIslands[group%this.gamemode.factions.spawnIslands.length]
+                    }else if(this.groups.get(group)){
+                        if(team&&team.players.length>0){
+                            const tp=pickRandomInArray(team!.getLivingPlayers())
+                            teamPosition=tp.position
+                            spawnLayer=tp.layer
+                        }else if(glp!.length>0){
+                            teamPosition=pickRandomInArray(glp!)!.position
+                        }
+                    }
                 }else if(this.teamMode&&!this.gamemode.group){
                     teamPosition=pickRandomInArray(team!.getLivingPlayers())?.position
                 }
@@ -657,11 +669,11 @@ export class Game implements GameData {
                         {
                             maxAttempts: 500,
                             spawnMode: MapObjectSpawnMode.GrassAndSand,
-                            getPosition: this.teamMode && teamPosition
+                            getPosition: (this.teamMode||this.gamemode.group) && teamPosition
                                 ? () => randomPointInsideCircle(teamPosition, 20, 10)
                                 : undefined,
                             collides: position => Geometry.distanceSquared(position, gasPosition) >= gasRadius,
-                            ir:pickRandomInArray(this.map.islands)
+                            ir:this.map.islands[Numeric.clamp(island,0,this.map.islands.length-1)]
                         }
                     );
 
@@ -835,9 +847,9 @@ export class Game implements GameData {
         }
 
         if(this.gamemode.group){
-            if(this.gamemode.factions>0){
+            if(this.gamemode.factions){
                 this.addPlayerIntoGroup(player,this.currentFaction)
-                this.currentFaction=(this.currentFaction+1)%this.gamemode.factions
+                this.currentFaction=(this.currentFaction+1)%this.gamemode.factions.count
             }else{
                 this.addPlayerIntoGroup(player,this.currentFaction)
             }

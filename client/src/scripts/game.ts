@@ -934,7 +934,6 @@ export class Game {
                 console.warn(`Trying to partially update non-existant object with ID ${id}`);
                 continue;
             }
-
             (object as GameObject).updateFromData(data, false);
         }
 

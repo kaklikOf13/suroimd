@@ -124,7 +124,7 @@ export class Terrain {
     readonly cellSize = 64;
 
     //@ts-ignore
-    readonly floors: Record<Layer,{hitbox:Hitbox, type:FloorNames}[]>={};
+    readonly floors: Record<Layer,{hitbox:Hitbox, type:FloorNames, build:boolean}[]>={};
 
     readonly rivers: River[]=[];
 
@@ -235,8 +235,8 @@ export class Terrain {
         }
     }
 
-    addFloor(type: FloorNames, hitbox: Hitbox, layer: Layer): void {
-        this.floors[layer].push({hitbox, type});
+    addFloor(type: FloorNames, hitbox: Hitbox, layer: Layer, build:boolean=false): void {
+        this.floors[layer].push({hitbox, type, build});
         // get the bounds of the hitbox
         const rect = hitbox.toRectangle();
         // round it to the grid cells
