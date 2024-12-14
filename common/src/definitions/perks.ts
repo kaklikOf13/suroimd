@@ -76,7 +76,8 @@ export const enum PerkIds {
     PriorityTarget = "priority_target",
 
     //Modes
-    Captain="captain_perk"
+    Captain="captain_perk",
+    SelfRevive="self_revive"
 }
 
 export const enum PerkCategories {
@@ -420,6 +421,15 @@ const perks = [
         adrenSet: 1,
         adrenDecay: 0,
         sizeMod: 1.25, // multiplicative
+        noDrop: true
+    },
+    {
+        idString: PerkIds.SelfRevive,
+        name: "Self Revive",
+        description: "Can revive self when knocked out.",
+        category: PerkCategories.Normal,
+        type: PerkQualities.Positive,
+
         noDrop: true
     },
 ] as const satisfies ReadonlyArray<
