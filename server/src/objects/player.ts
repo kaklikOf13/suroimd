@@ -2454,10 +2454,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     }
 
     canInteract(player: Player): boolean {
-        return !player.downed
+        return !(player.downed || player.perks.hasPerk(PerkIds.SelfRevive))
             && this.downed
             && !this.beingRevivedBy
-            && this !== player
+            && (this !== player || player.perks.hasPerk(PerkIds.SelfRevive))
             && (this.game.gamemode.group?this.groupID===player.groupID:(this.teamID === player.teamID&&this.game.teamMode));
     }
 
