@@ -1,4 +1,4 @@
-import { GameConstants, Layer, ObjectCategory } from "@common/constants";
+import { GameConstants, Layer, LayersList, ObjectCategory } from "@common/constants";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { ObstacleModeVariations } from "@common/definitions/modes";
@@ -290,7 +290,7 @@ export class GameMap {
         }
         packet.places = this.places
         //@ts-ignore
-        for(const l of Object.values(Layer)){
+        for(const l of LayersList){
             for(const f of this.terrain.floors[l as Layer]){
                 this._packet.floors.push({hitbox:f.hitbox,layer:l as Layer,type:f.type,build:f.build})
             }

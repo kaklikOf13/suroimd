@@ -1,4 +1,4 @@
-import { GameConstants, Layer } from "../constants";
+import { Layer, LayersList } from "../constants";
 import { GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "./hitbox";
 import { Collision, Numeric } from "./math";
 import { SeededRandom } from "./random";
@@ -149,7 +149,7 @@ export class Terrain {
         this.seed=seed
 
         //@ts-ignore
-        for(const l of Object.values(Layer)){
+        for(const l of LayersList){
             this._grid[l as Layer]=[]
             this.floors[l as Layer]=[]
             for (let x = 0; x <= this.widthC; x++) {

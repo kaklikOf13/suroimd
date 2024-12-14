@@ -143,6 +143,13 @@ export const enum Layer {
     ToFloor1 = 1,
     Floor1 = 2
 }
+export const LayersList=[
+    Layer.Basement1,
+    Layer.ToBasement1,
+    Layer.Ground,
+    Layer.ToFloor1,
+    Layer.Floor1
+]
 
 export const enum Layers {
     All,      // Collide with objects on all layers
