@@ -557,7 +557,12 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                     "12g":0,
                 }
             })}
-        ]
+        ],
+        button:{
+            buttonCss:"btn-red-blue",
+            buttonText:"factions",
+            icon:""
+        }
     },
     debug:{
         map:"debug",

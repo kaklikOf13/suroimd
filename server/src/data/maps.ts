@@ -1116,8 +1116,8 @@ const maps:Record<string, MapDefinition> = {
         ],
     },
     deathmatch: {
-        width: 1900,
-        height: 1900,
+        width: 1100,
+        height: 1100,
         oceanSize:90,
         beachSize: 32,
         islands:[{
