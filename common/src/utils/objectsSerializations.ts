@@ -49,7 +49,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             readonly groupID: number
             readonly invulnerable: boolean
             readonly activeItem: WeaponDefinition
-            readonly sizeMod?: number
+            readonly sizeMod: number
             readonly skin: SkinDefinition
             readonly helmet?: ArmorDefinition
             readonly vest?: ArmorDefinition
@@ -241,7 +241,6 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             } }
         ): void {
             stream.writeLayer(layer);
-            const hasSizeMod = sizeMod !== undefined;
             const hasHelmet = helmet !== undefined;
             const hasVest = vest !== undefined;
             const hasDisguise = activeDisguise !== undefined;
@@ -251,7 +250,6 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 downed,
                 beingRevived,
                 invulnerable,
-                hasSizeMod,
                 halloweenThrowableSkin,
                 hasHelmet,
                 hasVest,
@@ -262,9 +260,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             stream.writeUint8(groupID);
             Loots.writeToStream(stream, activeItem);
 
-            if (hasSizeMod) {
-                stream.writeFloat(sizeMod, 0, 4, 1);
-            }
+            stream.writeFloat(sizeMod, 0, 4, 1);
 
             Skins.writeToStream(stream, skin);
 
@@ -309,7 +305,6 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 downed,
                 beingRevived,
                 invulnerable,
-                hasSizeMod,
                 halloweenThrowableSkin,
                 hasHelmet,
                 hasVest,
@@ -327,7 +322,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 teamID: stream.readUint8(),
                 groupID: stream.readUint8(),
                 activeItem: Loots.readFromStream(stream),
-                sizeMod: hasSizeMod ? stream.readFloat(0, 4, 1) : undefined,
+                sizeMod: stream.readFloat(0, 4, 1),
                 skin: Skins.readFromStream(stream),
                 helmet: hasHelmet ? Armors.readFromStream(stream) : undefined,
                 vest: hasVest ? Armors.readFromStream(stream) : undefined,
@@ -637,7 +632,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         },
         serializeFull(stream, { full }): void {
             Buildings.writeToStream(stream, full.definition);
-            stream.writePosition(full.position);
+            stream.writeFullPosition(full.position);
             stream.writeUint8(full.orientation);
         },
         deserializePartial(stream) {
@@ -659,7 +654,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         deserializeFull(stream) {
             return {
                 definition: Buildings.readFromStream(stream),
-                position: stream.readPosition(),
+                position: stream.readFullPosition(),
                 orientation: stream.readUint8() as Orientation
             };
         }
@@ -670,7 +665,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     [ObjectCategory.Decal]: {
         serializePartial(stream, data): void {
             Decals.writeToStream(stream, data.definition);
-            stream.writePosition(data.position);
+            stream.writeFullPosition(data.position);
             stream.writeObstacleRotation(data.rotation, data.definition.rotationMode);
             stream.writeLayer(data.layer);
         },
@@ -679,7 +674,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             const definition = Decals.readFromStream(stream);
             return {
                 definition,
-                position: stream.readPosition(),
+                position: stream.readFullPosition(),
                 rotation: stream.readObstacleRotation(definition.rotationMode).rotation,
                 layer: stream.readLayer()
             };
@@ -691,7 +686,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             stream.writeFloat(data.height, 0, 1, 1);
         },
         serializeFull(stream, { full }) {
-            stream.writePosition(full.position);
+            stream.writeFullPosition(full.position);
         },
         deserializePartial(stream) {
             return {
@@ -701,7 +696,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         deserializeFull(stream) {
             return {
 
-                position: stream.readPosition()
+                position: stream.readFullPosition()
 
             };
         }
@@ -710,7 +705,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         serializePartial(stream, data) {
             const { position, rotation, layer, scale, alpha } = data;
 
-            stream.writePosition(position);
+            stream.writeFullPosition(position);
             stream.writeRotation2(rotation);
             stream.writeLayer(layer);
             const writeScale = scale !== undefined;
@@ -748,7 +743,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         },
         deserializePartial(stream) {
             const data: Mutable<ObjectsNetData[ObjectCategory.SyncedParticle]> = {
-                position: stream.readPosition(),
+                position: stream.readFullPosition(),
                 rotation: stream.readRotation2(),
                 layer: stream.readLayer()
             };

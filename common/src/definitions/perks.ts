@@ -17,6 +17,10 @@ export interface BasicPerk extends ItemDefinition {
     readonly noSwap?: boolean
     readonly alwaysAllowSwap?: boolean
     readonly plumpkinGambleIgnore?: boolean
+
+    readonly sizeMod?:number
+    readonly adrenSet?:number
+    readonly adrenDecay?:number
 }
 
 const defaultTemplate = {
@@ -420,8 +424,6 @@ const perks = [
 
         adrenSet: 1,
         adrenDecay: 0,
-        sizeMod: 1.25, // multiplicative
-        noDrop: true
     },
     {
         idString: PerkIds.SelfRevive,
@@ -429,8 +431,6 @@ const perks = [
         description: "Can revive self when knocked out.",
         category: PerkCategories.Normal,
         type: PerkQualities.Positive,
-
-        noDrop: true
     },
 ] as const satisfies ReadonlyArray<
     GetMissing<

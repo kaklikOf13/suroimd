@@ -7,7 +7,7 @@ import { type Airdrop, type Game } from "../game";
 import { BaseGameObject } from "./gameObject";
 
 export class Parachute extends BaseGameObject.derive(ObjectCategory.Parachute) {
-    override readonly fullAllocBytes = 8;
+    override readonly fullAllocBytes = 12;
     override readonly partialAllocBytes = 4;
 
     private _height = 1;

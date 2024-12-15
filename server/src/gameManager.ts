@@ -12,6 +12,7 @@ import { Logger } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
 import { pickRandomInArray } from "@common/utils/random";
 import { Gamemode, Gamemodes } from "./data/gamemode";
+import { exit } from "node:process";
 export let currentGamemode:string|string[]=(typeof Config.gamemode==="string"||Array.isArray(Config.gamemode))?Config.gamemode:(Config.gamemode.rotation[0]??undefined)
 export let currentGMSTime=0
 export let GMC:Partial<Gamemode>=Gamemodes[typeof currentGamemode==="string"?currentGamemode:currentGamemode[0]]
@@ -245,8 +246,30 @@ if (isMainThread) {
     let maxTeamSize = (workerData as WorkerInitData).maxTeamSize;
 
     let gamemode=(workerData as WorkerInitData).gamemode;
-
-    let game = new Game(id, maxTeamSize,gamemode);
+    //@ts-ignore
+    let game:Game=undefined
+    const createGame=()=>{
+        if(Config.protection){
+            let trys=0
+            while(game===undefined&&trys<40){
+                try{
+                    game = new Game(id, maxTeamSize,gamemode);
+                }catch(e){
+                    //@ts-ignore
+                    game=undefined
+                    console.error("Game Creation Error")
+                }
+                trys++
+            }
+            if(game===undefined){
+                console.log("Big Fatal Error")
+                exit(1)
+            }
+        }else{
+            game = new Game(id, maxTeamSize,gamemode);
+        }
+    }
+    createGame()
 
     // string = ip, number = expire time
     const allowedIPs = new Map<string, number>();
@@ -272,7 +295,7 @@ if (isMainThread) {
                 gamemode=message.gamemode
                 game.killEveryone()
                 game.StartGame()
-                game = new Game(id, maxTeamSize,gamemode);
+                createGame()
                 break;
             }
             case WorkerMessages.Stop:{

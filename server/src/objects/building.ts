@@ -13,7 +13,7 @@ import { BaseGameObject } from "./gameObject";
 import { type Obstacle } from "./obstacle";
 
 export class Building extends BaseGameObject.derive(ObjectCategory.Building) {
-    override readonly fullAllocBytes = 8;
+    override readonly fullAllocBytes = 12;
     override readonly partialAllocBytes = 6;
 
     readonly definition: BuildingDefinition;

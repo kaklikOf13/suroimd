@@ -40,6 +40,7 @@ export const startsWithD={
     startAfter:-1,
     dropAll:false,
     nameColor:undefined as (undefined|number),
+    lockEnd:false,
     dropable:{} as Partial<Player["dropable"]>,
     items:{
         "gauze":15,
@@ -68,8 +69,29 @@ export class InitWithPlugin extends GamePlugin {
             });
         }else if(startsWith.startAfter>=0){
             this.on("game_started",(g)=>{
-                g.addTimeout(()=>{
+                if(startsWith.lockEnd){
+                    this.game.canEnd=false
+                }
+                if(startsWith.startAfter>0){
+                    g.addTimeout(()=>{
+                        let attempts=0
+                        for(let i=0;i<startsWith.giveTo;i++){
+                            const ret=this.giveToRandom(g,startsWith)
+                            if(!ret){
+                                attempts++
+                                if(attempts>10){
+                                    break
+                                }
+                                i--;
+                                continue
+                            }
+                            attempts=0
+                        }
+                        this.game.canEnd=true
+                    },startsWith.startAfter*1000)
+                }else{
                     let attempts=0
+                    console.log(attempts)
                     for(let i=0;i<startsWith.giveTo;i++){
                         const ret=this.giveToRandom(g,startsWith)
                         if(!ret){
@@ -82,7 +104,8 @@ export class InitWithPlugin extends GamePlugin {
                         }
                         attempts=0
                     }
-                },startsWith.startAfter*1000)
+                    this.game.canEnd=true
+                }
             })
         }else{
             this.on("game_started",(g)=>{
@@ -104,7 +127,7 @@ export class InitWithPlugin extends GamePlugin {
     }
     protected giveToRandom(g:Game,startsWith:typeof startsWithD):boolean{
         const p:Player=pickRandomInArray(Array.from(g.livingPlayers.values()))
-        if(p.isNpc||p.disconnected||!p.rolable||(!startsWith.needGroup||p.groupID!==startsWith.group)){
+        if(p.isNpc||p.disconnected||!p.rolable||(startsWith.needGroup&&p.groupID!==startsWith.group)){
             return false;
         }
         this.giveTo(p,startsWith)

@@ -17,7 +17,7 @@ export class Plane {
 
     readonly startTime = Date.now();
 
-    static readonly maxDistanceSquared = (GameConstants.maxPosition * 2) ** 2;
+    static readonly maxDistanceSquared = (GameConstants.maxPosition * 20) ** 2;
 
     constructor(game: Game, startPosition: Vector, direction: number) {
         this.game = game;
@@ -26,7 +26,7 @@ export class Plane {
 
         this.endPosition = Vec.add(
             this.startPosition,
-            Vec.fromPolar(direction, GameConstants.maxPosition * 2)
+            Vec.fromPolar(direction, this.game.map.width * 2)
         );
 
         this.image = new SuroiSprite("airdrop_plane")

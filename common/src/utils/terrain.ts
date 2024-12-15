@@ -1,4 +1,4 @@
-import { GameConstants, Layer } from "../constants";
+import { Layer, LayersList } from "../constants";
 import { GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "./hitbox";
 import { Collision, Numeric } from "./math";
 import { SeededRandom } from "./random";
@@ -124,7 +124,7 @@ export class Terrain {
     readonly cellSize = 64;
 
     //@ts-ignore
-    readonly floors: Record<Layer,{hitbox:Hitbox, type:FloorNames}[]>={};
+    readonly floors: Record<Layer,{hitbox:Hitbox, type:FloorNames, build:boolean}[]>={};
 
     readonly rivers: River[]=[];
 
@@ -149,7 +149,7 @@ export class Terrain {
         this.seed=seed
 
         //@ts-ignore
-        for(const l of Object.values(Layer)){
+        for(const l of LayersList){
             this._grid[l as Layer]=[]
             this.floors[l as Layer]=[]
             for (let x = 0; x <= this.widthC; x++) {
@@ -235,8 +235,8 @@ export class Terrain {
         }
     }
 
-    addFloor(type: FloorNames, hitbox: Hitbox, layer: Layer): void {
-        this.floors[layer].push({hitbox, type});
+    addFloor(type: FloorNames, hitbox: Hitbox, layer: Layer, build:boolean=false): void {
+        this.floors[layer].push({hitbox, type, build});
         // get the bounds of the hitbox
         const rect = hitbox.toRectangle();
         // round it to the grid cells

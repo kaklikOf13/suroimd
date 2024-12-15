@@ -151,7 +151,7 @@ export const PlayerInputPacket = createPacket("PlayerInputPacket")<PlayerInputDa
                     break;
                 case InputActions.MapPing:
                     MapPings.writeToStream(stream, action.ping);
-                    stream.writePosition(action.position);
+                    stream.writeFullPosition(action.position);
                     break;
             }
         }, 1);
@@ -234,7 +234,7 @@ export const PlayerInputPacket = createPacket("PlayerInputPacket")<PlayerInputDa
                     break;
                 case InputActions.MapPing:
                     ping = MapPings.readFromStream(stream);
-                    position = stream.readPosition();
+                    position = stream.readFullPosition();
                     break;
             }
 

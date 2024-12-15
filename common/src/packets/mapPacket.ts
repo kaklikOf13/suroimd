@@ -16,6 +16,7 @@ export type MapObject = {
 export type MapFloor={
     hitbox:Hitbox
     type:FloorNames
+    build:boolean
     layer:Layer
 }
 
@@ -33,13 +34,13 @@ export type MapPacketData = {
 export const MapPacket = createPacket("MapPacket")<MapPacketData>({
     serialize(strm, data) {
         strm.writeUint32(data.seed)
-            .writeUint16(data.width)
-            .writeUint16(data.height)
+            .writeUint32(data.width)
+            .writeUint32(data.height)
             .writeArray(data.rivers, river => {
                 strm.writeUint8(river.width)
                     .writeArray(
                         river.points,
-                        point => { strm.writePosition(point); },
+                        point => { strm.writeFullPosition(point); },
                         1
                     )
                     .writeUint8(river.isTrail ? -1 : 0)
@@ -54,7 +55,7 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
             }, 1)
             .writeArray(data.objects, object => {
                 strm.writeObjectType(object.type)
-                    .writePosition(object.position);
+                    .writeFullPosition(object.position);
 
                 switch (object.type) {
                     case ObjectCategory.Obstacle: {
@@ -99,7 +100,9 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
                         break;
                 }
             }, 2)
-            .writeArray(data.floors,(item)=>{
+            .writeArray(data.floors.filter((v)=>{
+                return !v.build
+            }),(item)=>{
                 strm.writeLayer(item.layer)
                 item.hitbox.writeStream(strm)
                 strm.writeUint16(item.type.length)
@@ -107,19 +110,19 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
             },2)
             .writeArray(data.places ?? [], place => {
                 strm.writeString(24, place.name);
-                strm.writePosition(place.position);
+                strm.writeFullPosition(place.position);
             }, );
     },
     deserialize(stream) {
         return {
             seed: stream.readUint32(),
-            width: stream.readUint16(),
-            height: stream.readUint16(),
+            width: stream.readUint32(),
+            height: stream.readUint32(),
             rivers: stream.readArray(() => 
             {
                 const ret={
                     width: stream.readUint8(),
-                    points: stream.readArray(() => stream.readPosition(), 1),
+                    points: stream.readArray(() => stream.readFullPosition(), 1),
                     isTrail: stream.readUint8() !== 0,
                     floor:stream.readString(stream.readUint16()),
                     outline:stream.readString(stream.readUint16()),
@@ -136,7 +139,7 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
             }, 1),
             objects: stream.readArray(() => {
                 const type = stream.readObjectType() as ObjectCategory.Obstacle | ObjectCategory.Building;
-                const position = stream.readPosition();
+                const position = stream.readFullPosition();
 
                 switch (type) {
                     case ObjectCategory.Obstacle: {
@@ -218,7 +221,7 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
             },2),
             places: stream.readArray(() => ({
                 name: stream.readString(24),
-                position: stream.readPosition()
+                position: stream.readFullPosition()
             }), 1)
         } as MapPacketData;
     }

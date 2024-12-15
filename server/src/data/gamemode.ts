@@ -3,7 +3,7 @@ import { Vector } from "@common/utils/vector"
 import { DefaultGasStages, GasStage } from "./gasStages"
 import { type PluginDefinition } from "../pluginManager"
 import { InitWithPlugin, startsWithD } from "../defaultPlugins/initWithPlugin"
-import { type MapDefinition, type Maps } from "./maps"
+import { IslandDef, type MapDefinition, type Maps } from "./maps"
 import { mergeDeep,cloneDeep } from "@common/utils/misc"
 import { PerkIds } from "@common/definitions/perks"
 import { RemoveLootAfterTimePlugin } from "../defaultPlugins/removeLootAfterTime"
@@ -11,7 +11,8 @@ import { weaponSwapArgsD, WeaponSwapPlugin } from "../defaultPlugins/weaponSwapP
 export const enum GasMode {
     Staged,
     Debug,
-    Disabled
+    Disabled,
+    Procedural
 }
 /**
  * There are 3 gas modes: GasMode.Normal, GasMode.Debug, and GasMode.Disabled.
@@ -21,7 +22,24 @@ export const enum GasMode {
  */
 export type GasConfig={ readonly mode: GasMode.Disabled }
 | { readonly mode: GasMode.Staged,readonly stages:GasStage[] }
-| {
+| { 
+    readonly mode: GasMode.Procedural,
+    readonly minRadius:number
+    readonly radiusDecay:number
+    readonly initialRadius:number
+    readonly advance:{
+        readonly timeDecay:number
+        readonly timeMin:number
+        readonly initialTime:number
+    }
+    readonly waiting:{
+        readonly timeDecay:number
+        readonly timeMin:number
+        readonly initialTime:number
+    },
+    readonly damage:number[]
+    readonly airdrop:number[]
+ } | {
     readonly mode: GasMode.Debug
     readonly overridePosition?: boolean
     readonly overrideDuration?: number
@@ -53,10 +71,14 @@ export type Spawn={ readonly mode: SpawnMode.Normal }
 | { readonly mode: SpawnMode.Center }
 export type GamemodeMap=`${keyof typeof Maps}${string}`|({
         readonly extends:`${keyof typeof Maps}${string}`
-    }&Partial<MapDefinition>)
+        readonly change_island:{
+            island:[number,number],//Island And Choose
+            def:Partial<IslandDef>
+        }[]
+    })
 export interface Gamemode{
-    readonly weaponsSelect:boolean,
-    readonly globalDamage:number,
+    readonly weaponsSelect:boolean
+    readonly globalDamage:number
     readonly gas:GasConfig
     readonly spawn:Spawn
     readonly armorProtection:number
@@ -69,25 +91,28 @@ export interface Gamemode{
     readonly defaultGroup:number
     readonly adrenalineLoss:number
     readonly button?:{
-        readonly icon: string,
-        readonly buttonCss: string,
-        readonly buttonText: string,
+        readonly icon: string
+        readonly buttonCss: string
+        readonly buttonText: string
     }
     readonly airdrop:{
-        readonly particlesCount:number,
+        readonly particlesCount:number
         readonly particlesDelay:number
         readonly crate:string
     },
     readonly score:{
         readonly kill:number
-        readonly becomeKillLeader:number,
-        readonly killKillLeader:number,
+        readonly becomeKillLeader:number
+        readonly killKillLeader:number
         readonly reviveFriend:number
         readonly position:number
         readonly win:number
     }
     readonly emotes_replace?:string
-    readonly factions:number
+    readonly factions?:{
+        readonly count:number
+        readonly spawnIslands?:number[]
+    }
 }
 export const DefaultGamemode:Gamemode={
     gas:{
@@ -100,7 +125,7 @@ export const DefaultGamemode:Gamemode={
     spawn:{
         mode:SpawnMode.Normal
     },
-    factions:0,
+    factions:undefined,
     start_after:5,
     weaponsSelect:false,
 
@@ -134,8 +159,9 @@ const RolesDefault={
             group:0,
             needGroup:true,
             dropAll:true,
-            startAfter:5,
+            startAfter:40,
             nameColor:0x640000,
+            size:1.25,
             dropable:{
                 vest:false,
                 helmet:false,
@@ -292,6 +318,8 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                     maxHealth:2,
                     group:1,
                     dropAll:true,
+                    size:1.3,
+                    startAfter:0,
                     dropable:{
                         vest:false,
                         helmet:false,
@@ -317,9 +345,14 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
     apple:{
         map:{
             extends:"normal",
-            obstacles:{
-                apple:250,
-            }
+            change_island:[{
+                island:[0,0],
+                def:{
+                    obstacles:{
+                        apple:100,
+                    }
+                }
+            }]
         },
         button:{
             buttonCss:"btn-redmode",
@@ -512,9 +545,30 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
         map:"deathmatch"
     },
     factions:{
-        map:"normal",
+        map:"double_island",
         group:true,
-        factions:2,
+        gas:{
+            damage:[1,1,2,2,4,4,8,8,10,10,12,12],
+            airdrop:[3,5],
+            mode:GasMode.Procedural,
+            advance:{
+                initialTime:75,
+                timeMin:20,
+                timeDecay:0.9,
+            },
+            waiting:{
+                initialTime:140,
+                timeMin:30,
+                timeDecay:0.9,
+            },
+            minRadius:0.005,
+            initialRadius:0.72,
+            radiusDecay:0.75,
+        },
+        factions:{
+            count:2,
+            spawnIslands:[0,1]
+        },
         joinTime:100,
         maxPlayersPerGame:60,
         airdrop:{
@@ -548,7 +602,12 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                     skin:"pap",
                 }
             })}
-        ]
+        ],
+        button:{
+            buttonCss:"btn-red-blue",
+            buttonText:"factions",
+            icon:""
+        }
     },
     debug:{
         map:"debug",

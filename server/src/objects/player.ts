@@ -52,7 +52,6 @@ import { BaseGameObject, DamageParams, GameObject } from "./gameObject";
 import { GoapAgent } from "../utils/goap";
 import { Obstacle } from "./obstacle";
 import { ThrowableProjectile } from "./throwableProj";
-import { SpawnableLoots } from "../data/lootTables";
 import { Emote } from "./emote";
 import { SyncedParticle } from "./syncedParticle";
 import { Explosion } from "./explosion";
@@ -622,8 +621,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     swapWeaponRandomly(itemOrSlot: InventoryItem | number = this.activeItem, force = false): void {
         if (this.perks.hasPerk(PerkIds.Lycanthropy)) return; // womp womp
+        return
 
-        let slot = itemOrSlot === this.activeItem
+        /*let slot = itemOrSlot === this.activeItem
             ? this.activeItemIndex
             : typeof itemOrSlot === "number"
                 ? itemOrSlot
@@ -714,7 +714,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
         }
 
-        this.sendEmote(Emotes.fromStringSafe(chosenItem.idString));
+        this.sendEmote(Emotes.fromStringSafe(chosenItem.idString));*/
     }
 
     fillInventory(max = false): void {
@@ -1858,7 +1858,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         });
         if (this.health <= 0 && !this.dead) {
             if (
-                (this.game.gamemode.group?(this.group&&this.group.players.some(p => !p.dead && !p.downed && !p.disconnected && p !== this)):(this.game.teamMode && this._team!.players.some(p => !p.dead && !p.downed && !p.disconnected && p !== this)))
+                (this.hasPerk(PerkIds.SelfRevive)||(this.game.gamemode.group?(this.group&&this.group.players.some(p => !p.dead && !p.downed && !p.disconnected && p !== this)):(this.game.teamMode && this._team!.players.some(p => !p.dead && !p.downed && !p.disconnected && p !== this))))
                 && !this.downed
             ) {
                 if(sourceIsPlayer){
@@ -1955,11 +1955,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     newModifiers.maxHealth *= perk.healthMod;
                     break;
                 }
-                case PerkIds.Captain: {
-                    newModifiers.adrenDrain *= perk.adrenDecay;
-                    newModifiers.size *= perk.sizeMod;
-                    break;
-                }
                 case PerkIds.Engorged: {
                     const base = newModifiers.maxHealth * GameConstants.player.defaultHealth;
                     (eventMods.kill as ExtendedWearerAttributes[]).push({
@@ -1977,6 +1972,18 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 case PerkIds.LowProfile: {
                     newModifiers.size *= perk.sizeMod;
                     break;
+                }
+                default:{
+                    if(perk.adrenDecay){
+                        newModifiers.adrenDrain *= perk.adrenDecay;
+                    }
+                    if(perk.adrenSet){
+                        this.adrenaline = this._maxAdrenaline*perk.adrenSet;
+                    }
+                    if(perk.sizeMod){
+                        newModifiers.size *= perk.sizeMod;
+                    }
+                    break
                 }
             }
         }
@@ -2448,23 +2455,25 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
         this.beingRevivedBy = undefined;
         this.downedBy = undefined;
-        this.health = 30;
+        this.health = this.maxHealth*0.3;
         this.setDirty();
         this._team?.setDirty();
     }
 
     canInteract(player: Player): boolean {
-        return !(player.downed || player.perks.hasPerk(PerkIds.SelfRevive))
+        return (!player.downed||(player.id===this.id&&player.hasPerk(PerkIds.SelfRevive)))
             && this.downed
             && !this.beingRevivedBy
             && (this !== player || player.perks.hasPerk(PerkIds.SelfRevive))
-            && (this.game.gamemode.group?this.groupID===player.groupID:(this.teamID === player.teamID&&this.game.teamMode));
+            && (this.game.gamemode.group?this.groupID===player.groupID:this.game.teamMode?(this.teamID === player.teamID&&this.game.teamMode):player.id===this.id);
     }
 
     interact(reviver: Player): void {
         this.beingRevivedBy = reviver;
         this.setDirty();
-        reviver.animation = AnimationType.Revive;
+        if(reviver.id!==this.id){
+            reviver.animation = AnimationType.Revive;
+        }
         reviver.executeAction(new ReviveAction(reviver, this));
     }
 
@@ -2705,13 +2714,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 backpack: this.inventory.backpack,
                 halloweenThrowableSkin: this.halloweenThrowableSkin,
                 activeDisguise: this.activeDisguise,
-                blockEmoting: this.blockEmoting
+                blockEmoting: this.blockEmoting,
+                sizeMod:this._sizeMod
             }
         };
-
-        if (this.dirty.size) {
-            data.full.sizeMod = this._sizeMod;
-        }
 
         if (this._animation.dirty) {
             data.animation = this.animation;

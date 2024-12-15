@@ -7,7 +7,6 @@ import { Guns } from "@common/definitions/guns";
 import { HealingItems } from "@common/definitions/healingItems";
 import { Loots, type LootDefForType, type LootDefinition } from "@common/definitions/loots";
 import { Melees } from "@common/definitions/melees";
-import { ObstacleDefinition, Obstacles } from "@common/definitions/obstacles";
 import { PerkIds, Perks } from "@common/definitions/perks";
 import { Scopes } from "@common/definitions/scopes";
 import { Skins } from "@common/definitions/skins";
@@ -15,7 +14,6 @@ import { Throwables } from "@common/definitions/throwables";
 import { isArray } from "@common/utils/misc";
 import { ItemType, NullString, type ObjectDefinition, type ObjectDefinitions, type ReferenceOrRandom, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { random, weightedRandom } from "@common/utils/random";
-import { Maps } from "./maps";
 
 export type WeightedItem =
     (
@@ -541,23 +539,12 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             [{ table: "airdrop_scopes",spawnSeparately:true,count:5, weight: 1 }],
             [{ table: "airdrop_healing_items",spawnSeparately:true,count:7, weight: 1 }],
 
-            [{ item: NullString, weight: 1.5 },{ table: "airdrop_skins", weight: 1 }],
-            [{ item: NullString, weight: 1.5 },{ table: "airdrop_skins", weight: 1 }],
-            [{ item: NullString, weight: 1.5 },{ table: "airdrop_skins", weight: 1 }],
-            [{ item: NullString, weight: 1.5 },{ table: "airdrop_skins", weight: 1 }],
-            [{ item: NullString, weight: 1.5 },{ table: "airdrop_skins", weight: 1 }],
-            [{ item: NullString, weight: 1.5 },{ table: "airdrop_skins", weight: 1 }],
+            [{ table: "airdrop_skins_def",spawnSeparately:true,count:5, weight: 1 }],
 
             [{ table: "airdrop_melee",spawnSeparately:true,count:3, weight: 1 }],
             [{ table: "ammo",spawnSeparately:true,count:10, weight: 1 }],
 
-            [{ table: "airdrop_guns", weight: 1 },{ table: "gold_airdrop_guns", weight: 0.1 }],
-            [{ table: "airdrop_guns", weight: 1 },{ table: "gold_airdrop_guns", weight: 0.1 }],
-            [{ table: "airdrop_guns", weight: 1 },{ table: "gold_airdrop_guns", weight: 0.1 }],
-            [{ table: "airdrop_guns", weight: 1 },{ table: "gold_airdrop_guns", weight: 0.1 }],
-            [{ table: "airdrop_guns", weight: 1 },{ table: "gold_airdrop_guns", weight: 0.1 }],
-            [{ table: "airdrop_guns", weight: 1 },{ table: "gold_airdrop_guns", weight: 0.1 }],
-            [{ table: "airdrop_guns", weight: 1 },{ table: "gold_airdrop_guns", weight: 0.1 }],
+            [{ table: "big_airdrop_guns",spawnSeparately:true,count:5, weight: 1 }],
 
             [{ table: "throwables", count: 5,spawnSeparately:true, weight: 2 }]
         ],
@@ -566,25 +553,23 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             [{ table: "airdrop_scopes",spawnSeparately:true,count:5, weight: 1 }],
             [{ table: "airdrop_healing_items",spawnSeparately:true,count:7, weight: 1 }],
 
-            [{ item: NullString, weight: 1.5 },{ table: "airdrop_skins", weight: 1 }],
-            [{ item: NullString, weight: 1.5 },{ table: "airdrop_skins", weight: 1 }],
-            [{ item: NullString, weight: 1.5 },{ table: "airdrop_skins", weight: 1 }],
-            [{ item: NullString, weight: 1.5 },{ table: "airdrop_skins", weight: 1 }],
-            [{ item: NullString, weight: 1.5 },{ table: "airdrop_skins", weight: 1 }],
-            [{ item: NullString, weight: 1.5 },{ table: "airdrop_skins", weight: 1 }],
+            [{ table: "airdrop_skins_def",spawnSeparately:true,count:5, weight: 1 }],
 
             [{ table: "airdrop_melee",spawnSeparately:true,count:3, weight: 1 }],
             [{ table: "ammo",spawnSeparately:true,count:10, weight: 1 }],
 
-            [{ table: "gold_airdrop_guns", weight: 1 },{ table: "airdrop_guns", weight: 0.1 }],
-            [{ table: "gold_airdrop_guns", weight: 1 },{ table: "airdrop_guns", weight: 0.1 }],
-            [{ table: "gold_airdrop_guns", weight: 1 },{ table: "airdrop_guns", weight: 0.1 }],
-            [{ table: "gold_airdrop_guns", weight: 1 },{ table: "airdrop_guns", weight: 0.1 }],
-            [{ table: "gold_airdrop_guns", weight: 1 },{ table: "airdrop_guns", weight: 0.1 }],
-            [{ table: "gold_airdrop_guns", weight: 1 },{ table: "airdrop_guns", weight: 0.1 }],
-            [{ table: "gold_airdrop_guns", weight: 1 },{ table: "airdrop_guns", weight: 0.1 }],
+            [{ table: "gold_big_airdrop_guns",spawnSeparately:true,count:5, weight: 1 }],
 
             [{ table: "throwables", count: 5,spawnSeparately:true, weight: 2 }]
+        ],
+        big_airdrop_guns:[
+            [{ table: "gold_airdrop_guns", weight: 1 },{ table: "airdrop_guns", weight: 0.1 }],
+        ],
+        gold_big_airdrop_guns:[
+            [{ table: "airdrop_guns", weight: 1 },{ table: "gold_airdrop_guns", weight: 0.1 }],
+        ],
+        airdrop_skins_def:[
+            [{ item: NullString, weight: 1.5 },{ table: "airdrop_skins", weight: 1 }],
         ],
         flint_stone: [
             { table: "gold_airdrop_guns", weight: 1 }
@@ -1909,16 +1894,11 @@ type Cache = {
 };
 
 // an array is just an object with numeric keys
-const spawnableItemTypeCache = [] as Cache;
+/*const spawnableItemTypeCache = [] as Cache;
 
 // has to lazy-loaded to avoid circular dependency issues
 let spawnableLoots: SpawnableItemRegistry | undefined = undefined;
 export const SpawnableLoots = (): SpawnableItemRegistry => spawnableLoots ??= (() => {
-    /*
-        we have a collection of loot tables, but not all of them are necessarily reachable
-        for example, if loot table A belongs to obstacle A, but said obstacle is never spawned,
-        then we mustn't take loot table A into account
-    */
 
     const mainMap = Maps[GameConstants.modeName as keyof typeof Maps];
 
@@ -1997,4 +1977,4 @@ export const SpawnableLoots = (): SpawnableItemRegistry => spawnableLoots ??= ((
     };
 
     return spawnableLoots as SpawnableItemRegistry;
-})();
+})();*/

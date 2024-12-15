@@ -127,7 +127,7 @@ function serializePlayerData(
                     (downed ? 2 : 0) + (disconnected ? 1 : 0)
                 )
                     .writeObjectId(id)
-                    .writePosition(position ?? Vec.create(0, 0))
+                    .writeFullPosition(position ?? Vec.create(0, 0))
                     .writeFloat(normalizedHealth, 0, 1, 1)
                     .writeUint8(colorIndex);
             },
@@ -150,7 +150,7 @@ function serializePlayerData(
                     .writeObjectId(id)
                     .writeUint8(groupID)
                     .writeUint8(teamID??0)
-                    .writePosition(position ?? Vec.create(0, 0))
+                    .writeFullPosition(position ?? Vec.create(0, 0))
             },
             1
         );
@@ -346,7 +346,7 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
                 const status = strm.readUint8();
                 return {
                     id: strm.readObjectId(),
-                    position: strm.readPosition(),
+                    position: strm.readFullPosition(),
                     normalizedHealth: strm.readFloat(0, 1, 1),
                     downed: (status & 2) !== 0,
                     disconnected: (status & 1) !== 0,
@@ -364,7 +364,7 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
                     id: strm.readObjectId(),
                     groupID: strm.readUint8(),
                     teamID: strm.readUint8(),
-                    position: strm.readPosition(),
+                    position: strm.readFullPosition(),
                     downed: status[0],
                     disconnected: status[1],
                     dead: status[2],
@@ -698,7 +698,7 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
                 data.explosions,
                 explosion => {
                     Explosions.writeToStream(strm, explosion.definition);
-                    strm.writePosition(explosion.position)
+                    strm.writeFullPosition(explosion.position)
                         .writeLayer(explosion.layer);
                 },
                 1
@@ -722,10 +722,10 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
             const gas = data.gas;
             strm.writeUint8(gas.state)
                 .writeUint8(gas.currentDuration)
-                .writePosition(gas.oldPosition)
-                .writePosition(gas.newPosition)
-                .writeFloat(gas.oldRadius, 0, 2048, 2)
-                .writeFloat(gas.newRadius, 0, 2048, 2);
+                .writeFullPosition(gas.oldPosition)
+                .writeFullPosition(gas.newPosition)
+                .writeFloat32(gas.oldRadius)
+                .writeFloat32(gas.newRadius);
             flags |= UpdateFlags.Gas;
         }
 
@@ -777,13 +777,8 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
             strm.writeArray(
                 data.planes,
                 plane => {
-                    strm.writeVector(
-                        plane.position,
-                        -Constants.MAX_POSITION,
-                        -Constants.MAX_POSITION,
-                        Derived.DOUBLE_MAX_POS,
-                        Derived.DOUBLE_MAX_POS,
-                        3
+                    strm.writeFullPosition(
+                        plane.position
                     );
                     strm.writeRotation2(plane.direction);
                 },
@@ -797,7 +792,7 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
                 data.mapPings,
                 ping => {
                     MapPings.writeToStream(strm, ping.definition);
-                    strm.writePosition(ping.position);
+                    strm.writeFullPosition(ping.position);
                     if (ping.definition.isPlayerPing) {
                         strm.writeObjectId((ping as PlayerPingSerialization).playerId);
                     }
@@ -863,7 +858,7 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
         if (flags & UpdateFlags.Explosions) {
             data.explosions = stream.readArray(() => ({
                 definition: Explosions.readFromStream(stream),
-                position: stream.readPosition(),
+                position: stream.readFullPosition(),
                 layer: stream.readLayer()
             }), 1);
         }
@@ -879,10 +874,10 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
             data.gas = {
                 state: stream.readUint8(),
                 currentDuration: stream.readUint8(),
-                oldPosition: stream.readPosition(),
-                newPosition: stream.readPosition(),
-                oldRadius: stream.readFloat(0, 2048, 2),
-                newRadius: stream.readFloat(0, 2048, 2)
+                oldPosition: stream.readFullPosition(),
+                newPosition: stream.readFullPosition(),
+                oldRadius: stream.readFloat32(),
+                newRadius: stream.readFloat32()
             };
         }
 
@@ -917,13 +912,7 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
 
         if (flags & UpdateFlags.Planes) {
             data.planes = stream.readArray(() => ({
-                position: stream.readVector(
-                    -Constants.MAX_POSITION,
-                    -Constants.MAX_POSITION,
-                    Derived.DOUBLE_MAX_POS,
-                    Derived.DOUBLE_MAX_POS,
-                    3
-                ),
+                position: stream.readFullPosition(),
                 direction: stream.readRotation2()
             }), 1);
         }
@@ -934,7 +923,7 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
 
                 return {
                     definition,
-                    position: stream.readPosition(),
+                    position: stream.readFullPosition(),
                     ...(definition.isPlayerPing ? { playerId: stream.readObjectId() } : {})
                 } as MapPingSerialization;
             }, 1);

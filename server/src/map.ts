@@ -1,4 +1,4 @@
-import { GameConstants, Layer, ObjectCategory } from "@common/constants";
+import { GameConstants, Layer, LayersList, ObjectCategory } from "@common/constants";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { ObstacleModeVariations } from "@common/definitions/modes";
@@ -10,12 +10,12 @@ import { equalLayer } from "@common/utils/layer";
 import { Angle, Collision, Geometry, Numeric, τ } from "@common/utils/math";
 import { cloneDeep, mergeDeep, type Mutable, type SMutable } from "@common/utils/misc";
 import { MapObjectSpawnMode, NullString, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
-import { SeededRandom, pickRandomInArray, random, randomFloat, randomPointInsideCircle, randomRotation, randomVector } from "@common/utils/random";
+import { SeededRandom, pickRandomInArray, random, randomFloat, randomPointInsideCircle, randomRotation, randomVector, weightedRandom } from "@common/utils/random";
 import { FloorNames, IslandReturn, River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Config } from "./config";
 import { getLootFromTable } from "./data/lootTables";
-import { IslandDef, MapDefinition, MapName, Maps, ObstacleClump, RiverDefinition } from "./data/maps";
+import { IslandDef, IslandSpawns, MapDefinition, MapName, MapPlace, Maps, ObstacleClump, RiverDefinition } from "./data/maps";
 import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Obstacle } from "./objects/obstacle";
@@ -96,7 +96,7 @@ export class GameMap {
 
     islands:IslandReturn[]=[]
 
-    generateIsland(def:IslandDef,position:Vector,hitboxSize:number=20,seededRandom = new SeededRandom(this.seed)){
+    generateIsland(def:IslandDef,position:Vector,hitboxSize:number=20,seededRandom = new SeededRandom(this.seed),name?:string){
         const rivers: River[] = [];
 
         const ir=this.terrain.generateIsland({
@@ -116,21 +116,57 @@ export class GameMap {
         this.terrain.addRivers(rivers)
         ir.rivers.push(...rivers)
         this.islands.push(ir)
-        this._generateClearings(def.clearings,ir);
-        Object.entries(def.buildings ?? {}).forEach(([building, count]) => this._generateBuildings(building, count,ir));
+        this._generateClearings(def.clearings,def,ir);
+        for(const cd of def.chooses??[]){
+            const count=random(cd.min,cd.max)
+            const weights=cd.objects.map(({ weight }) => weight)
+            for(let c=0;c<count;c++){
+                const item=weightedRandom(cd.objects, weights)
+                if("build" in item&&item.build!==NullString){
+                    this._generateBuildings(item.build,def,1,ir)
+                }else if("obstacle" in item&&item.obstacle!==NullString){
+                    this._generateObstacles(item.obstacle,def,1,undefined,ir)
+                }
+            }
+        }
+        Object.entries(def.buildings ?? {}).forEach(([building, count]) => this._generateBuildings(building,def, count,ir));
         for (const clump of def.obstacleClumps ?? []) {
             this._generateObstacleClumps(clump,ir);
         }
         Object.entries(def.loots ?? {}).forEach(([loot, count]) => this._generateLoots(loot, count,ir));
-        Object.entries(def.obstacles ?? {}).forEach(([obstacle, count]) => this._generateObstacles(obstacle, count,undefined,ir));
+        Object.entries(def.obstacles ?? {}).forEach(([obstacle, count]) => this._generateObstacles(obstacle,def, count,undefined,ir));
         def.onGenerate?.(this,ir);
+    }
+    places:MapPlace[]=[]
+    addPlace(place:MapPlace,porcent:boolean=true){
+        const absPosition = Vec.create(
+            porcent?this.width * (place.position.x + randomFloat(-0.04, 0.04) ):place.position.x,
+            porcent?this.height * (place.position.y + randomFloat(-0.04, 0.04) ):place.position.y,
+        );
+
+        this.places.push({ name:place.name, position: absPosition });
     }
 
     constructor(game: Game, mapData: typeof Config["map"], seed=random(0, 2 ** 31)) {
         this.game = game;
 
         const [name, ...params] = typeof mapData === "string"?mapData.split(":") as [MapName, ...string[]]:mapData.extends.split(":") as [MapName, ...string[]];
-        const mapDef: MapDefinition = typeof mapData === "string"?Maps[name]:mergeDeep(cloneDeep(Maps[name]),mapData);
+        let mapDef:MapDefinition
+        if(typeof mapData === "string"){
+            mapDef = Maps[name]
+        }else if(mapData!==undefined){
+            mapDef=cloneDeep(Maps[mapData.extends])
+            for(const i of mapData.change_island){
+                const islandD=(mapDef.islands??[])[i.island[0]].chooses[i.island[1]]
+                if(!islandD){
+                    console.error("Invalid Line")
+                    continue
+                }
+                mapDef.islands![i.island[0]].chooses[i.island[1]]=mergeDeep(islandD,i.def)
+            }
+        }else{
+            throw "Invalid Map Def"
+        }
 
         // @ts-expect-error I don't know why this rule exists
         type PacketType = this["_packet"];
@@ -142,7 +178,7 @@ export class GameMap {
         this._packet = packet;
 
         this.seed = packet.seed = seed;
-
+        
         Logger.log(`Game ${game.id} | Map seed: ${this.seed}`);
 
         this.width = packet.width = mapDef.width;
@@ -186,25 +222,59 @@ export class GameMap {
         for(const is of mapDef.islands??[]){
             const count=(is.max!==undefined&&is.min!==undefined)&&is.min?random(is.min,is.max):1
             const ma=is.spawnAttempts??20
+            let smartRow=0
+            let smartCol=0
+            let sri=0
+            const smartOffset=is.smartOffset??20
             for(let i=0;i<count;i++){
                 const isd=pickRandomInArray(is.chooses)
                 let attempts=0
                 const ihb=new RectangleHitbox(Vec.create(0,0),Vec.create(isd.interiorSize+isd.beachSize,isd.interiorSize+isd.beachSize))
                 while(attempts<ma){
                     attempts++
-                    const position=is.centerSpawn?Vec.create((this.width/2)-(ihb.max.x-ihb.min.x)/2,(this.height/2)-(ihb.max.y-ihb.min.y)/2):randomVector(0,this.width,0,this.height)
-                    let col=false
-                    const irthb=ihb.transform(position)
-                    for(const hb of this.islands){
-                        if(hb.beachHBR.collidesWith(irthb)){
-                            col=true
+                    let position:Vector|undefined
+                    switch(is.spawn??IslandSpawns.Random){
+                        case IslandSpawns.Center:
+                            position=Vec.create((this.width/2)-(ihb.max.x-ihb.min.x)/2,(this.height/2)-(ihb.max.y-ihb.min.y)/2)
                             break
-                        }
+                        case IslandSpawns.Smart:
+                            if(is.smartList){
+                                smartCol=is.smartList[sri].x
+                                smartRow=is.smartList[sri].y
+                                position=Vec.create((smartCol*(ihb.max.x+smartOffset))+smartOffset,(smartRow*(ihb.max.y+smartOffset))+smartOffset)
+                            }else{
+                                position=Vec.create((smartCol*(ihb.max.x+smartOffset))+smartOffset,(smartRow*(ihb.max.y+smartOffset))+smartOffset)
+                                if(ihb.max.x+position.x>this.width-smartOffset*2){
+                                    smartCol=0
+                                    smartRow++
+                                    position.y=(smartRow*(ihb.max.y+smartOffset))+smartOffset
+                                    position.x=(smartCol*(ihb.max.x+smartOffset))+smartOffset
+                                }
+                                smartCol++
+                            }
+                            sri++
+                            break
+                        default:
+                            position=randomVector(0,this.width,0,this.height)
+                            let col=false
+                            const irthb=ihb.transform(position)
+                            for(const hb of this.islands){
+                                if(hb.beachHBR.collidesWith(irthb)){
+                                    col=true
+                                    break
+                                }
+                            }
+                            if(col||irthb.min.x<0||irthb.min.y<0||irthb.max.x>=this.width||irthb.max.y>=this.height){
+                                position=undefined
+                            }
+                            break
                     }
-                    if(col||irthb.min.x<0||irthb.min.y<0||irthb.max.x>=this.width||irthb.max.y>=this.height){
+                    if(!position){
                         continue
                     }
                     this.generateIsland(isd,position,undefined,seededRandom)
+                    const name:undefined|string=is.names?(is.names.orden?is.names.names[Math.min(is.names.names.length-1,i)]:pickRandomInArray(is.names.names)):undefined
+                    if(name)this.addPlace({position:Vec.add(position,Vec.scale(ihb.max,0.5)),name:name},false)
                     break
                 }
             }
@@ -214,19 +284,15 @@ export class GameMap {
         mapDef.onGenerate?.(this, params);
 
         if (mapDef.places) {
-            packet.places = mapDef.places.map(({ name, position }) => {
-                const absPosition = Vec.create(
-                    this.width * (position.x + randomFloat(-0.04, 0.04)),
-                    this.height * (position.y + randomFloat(-0.04, 0.04))
-                );
-
-                return { name, position: absPosition };
-            });
+            for(const p of mapDef.places){
+                this.addPlace(p)
+            }
         }
+        packet.places = this.places
         //@ts-ignore
-        for(const l of Object.values(Layer)){
+        for(const l of LayersList){
             for(const f of this.terrain.floors[l as Layer]){
-                this._packet.floors.push({hitbox:f.hitbox,layer:l as Layer,type:f.type})
+                this._packet.floors.push({hitbox:f.hitbox,layer:l as Layer,type:f.type,build:f.build})
             }
         }
 
@@ -405,7 +471,7 @@ export class GameMap {
         }
     }
 
-    private _generateClearings(clearingDef: MapDefinition["clearings"],ir:IslandReturn): void {
+    private _generateClearings(clearingDef: IslandDef["clearings"],idef:IslandDef,ir:IslandReturn): void {
         if (!clearingDef) return;
 
         const {
@@ -442,6 +508,7 @@ export class GameMap {
             for (const obstacle of obstacles) {
                 this._generateObstacles(
                     obstacle.idString,
+                    idef,
                     random(obstacle.min, obstacle.max),
                     () => hitbox.randomPoint(),
                     ir
@@ -450,12 +517,12 @@ export class GameMap {
         }
     }
 
-    private _generateBuildings(definition: ReifiableDef<BuildingDefinition>, count: number,ir:IslandReturn): void {
+    private _generateBuildings(definition: ReifiableDef<BuildingDefinition>,def:IslandDef, count: number,ir:IslandReturn): void {
         const buildingDef = Buildings.reify(definition);
 
         if (!buildingDef.bridgeHitbox) {
             const { idString, rotationMode } = buildingDef;
-            const { majorBuildings = [], quadBuildingLimit = {} } = this.mapDef;
+            const { majorBuildings = [], quadBuildingLimit = {} } = def;
 
             let attempts = 0;
             for (let i = 0; i < count; i++) {
@@ -475,10 +542,9 @@ export class GameMap {
                         maxAttempts: 400,
                         ir:ir
                     });
-
                     if (position === undefined) {
                         Logger.warn(`Failed to find valid position for building ${idString}`);
-                        continue;
+                        break;
                     }
                     const shr=buildingDef.spawnHitbox.toRectangle()
                     if(buildingDef.spawnMode===MapObjectSpawnMode.Grass){
@@ -520,6 +586,7 @@ export class GameMap {
 
                 if (!validPositionFound && position === undefined) {
                     Logger.warn(`Failed to place building ${idString} after ${attempts} attempts`);
+                    break
                 }
 
                 if (position !== undefined) this.generateBuilding(buildingDef, position, orientation);
@@ -681,7 +748,7 @@ export class GameMap {
         }
 
         for (const floor of definition.floors) {
-            this.terrain.addFloor(floor.type, floor.hitbox.transform(position, 1, orientation), floor.layer ?? layer);
+            this.terrain.addFloor(floor.type, floor.hitbox.transform(position, 1, orientation), floor.layer ?? layer,true);
         }
 
         if (!definition.hideOnMap) this._packet.objects.push(building);
@@ -731,7 +798,7 @@ export class GameMap {
         }
     }
 
-    private _generateObstacles(definition: ReifiableDef<ObstacleDefinition>, count: number, getPosition?: () => Vector,ir?:IslandReturn): void {
+    private _generateObstacles(definition: ReifiableDef<ObstacleDefinition>,idef:IslandDef, count: number, getPosition?: () => Vector,ir?:IslandReturn): void {
         // i don't know why "definition = Obstacles.reify(definition)" doesn't work anymore, but it doesn't
         const def = Obstacles.reify(definition);
 
@@ -755,13 +822,13 @@ export class GameMap {
                 scale,
                 orientation,
                 spawnMode: def.spawnMode,
-                ignoreClearings: this.mapDef.clearings?.allowedObstacles?.includes(def.idString),
+                ignoreClearings: idef.clearings?.allowedObstacles?.includes(def.idString),
                 ir:ir
             });
 
             if (!position) {
                 Logger.warn(`Failed to find valid position for obstacle ${def.idString}`);
-                continue;
+                break;
             }
 
             this.generateObstacle(def, position, { layer: Layer.Ground, scale, variation });
@@ -862,7 +929,7 @@ export class GameMap {
 
             if (!position) {
                 Logger.warn("Spawn position cannot be found");
-                continue;
+                break;
             }
 
             const amountOfObstacles = random(minAmount, maxAmount);
@@ -892,7 +959,7 @@ export class GameMap {
 
             if (!position) {
                 Logger.warn(`Failed to find valid position for loot generated from table '${table}'`);
-                continue;
+                break;
             }
 
             for (const item of loot) {

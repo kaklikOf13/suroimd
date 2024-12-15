@@ -173,7 +173,7 @@ export class BaseBullet {
 
     serialize(stream: SuroiByteStream): void {
         Bullets.writeToStream(stream, this.definition);
-        stream.writePosition(this.initialPosition);
+        stream.writeFullPosition(this.initialPosition);
         stream.writeRotation2(this.rotation);
         stream.writeLayer(this.layer);
         stream.writeFloat(this.rangeVariance, 0, 1, 4);
@@ -245,7 +245,7 @@ export class BaseBullet {
 
     static deserialize(stream: SuroiByteStream): BulletOptions {
         const source = Bullets.readFromStream(stream);
-        const position = stream.readPosition();
+        const position = stream.readFullPosition();
         const rotation = stream.readRotation2();
         const layer = stream.readLayer();
         const variance = stream.readFloat(0, 1, 4);
