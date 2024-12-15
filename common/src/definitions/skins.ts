@@ -144,6 +144,8 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
                 }
             }
             //@ts-ignore
+            b.hideFromLoadout=true
+            //@ts-ignore
             b.shiny=true
             //@ts-ignore
             b.frame=base
