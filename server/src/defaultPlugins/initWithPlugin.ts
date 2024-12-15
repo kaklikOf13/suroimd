@@ -137,7 +137,7 @@ export class InitWithPlugin extends GamePlugin {
         if(!player){
             return
         }
-        player.rolable=true
+        player.rolable=false
         if(startsWith.dropAll){
             player.dropAll()
         }

@@ -198,7 +198,7 @@ const RolesDefault={
             group:0,
             needGroup:true,
             dropAll:true,
-            startAfter:5,
+            startAfter:50,
             nameColor:0x800000,
             dropable:{
                 vest:false,
@@ -552,8 +552,8 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
             airdrop:[3,5],
             mode:GasMode.Procedural,
             advance:{
-                initialTime:75,
-                timeMin:20,
+                initialTime:60,
+                timeMin:14,
                 timeDecay:0.9,
             },
             waiting:{

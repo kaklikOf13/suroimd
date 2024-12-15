@@ -198,12 +198,12 @@ export class Gas {
                     this.oldPosition=this.newPosition
                     this.randomPos(this.oldRadius/this.mapSize,this.newRadius/this.mapSize)
                 }
-                duration=this.advTime
-                this.advTime=Math.max(this.advTime*gas.advance.timeDecay,gas.advance.timeMin)
-            }else{
-                this.state=GasState.Advancing
                 duration=this.gasTime
                 this.gasTime=Math.max(this.gasTime*gas.waiting.timeDecay,gas.waiting.timeMin)
+            }else{
+                this.state=GasState.Advancing
+                duration=this.advTime
+                this.advTime=Math.max(this.advTime*gas.advance.timeDecay,gas.advance.timeMin)
             }
             this.stage++
             this.currentPosition=this.oldPosition
