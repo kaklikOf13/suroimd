@@ -14,6 +14,7 @@ import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { type Player } from "./player";
+import type { SkinDefinition } from "@common/definitions/skins";
 
 export class Loot extends GameObject.derive(ObjectCategory.Loot) {
     definition!: LootDefinition;
@@ -55,13 +56,14 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
             this.container.addChild(this.images.background, this.images.item);
 
             if (itemType === ItemType.Skin) {
+                const frame=(this.definition as SkinDefinition).frame??this.definition.idString
                 this.images.item
-                    .setFrame(`${this.definition.idString}_base`)
+                    .setFrame(`${frame}_base`)
                     .setPos(0, -3)
                     .setScale(0.65)
                     .setAngle(90);
 
-                const skinFist = `${this.definition.idString}_fist`;
+                const skinFist = `${frame}_fist`;
                 this.images.skinFistLeft
                     .setFrame(skinFist)
                     .setPos(22, 20)

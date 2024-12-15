@@ -14,7 +14,7 @@ import { SpectatePacket } from "@common/packets/spectatePacket";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, getEffectiveZIndex } from "@common/utils/layer";
 import { Angle, EaseFunctions, Geometry, Numeric } from "@common/utils/math";
-import { type Timeout } from "@common/utils/misc";
+import { cloneDeep, type Timeout } from "@common/utils/misc";
 import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { random, randomBoolean, randomFloat, randomPointInsideCircle, randomRotation, randomSign, randomVector } from "@common/utils/random";
@@ -34,6 +34,7 @@ import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Particle, type ParticleEmitter } from "./particles";
 import type { AllowedEmoteSources } from "@common/packets/inputPacket";
+import { Auras, type AuraDefinition } from "@common/definitions/aura";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
@@ -102,6 +103,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         readonly muzzleFlash: SuroiSprite
         readonly waterOverlay: SuroiSprite
         readonly blood: Container
+        aura: Container
         readonly disguiseSprite: SuroiSprite
         readonly badge?: SuroiSprite
     };
@@ -175,6 +177,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             muzzleFlash: new SuroiSprite("muzzle_flash").setVisible(false).setZIndex(7).setAnchor(Vec.create(0, 0.5)),
             waterOverlay: new SuroiSprite("water_overlay").setVisible(false).setTint(COLORS.water),
             blood: new Container(),
+            aura:new Container(),
             disguiseSprite: new SuroiSprite()
         };
 
@@ -192,7 +195,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.altWeapon,
             this.images.muzzleFlash,
             this.images.waterOverlay,
-            this.images.blood
+            this.images.blood,
+            this.images.aura
         );
 
         this.disguiseContainer.addChild(this.images.disguiseSprite);
@@ -679,20 +683,22 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             const { body, leftFist, rightFist, leftLeg, rightLeg } = this.images;
 
+            const skinFrame=skinDef.frame??skinID
+
             body
-                .setFrame(`${skinID}_base`)
+                .setFrame(`${skinFrame}_base`)
                 .setTint(tint);
             leftFist
-                .setFrame(`${skinID}_fist`)
+                .setFrame(`${skinFrame}_fist`)
                 .setTint(tint);
             rightFist
-                .setFrame(`${skinID}_fist`)
+                .setFrame(`${skinFrame}_fist`)
                 .setTint(tint);
             leftLeg
-                ?.setFrame(`${skinID}_fist`)
+                ?.setFrame(`${skinFrame}_fist`)
                 .setTint(tint);
             rightLeg
-                ?.setFrame(`${skinID}_fist`)
+                ?.setFrame(`${skinFrame}_fist`)
                 .setTint(tint);
 
             this.sizeMod = this.container.scale = sizeMod;
@@ -836,6 +842,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 }
             }, 0);
         }
+        this.setAura(undefined,0)
 
         this.updateDebugGraphics();
     }
@@ -2019,6 +2026,29 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         }
     }
 
+    setAura(aura:AuraDefinition|undefined,tint:number=0){
+        this.container.removeChild(this.images.aura)
+        this.images.aura.destroy({children:true})
+        this.images.aura=new Container()
+        const skin=Skins.fromStringSafe(this._skin)
+        if(skin?.shiny){
+            this._setAura((Auras["shiny_aura"]),skin.backpackTint??tint)
+        }
+        if(aura){
+            this._setAura(aura,tint)
+        }
+        this.container.addChild(this.images.aura)
+    }
+    _setAura(aura:AuraDefinition,tint:number){
+        if(aura.subaura){
+            this._setAura(aura.subaura,tint)
+            return
+        }
+        const auraSprite = new SuroiSprite(aura.frame);
+        auraSprite.setTint(tint)
+        this.images.aura.addChild(auraSprite)
+    }
+
     destroy(): void {
         super.destroy();
 
@@ -2036,6 +2066,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         images.muzzleFlash.destroy();
         images.waterOverlay.destroy();
         images.blood.destroy();
+        images.aura.destroy()
         images.disguiseSprite.destroy();
 
         emote.image.destroy();

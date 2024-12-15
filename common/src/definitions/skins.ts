@@ -1,3 +1,4 @@
+import { cloneDeep } from "../utils/misc";
 import { ItemType, ObjectDefinitions, type ItemDefinition } from "../utils/objectDefinitions";
 
 /*
@@ -18,6 +19,7 @@ export interface SkinDefinition extends ItemDefinition {
     readonly hideBlood: boolean
     readonly noSwap?: boolean
     readonly shiny?:boolean
+    readonly frame?:string
 }
 
 export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
@@ -32,11 +34,10 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
         shiny:false,
     },
     ([derive, , createTemplate]) => {
-        const skin = derive((name: string, backpackTint?: number,shiny?:boolean) => ({
+        const skin = derive((name: string, backpackTint?: number) => ({
             idString: name.toLowerCase().replace(/'/g, "").replace(/ /g, "_"),
             backpackTint,
             name,
-            shiny
         }));
 
         const hidden = createTemplate(skin, {
@@ -46,8 +47,7 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
         const withRole = createTemplate(skin, (roles: string[]) => ({
             rolesRequired: roles
         }));
-
-        return [
+        const ret=[
             ...([
                 ["HAZEL Jumpsuit",  0xb4a894],
                 ["The Amateur",     0x9b8767],
@@ -132,14 +132,34 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
                 ["Diseased",              0x2d1f1f],
                 ["Deer Season",           0x9a3604],
                 //Originals
-
-                //Shiny
-                ["shiny_max_mcfly",       0xff931c],
-                ["shiny_hasanger",        0x640000],
-                ["shiny_leia",            0x060647],
-                ["shiny_123OP",           0x0000ff],
-                ["shiny_anonymous",       0x0000ff],
             ] satisfies ReadonlyArray<readonly [string, number]>).map(([name, tint]) => hidden([name, tint])),
+        ]
+        const shinySkin=derive((base:string)=>{
+            let b:SkinDefinition|undefined
+            base=base.toLowerCase().replace(/'/g, "").replace(/ /g, "_")
+            for(const s of ret){
+                if(s.idString==base){
+                    b=cloneDeep(s) as SkinDefinition
+                    break
+                }
+            }
+            //@ts-ignore
+            b.shiny=true
+            //@ts-ignore
+            b.frame=base
+            //@ts-ignore
+            b.idString="shiny_"+base
+            return b!
+        })
+
+        ret.push(...[
+            ...([
+                ["max_mcfly"],
+                ["hasanger"],
+                ["leia"],
+                ["123op"],
+                ["anonymous"],
+            ] satisfies ReadonlyArray<readonly [string]>).map(([name]) => shinySkin([name])),
             hidden(
                 ["Werewolf", 0x323232],
                 {
@@ -155,6 +175,7 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
                     hideBlood: true
                 }
             )
-        ];
+        ])
+        return ret
     }
 );
