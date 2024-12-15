@@ -191,6 +191,39 @@ const RolesDefault={
             }
         },
     },
+    Sergeant:{
+        construct:InitWithPlugin,
+        params:{
+            giveTo:1,
+            group:0,
+            needGroup:true,
+            dropAll:true,
+            startAfter:5,
+            nameColor:0x800000,
+            dropable:{
+                vest:false,
+                helmet:false,
+                perks:false,
+                skin:false,
+            },
+            equipaments:{
+                gun1:["pp19","vector","m1_garand"],
+                gun2:[""],
+                skin:"error",
+                vest:"tactical_vest",
+                melee:"hatchet",
+                backpack:"tactical_pack",
+                helmet:"sergeant_helmet",
+                perks:[PerkIds.ExtendedMags]
+            },
+            items:{
+		        "9mm":420,
+                "762mm":300,
+                "2x_scope":1,
+                "4x_scope":1,
+            }
+        },
+    },
 }
 export const Gamemodes:Record<string,Partial<Gamemode>>={
     deathmatch:{
@@ -557,6 +590,16 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                 items:{
                     "762mm":300,
                     "12g":0,
+                }
+            })},
+            //Red Sergeant
+            RolesDefault.Sergeant,
+            //Blue Sergeant
+            {construct:InitWithPlugin,params:mergeDeep(cloneDeep(RolesDefault.Sergeant.params),{
+                group:1,
+                nameColor:0x000080,
+                equipaments:{
+                    skin:"pap",
                 }
             })}
         ],

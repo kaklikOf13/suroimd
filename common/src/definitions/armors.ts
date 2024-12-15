@@ -92,6 +92,13 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
                     damageReduction: 0.30
                 }
             ),
+            helmet(
+                ["Sergeant"],
+                {
+                    level: 3,
+                    damageReduction: 0.2
+                }
+            ),
 
             //
             // Vests
