@@ -745,7 +745,7 @@ export class Game implements GameData {
         }
 
         if(Config.allowRoles!==undefined&&(!player.role||!Config.allowRoles.includes(player.role))){
-            player.disconnect(`Don't Have Permition To Join(expected ${GameConstants.protocolVersion}, was ${packet.protocolVersion})`);
+            player.disconnect(`Don't Have Permition To Join. Ask For Permition`);
             return;
         }
 
