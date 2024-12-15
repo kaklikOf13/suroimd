@@ -49,7 +49,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             readonly groupID: number
             readonly invulnerable: boolean
             readonly activeItem: WeaponDefinition
-            readonly sizeMod?: number
+            readonly sizeMod: number
             readonly skin: SkinDefinition
             readonly helmet?: ArmorDefinition
             readonly vest?: ArmorDefinition
@@ -241,7 +241,6 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             } }
         ): void {
             stream.writeLayer(layer);
-            const hasSizeMod = sizeMod !== undefined;
             const hasHelmet = helmet !== undefined;
             const hasVest = vest !== undefined;
             const hasDisguise = activeDisguise !== undefined;
@@ -251,7 +250,6 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 downed,
                 beingRevived,
                 invulnerable,
-                hasSizeMod,
                 halloweenThrowableSkin,
                 hasHelmet,
                 hasVest,
@@ -262,9 +260,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             stream.writeUint8(groupID);
             Loots.writeToStream(stream, activeItem);
 
-            if (hasSizeMod) {
-                stream.writeFloat(sizeMod, 0, 4, 1);
-            }
+            stream.writeFloat(sizeMod, 0, 4, 1);
 
             Skins.writeToStream(stream, skin);
 
@@ -309,7 +305,6 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 downed,
                 beingRevived,
                 invulnerable,
-                hasSizeMod,
                 halloweenThrowableSkin,
                 hasHelmet,
                 hasVest,
@@ -327,7 +322,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 teamID: stream.readUint8(),
                 groupID: stream.readUint8(),
                 activeItem: Loots.readFromStream(stream),
-                sizeMod: hasSizeMod ? stream.readFloat(0, 4, 1) : undefined,
+                sizeMod: stream.readFloat(0, 4, 1),
                 skin: Skins.readFromStream(stream),
                 helmet: hasHelmet ? Armors.readFromStream(stream) : undefined,
                 vest: hasVest ? Armors.readFromStream(stream) : undefined,

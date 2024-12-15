@@ -60,6 +60,7 @@ import { Tween } from "./utils/tween";
 import { randomVector, randomFloat, pickRandomInArray } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { FloorNames } from "@common/utils/terrain";
+import { PerkIds } from "@common/definitions/perks";
 
 /* eslint-disable @stylistic/indent */
 
@@ -1155,7 +1156,10 @@ export class Game {
                     object.toggleCeiling();
                 }
             }
-
+            if(this.uiManager.perks.hasPerk(PerkIds.SelfRevive)&&player.downed){
+                interactable.object=player
+                interactable.dist=0
+            }
             const object = interactable.object ?? uninteractable.object;
             const offset = object?.isObstacle ? object.door?.offset : undefined;
             canInteract = interactable.object !== undefined;
@@ -1260,7 +1264,7 @@ export class Game {
                     }
 
                     if (
-                        !player.downed
+                        (!player.downed||this.uiManager.perks.hasPerk(PerkIds.SelfRevive))
                         && (!object?.isObstacle
                             || !object.definition.isActivatable
                             || !object.definition.noInteractMessage)

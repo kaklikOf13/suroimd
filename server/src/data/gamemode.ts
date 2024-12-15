@@ -159,8 +159,9 @@ const RolesDefault={
             group:0,
             needGroup:true,
             dropAll:true,
-            startAfter:5,
+            startAfter:40,
             nameColor:0x640000,
+            size:1.25,
             dropable:{
                 vest:false,
                 helmet:false,
@@ -284,6 +285,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                     maxHealth:2,
                     group:1,
                     dropAll:true,
+                    size:1.3,
                     startAfter:0,
                     dropable:{
                         vest:false,

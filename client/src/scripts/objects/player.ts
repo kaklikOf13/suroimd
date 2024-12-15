@@ -93,8 +93,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         readonly body: SuroiSprite
         readonly leftFist: SuroiSprite
         readonly rightFist: SuroiSprite
-        readonly leftLeg?: SuroiSprite
-        readonly rightLeg?: SuroiSprite
+        readonly leftLeg: SuroiSprite
+        readonly rightLeg: SuroiSprite
         readonly backpack: SuroiSprite
         readonly helmet: SuroiSprite
         readonly weapon: SuroiSprite
@@ -166,8 +166,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             body: new SuroiSprite(),
             leftFist: new SuroiSprite(),
             rightFist: new SuroiSprite(),
-            leftLeg: (game.teamMode||game.groupMode) ? new SuroiSprite().setPos(-35, 26).setZIndex(-1) : undefined,
-            rightLeg: (game.teamMode||game.groupMode) ? new SuroiSprite().setPos(-35, -26).setZIndex(-1) : undefined,
+            leftLeg: new SuroiSprite().setPos(-35, 26).setZIndex(-1),
+            rightLeg: new SuroiSprite().setPos(-35, -26).setZIndex(-1),
             backpack: new SuroiSprite().setPos(-56, 0).setVisible(false).setZIndex(5),
             helmet: new SuroiSprite().setPos(-8, 0).setVisible(false).setZIndex(6),
             weapon: new SuroiSprite().setZIndex(3),
@@ -184,7 +184,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.images.body,
             this.images.leftFist,
             this.images.rightFist,
-            ...((game.teamMode||game.groupMode) ? [this.images.leftLeg, this.images.rightLeg] as readonly SuroiSprite[] : []),
+            this.images.leftLeg,
+            this.images.rightLeg,
             this.images.backpack,
             this.images.helmet,
             this.images.weapon,
@@ -694,10 +695,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 ?.setFrame(`${skinID}_fist`)
                 .setTint(tint);
 
-            if (sizeMod !== undefined) {
-                this.sizeMod = this.container.scale = sizeMod;
-                this._hitbox = new CircleHitbox(GameConstants.player.radius * sizeMod, this._hitbox.position);
-            }
+            this.sizeMod = this.container.scale = sizeMod;
+            this._hitbox = new CircleHitbox(GameConstants.player.radius * sizeMod, this._hitbox.position);
 
             const { hideEquipment, helmetLevel, vestLevel, backpackLevel } = this;
 
@@ -1291,11 +1290,11 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     }
 
     canInteract(player: Player): boolean {
-        return !player.downed
+        return (!player.downed&&(player.id==this.id&&this.game.uiManager.perks.hasPerk(PerkIds.SelfRevive)))
             && this.downed
             && !this.beingRevived
-            && this !== player
-            && (this.game.groupMode?this.groupID===player.groupID:(this.teamID === player.teamID&&this.game.teamMode));
+            && (this !== player||this.game.uiManager.perks.hasPerk(PerkIds.SelfRevive))
+            && (this.game.groupMode?this.groupID===player.groupID:this.game.teamMode?(this.teamID === player.teamID&&this.game.teamMode):player.id===this.id);
     }
 
     showEmote(type: AllowedEmoteSources): void {
