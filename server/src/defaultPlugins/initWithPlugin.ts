@@ -12,7 +12,7 @@ import { type Game } from "../game";
 import { Melees } from "@common/definitions/melees";
 
 export const startsWithD={
-    equipaments:{
+    equipments:{
         "vest":"tactical_vest",
         "helmet":"tactical_helmet",
         "backpack":"tactical_pack",
@@ -142,60 +142,60 @@ export class InitWithPlugin extends GamePlugin {
             player.dropAll()
         }
 
-        if(startsWith.equipaments){
-            if(startsWith.equipaments.vest){
-                player.inventory.vest=Armors.fromStringSafe(startsWith.equipaments.vest)
+        if(startsWith.equipments){
+            if(startsWith.equipments.vest){
+                player.inventory.vest=Armors.fromStringSafe(startsWith.equipments.vest)
             }
-            if(startsWith.equipaments.helmet){
-                player.inventory.helmet=Armors.fromStringSafe(startsWith.equipaments.helmet)
+            if(startsWith.equipments.helmet){
+                player.inventory.helmet=Armors.fromStringSafe(startsWith.equipments.helmet)
             }
-            if(startsWith.equipaments.backpack&&Backpacks.fromStringSafe(startsWith.equipaments.backpack)){
-                player.inventory.backpack=Backpacks.fromString(startsWith.equipaments.backpack)
+            if(startsWith.equipments.backpack&&Backpacks.fromStringSafe(startsWith.equipments.backpack)){
+                player.inventory.backpack=Backpacks.fromString(startsWith.equipments.backpack)
             }
-            if(startsWith.equipaments.infinityAmmo){
+            if(startsWith.equipments.infinityAmmo){
                 player.infinityAmmo=true
             }
-            if(startsWith.equipaments.metalicBody){
+            if(startsWith.equipments.metalicBody){
                 player.metalicBody=true
             }
-            if(startsWith.equipaments.ping){
+            if(startsWith.equipments.ping){
                 const pinng=()=>{
                     if(player.dead||player.game.stopped)return
                     this.game.mapPings.push({
-                        definition:MapPings.fromString<MapPing>(startsWith.equipaments.ping),
+                        definition:MapPings.fromString<MapPing>(startsWith.equipments.ping),
                         position:player.position
                     })
-                    if(startsWith.equipaments.repeatPing){
-                        player.game.addTimeout(pinng,startsWith.equipaments.repeatPing*1000)
+                    if(startsWith.equipments.repeatPing){
+                        player.game.addTimeout(pinng,startsWith.equipments.repeatPing*1000)
                     }
                 }
                 pinng()
             }
-            player.canDrop=startsWith.equipaments.canDrop===undefined?true:startsWith.equipaments.canDrop
-            const gun1=Guns.fromStringSafe(Array.isArray(startsWith.equipaments.gun1)?pickRandomInArray(startsWith.equipaments.gun1):startsWith.equipaments.gun1)
+            player.canDrop=startsWith.equipments.canDrop===undefined?true:startsWith.equipments.canDrop
+            const gun1=Guns.fromStringSafe(Array.isArray(startsWith.equipments.gun1)?pickRandomInArray(startsWith.equipments.gun1):startsWith.equipments.gun1)
             if(gun1){
                 player.inventory.replaceWeapon(0,gun1);
                 (player.inventory.weapons[0] as GunItem).ammo=gun1.capacity
             }
-            const gun2=Guns.fromStringSafe(Array.isArray(startsWith.equipaments.gun2)?pickRandomInArray(startsWith.equipaments.gun2):startsWith.equipaments.gun2)
+            const gun2=Guns.fromStringSafe(Array.isArray(startsWith.equipments.gun2)?pickRandomInArray(startsWith.equipments.gun2):startsWith.equipments.gun2)
             if(gun2){
                 player.inventory.replaceWeapon(1,gun2);
                 (player.inventory.weapons[1] as GunItem).ammo=gun2.capacity
             }
-            const melee=Melees.fromStringSafe(Array.isArray(startsWith.equipaments.melee)?pickRandomInArray(startsWith.equipaments.melee):startsWith.equipaments.melee)
+            const melee=Melees.fromStringSafe(Array.isArray(startsWith.equipments.melee)?pickRandomInArray(startsWith.equipments.melee):startsWith.equipments.melee)
             if(melee){
                 player.inventory.replaceWeapon(2,melee);
             }
 
-            if(startsWith.equipaments.perks){
-                for(const v of startsWith.equipaments.perks){
+            if(startsWith.equipments.perks){
+                for(const v of startsWith.equipments.perks){
                     player.perks.addPerk(Perks.fromString(typeof v === "object" ? pickRandomInArray(v):v))
                 }
             }
 
-            if(Skins.hasString(startsWith.equipaments.skin)){
+            if(Skins.hasString(startsWith.equipments.skin)){
                 player.canChangeSkin=false
-                player.loadout.skin=Skins.fromString(startsWith.equipaments.skin)
+                player.loadout.skin=Skins.fromString(startsWith.equipments.skin)
             }
         }
         if(startsWith.nameColor!==undefined){

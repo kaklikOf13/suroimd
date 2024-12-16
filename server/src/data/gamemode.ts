@@ -163,12 +163,11 @@ const RolesDefault={
             nameColor:0x640000,
             size:1.25,
             dropable:{
-                vest:false,
                 helmet:false,
                 perks:false,
                 skin:false,
             },
-            equipaments:{
+            equipments:{
                 gun1:["super90","usas12","m590m"],
                 gun2:["radio"],
                 skin:"shiny_hasanger",
@@ -181,8 +180,6 @@ const RolesDefault={
             items:{
                 "gauze":15,
                 "medikit":4,
-                "cola":8,
-                "tablets":4,
                 "12g":90,
                 "762mm":0,
                 "2x_scope":1,
@@ -201,24 +198,58 @@ const RolesDefault={
             startAfter:50,
             nameColor:0x800000,
             dropable:{
-                vest:false,
                 helmet:false,
                 perks:false,
                 skin:false,
             },
-            equipaments:{
+            equipments:{
                 gun1:["pp19","vector","m1_garand"],
-                gun2:[""],
-                skin:"error",
+                skin:"shiny_error",
                 vest:"tactical_vest",
-                melee:"hatchet",
+                melee:"seax",
                 backpack:"tactical_pack",
                 helmet:"sergeant_helmet",
-                perks:[PerkIds.ExtendedMags]
+                perks:[PerkIds.ExtendedMags,PerkIds.SabotRounds],
             },
             items:{
-		        "9mm":420,
-                "762mm":300,
+		        "9mm":150,
+                "762mm":100,
+                "gauze":7,
+                "medikit":2,
+                "cola":4,
+                "tablets":1,
+                "2x_scope":1,
+                "4x_scope":1,
+            }
+        },
+    },
+    Medic:{
+        construct:InitWithPlugin,
+        params:{
+            giveTo:1,
+            group:0,
+            needGroup:true,
+            dropAll:true,
+            startAfter:60,
+            nameColor:0xff1155,
+            dropable:{
+                helmet:false,
+                perks:false,
+                skin:false,
+            },
+            equipments:{
+                skin:"shiny_max_mcfly",
+                vest:"tactical_vest",
+                melee:"falchion",
+                backpack:"tactical_pack",
+                helmet:"medic_helmet",
+                perks:[PerkIds.SelfRevive,PerkIds.HealingAura],
+            },
+            items:{
+                "gauze":7,
+                "medikit":2,
+                "cola":4,
+                "tablets":1,
                 "2x_scope":1,
                 "4x_scope":1,
             }
@@ -326,7 +357,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                         perks:false,
                         skin:false,
                     },
-                    equipaments:{
+                    equipments:{
                         gun1:["vepr12","m3k","super90","usas12","m590m"],
                         gun2:["l115a1","awms","pfeifer_zeliska","dual_pfeifer_zeliska","mg5","pkp","m134","negev","m249","vickers"],
                         skin:"shiny_max_mcfly",
@@ -583,7 +614,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
             {construct:InitWithPlugin,params:mergeDeep(cloneDeep(RolesDefault.Captain.params),{
                 group:1,
                 nameColor:0x000064,
-                equipaments:{
+                equipments:{
                     gun1:["an94","mg5","pkp"],
                     skin:"shiny_123op",
                 },
@@ -598,8 +629,18 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
             {construct:InitWithPlugin,params:mergeDeep(cloneDeep(RolesDefault.Sergeant.params),{
                 group:1,
                 nameColor:0x000080,
-                equipaments:{
-                    skin:"pap",
+                equipments:{
+                    skin:"shiny_pap",
+                }
+            })},
+            //Red Medic
+            RolesDefault.Medic,
+            //Blue Medic
+            {construct:InitWithPlugin,params:mergeDeep(cloneDeep(RolesDefault.Medic.params),{
+                group:1,
+                nameColor:0x000080,
+                equipments:{
+                    skin:"shiny_amanda_corey",
                 }
             })}
         ],

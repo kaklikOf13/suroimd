@@ -249,7 +249,8 @@ if (isMainThread) {
     //@ts-ignore
     let game:Game=undefined
     const createGame=()=>{
-        if(Config.protection){
+        /*if(Config.protection){
+            game=undefined
             let trys=0
             while(game===undefined&&trys<40){
                 try{
@@ -265,9 +266,9 @@ if (isMainThread) {
                 console.log("Big Fatal Error")
                 exit(1)
             }
-        }else{
+        }else{*/
             game = new Game(id, maxTeamSize,gamemode);
-        }
+        //}
     }
     createGame()
 

@@ -156,11 +156,14 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
 
         ret.push(...[
             ...([
-                ["max_mcfly"],
                 ["hasanger"],
-                ["leia"],
                 ["123op"],
+                ["error"],
+                ["pap"],
+                ["amanda_corey"],
+                ["max_mcfly"],
                 ["anonymous"],
+                ["leia"],
             ] satisfies ReadonlyArray<readonly [string]>).map(([name]) => shinySkin([name])),
             hidden(
                 ["Werewolf", 0x323232],
