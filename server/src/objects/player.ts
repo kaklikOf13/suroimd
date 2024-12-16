@@ -1012,7 +1012,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             * recoilMultiplier                                                // Recoil from items
             * perkSpeedMod                                                    // See above
             * (this.action?.speedMultiplier ?? 1)                             // Speed modifier from performing actions
-            * (1 + (this.adrenaline / 800))                                   // Linear speed boost from adrenaline
+            * (1 + (this.adrenaline / 700))                                   // Linear speed boost from adrenaline
             * (this.downed ? 0.5 : this.activeItemDefinition.speedMultiplier) // Active item/knocked out speed modifier
             * (this.beingRevivedBy ? 0.5 : 1)                                 // Being revived speed multiplier
             * this._modifiers.baseSpeed;                                      // Current on-wearer modifier

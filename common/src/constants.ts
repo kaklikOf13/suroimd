@@ -61,7 +61,7 @@ export const GameConstants = freezeDeep({
     },
     player: {
         radius: 2.25,
-        baseSpeed: 0.028,
+        baseSpeed: 0.029,
         defaultHealth: 100,
         maxAdrenaline: 100,
         inventorySlotTypings,
