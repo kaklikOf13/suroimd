@@ -1,12 +1,13 @@
 import { AnimationType, GameConstants, PlayerActions } from "@common/constants";
 import { HealType, type HealingItemDefinition } from "@common/definitions/healingItems";
 import { Loots } from "@common/definitions/loots";
-import { PerkIds } from "@common/definitions/perks";
+import { PerkIds, Perks } from "@common/definitions/perks";
 import { Numeric } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
 import { type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type Player } from "../objects/player";
 import { type GunItem } from "./gunItem";
+import { CircleHitbox } from "@common/utils/hitbox";
 
 export abstract class Action {
     readonly player: Player;
@@ -48,9 +49,21 @@ export class ReviveAction extends Action {
 
     override execute(): void {
         super.execute();
-
-        this.target.revive();
-        this.player.animation = AnimationType.None;
+        
+        if(this.player.hasPerk(PerkIds.HealingAura)){
+            //@ts-ignore
+            const hhb=new CircleHitbox(Perks.fromString(PerkIds.HealingAura).radius*this.player.sizeMod,this.player.position)
+            const objs=this.player.game.grid.intersectsHitbox(hhb)
+            for(const o of objs){
+                if(o.isPlayer&&o.downed&&hhb.isPointInside(o.position)&&(o.isAllie(this.player))){
+                    o.revive()
+                }
+            }
+            this.player.setDirty()
+        }else{
+            this.target.revive();
+            this.player.animation = AnimationType.None;
+        }
         this.player.setDirty();
     }
 
@@ -143,13 +156,29 @@ export class HealingAction extends Action {
 
         this.player.inventory.items.decrementItem(this.item.idString);
 
-        switch (this.item.healType) {
-            case HealType.Health:
-                this.player.health += this.item.restoreAmount;
-                break;
-            case HealType.Adrenaline:
-                this.player.adrenaline += this.item.restoreAmount;
-                break;
+        if(this.player.hasPerk(PerkIds.HealingAura)){
+            //@ts-ignore
+            const hhb=new CircleHitbox(Perks.fromString(PerkIds.HealingAura).radius*this.player.sizeMod,this.player.position)
+            const objs=this.player.game.grid.intersectsHitbox(hhb)
+            for(const o of objs){
+                if(o.isPlayer&&!o.downed&&hhb.isPointInside(o.position)&&(o.isAllie(this.player))){
+                    if(this.item.healType==HealType.Adrenaline){
+                        o.adrenaline+=this.item.restoreAmount
+                    }else{
+                        o.health+=this.item.restoreAmount
+                    }
+                }
+            }
+            this.player.setDirty()
+        }else{
+            switch (this.item.healType) {
+                case HealType.Health:
+                    this.player.health += this.item.restoreAmount;
+                    break;
+                case HealType.Adrenaline:
+                    this.player.adrenaline += this.item.restoreAmount;
+                    break;
+            }
         }
         this.player.dirty.items = true;
         this.player.dirty.capacity=true;

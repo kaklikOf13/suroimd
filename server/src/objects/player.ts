@@ -2460,12 +2460,15 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this._team?.setDirty();
     }
 
+    isAllie(player: Player): boolean{
+        return (this.game.gamemode.group?this.groupID===player.groupID:this.game.teamMode?(this.teamID === player.teamID&&this.game.teamMode):player.id===this.id)
+    }
     canInteract(player: Player): boolean {
         return (!player.downed||(player.id===this.id&&player.hasPerk(PerkIds.SelfRevive)))
             && this.downed
             && !this.beingRevivedBy
             && (this !== player || player.perks.hasPerk(PerkIds.SelfRevive))
-            && (this.game.gamemode.group?this.groupID===player.groupID:this.game.teamMode?(this.teamID === player.teamID&&this.game.teamMode):player.id===this.id);
+            && this.isAllie(player);
     }
 
     interact(reviver: Player): void {
@@ -2715,7 +2718,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 halloweenThrowableSkin: this.halloweenThrowableSkin,
                 activeDisguise: this.activeDisguise,
                 blockEmoting: this.blockEmoting,
-                sizeMod:this._sizeMod
+                sizeMod:this._sizeMod,
+                healAura:this.hasPerk(PerkIds.HealingAura)
             }
         };
 
@@ -2727,6 +2731,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             data.action = this.action instanceof HealingAction
                 ? { type: PlayerActions.UseItem, item: this.action.item }
                 : { type: (this.action?.type ?? PlayerActions.None) as Exclude<PlayerActions, PlayerActions.UseItem> };
+            this.setDirty()
         }
 
         return data;

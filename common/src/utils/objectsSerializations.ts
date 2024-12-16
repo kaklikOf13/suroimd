@@ -41,6 +41,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             readonly item: HealingItemDefinition
         })
         readonly full?: {
+            readonly healAura:boolean
             readonly layer: Layer
             readonly dead: boolean
             readonly downed: boolean
@@ -225,6 +226,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 layer,
                 dead,
                 downed,
+                healAura,
                 beingRevived,
                 teamID,
                 groupID,
@@ -254,7 +256,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 hasHelmet,
                 hasVest,
                 hasDisguise,
-                blockEmoting
+                blockEmoting,
+                healAura
             );
             stream.writeUint8(teamID);
             stream.writeUint8(groupID);
@@ -309,7 +312,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 hasHelmet,
                 hasVest,
                 hasDisguise,
-                blockEmoting
+                blockEmoting,
+                healingAura
             ] = stream.readBooleanGroup2();
 
             return {
@@ -328,7 +332,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 vest: hasVest ? Armors.readFromStream(stream) : undefined,
                 backpack: Backpacks.readFromStream(stream),
                 activeDisguise: hasDisguise ? Obstacles.readFromStream(stream) : undefined,
-                blockEmoting
+                blockEmoting,
+                healAura:healingAura
             };
         }
     },

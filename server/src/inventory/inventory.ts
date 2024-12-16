@@ -17,6 +17,7 @@ import { GunItem } from "./gunItem";
 import { InventoryItem } from "./inventoryItem";
 import { MeleeItem } from "./meleeItem";
 import { ThrowableItem } from "./throwableItem";
+import { PerkIds } from "@common/definitions/perks";
 
 type ReifiableItem =
     GunItem |
@@ -808,14 +809,14 @@ export class Inventory {
             case ItemType.Healing: {
                 if (
                     // Already consuming something else
-                    this.owner.action instanceof HealingAction
-                    || (
+                    this.owner.action instanceof HealingAction||((
+                    (
                         definition.healType === HealType.Health
                         && this.owner.health >= this.owner.maxHealth
                     ) || (
                         definition.healType === HealType.Adrenaline
                         && this.owner.adrenaline >= this.owner.maxAdrenaline
-                    )
+                    ))&&!this.owner.hasPerk(PerkIds.HealingAura))
                 ) return;
 
                 // Can't have downed players using consumables

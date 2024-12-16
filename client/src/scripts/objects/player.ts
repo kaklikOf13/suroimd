@@ -8,7 +8,7 @@ import { HealType, type HealingItemDefinition } from "@common/definitions/healin
 import { Loots, type WeaponDefinition } from "@common/definitions/loots";
 import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "@common/definitions/melees";
 import { type ObstacleDefinition } from "@common/definitions/obstacles";
-import { PerkData, PerkIds } from "@common/definitions/perks";
+import { PerkData, PerkIds, Perks } from "@common/definitions/perks";
 import { Skins, type SkinDefinition } from "@common/definitions/skins";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { CircleHitbox } from "@common/utils/hitbox";
@@ -85,6 +85,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     downed = false;
     beingRevived = false;
     bleedEffectInterval?: NodeJS.Timeout;
+
+    healAura=false
 
     private _skin: ReferenceTo<SkinDefinition> = "";
 
@@ -515,6 +517,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     layer,
                     dead,
                     downed,
+                    healAura,
                     beingRevived,
                     teamID,
                     groupID,
@@ -530,6 +533,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     blockEmoting
                 }
             } = data;
+            this.healAura=healAura
 
             const layerChange = this.isActivePlayer && (this.layer !== layer || isNew);
             this.layer = layer;
@@ -750,9 +754,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         }
 
         if (updateContainerZIndex) this.updateZIndex();
-
+        let healing=this.action.item?.itemType===ItemType.Healing||this.action.type===PlayerActions.Revive
         if (data.action !== undefined) {
             const action = data.action;
+            healing=false
 
             let actionSoundName = "";
             this.healingParticlesEmitter.active = false;
@@ -807,6 +812,11 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             itemDef.useTime / uiManager.perks.mapOrDefault(PerkIds.FieldMedic, ({ usageMod }) => usageMod, 1)
                         );
                     }
+                    if(this.healAura){
+                        //@ts-ignore
+                        this.setAura(Auras.medic_aura,itemDef.healType===HealType.Adrenaline?0x11ff11:0xff1111,Perks.fromString(PerkIds.HealingAura).radius*0.23)
+                    }
+                    healing=true
                     break;
                 }
                 case PlayerActions.Revive: {
@@ -816,6 +826,11 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             GameConstants.player.reviveTime / uiManager.perks.mapOrDefault(PerkIds.FieldMedic, ({ usageMod }) => usageMod, 1)
                         );
                     }
+                    if(this.healAura){
+                        //@ts-ignore
+                        this.setAura(Auras.medic_aura,0xff1166,Perks.fromString(PerkIds.HealingAura).radius*0.23)
+                    }
+                    healing=true
                     break;
                 }
             }
@@ -842,7 +857,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 }
             }, 0);
         }
-        this.setAura(undefined,0)
+        if(!(this.healAura&&healing))this.setAura(undefined,0)
 
         this.updateDebugGraphics();
     }
@@ -2026,26 +2041,28 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         }
     }
 
-    setAura(aura:AuraDefinition|undefined,tint:number=0){
+    setAura(aura:AuraDefinition|undefined,tint:number=0,scale:number=1){
         this.container.removeChild(this.images.aura)
         this.images.aura.destroy({children:true})
         this.images.aura=new Container()
         const skin=Skins.fromStringSafe(this._skin)
         if(skin?.shiny){
-            this._setAura((Auras["shiny_aura"]),skin.backpackTint??tint)
+            this._setAura((Auras["shiny_aura"]),skin.backpackTint??tint,1)
         }
         if(aura){
-            this._setAura(aura,tint)
+            this._setAura(cloneDeep(aura),tint,scale)
         }
         this.container.addChild(this.images.aura)
     }
-    _setAura(aura:AuraDefinition,tint:number){
+    _setAura(aura:AuraDefinition,tint:number,scale:number=1){
         if(aura.subaura){
             this._setAura(aura.subaura,tint)
             return
         }
         const auraSprite = new SuroiSprite(aura.frame);
         auraSprite.setTint(tint)
+        auraSprite.setScale(scale)
+        auraSprite.setZIndex(0)
         this.images.aura.addChild(auraSprite)
     }
 

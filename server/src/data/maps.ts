@@ -1400,7 +1400,7 @@ const maps:Record<string, MapDefinition> = {
         onGenerate(map) {
             // Generate all buildings
 
-            const buildingPos = Vec.create(200, map.height - 600);
+            /*const buildingPos = Vec.create(200, map.height - 600);
 
             for (const building of Buildings.definitions) {
                 map.generateBuilding(building.idString, buildingPos);
@@ -1412,7 +1412,7 @@ const maps:Record<string, MapDefinition> = {
                     buildingPos.x = 200 - 140;
                     buildingPos.y += 200;
                 }
-            }
+            }*/
 
             // Generate all obstacles
             const obstaclePos = Vec.create(200, 200);

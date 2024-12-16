@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="200"
+   height="200"
+   viewBox="0 0 52.916667 52.916667"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="medic_aura.svg"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview5"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     showgrid="false"
+     inkscape:zoom="1.6038803"
+     inkscape:cx="149.01361"
+     inkscape:cy="163.66558"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg5"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#d1d1d1" />
+  <defs
+     id="defs2" />
+  <path
+     id="circle1956"
+     style="fill:none;fill-opacity:0.655286;stroke:#e3e3e3;stroke-width:1.00542;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:0.623348;paint-order:markers fill stroke"
+     d="m 43.487052,9.0866937 c 4.593538,4.5939333 6.970486,10.5651993 7.130845,16.5845463 0.0188,0.705492 1.837374,1.169927 1.795273,1.874599 -0.03009,0.503659 -1.905973,1.248279 -1.967176,1.749645 -0.63662,5.215142 -2.956267,10.263951 -6.958942,14.266974 -4.389153,4.389532 -10.03569,6.755162 -15.780114,7.096889 -0.663288,0.03946 -1.383267,1.769001 -2.047382,1.75449 C 24.842558,52.395987 24.081672,50.620231 23.26945,50.520709 18.058503,49.882192 13.014244,47.562775 9.0142716,43.562458 4.5530249,39.100824 2.1825337,33.340049 1.9027964,27.497815 1.8831209,27.086899 0.50170043,26.734327 0.50271125,26.32303 0.50386683,25.85283 1.8906282,25.323908 1.9188192,24.854396 2.2634758,19.114223 4.6286274,13.472717 9.0142719,9.0866934 13.399584,4.701004 19.040075,2.3356751 24.779295,1.9907063 c 0.661798,-0.039778 1.089929,-1.50184159 1.752577,-1.48789189 0.388781,0.008185 1.012378,1.47476279 1.400482,1.50144149 5.666544,0.3895213 11.222971,2.7503349 15.554698,7.0824378 z"
+     sodipodi:nodetypes="sssssssssssssssss" />
+  <circle
+     style="fill:#ffffff;fill-opacity:0.26651981;stroke:none;stroke-width:1.58749;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:0.745595;paint-order:markers fill stroke"
+     id="circle1"
+     cy="37.417732"
+     cx="-5.0175578e-07"
+     r="21.844133"
+     transform="rotate(-45)" />
+</svg>

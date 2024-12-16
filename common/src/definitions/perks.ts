@@ -81,7 +81,8 @@ export const enum PerkIds {
 
     //Modes
     Captain="captain_perk",
-    SelfRevive="self_revive"
+    SelfRevive="self_revive",
+    HealingAura="healing_aura",
 }
 
 export const enum PerkCategories {
@@ -431,6 +432,15 @@ const perks = [
         description: "Can revive self when knocked out.",
         category: PerkCategories.Normal,
         type: PerkQualities.Positive,
+    },
+    {
+        idString: PerkIds.HealingAura,
+        name: "Healing Aura",
+        description: "Can Heal Allies While Your Heal.",
+        category: PerkCategories.Normal,
+        type: PerkQualities.Positive,
+
+        radius:15,
     },
 ] as const satisfies ReadonlyArray<
     GetMissing<

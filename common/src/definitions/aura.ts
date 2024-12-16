@@ -10,6 +10,9 @@ export interface AuraDefinition{
 export const Auras:Record<string,AuraDefinition> = {
     shiny_aura:{
         frame:"shiny_aura",
+    },
+    medic_aura:{
+        frame:"medic_aura",
     }
 }
 
