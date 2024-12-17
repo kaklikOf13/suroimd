@@ -15,11 +15,13 @@ export class Plane {
     readonly image: SuroiSprite;
     readonly sound: GameSound;
 
+    readonly airstrike:boolean;
+
     readonly startTime = Date.now();
 
     static readonly maxDistanceSquared = (GameConstants.maxPosition * 20) ** 2;
 
-    constructor(game: Game, startPosition: Vector, direction: number) {
+    constructor(game: Game, startPosition: Vector, direction: number, airstrike:boolean) {
         this.game = game;
 
         this.startPosition = startPosition;
@@ -29,20 +31,36 @@ export class Plane {
             Vec.fromPolar(direction, this.game.map.width * 2)
         );
 
-        this.image = new SuroiSprite("airdrop_plane")
+        this.airstrike=airstrike
+        if(this.airstrike){
+            this.sound = game.soundManager.play(
+                "airstrike_plane",
+                {
+                    position: startPosition,
+                    falloff: 0.5,
+                    maxRange: 256,
+                    dynamic: true
+                }
+            );
+            this.image = new SuroiSprite("airstrike_plane")
             .setZIndex(Number.MAX_SAFE_INTEGER - 2) // todo: better logic for this lol
             .setRotation(direction)
             .setScale(4);
-
-        this.sound = game.soundManager.play(
-            "airdrop_plane",
-            {
-                position: startPosition,
-                falloff: 0.5,
-                maxRange: 256,
-                dynamic: true
-            }
-        );
+        }else{
+            this.sound = game.soundManager.play(
+                "airdrop_plane",
+                {
+                    position: startPosition,
+                    falloff: 0.5,
+                    maxRange: 256,
+                    dynamic: true
+                }
+            );
+            this.image = new SuroiSprite("airdrop_plane")
+            .setZIndex(Number.MAX_SAFE_INTEGER - 2) // todo: better logic for this lol
+            .setRotation(direction)
+            .setScale(4);
+        }
 
         game.camera.addObject(this.image);
     }
@@ -51,7 +69,7 @@ export class Plane {
         const position = this.sound.position = Vec.lerp(
             this.startPosition,
             this.endPosition,
-            (Date.now() - this.startTime) / (GameConstants.airdrop.flyTime * 2)
+            (Date.now() - this.startTime) / (this.airstrike?5000:(GameConstants.airdrop.flyTime * 2))
         );
 
         this.image.setVPos(Vec.scale(position, PIXI_SCALE));

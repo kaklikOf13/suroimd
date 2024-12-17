@@ -605,6 +605,7 @@ export type UpdatePacketDataCommon = {
     readonly planes?: ReadonlyArray<{
         readonly position: Vector
         readonly direction: number
+        readonly airstrike?: boolean
     }>
     readonly mapPings?: readonly PingSerialization[]
 };
@@ -781,6 +782,7 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
                         plane.position
                     );
                     strm.writeRotation2(plane.direction);
+                    strm.writeBooleanGroup(plane.airstrike??false)
                 },
                 1
             );
@@ -913,7 +915,8 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
         if (flags & UpdateFlags.Planes) {
             data.planes = stream.readArray(() => ({
                 position: stream.readFullPosition(),
-                direction: stream.readRotation2()
+                direction: stream.readRotation2(),
+                airstrike:stream.readBooleanGroup()[0]
             }), 1);
         }
 

@@ -1004,7 +1004,7 @@ export class Game {
         }
 
         for (const plane of updateData.planes ?? []) {
-            this.planes.add(new Plane(this, plane.position, plane.direction));
+            this.planes.add(new Plane(this, plane.position, plane.direction,plane.airstrike));
         }
 
         for (const ping of updateData.mapPings ?? []) {

@@ -34,12 +34,12 @@ export const MapPings = ObjectDefinitions.withDefault<MapPingDefinition>()(
         ignoreExpiration: false
     },
     ([derive]) => {
-        const gamePingFactory = derive((idString: string, color: number) => ({
+        const gamePingFactory = derive((idString: string, color: number,lifetime:number=120) => ({
             idString,
             color,
             name: idString,
             showInGame: false,
-            lifetime: 20,
+            lifetime: lifetime,
             isPlayerPing: false,
             sound: idString
         }));
@@ -56,6 +56,7 @@ export const MapPings = ObjectDefinitions.withDefault<MapPingDefinition>()(
 
         return [
             gamePingFactory(["airdrop_ping", 0x00ffff], { ignoreExpiration: true }),
+            gamePingFactory(["airstrike_ping", 0xffff00,8], { ignoreExpiration: true }),
             playerPingFactory(["warning_ping"]),
             playerPingFactory(["arrow_ping"], { ignoreExpiration: true }),
             playerPingFactory(["gift_ping"]),

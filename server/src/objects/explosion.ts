@@ -115,7 +115,7 @@ export class Explosion {
                             (max - dist) * multiplier
                         );
 
-                        if(isThrowableProjectile){
+                        if(isThrowableProjectile&&object.definition.speedCap>0){
                             (object as ThrowableProjectile).z+=(max - dist) * 0.05;
                             (object as ThrowableProjectile)._angularVelocity=0.008;
                         }
@@ -179,6 +179,9 @@ export class Explosion {
                 }
                 proj.push(randomRotation(),(typeof this.definition.subthrowable.speed=="number")?this.definition.subthrowable.speed:randomFloat(this.definition.subthrowable.speed.x,this.definition.subthrowable.speed.y)/2)
             }
+        }
+        if(this.definition.callAirstrike){
+            this.game.addAirstrike(this.position,this.source instanceof Player?this.source:undefined)
         }
         if(this.definition.obstacle){
             this.game.map.generateObstacle(Obstacles.fromString(this.definition.obstacle.def),this.position,{activated:true,layer:this.layer})

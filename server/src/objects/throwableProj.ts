@@ -83,7 +83,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         position: Vector,
         layer: Layer,
         readonly definition: ThrowableDefinition,
-        readonly source: ThrowableItem,
+        readonly source?: ThrowableItem,
         radius?: number
     ) {
         super(game, position);
@@ -91,18 +91,22 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         this._spawnTime = this.game.now;
         this.hitbox = new CircleHitbox(radius ?? 1, position);
 
-        this.halloweenSkin = this.source.owner.perks.hasPerk(PerkIds.PlumpkinBomb);
+        if(this.source){
+            this.halloweenSkin = this.source.owner.perks.hasPerk(PerkIds.PlumpkinBomb);
 
-        // Colored Teammate C4s
-        this.tintIndex = this.source.owner.colorIndex;
-        if (this.source.owner.teamID) this.throwerTeamID = this.source.owner.teamID;
+            // Colored Teammate C4s
+            this.tintIndex = this.source.owner.colorIndex;
+            if (this.source.owner.teamID) this.throwerTeamID = this.source.owner.teamID;
 
-        for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
-            this.handleCollision(object);
-        }
-        if (this.definition.c4) {
-            this.source.owner.c4s.push(this);
-            this.source.owner.dirty.activeC4s = true;
+            for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
+                this.handleCollision(object);
+            }
+            if (this.definition.c4) {
+                this.source.owner.c4s.push(this);
+                this.source.owner.dirty.activeC4s = true;
+            }
+        }else{
+            this.halloweenSkin=false
         }
         if (this.definition.health) this.health = this.definition.health;
     }
@@ -134,19 +138,33 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
 
             const { explosion } = this.definition.detonation;
 
-            const referencePosition = Vec.clone(this.position ?? this.source.owner.position);
-            const game = this.game;
+            if(this.source){
+                const referencePosition = Vec.clone(this.position ?? this.source.owner.position);
+                const game = this.game;
 
-            if (explosion !== undefined) {
-                game.addExplosion(
-                    explosion,
-                    referencePosition,
-                    this.source.owner,
-                    this.layer,
-                    this.source,
-                    undefined,
-                    this
-                );
+                if (explosion !== undefined) {
+                    game.addExplosion(
+                        explosion,
+                        referencePosition,
+                        this.source.owner,
+                        this.layer,
+                        this.source,
+                        undefined,
+                        this
+                    );
+                }
+            }else{
+                if (explosion !== undefined) {
+                    this.game.addExplosion(
+                        explosion,
+                        this.position,
+                        this,
+                        this.layer,
+                        this.source,
+                        undefined,
+                        this
+                    );
+                }
             }
         }, delay);
     }
@@ -240,6 +258,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
                     )
                     && (
                         !isPlayer // and it's not a player
+                        || this.source===undefined
                         || !shouldDealImpactDamage // or impact damage isn't active
                         || (!this._collideWithOwner && object === this.source.owner) // or collisions with owner are off
                     )
@@ -297,7 +316,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
             if (shouldDealImpactDamage && !this._damagedLastTick.has(object)) {
                 object.damage({
                     amount: impactDamage * ((isObstacle ? this.definition.obstacleMultiplier : undefined) ?? 1),
-                    source: this.source.owner,
+                    source: this.source?this.source.owner:undefined,
                     weaponUsed: this.source
                 });
 
@@ -447,6 +466,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         // bail early if…
         if (
             object.dead // the object is dead
+            || this.source===undefined
             || ( // or
                 (
                     !(isObstacle || isBuilding) // it's neither an obstacle nor building
@@ -536,9 +556,12 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         this.health = this.health - amount;
         if (this.health <= 0) {
             // use a Set instead
-            this.source.owner.c4s.splice(this.source.owner.c4s.indexOf(this), 1);
+            if(this.source){
+                this.source.owner.c4s.splice(this.source.owner.c4s.indexOf(this), 1);
+                this.source.owner.dirty.activeC4s = true;
+            }
+
             this.game.removeProjectile(this);
-            this.source.owner.dirty.activeC4s = true;
         }
     }
 

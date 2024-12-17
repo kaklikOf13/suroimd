@@ -139,6 +139,7 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                         "confetti_grenade": 16,
                         "mirv_grenade":8,
                         "ice_grenade":4,
+                        "airstrike":4,
                     },
                     defaultTint: 0x3f3f3f,
                     capacity:36,

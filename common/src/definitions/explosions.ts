@@ -30,6 +30,7 @@ export interface ExplosionDefinition extends ObjectDefinition {
     readonly obstacle?:{
         readonly def:string
     }
+    readonly callAirstrike?:boolean
 
     readonly decal?: ReferenceTo<DecalDefinition>
     readonly shrapnelCount: number
@@ -549,6 +550,66 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             
             sound: "12g_frag_explosion",
             decal: "explosion_decal"
+        },
+        {
+            name: "Airstrike Bomb",
+            damage: 55,
+            obstacleMultiplier: 1.15,
+            radius: {
+                min: 8,
+                max: 20
+            },
+            cameraShake: {
+                duration: 300,
+                intensity: 10
+            },
+            animation: {
+                duration: 800,
+                tint: 0x555511,
+                scale: 1
+            },
+            shrapnelCount: 4,
+            ballistics: {
+                damage: 5,
+                obstacleMultiplier: 1,
+                speed: 0.08,
+                range: 10,
+                rangeVariance: 1,
+                shrapnel: true
+            },
+            
+            sound: "airstrike_explosion",
+            decal: "explosion_decal"
+        },
+        {
+            name: "Airstrike",
+            damage: 0,
+            obstacleMultiplier: 1.15,
+            radius: {
+                min: 0,
+                max: 0
+            },
+            callAirstrike:true,
+            cameraShake: {
+                duration: 0,
+                intensity: 0
+            },
+            animation: {
+                duration: 0,
+                tint: 0x222211,
+                scale: 1
+            },
+            shrapnelCount: 0,
+            ballistics: {
+                damage: 5,
+                obstacleMultiplier: 1,
+                speed: 0.08,
+                range: 10,
+                rangeVariance: 1,
+                shrapnel: true
+            },
+            
+            decal: ""
         },
         {
             name: "Smoke Grenade",

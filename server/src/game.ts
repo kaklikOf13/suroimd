@@ -4,7 +4,7 @@ import { Loots, type LootDefinition } from "@common/definitions/loots";
 import { MapPings, type MapPing } from "@common/definitions/mapPings";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { SyncedParticles, type SyncedParticleDefinition, type SyncedParticleSpawnerDefinition } from "@common/definitions/syncedParticles";
-import { type ThrowableDefinition } from "@common/definitions/throwables";
+import { Throwables, type ThrowableDefinition } from "@common/definitions/throwables";
 import { PlayerInputPacket } from "@common/packets/inputPacket";
 import { JoinPacket, type JoinPacketData } from "@common/packets/joinPacket";
 import { JoinedPacket } from "@common/packets/joinedPacket";
@@ -136,6 +136,7 @@ export class Game implements GameData {
     readonly planes: Array<{
         readonly position: Vector
         readonly direction: number
+        readonly airstrike?: boolean
     }> = [];
 
     readonly detectors: Obstacle[] = [];
@@ -1064,7 +1065,7 @@ export class Game implements GameData {
         return explosion;
     }
 
-    addProjectile(definition: ThrowableDefinition, position: Vector, layer: Layer, source: ThrowableItem): ThrowableProjectile {
+    addProjectile(definition: ThrowableDefinition, position: Vector, layer: Layer, source?: ThrowableItem): ThrowableProjectile {
         const projectile = new ThrowableProjectile(this, position, layer, definition, source);
         this.grid.addObject(projectile);
         return projectile;
@@ -1316,6 +1317,38 @@ export class Game implements GameData {
         }, GameConstants.airdrop.flyTime);
 
         this.pluginManager.emit("airdrop_did_summon", { airdrop, position });
+    }
+    addAirstrike(position:Vector,owner:Player|undefined,count:number=10,radius:number=35){
+        this.mapPings.push({
+            definition:MapPings.fromString<MapPing>("airstrike_ping"),
+            position:position,
+        })
+        for(let i=0;i<count;i++){
+            this.addTimeout(this.addAirstrikePlane.bind(this,Vec.addComponent(position,randomFloat(-radius,radius),randomFloat(-radius,radius)),owner),i==0?0:random(0,2200))
+        }
+    }
+    addAirstrikePlane(position:Vector,owner:Player|undefined){
+        const direction = randomRotation();
+
+        const planePos = Vec.add(
+            position,
+            Vec.fromPolar(direction, -GameConstants.maxPosition),
+        );
+        this.planes.push({ position: planePos, direction, airstrike:true });
+        const def=Throwables.fromString("airstrike_bomb")
+        this.addTimeout(()=>{
+            for(let i=0;i<7;i++){
+                this.addTimeout(()=>{
+                    const proj=this.addProjectile(def,Vec.addComponent(position,randomFloat(-9,9),randomFloat(-9,9)),Layer.Ground,
+                        owner?new ThrowableItem(def,owner,{
+                            kills:0,
+                            damage:0,
+                        },1):undefined
+                    )
+                    proj.detonate(def.fuseTime)
+                },i==0?0:random(0,1000))
+            }
+        },3000)
     }
 }
 

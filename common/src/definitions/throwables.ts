@@ -188,6 +188,65 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
             }
         },
         {
+            idString: "airstrike_bomb",
+            name: "Airstrike Bomb",
+            fuseTime: 1100,
+            impactDamage: 1,
+            obstacleMultiplier: 20,
+            speedMultiplier:0,
+            speedCap:0,
+            cookable: true,
+            image: {
+                position: Vec.create(60, 43),
+                angle: 60
+            },
+            detonation: {
+                explosion: "airstrike_bomb_explosion",
+            },
+            animation: {
+                pinImage: "proj_frag_pin",
+                liveImage: "proj_airstrike_bomb",
+                leverImage: "proj_frag_lever",
+                cook: {
+                    leftFist: Vec.create(2.5, 0),
+                    rightFist: Vec.create(-0.5, 2.15)
+                },
+                throw: {
+                    leftFist: Vec.create(1.9, -1.75),
+                    rightFist: Vec.create(4, 2.15)
+                }
+            },
+            zDecay:0.001,
+            zScaleA:1
+        },
+        {
+            idString: "airstrike",
+            name: "Airstrike",
+            fuseTime: 3000,
+            impactDamage: 1,
+            obstacleMultiplier: 20,
+            cookable: true,
+            image: {
+                position: Vec.create(60, 43),
+                angle: 60
+            },
+            detonation: {
+                explosion: "airstrike_explosion",
+            },
+            animation: {
+                liveImage: "proj_airstrike",
+                cook: {
+                    leftFist: Vec.create(2.5, 0),
+                    rightFist: Vec.create(-0.5, 2.15)
+                },
+                throw: {
+                    leftFist: Vec.create(1.9, -1.75),
+                    rightFist: Vec.create(4, 2.15)
+                }
+            },
+            size:2,
+        },
+        {
             idString: "ice_grenade",
             name: "Ice Grenade",
             fuseTime: 2000,
