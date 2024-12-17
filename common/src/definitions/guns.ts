@@ -3,7 +3,29 @@ import { mergeDeep, type DeepPartial } from "../utils/misc";
 import { inheritFrom, ItemType, ObjectDefinitions, type BaseBulletDefinition, type InventoryItemDefinition, type RawDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 import { type AmmoDefinition } from "./ammos";
-
+export type Airstrike={
+    readonly bomb:string
+    readonly ping?:string
+    readonly planesCount:number
+    readonly bombsCount:number
+    readonly radius:number
+}
+export const Airstrikes:Record<string,Airstrike>={
+    tactical_nuke:{
+        bomb:"tactical_nuke",
+        planesCount:1,
+        bombsCount:1,
+        radius:1,
+        ping:"nuke_ping"
+    },
+    bombs:{
+        bomb:"airstrike_bomb",
+        bombsCount:7,
+        ping:"airstrike_ping",
+        planesCount:10,
+        radius:35
+    }
+}
 type BaseGunDefinition = InventoryItemDefinition & {
     readonly itemType: ItemType.Gun
 
@@ -33,13 +55,7 @@ type BaseGunDefinition = InventoryItemDefinition & {
     readonly shootOnRelease: boolean
     readonly summonAirdrop: boolean
 
-    readonly airstrike?:{
-        readonly bomb:string
-        readonly ping?:string
-        readonly planesCount:number
-        readonly bombsCount:number
-        readonly radius:number
-    },
+    readonly airstrike?:Airstrike,
 
     readonly fists: {
         // no relation to the ZIndexes enum
@@ -2114,13 +2130,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 moveSpread: 14,
                 bulletOffset: 1.5,
                 length: 4.7,
-                airstrike:{
-                    bomb:"tactical_nuke",
-                    planesCount:1,
-                    bombsCount:1,
-                    radius:1,
-                    ping:"nuke_ping"
-                },
+                airstrike:Airstrikes.tactical_nuke,
                 fists: {
                     left: Vec.create(38, -35),
                     right: Vec.create(38, 35),

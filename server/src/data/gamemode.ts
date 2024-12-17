@@ -8,6 +8,7 @@ import { mergeDeep,cloneDeep } from "@common/utils/misc"
 import { PerkIds } from "@common/definitions/perks"
 import { RemoveLootAfterTimePlugin } from "../defaultPlugins/removeLootAfterTime"
 import { weaponSwapArgsD, WeaponSwapPlugin } from "../defaultPlugins/weaponSwapPlugin"
+import { Airstrike, Airstrikes } from "@common/definitions/guns"
 export const enum GasMode {
     Staged,
     Debug,
@@ -39,6 +40,7 @@ export type GasConfig={ readonly mode: GasMode.Disabled }
     },
     readonly damage:number[]
     readonly airdrop:number[]
+    readonly airstrikes?:{airstrike:Airstrike,stage:number}[]
  } | {
     readonly mode: GasMode.Debug
     readonly overridePosition?: boolean
@@ -581,6 +583,32 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
         gas:{
             damage:[1,1,2,2,4,4,8,8,10,10,12,12],
             airdrop:[3,5],
+            airstrikes:[
+                {
+                    airstrike:Airstrikes["tactical_nuke"],
+                    stage:2
+                },
+                {
+                    airstrike:Airstrikes["bombs"],
+                    stage:2
+                },
+                {
+                    airstrike:Airstrikes["tactical_nuke"],
+                    stage:4
+                },
+                {
+                    airstrike:Airstrikes["bombs"],
+                    stage:4
+                },
+                {
+                    airstrike:Airstrikes["tactical_nuke"],
+                    stage:6
+                },
+                {
+                    airstrike:Airstrikes["bombs"],
+                    stage:6
+                },
+            ],
             mode:GasMode.Procedural,
             advance:{
                 initialTime:50,

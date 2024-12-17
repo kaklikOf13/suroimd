@@ -7,6 +7,7 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "./game";
 import { DefaultGasStages, GasStage } from "./data/gasStages";
 import { GasMode } from "./data/gamemode";
+import { Airstrike } from "@common/definitions/guns";
 export class Gas {
     stage = 0;
     state = GasState.Inactive;
@@ -216,6 +217,11 @@ export class Gas {
             if(gas.airdrop.includes(this.stage-1)){
                 this.addAirdrop()
             }
+            for(const a of gas.airstrikes??[]){
+                if(a.stage===this.stage-1){
+                    this.addAirstrike(a.airstrike)
+                }
+            }
             if(this.state==GasState.Waiting&&this.currentRadius===0&&this.newRadius===0){
                 this.currentDuration=0
                 this.completionRatio=1
@@ -229,6 +235,25 @@ export class Gas {
                 this.game.addTimeout(() => {if(!this.clearing){this.advanceGasStage()}}, duration * 1000);
             }
         }
+    }
+    addAirstrike(airstrike:Airstrike){
+        this.game.addAirstrike(
+            this.game.map.getRandomPosition(
+                new CircleHitbox(15),
+                {
+                    maxAttempts: 500,
+                    spawnMode: MapObjectSpawnMode.GrassAndSand,
+                    collides: position => Geometry.distanceSquared(position, this.currentPosition) >= this.newRadius ** 2,
+                    ir:pickRandomInArray(this.game.map.islands)
+                }
+            ) ?? this.newPosition,
+            undefined,
+            airstrike.planesCount,
+            airstrike.radius,
+            airstrike.bomb,
+            airstrike.bombsCount,
+            airstrike.ping
+        )
     }
     addAirdrop(){
         this.game.summonAirdrop(
