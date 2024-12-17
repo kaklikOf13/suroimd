@@ -1318,16 +1318,16 @@ export class Game implements GameData {
 
         this.pluginManager.emit("airdrop_did_summon", { airdrop, position });
     }
-    addAirstrike(position:Vector,owner:Player|undefined,count:number=10,radius:number=35){
+    addAirstrike(position:Vector,owner:Player|undefined,count:number=10,radius:number=35,definition:string="airstrike_bomb",bombsCount:number=7,ping:string="airstrike_ping"){
         this.mapPings.push({
-            definition:MapPings.fromString<MapPing>("airstrike_ping"),
+            definition:MapPings.fromString<MapPing>(ping),
             position:position,
         })
         for(let i=0;i<count;i++){
-            this.addTimeout(this.addAirstrikePlane.bind(this,Vec.addComponent(position,randomFloat(-radius,radius),randomFloat(-radius,radius)),owner),i==0?0:random(0,2200))
+            this.addTimeout(this.addAirstrikePlane.bind(this,Vec.addComponent(position,randomFloat(-radius,radius),randomFloat(-radius,radius)),owner,definition,bombsCount),i==0?0:random(0,2200))
         }
     }
-    addAirstrikePlane(position:Vector,owner:Player|undefined){
+    addAirstrikePlane(position:Vector,owner:Player|undefined,definition:string,bombsCount:number=7){
         const direction = randomRotation();
 
         const planePos = Vec.add(
@@ -1335,9 +1335,9 @@ export class Game implements GameData {
             Vec.fromPolar(direction, -GameConstants.maxPosition),
         );
         this.planes.push({ position: planePos, direction, airstrike:true });
-        const def=Throwables.fromString("airstrike_bomb")
+        const def=Throwables.fromString(definition)
         this.addTimeout(()=>{
-            for(let i=0;i<7;i++){
+            for(let i=0;i<bombsCount;i++){
                 this.addTimeout(()=>{
                     const proj=this.addProjectile(def,Vec.addComponent(position,randomFloat(-9,9),randomFloat(-9,9)),Layer.Ground,
                         owner?new ThrowableItem(def,owner,{

@@ -331,6 +331,9 @@ export class GunItem extends InventoryItem<GunDefinition> {
                 return;
             }
         }
+        if(definition.airstrike){
+            this.owner.game.addAirstrike(this.owner.position,this.owner,definition.airstrike.planesCount,definition.airstrike.radius,definition.airstrike.bomb,definition.airstrike.bombsCount,definition.airstrike.ping)
+        }
 
         --this.ammo;
 

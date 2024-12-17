@@ -582,6 +582,35 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             decal: "explosion_decal"
         },
         {
+            name: "Tactical Nuke",
+            damage: 300,
+            obstacleMultiplier: 3,
+            radius: {
+                min: 48,
+                max: 58
+            },
+            cameraShake: {
+                duration: 2000,
+                intensity: 100
+            },
+            animation: {
+                duration: 1500,
+                tint: 0xff0000,
+                scale: 5
+            },
+            shrapnelCount: 60,
+            ballistics: {
+                damage: 15,
+                obstacleMultiplier: 3,
+                speed: 0.08,
+                range: 60,
+                rangeVariance: 1,
+                shrapnel: true
+            },
+            sound: "airstrike_explosion",
+            decal: "explosion_decal"
+        },
+        {
             name: "Airstrike",
             damage: 0,
             obstacleMultiplier: 1.15,

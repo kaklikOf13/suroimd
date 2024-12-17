@@ -247,6 +247,37 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
             size:2,
         },
         {
+            idString: "tactical_nuke",
+            name: "Tactical Nuke",
+            fuseTime: 2000,
+            impactDamage: 1,
+            obstacleMultiplier: 20,
+            cookable: true,
+            image: {
+                position: Vec.create(60, 43),
+                angle: 60
+            },
+            detonation: {
+                explosion: "tactical_nuke_explosion",
+            },
+            animation: {
+                liveImage: "proj_tactical_nuke",
+                cook: {
+                    leftFist: Vec.create(2.5, 0),
+                    rightFist: Vec.create(-0.5, 2.15)
+                },
+                throw: {
+                    leftFist: Vec.create(1.9, -1.75),
+                    rightFist: Vec.create(4, 2.15)
+                }
+            },
+            zDecay:0.0005,
+            zScaleA:1,
+            speedMultiplier:0,
+            speedCap:0,
+            size:2,
+        },
+        {
             idString: "ice_grenade",
             name: "Ice Grenade",
             fuseTime: 2000,
