@@ -2104,7 +2104,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 idString: "nuke_radio",
                 name: "Nuke Radio",
                 ammoType: "curadell",
-                ammoSpawnAmount: 1,
+                ammoSpawnAmount: 3,
                 fireDelay: 500,
                 switchDelay: 250,
                 recoilMultiplier: 1,

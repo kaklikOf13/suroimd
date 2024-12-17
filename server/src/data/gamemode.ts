@@ -660,6 +660,11 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                 construct:InitWithPlugin,
             }
         ],
+        airdrop:{
+            particlesCount:15,
+            crate:"big_airdrop_crate_locked",
+            particlesDelay:20,
+        },
         spawn:{mode:SpawnMode.Center}
     },
     gas_debug:{

@@ -999,8 +999,9 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "mk18", weight: 0.5 },
             { item: "l115a1", weight: 0.5 },
             { item: "pfeifer_zeliska", weight: 0.5 },
-            { item: "awms", weight: 0.4 },
             { item: "dual_rsh12", weight: 0.5 },
+            { item: "awms", weight: 0.4 },
+            { item: "nuke_radio", weight: 0.4 },
             { item: "g19", weight: 0.0001 }
         ],
         winter_skins: [
