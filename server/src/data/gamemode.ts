@@ -583,7 +583,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
             airdrop:[3,5],
             mode:GasMode.Procedural,
             advance:{
-                initialTime:60,
+                initialTime:50,
                 timeMin:14,
                 timeDecay:0.9,
             },

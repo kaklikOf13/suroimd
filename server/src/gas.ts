@@ -213,7 +213,7 @@ export class Gas {
             this.dirty = true;
             this.completionRatioDirty = true;
             this.dps=this.stage>2?gas.damage[Math.min(this.stage-2,gas.damage.length)]:0
-            if(gas.airdrop.includes(this.state-1)){
+            if(gas.airdrop.includes(this.stage-1)){
                 this.addAirdrop()
             }
             if(this.state==GasState.Waiting&&this.currentRadius===0&&this.newRadius===0){

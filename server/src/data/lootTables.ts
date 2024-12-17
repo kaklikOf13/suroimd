@@ -517,12 +517,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             [{ table: "airdrop_melee", weight: 1 }],
             [{ table: "ammo", weight: 1 }],
             [{ table: "airdrop_guns", weight: 1 }],
-            [
-                { item: "frag_grenade", count: 3, weight: 2 },
-                { item: "mirv_grenade", count: 2, weight: 2 },
-                { item: "ice_grenade", count: 2, weight: .8 },
-                { item: NullString, weight: 1 }
-            ]
+            [{ table: "special_throwables", count: 1, weight: 2 }]
         ],
         gold_airdrop_crate: [
             [{ table: "airdrop_equipment", weight: 1 }],
@@ -532,7 +527,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             [{ table: "airdrop_melee", weight: 1 }],
             [{ table: "ammo", weight: 1 }],
             [{ table: "gold_airdrop_guns", weight: 1 }],
-            [{ item: "frag_grenade", count: 3, weight: 1 },{ item: "mirv_grenade", count: 3, weight: 2 },]
+            [{ table: "special_throwables", count: 1, weight: 2 }]
         ],
         big_airdrop_crate: [
             [{ table: "airdrop_equipment",spawnSeparately:true,count:5, weight: 1 }],
@@ -546,7 +541,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
 
             [{ table: "big_airdrop_guns",spawnSeparately:true,count:5, weight: 1 }],
 
-            [{ table: "throwables", count: 5,spawnSeparately:true, weight: 2 }]
+            [{ table: "special_throwables", count: 5,spawnSeparately:true, weight: 2 }]
         ],
         gold_big_airdrop_crate: [
             [{ table: "airdrop_equipment",spawnSeparately:true,count:5, weight: 1 }],
@@ -560,7 +555,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
 
             [{ table: "gold_big_airdrop_guns",spawnSeparately:true,count:5, weight: 1 }],
 
-            [{ table: "throwables", count: 5,spawnSeparately:true, weight: 2 }]
+            [{ table: "special_throwables", count: 5,spawnSeparately:true, weight: 2 }]
         ],
         big_airdrop_guns:[
             [{ table: "gold_airdrop_guns", weight: 1 },{ table: "airdrop_guns", weight: 0.1 }],
@@ -834,6 +829,15 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "mirv_grenade", count: 1, weight: 0.55 },
             { item: "c4", count: 2, weight: 0.2 },
             { item: "ice_grenade", count: 1, weight: 0.08 },
+            { item: "airstrike", count: 1, weight: 0.015 },
+        ],
+        special_throwables: [
+            { item: "frag_grenade", count: 1, weight: 1 },
+            { item: "smoke_grenade", count: 1, weight: 1 },
+            { item: "mirv_grenade", count: 1, weight: 0.6 },
+            { item: "c4", count: 2, weight: 0.6 },
+            { item: "ice_grenade", count: 1, weight: 0.3 },
+            { item: "airstrike", count: 1, weight: 0.25 },
         ],
         special_guns: [
             { item: "micro_uzi", weight: 1.25 },
