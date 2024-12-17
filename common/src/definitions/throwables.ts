@@ -162,7 +162,7 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
         {
             idString: "mirv_subgrenade",
             name: "Mirv Sub Grenade",
-            fuseTime: 3000,
+            fuseTime: 2000,
             impactDamage: 1,
             obstacleMultiplier: 20,
             cookable: true,
@@ -189,7 +189,7 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
         },
         {
             idString: "airstrike_bomb",
-            name: "Airstrike Bomb",
+            name: "Strobe",
             fuseTime: 1100,
             impactDamage: 1,
             obstacleMultiplier: 20,
