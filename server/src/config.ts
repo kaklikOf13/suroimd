@@ -6,7 +6,7 @@ export const Config = {
     port: 8000,
 
     map: "normal",
-    gamemode:"debug",
+    gamemode:"normal",
 
     maxTeamSize: TeamSize.Solo,
 

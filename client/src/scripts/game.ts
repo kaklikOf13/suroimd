@@ -1004,7 +1004,7 @@ export class Game {
         }
 
         for (const plane of updateData.planes ?? []) {
-            this.planes.add(new Plane(this, plane.position, plane.direction,plane.airstrike));
+            this.planes.add(new Plane(this, plane.position, plane.direction,plane.airstrike??false));
         }
 
         for (const ping of updateData.mapPings ?? []) {
@@ -1096,7 +1096,7 @@ export class Game {
                 if(this.music.instances[0].progress==1){
                     this.music=undefined
                 }
-            }else if(this.playing&&this.gameStarted&&Math.random()<=0.01&&Math.random()<=.03){
+            }else if(this.playing&&this.gameStarted&&Math.random()<=0.01&&Math.random()<=0.01){
                 if(this.music&&this.music.instances.length==0){
                     this.music=undefined
                 }
