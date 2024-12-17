@@ -211,7 +211,7 @@ const RolesDefault={
                 melee:"seax",
                 backpack:"tactical_pack",
                 helmet:"sergeant_helmet",
-                perks:[PerkIds.ExtendedMags,PerkIds.SabotRounds],
+                perks:[PerkIds.ExtendedMags,PerkIds.CloseQuartersCombat],
             },
             items:{
 		        "9mm":150,
@@ -369,7 +369,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                         ping:"warning_ping",
                         repeatPing:20,
                         infinityAmmo:true,
-                        perks:[[PerkIds.SabotRounds,PerkIds.SecondWind,PerkIds.ExtendedMags,PerkIds.AdvancedAthletics],PerkIds.Flechettes,PerkIds.SabotRounds,PerkIds.FieldMedic]
+                        perks:[[PerkIds.SabotRounds,PerkIds.CloseQuartersCombat,PerkIds.SecondWind,PerkIds.ExtendedMags,PerkIds.AdvancedAthletics],PerkIds.Flechettes,PerkIds.FieldMedic]
                     }
                 })
             }

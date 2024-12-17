@@ -6,7 +6,7 @@ export const Config = {
     port: 8000,
 
     map: "normal",
-    gamemode:"normal",
+    gamemode:"debug",
 
     maxTeamSize: TeamSize.Solo,
 
@@ -35,6 +35,8 @@ export const Config = {
         limenade: { password: "limenade", isDev: true },
         solstice: { password: "solstice", isDev: true }*/
     },
+
+    antiCrash:false,
 
     authServer: {
         address: "http://localhost:8080"
@@ -119,6 +121,8 @@ export interface ConfigType {
      * The filter is very basic, censoring only the most extreme slurs and the like.
      */
     readonly disableUsernameFilter?: boolean
+
+    readonly antiCrash:boolean
 
     /**
      * If this option is present, various options to mitigate bots and cheaters are enabled.

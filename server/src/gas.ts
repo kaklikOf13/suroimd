@@ -2,7 +2,7 @@ import { GameConstants, GasState } from "@common/constants";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Geometry, Numeric } from "@common/utils/math";
 import { MapObjectSpawnMode } from "@common/utils/objectDefinitions";
-import { pickRandomInArray, randomBoolean, randomPointInsideCircle } from "@common/utils/random";
+import { pickRandomInArray, random, randomBoolean, randomPointInsideCircle } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "./game";
 import { DefaultGasStages, GasStage } from "./data/gasStages";
@@ -219,7 +219,7 @@ export class Gas {
             }
             for(const a of gas.airstrikes??[]){
                 if(a.stage===this.stage-1){
-                    this.addAirstrike(a.airstrike)
+                    this.game.addTimeout(this.addAirstrike.bind(this,a.airstrike),random(0,10*1000))
                 }
             }
             if(this.state==GasState.Waiting&&this.currentRadius===0&&this.newRadius===0){
