@@ -106,7 +106,8 @@ export interface Island{
 }
 export interface FloorBase{
     readonly type: FloorNames,
-    readonly hitbox: Hitbox
+    readonly hitbox: Hitbox,
+    readonly build:boolean
 }
 export interface IslandReturn{
     beachHB: Hitbox;
@@ -246,7 +247,7 @@ export class Terrain {
         // add it to all grid cells that it intersects
         for (let x = min.x; x <= max.x; x++) {
             for (let y = min.y; y <= max.y; y++) {
-                this._grid[layer][x][y].floors.push({ type, hitbox });
+                this._grid[layer][x][y].floors.push({ type, hitbox, build });
             }
         }
     }
@@ -256,6 +257,14 @@ export class Terrain {
         let floor: FloorNames = FloorNames.Void;
 
         const cell = this._grid[layer][pos.x][pos.y];
+        for (const f of cell.floors) {
+            if (f.build&&f.hitbox.isPointInside(position)) {
+                floor=f.type
+            }
+        }
+        if(floor!==FloorNames.Void){
+            return floor
+        }
         for (const river of cell.rivers) {
             if (river.waterHitbox?.isPointInside(position)) {
                 floor = river.floor;

@@ -470,7 +470,7 @@ export class Minimap {
             if (object.isBuilding) {
                 for (const floor of object.definition.floors) {
                     const hitbox = floor.hitbox.transform(object.position, 1, object.orientation);
-                    this._terrain.addFloor(floor.type, hitbox, floor.layer ?? object.layer ?? 0);
+                    this._terrain.addFloor(floor.type, hitbox, floor.layer ?? object.layer ?? 0,true);
                 }
             }
         }
