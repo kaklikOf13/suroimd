@@ -735,6 +735,7 @@ export class Game implements GameData {
     // Called when a JoinPacket is sent by the client
     activatePlayer(player: Player, packet: JoinPacketData): void {
         const rejectedBy = this.pluginManager.emit("player_will_join", { player, joinPacket: packet });
+        this.connectingPlayers.delete(player);
         if (rejectedBy) {
             player.disconnect(`Connection rejected by server plugin '${rejectedBy.constructor.name}'`);
             return;
@@ -812,8 +813,6 @@ export class Game implements GameData {
 
         if(player.isNpc){
             this.livingNpcs.add(player)
-        }else{
-            this.connectingPlayers.delete(player);
         }
 
         this.addTimeout(() => { player.disableInvulnerability(); }, 5000);
