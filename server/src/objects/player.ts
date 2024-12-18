@@ -1153,7 +1153,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 this.activeStair=undefined
             }
         }else{
-            if(FloorTypes[this.floor].instaKill){
+            if(FloorTypes[this.floor].instaKill&&this.layer<0){
                 this.piercingDamage({
                     source:KillfeedEventType.BleedOut,
                     amount:this.health+1
@@ -2304,6 +2304,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             player: this,
             ...params
         });
+
     }
     dropAll(){
         const { position, layer } = this;
