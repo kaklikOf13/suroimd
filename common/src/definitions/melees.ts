@@ -17,7 +17,7 @@ export type MeleeDefinition = InventoryItemDefinition & {
     readonly cooldown: number
     readonly maxTargets: number
     readonly reskins?: string[]
-    readonly fists: InventoryItemDefinition["fists"] & {
+    readonly fists?: InventoryItemDefinition["fists"] & {
         readonly animationDuration: number
         readonly randomFist?: boolean
         readonly noLeftFistMovement?: boolean
@@ -34,6 +34,15 @@ export type MeleeDefinition = InventoryItemDefinition & {
         readonly separateWorldImage?: boolean
         readonly animated?: boolean
     }
+    readonly keyframes?: {
+        readonly animationDuration: number
+        readonly fist:InventoryItemDefinition["fists"]
+        readonly image?:{
+            readonly position: Vector
+            readonly zIndex: number
+            readonly angle?: number
+        }
+    }[]
     readonly fireMode: FireMode
 } & ({
     readonly rotationalAnimation: true
@@ -63,7 +72,8 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
         image: {
             zIndex: 1
         },
-        fireMode: FireMode.Single
+        fireMode: FireMode.Single,
+        keyframes:[],
     },
     () => [
         {
