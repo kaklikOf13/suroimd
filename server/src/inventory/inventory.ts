@@ -822,6 +822,10 @@ export class Inventory {
                 // Can't have downed players using consumables
                 if (this.owner.downed) return;
 
+                if(this.owner.hasPerk(PerkIds.HealingAura)){
+                    this.owner.sendEmote(HealingItems.fromString(idString));
+                }
+
                 this.owner.executeAction(new HealingAction(this.owner, idString));
                 break;
             }
