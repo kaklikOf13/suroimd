@@ -892,6 +892,7 @@ export class Game implements GameData {
         }
 
         player.disconnected = true;
+        player.dropAll()
         this.aliveCountDirty = true;
         this.connectingPlayers.delete(player);
         this.connectedPlayers.delete(player);
@@ -912,6 +913,16 @@ export class Game implements GameData {
                     team.removePlayer(player);
 
                     if (!team.players.length) this.teams.delete(team);
+                }
+                player.teamWipe();
+                player.beingRevivedBy?.action?.cancel();
+            }
+            if(this.gamemode.group){
+                const group = player.group;
+                if (group) {
+                    group.removePlayer(player);
+
+                    if (!group.players.length) this.groups.delete(group.id);
                 }
                 player.teamWipe();
                 player.beingRevivedBy?.action?.cancel();
