@@ -1157,6 +1157,11 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             const offset = this._getOffset();
             this.images.weapon.setPos(pX, pY + offset);
             this.images.altWeapon.setPos(pX, pY - offset);
+
+            if(weaponDef.itemType===ItemType.Melee&&weaponDef["keyframes"]!==undefined&&weaponDef["keyframes"].length>0){
+                this.currentKeyframe=-1
+                this.PlayKeyframe(weaponDef,false)
+            }
         }
 
         this.images.weapon.setVisible(imagePresent);
@@ -1381,7 +1386,39 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             });
         }, isItemEmote ? 2000 : 4000);
     }
-    currentKeyframe:number=0
+    currentKeyframe:number=0;
+    PlayKeyframe(weaponDef:MeleeDefinition,ok:boolean=true){
+        this.currentKeyframe++
+        const kf=weaponDef.keyframes![this.currentKeyframe]
+        const duration=kf.animationDuration*weaponDef.keyframesSpeed
+        this.anims.weapon = this.game.addTween({
+            target: this.images.weapon,
+            to: { x: kf.image!.position.x, y: kf.image!.position.y,angle:kf.image!.angle },
+            duration:duration,
+            ease: EaseFunctions.sineIn,
+        });
+        this.anims.leftFist = this.game.addTween({
+            target: this.images.leftFist,
+            to: { x: kf.fist!.left.x, y: kf.fist!.left.y },
+            duration:duration,
+            ease: EaseFunctions.sineIn,
+        });
+        this.anims.rightFist = this.game.addTween({
+            target: this.images.rightFist,
+            to: { x: kf.fist!.right.x, y: kf.fist!.right.y },
+            duration:duration,
+            ease: EaseFunctions.sineIn,
+            onComplete:()=>{
+                if(!ok)return
+                if(this.currentKeyframe+1<weaponDef.keyframes!.length){
+                    this.PlayKeyframe(weaponDef)
+                }else{
+                    this.currentKeyframe=-1
+                    this.PlayKeyframe(weaponDef,false)
+                }
+            }
+        });
+    }
     playAnimation(anim: AnimationType): void {
         this.currentKeyframe=0
         switch (anim) {
@@ -1394,38 +1431,8 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 const weaponDef = this.activeItem;
 
                 if(weaponDef.keyframes&&weaponDef.keyframes.length>1){
-                    const PlayKeyframe=(ok=true)=>{
-                        this.currentKeyframe++
-                        const kf=weaponDef.keyframes![this.currentKeyframe]
-                        this.anims.weapon = this.game.addTween({
-                            target: this.images.weapon,
-                            to: { x: kf.image!.position.x, y: kf.image!.position.y,angle:kf.image!.angle },
-                            duration:kf.animationDuration,
-                            ease: EaseFunctions.sineIn,
-                        });
-                        this.anims.leftFist = this.game.addTween({
-                            target: this.images.leftFist,
-                            to: { x: kf.fist!.left.x, y: kf.fist!.left.y },
-                            duration:kf.animationDuration,
-                            ease: EaseFunctions.sineIn,
-                        });
-                        this.anims.rightFist = this.game.addTween({
-                            target: this.images.rightFist,
-                            to: { x: kf.fist!.right.x, y: kf.fist!.right.y },
-                            duration:kf.animationDuration,
-                            ease: EaseFunctions.sineIn,
-                            onComplete:()=>{
-                                if(this.currentKeyframe+1<weaponDef.keyframes!.length&&ok){
-                                    PlayKeyframe()
-                                }else if(ok){
-                                    this.currentKeyframe=-1
-                                    PlayKeyframe(false)
-                                }
-                            }
-                        });
-                    }
-                    PlayKeyframe()
-                }else if(weaponDef.fists&&weaponDef.image){
+                    this.PlayKeyframe(weaponDef)
+                }else if(weaponDef.fists){
                     let altFist = Math.random() < 0.5;
                     if (!weaponDef.fists.randomFist) altFist = true;
 
@@ -1579,7 +1586,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             return a.hitbox.distanceTo(selfHitbox).distance - b.hitbox.distanceTo(selfHitbox).distance;
                         }).slice(0, weaponDef.maxTargets)
                     ) target.hitEffect(position, angleToPos);
-                }, 50);
+                }, weaponDef.damageDelay);
 
                 break;
             }

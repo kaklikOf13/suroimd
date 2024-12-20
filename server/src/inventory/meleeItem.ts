@@ -134,7 +134,7 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                     );
                 }
             }
-        }, 50);
+        }, definition.damageDelay);
     }
 
     override itemData(): ItemData<MeleeDefinition> {

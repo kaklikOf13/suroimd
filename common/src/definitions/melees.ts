@@ -1,7 +1,6 @@
 import { FireMode } from "../constants";
 import { ItemType, ObjectDefinitions, type InventoryItemDefinition } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
-
 export type MeleeDefinition = InventoryItemDefinition & {
     readonly itemType: ItemType.Melee
 
@@ -34,12 +33,14 @@ export type MeleeDefinition = InventoryItemDefinition & {
         readonly separateWorldImage?: boolean
         readonly animated?: boolean
     }
+    readonly damageDelay:number
+    readonly keyframesSpeed:number
     readonly keyframes?: {
         readonly animationDuration: number
         readonly fist:InventoryItemDefinition["fists"]
         readonly image?:{
             readonly position: Vector
-            readonly zIndex: number
+            readonly zIndex?: number
             readonly angle?: number
         }
     }[]
@@ -53,6 +54,43 @@ export type MeleeDefinition = InventoryItemDefinition & {
         readonly useRight: Vector
     }
 });
+const MeleeDefaultAnims:Record<string,MeleeDefinition["keyframes"]>={
+    swing:[
+        {
+            animationDuration: 80,
+            fist:{
+                left: Vec.create(40, -25),
+                right: Vec.create(40, 15)
+            },
+            image: {
+                position: Vec.create(42, 20),
+                angle: 135,
+            },
+        },
+        {
+            animationDuration: 80,
+            fist:{
+                left: Vec.create(50, 15),
+                right: Vec.create(25, 45)
+            },
+            image:{
+                position: Vec.create(30, 40),
+                angle: 175
+            },
+        },
+        {
+            animationDuration: 130,
+            fist:{
+                left: Vec.create(25, -40),
+                right: Vec.create(50, -10)
+            },
+            image:{
+                position: Vec.create(50, -20),
+                angle: 85
+            },
+        },
+    ],
+}
 
 export const DEFAULT_HAND_RIGGING = Object.freeze({
     left: Vec.create(38, -35),
@@ -69,10 +107,12 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
         swingSound: "swing",
         iceMultiplier: 0.01,
         maxTargets: 1,
+        damageDelay:50,
         image: {
             zIndex: 1
         },
         fireMode: FireMode.Single,
+        keyframesSpeed:1,
         keyframes:[],
     },
     () => [
@@ -117,7 +157,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                 angle: 155,
                 useAngle: 45,
                 lootScale: 0.55
-            }
+            },
         },
         {
             idString: "feral_claws",
@@ -156,16 +196,17 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             offset: Vec.create(5.4, -0.5),
             cooldown: 350,
             fists: {
-                animationDuration: 150,
+                animationDuration: 100,
                 left: Vec.create(40, -25),
                 right: Vec.create(40, 15)
             },
             image: {
                 position: Vec.create(42, 20),
                 angle: 135,
-                useAngle: 65,
                 lootScale: 0.6
-            }
+            },
+            keyframes:MeleeDefaultAnims.swing,
+            damageDelay: 220,
         },
         {
             idString: "fire_hatchet",
@@ -189,7 +230,10 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                 angle: 135,
                 useAngle: 65,
                 lootScale: 0.7
-            }
+            },
+            damageDelay: 250,
+            keyframes:MeleeDefaultAnims.swing,
+            keyframesSpeed:1.05,
         },
         {
             idString: "crowbar",
@@ -271,7 +315,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
         {
             idString: "maul",
             name: "Maul",
-            damage: 54,
+            damage: 60,
             iceMultiplier: 5,
             rotationalAnimation: true,
             swingSound: "heavy_swing",
@@ -280,7 +324,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             piercingMultiplier: 1,
             radius: 2.7,
             offset: Vec.create(5.4, -0.5),
-            cooldown: 450,
+            cooldown: 500,
             fists: {
                 animationDuration: 150,
                 left: Vec.create(40, -25),
@@ -291,7 +335,10 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                 angle: 135,
                 useAngle: 65,
                 lootScale: 0.6
-            }
+            },
+            damageDelay: 260,
+            keyframes:MeleeDefaultAnims.swing,
+            keyframesSpeed:1.25,
         },
         {
             idString: "steelfang",
@@ -398,7 +445,10 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                 angle: 130,
                 useAngle: 65,
                 lootScale: 0.6
-            }
+            },
+            damageDelay: 250,
+            keyframes:MeleeDefaultAnims.swing,
+            keyframesSpeed:1.05,
         },
         {
             idString: "seax",
@@ -422,7 +472,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                 angle: 35,
                 useAngle: 0,
                 lootScale: 0.7
-            }
+            },
         },
         {
             idString: "falchion",
