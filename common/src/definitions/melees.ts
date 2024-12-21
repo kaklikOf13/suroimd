@@ -59,7 +59,7 @@ export type MeleeDefinition = InventoryItemDefinition & {
 const MeleeDefaultAnims:Record<string,MeleeDefinition["keyframes"]>={
     swing:[
         {
-            animationDuration: 80,
+            animationDuration: 80, //80
             fist:{
                 left: Vec.create(40, -25),
                 right: Vec.create(40, 15)
@@ -70,10 +70,10 @@ const MeleeDefaultAnims:Record<string,MeleeDefinition["keyframes"]>={
             },
         },
         {
-            animationDuration: 80,
+            animationDuration: 80, //80
             fist:{
                 left: Vec.create(50, 15),
-                right: Vec.create(25, 45)
+                right: Vec.create(20, 45)
             },
             image:{
                 position: Vec.create(30, 40),
@@ -81,14 +81,14 @@ const MeleeDefaultAnims:Record<string,MeleeDefinition["keyframes"]>={
             },
         },
         {
-            animationDuration: 130,
+            animationDuration: 130, //130
             fist:{
-                left: Vec.create(25, -40),
-                right: Vec.create(50, -10)
+                left: Vec.create(10, -60),
+                right: Vec.create(50, -35)
             },
             image:{
-                position: Vec.create(50, -20),
-                angle: 85
+                position: Vec.create(40, -50),
+                angle: 60
             },
         },
     ],

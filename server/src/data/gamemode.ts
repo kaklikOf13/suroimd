@@ -242,7 +242,7 @@ const RolesDefault={
             equipments:{
                 skin:"shiny_max_mcfly",
                 vest:"tactical_vest",
-                melee:"falchion",
+                melee:"battlesaw",
                 backpack:"tactical_pack",
                 helmet:"medic_helmet",
                 perks:[PerkIds.SelfRevive,PerkIds.HealingAura],
@@ -250,13 +250,47 @@ const RolesDefault={
             items:{
                 "gauze":7,
                 "medikit":2,
+                "cola":8,
+                "tablets":2,
+                "2x_scope":1,
+                "4x_scope":1,
+            }
+        },
+    },
+	Assassin:{
+        construct:InitWithPlugin,
+        params:{
+            giveTo:1,
+            group:0,
+            needGroup:true,
+            dropAll:true,
+            startAfter:70,
+            nameColor:0xff1155,
+            dropable:{
+                helmet:true,
+                perks:false,
+                skin:true,
+            },
+            equipments:{
+                gun1:["dual_pfeifer_zeliska"],
+                skin:"Ghillie Suit",
+                vest:"tactical_vest",
+                melee:"kbar",
+                backpack:"tactical_pack",
+                helmet:"tactical_helmet",
+                perks:[PerkIds.AdvancedAthletics],
+            },
+            items:{
+                "338lap":0,
+                "gauze":10,
+                "medikit":1,
                 "cola":4,
                 "tablets":1,
                 "2x_scope":1,
                 "4x_scope":1,
             }
         },
-    },
+    }
 }
 export const Gamemodes:Record<string,Partial<Gamemode>>={
     deathmatch:{
