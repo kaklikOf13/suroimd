@@ -53,7 +53,7 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
 
         owner.action?.cancel();
 
-        this.owner.game.addTimeout((): void => {
+        const doDamage=(cd=0)=>{
             if (
                 this.owner.activeItem === this
                 && (owner.attacking || skipAttackCheck)
@@ -133,8 +133,18 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                         definition.cooldown
                     );
                 }
+                if(Array.isArray(definition.damageDelay)&&cd<definition.damageDelay.length){
+                    this.owner.game.addTimeout(doDamage.bind(this,cd+1), definition.damageDelay[cd]);
+                }
             }
-        }, definition.damageDelay);
+        }
+
+
+        if(Array.isArray(definition.damageDelay)){
+            this.owner.game.addTimeout(doDamage.bind(this,1), definition.damageDelay[0]);
+        }else{
+            this.owner.game.addTimeout(doDamage.bind(this,1), definition.damageDelay);
+        }
     }
 
     override itemData(): ItemData<MeleeDefinition> {

@@ -1547,7 +1547,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     this.meleeStopSound = undefined;
                 }
 
-                this.addTimeout(() => {
+                const doDamage=(cd=0)=>{
                     // Play hit effect on closest object
                     // TODO: share this logic with the server
                     const selfHitbox = this.hitbox;
@@ -1586,7 +1586,16 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                             return a.hitbox.distanceTo(selfHitbox).distance - b.hitbox.distanceTo(selfHitbox).distance;
                         }).slice(0, weaponDef.maxTargets)
                     ) target.hitEffect(position, angleToPos);
-                }, weaponDef.damageDelay);
+                    if(Array.isArray(weaponDef.damageDelay)&&cd<weaponDef.damageDelay.length){
+                        this.game.addTimeout(doDamage.bind(this,cd+1), weaponDef.damageDelay[cd]);
+                    }
+                }
+
+                if(Array.isArray(weaponDef.damageDelay)){
+                    this.game.addTimeout(doDamage.bind(this,1), weaponDef.damageDelay[0]);
+                }else{
+                    this.game.addTimeout(doDamage.bind(this,1), weaponDef.damageDelay);
+                }
 
                 break;
             }

@@ -34,7 +34,7 @@ export type MeleeDefinition = InventoryItemDefinition & {
         readonly separateWorldImage?: boolean
         readonly animated?: boolean
     }
-    readonly damageDelay:number
+    readonly damageDelay:number|number[]
     readonly keyframesSpeed:number
     readonly keyframes?: {
         readonly animationDuration: number
@@ -377,7 +377,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
         {
             idString: "battlesaw",
             name: "Battlesaw",
-            damage: 60,
+            damage: 40,
             stonePiercing: true,
             obstacleMultiplier: 1,
             piercingMultiplier: 1,
@@ -399,7 +399,10 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                 zIndex:3,
                 lootScale: 0.9
             },
-            damageDelay:430,
+            damageDelay:[
+                140,
+                510
+            ],
             keyframes:[
                 //Rest
                 {
@@ -453,11 +456,11 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                     animationDuration:160,
                     fist:{
                         left:DEFAULT_HAND_RIGGING.left,
-                        right:Vec.create(80,-30)
+                        right:Vec.create(90,-20)
                     },
                     image:{
                         angle:0,
-                        position:Vec.create(95,-70)
+                        position:Vec.create(105,-60)
                     }
                 },
                 //Returning
