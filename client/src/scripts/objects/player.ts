@@ -1395,19 +1395,19 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             target: this.images.weapon,
             to: { x: kf.image!.position.x, y: kf.image!.position.y,angle:kf.image!.angle },
             duration:duration,
-            ease: EaseFunctions.sineIn,
+            ease: kf.ease??EaseFunctions.sineIn,
         });
         this.anims.leftFist = this.game.addTween({
             target: this.images.leftFist,
             to: { x: kf.fist!.left.x, y: kf.fist!.left.y },
             duration:duration,
-            ease: EaseFunctions.sineIn,
+            ease: kf.ease??EaseFunctions.sineIn,
         });
         this.anims.rightFist = this.game.addTween({
             target: this.images.rightFist,
             to: { x: kf.fist!.right.x, y: kf.fist!.right.y },
             duration:duration,
-            ease: EaseFunctions.sineIn,
+            ease: kf.ease??EaseFunctions.sineIn,
             onComplete:()=>{
                 if(!ok)return
                 if(this.currentKeyframe+1<weaponDef.keyframes!.length){
