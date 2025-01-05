@@ -163,6 +163,12 @@ export class Game implements GameData {
     allowJoin = false;
     over = false;
     stopped = false;
+    get started():boolean{
+        return this._started
+    }
+    set started(v){
+        this._started=v
+    }
     get aliveCount(): number {
         return Math.max(this.livingPlayers.size-this.livingNpcs.size,0);
     }

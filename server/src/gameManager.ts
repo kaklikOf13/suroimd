@@ -59,6 +59,7 @@ export interface GameData {
     allowJoin: boolean
     over: boolean
     stopped: boolean
+    started: boolean
     startedTime: number
 }
 
@@ -72,6 +73,7 @@ export class GameContainer {
         allowJoin: false,
         over: false,
         stopped: false,
+        started:false,
         startedTime: -1
     };
 
@@ -79,6 +81,7 @@ export class GameContainer {
     get allowJoin(): boolean { return this._data.allowJoin; }
     get over(): boolean { return this._data.over; }
     get stopped(): boolean { return this._data.stopped; }
+    get started(): boolean { return this._data.started; }
     get startedTime(): number { return this._data.startedTime; }
 
     private readonly _ipPromiseMap = new Map<string, Array<() => void>>();
@@ -226,7 +229,7 @@ if (isMainThread) {
                 GMC=Gamemodes[typeof currentGamemode==="string"?currentGamemode:currentGamemode[0]]
 
                 for(const g of Object.values(games)){
-                    if(g){
+                    if(g&&g.worker&&!(g.started||g.stopped)){
                         g.sendMessage({
                             type:WorkerMessages.Stop,
                         })
