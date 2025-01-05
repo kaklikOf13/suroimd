@@ -1,8 +1,8 @@
-import { GameConstants } from "../constants";
+import { Constants, GameConstants } from "../constants";
 import { Badges, type BadgeDefinition } from "../definitions/loadout/badges";
 import { Emotes, type EmoteDefinition } from "../definitions/loadout/emotes";
 import { Loots } from "../definitions/loots";
-import { type SkinDefinition } from "../definitions/skins";
+import { type SkinDefinition } from "../definitions/loadout/skins";
 import { createPacket } from "./packet";
 
 export type JoinPacketData = {
@@ -28,6 +28,7 @@ export const JoinPacket = createPacket("JoinPacket")<JoinPacketCreation, JoinPac
     serialize(stream, data) {
         const emotes = data.emotes;
         const hasBadge = data.badge !== undefined;
+        console.log(GameConstants.protocolVersion)
         stream.writeBooleanGroup2(
             data.isMobile,
             hasBadge,
