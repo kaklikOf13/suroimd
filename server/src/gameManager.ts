@@ -174,6 +174,7 @@ export async function findGame(): Promise<GetGameResponse> {
 }
 
 let creatingID = -1;
+export let aliveCount=0;
 
 export async function newGame(id?: number): Promise<number> {
     return new Promise<number>(resolve => {
@@ -210,6 +211,10 @@ export const games: Record<string,GameContainer | undefined> = {};
 
 
 if (isMainThread) {
+    aliveCount=0
+    for(const g of Object.values(games)){
+        aliveCount+=(!g||g?.stopped)?0:g?.aliveCount
+    }
     if(!(typeof Config.gamemode==="string"||Array.isArray(Config.gamemode))){
         const base=Config.gamemode.switchSchedule
         currentGMSTime=Config.gamemode.switchSchedule
@@ -249,6 +254,9 @@ if (isMainThread) {
     //@ts-ignore
     let game:Game=undefined
     const createGame=()=>{
+        if(game){
+            game.stopped=true
+        }
         if(Config.antiCrash){
             //@ts-ignore
             game=undefined
@@ -259,12 +267,12 @@ if (isMainThread) {
                 }catch(e){
                     //@ts-ignore
                     game=undefined
-                    console.error("Game Creation Error")
+                    Logger.warn("Game Creation Error")
                 }
                 trys++
             }
             if(game===undefined){
-                console.log("Big Fatal Error")
+                Logger.warn("Big Fatal Error")
                 exit(1)
             }
         }else{
@@ -295,8 +303,10 @@ if (isMainThread) {
             }
             case WorkerMessages.Reset: {
                 gamemode=message.gamemode
-                game.killEveryone()
-                game.StartGame()
+                if(!game.stopped){
+                    game.killEveryone()
+                    game.StartGame()
+                }
                 createGame()
                 break;
             }

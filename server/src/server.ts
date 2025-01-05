@@ -11,12 +11,13 @@ import { type WebSocket } from "uWebSockets.js";
 import { isMainThread } from "worker_threads";
 import { version } from "../../package.json";
 import { Config } from "./config";
-import { currentGamemode, currentGMSTime, findGame, games, GMC, newGame, WorkerMessages } from "./gameManager";
+import { aliveCount, currentGamemode, currentGMSTime, findGame, games, GMC, newGame, WorkerMessages } from "./gameManager";
 import { CustomTeam, CustomTeamPlayer, type CustomTeamPlayerContainer } from "./team";
 import IPChecker, { Punishment } from "./utils/apiHelper";
 import { cleanUsername, Logger } from "./utils/misc";
 import { cors, createServer, forbidden, getIP, textDecoder } from "./utils/serverHelpers";
 import { Gamemodes } from "./data/gamemode";
+import fs from "node:fs"
 
 let punishments: Punishment[] = [];
 
@@ -74,7 +75,9 @@ export let maxTeamSize = typeof Config.maxTeamSize === "number" ? Config.maxTeam
 let teamSizeRotationIndex = 0;
 
 let maxTeamSizeSwitchCron: Cron | undefined;
-
+if(Config.logsFile&&!fs.existsSync("logs")){
+    fs.mkdirSync("logs")
+}
 if (isMainThread) {
     // Initialize the server
     createServer().get("/api/serverInfo", res => {
@@ -82,7 +85,7 @@ if (isMainThread) {
         res
             .writeHeader("Content-Type", "application/json")
             .end(JSON.stringify({
-                playerCount: Object.values(games).reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0),
+                playerCount: aliveCount,
                 maxTeamSize:GMC.group?TeamSize.Squad:maxTeamSize,
                 gamemode:GMC.button,
                 modeNextSwitchTime: currentGMSTime,
@@ -322,6 +325,10 @@ if (isMainThread) {
                 const load = os.loadavg().join("%, ");
                 perfString += ` | Load (1m, 5m, 15m): ${load}%`;
             }
+
+            perfString+= ` | Games: ${Object.values(games).filter(v=>{
+                return !(v?.stopped)
+            }).length}`
 
             Logger.log(perfString);
         }, 60000);

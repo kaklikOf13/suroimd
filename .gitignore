@@ -30,6 +30,7 @@ build/
 .pnpm-cache/
 .npm/
 *.log
+logs/
 
 # try to prevent error moments from happening (no pun intended)
 .env

@@ -40,7 +40,9 @@ export const Config = {
 
     authServer: {
         address: "http://localhost:8080"
-    }
+    },
+
+    logsFile:false
 } satisfies ConfigType as ConfigType;
 
 export interface ConfigType {
@@ -179,6 +181,11 @@ export interface ConfigType {
     }
 
     readonly allowRoles?:string[]
+
+    /**
+        * logsFile
+    */
+        readonly logsFile?:boolean
 
     /**
      * If this option is specified, the given HTTP header will be used to determine IP addresses.
