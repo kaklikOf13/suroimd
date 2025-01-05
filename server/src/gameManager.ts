@@ -230,13 +230,12 @@ if (isMainThread) {
                         g.sendMessage({
                             type:WorkerMessages.Stop,
                         })
+                        setTimeout(((game:GameContainer)=>{
+                            game.worker.terminate()
+                            delete games[game.id]
+                        }).bind(g),2000)
                     }
                 }
-                setTimeout(async()=>{
-                    for(const k of Object.keys(games)){
-                        delete games[k]
-                    }
-                },1000)
 
                 currentGMSTime=base
 
@@ -311,8 +310,10 @@ if (isMainThread) {
                 break;
             }
             case WorkerMessages.Stop:{
-                game.killEveryone()
-                game.StartGame()
+                if(!game.stopped){
+                    game.killEveryone()
+                    game.StartGame()
+                }
                 s.close()
                 break;
             }
