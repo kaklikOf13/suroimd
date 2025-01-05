@@ -7,7 +7,7 @@ import { HealingItems, type HealingItemDefinition } from "./healingItems";
 import { Melees, type MeleeDefinition } from "./melees";
 import { Perks, type PerkDefinition } from "./perks";
 import { Scopes, type ScopeDefinition } from "./scopes";
-import { Skins, type SkinDefinition } from "./skins";
+import { Skins, type SkinDefinition } from "./loadout/skins";
 import { Throwables, type ThrowableDefinition } from "./throwables";
 
 export type LootDefinition =

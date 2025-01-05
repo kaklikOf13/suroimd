@@ -1,7 +1,7 @@
 import { GameConstants, InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize, ZIndexes } from "@common/constants";
 import { ArmorType } from "@common/definitions/armors";
-import { Badges, type BadgeDefinition } from "@common/definitions/badges";
-import { Emotes } from "@common/definitions/emotes";
+import { Badges, type BadgeDefinition } from "@common/definitions/loadout/badges";
+import { Emotes } from "@common/definitions/loadout/emotes";
 import { type DualGunNarrowing } from "@common/definitions/guns";
 import { Loots } from "@common/definitions/loots";
 import { Scopes } from "@common/definitions/scopes";

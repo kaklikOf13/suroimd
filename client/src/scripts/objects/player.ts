@@ -9,7 +9,7 @@ import { Loots, type WeaponDefinition } from "@common/definitions/loots";
 import { DEFAULT_HAND_RIGGING, type MeleeDefinition } from "@common/definitions/melees";
 import { type ObstacleDefinition } from "@common/definitions/obstacles";
 import { PerkData, PerkIds, Perks } from "@common/definitions/perks";
-import { Skins, type SkinDefinition } from "@common/definitions/skins";
+import { Skins, type SkinDefinition } from "@common/definitions/loadout/skins";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, getEffectiveZIndex } from "@common/utils/layer";
@@ -34,7 +34,7 @@ import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Particle, type ParticleEmitter } from "./particles";
 import type { AllowedEmoteSources } from "@common/packets/inputPacket";
-import { Auras, type AuraDefinition } from "@common/definitions/aura";
+import { Auras, type AuraDefinition } from "@common/definitions/loadout/aura";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;

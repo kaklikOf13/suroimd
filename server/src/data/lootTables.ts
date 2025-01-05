@@ -9,7 +9,7 @@ import { Loots, type LootDefForType, type LootDefinition } from "@common/definit
 import { Melees } from "@common/definitions/melees";
 import { PerkIds, Perks } from "@common/definitions/perks";
 import { Scopes } from "@common/definitions/scopes";
-import { Skins } from "@common/definitions/skins";
+import { Skins } from "@common/definitions/loadout/skins";
 import { Throwables } from "@common/definitions/throwables";
 import { isArray } from "@common/utils/misc";
 import { ItemType, NullString, type ObjectDefinition, type ObjectDefinitions, type ReferenceOrRandom, type ReferenceTo } from "@common/utils/objectDefinitions";

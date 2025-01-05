@@ -1,12 +1,12 @@
 import { defaultUnlockWeapons, GameConstants, InputActions, ObjectCategory, SpectateActions, TeamSize } from "@common/constants";
 import { Ammos, type AmmoDefinition } from "@common/definitions/ammos";
 import { type ArmorDefinition } from "@common/definitions/armors";
-import { Badges, type BadgeDefinition } from "@common/definitions/badges";
-import { EmoteCategory, Emotes, type EmoteDefinition } from "@common/definitions/emotes";
+import { Badges, type BadgeDefinition } from "@common/definitions/loadout/badges";
+import { EmoteCategory, Emotes, type EmoteDefinition } from "@common/definitions/loadout/emotes";
 import { HealType, HealingItems, type HealingItemDefinition } from "@common/definitions/healingItems";
 import { PerkIds, Perks } from "@common/definitions/perks";
 import { Scopes, type ScopeDefinition } from "@common/definitions/scopes";
-import { Skins, type SkinDefinition } from "@common/definitions/skins";
+import { Skins, type SkinDefinition } from "@common/definitions/loadout/skins";
 import { SpectatePacket } from "@common/packets/spectatePacket";
 import { CustomTeamMessages, type CustomTeamMessage, type CustomTeamPlayerInfo, type GetGameResponse } from "@common/typings";
 import { ExtendedMap } from "@common/utils/misc";

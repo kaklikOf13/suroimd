@@ -1,5 +1,5 @@
 import { Constants, DEFAULT_INVENTORY, Derived, itemKeys, itemKeysLength, Layer, ObjectCategory, type GasState } from "../constants";
-import { Badges, type BadgeDefinition } from "../definitions/badges";
+import { Badges, type BadgeDefinition } from "../definitions/loadout/badges";
 import { Explosions, type ExplosionDefinition } from "../definitions/explosions";
 import { Loots, type WeaponDefinition } from "../definitions/loots";
 import { MapPings, type MapPing, type PlayerPing } from "../definitions/mapPings";

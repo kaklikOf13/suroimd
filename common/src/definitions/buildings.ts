@@ -7,9 +7,9 @@ import { MapObjectSpawnMode, NullString, ObjectDefinitions, type ObjectDefinitio
 import { pickRandomInArray, randomBoolean } from "../utils/random";
 import { FloorNames } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
-import { Badges } from "./badges";
+import { Badges } from "./loadout/badges";
 import { FlyoverPref, Materials, RotationMode, type ObstacleDefinition } from "./obstacles";
-import { Skins } from "./skins";
+import { Skins } from "./loadout/skins";
 
 interface BuildingObstacle {
     readonly idString: ReferenceOrRandom<ObstacleDefinition>

@@ -1,5 +1,5 @@
-import { cloneDeep } from "../utils/misc";
-import { ItemType, ObjectDefinitions, type ItemDefinition } from "../utils/objectDefinitions";
+import { cloneDeep } from "../../utils/misc";
+import { ItemType, ObjectDefinitions, type ItemDefinition } from "../../utils/objectDefinitions";
 
 /*
     eslint-disable @stylistic/no-multi-spaces

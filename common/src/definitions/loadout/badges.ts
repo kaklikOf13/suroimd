@@ -1,4 +1,4 @@
-import { createTemplate, ObjectDefinitions, type ObjectDefinition } from "../utils/objectDefinitions";
+import { createTemplate, ObjectDefinitions, type ObjectDefinition } from "../../utils/objectDefinitions";
 
 export interface BadgeDefinition extends ObjectDefinition {
     readonly roles?: readonly string[]

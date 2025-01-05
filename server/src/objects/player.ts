@@ -2,8 +2,8 @@ import { AnimationType, GameConstants, InputActions, KillfeedEventSeverity, Kill
 import { Ammos } from "@common/definitions/ammos";
 import { Armors, ArmorType } from "@common/definitions/armors";
 import { Backpacks } from "@common/definitions/backpacks";
-import { type BadgeDefinition } from "@common/definitions/badges";
-import { Emotes, type EmoteDefinition } from "@common/definitions/emotes";
+import { type BadgeDefinition } from "@common/definitions/loadout/badges";
+import { Emotes, type EmoteDefinition } from "@common/definitions/loadout/emotes";
 import { Guns, type GunDefinition } from "@common/definitions/guns";
 import { HealingItems } from "@common/definitions/healingItems";
 import { Loots, type WeaponDefinition } from "@common/definitions/loots";
@@ -13,7 +13,7 @@ import { Modes } from "@common/definitions/modes";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { PerkCategories, PerkIds, Perks, type PerkDefinition, type PerkNames } from "@common/definitions/perks";
 import { DEFAULT_SCOPE, Scopes, type ScopeDefinition } from "@common/definitions/scopes";
-import { Skins, type SkinDefinition } from "@common/definitions/skins";
+import { Skins, type SkinDefinition } from "@common/definitions/loadout/skins";
 import { SyncedParticles, type SyncedParticleDefinition } from "@common/definitions/syncedParticles";
 import { Throwables, type ThrowableDefinition } from "@common/definitions/throwables";
 import { DisconnectPacket } from "@common/packets/disconnectPacket";
@@ -2451,7 +2451,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         if(this.dropable.skin&&this.canChangeSkin){
             // Drop skin
             const { skin } = this.loadout;
-            if (skin.hideFromLoadout && !skin.noDrop) {
+            if (skin.hideFromLoadout) {
 
                 this.game.addLoot(skin, this.hitbox.randomPoint(), layer);
             }

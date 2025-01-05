@@ -1,6 +1,6 @@
 import { GameConstants } from "../constants";
-import { Badges, type BadgeDefinition } from "../definitions/badges";
-import { Emotes, type EmoteDefinition } from "../definitions/emotes";
+import { Badges, type BadgeDefinition } from "../definitions/loadout/badges";
+import { Emotes, type EmoteDefinition } from "../definitions/loadout/emotes";
 import { Loots } from "../definitions/loots";
 import { type SkinDefinition } from "../definitions/skins";
 import { createPacket } from "./packet";

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import { Badges } from "@common/definitions/badges";
+import { Badges } from "@common/definitions/loadout/badges";
 import { Numeric } from "@common/utils/math";
 import $ from "jquery";
 import { type Game } from "../../game";

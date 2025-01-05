@@ -1,5 +1,5 @@
 import { TeamSize } from "../constants";
-import { Emotes, type EmoteDefinition } from "../definitions/emotes";
+import { Emotes, type EmoteDefinition } from "../definitions/loadout/emotes";
 import { createPacket } from "./packet";
 
 export type JoinedPacketData = {

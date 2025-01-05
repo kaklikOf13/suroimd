@@ -1,6 +1,6 @@
 import { GameConstants, TeamSize } from "@common/constants";
-import { Badges } from "@common/definitions/badges";
-import { Skins } from "@common/definitions/skins";
+import { Badges } from "@common/definitions/loadout/badges";
+import { Skins } from "@common/definitions/loadout/skins";
 import { type GetGameResponse } from "@common/typings";
 import { Numeric } from "@common/utils/math";
 import { Cron } from "croner";
