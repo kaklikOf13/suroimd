@@ -31,7 +31,7 @@ import { Collision, EaseFunctions, Geometry, Numeric } from "@common/utils/math"
 import { ExtendedMap, Timeout, type SDeepMutable, type SMutable } from "@common/utils/misc";
 import { defaultModifiers, ItemType, type EventModifiers, type ExtendedWearerAttributes, type PlayerModifiers, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
-import { pickRandomInArray, randomPointInsideCircle, weightedRandom } from "@common/utils/random";
+import { pickRandomInArray, random, randomFloat, randomPointInsideCircle, weightedRandom } from "@common/utils/random";
 import { SuroiByteStream } from "@common/utils/suroiByteStream";
 import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
@@ -2412,6 +2412,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             const count = this.inventory.items.getItem(item);
             const def = Loots.fromString(item);
 
+            const pos=this.hitbox.randomPoint()
+
             if (count > 0) {
                 if (
                     def.noDrop
@@ -2424,13 +2426,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                     do {
                         left -= subtractAmount = Numeric.min(left, def.maxStackSize);
-                        this.game.addLoot(item, this.hitbox.randomPoint(), layer, { count: subtractAmount,jitterSpawn:true });
+                        const loot=this.game.addLoot(item, pos, layer, { count: subtractAmount,jitterSpawn:true });
+                        loot!.push(Math.atan2(pos.x-this.position.x,pos.y-this.position.y),0.37)
                     } while (left > 0);
 
                     continue;
                 }
 
-                this.game.addLoot(item, this.hitbox.randomPoint(), layer, { count });
+                this.game.addLoot(item, pos, layer, { count });
                 this.inventory.items.setItem(item, 0);
             }
         }
@@ -2585,10 +2588,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         reviver.executeAction(new ReviveAction(reviver, this));
     }
 
-    sendGameOverPacket(won = false): void {
+    sendGameOverPacket(won = false,stopAfter=3000): void {
         if(won){
             this.score+=this.game.gamemode.score.win
-        } 
+        }
         const packet = GameOverPacket.create({
             won,
             playerID: this.id,
@@ -2598,6 +2601,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             timeAlive: (this.game.now - this.joinTime) / 1000,
             rank: won ? 1 as const : this.game.aliveCount + 1,
             score:this.score,
+            stopAfter
         } as GameOverData);
 
         this.sendPacket(packet);

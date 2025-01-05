@@ -77,6 +77,7 @@ export class Game implements GameData {
     canEnd:boolean=true;
     updateObjects = false;
 
+
     readonly livingPlayers = new Set<Player>();
     readonly livingNpcs=new Set<Player>();
     /**
@@ -451,7 +452,11 @@ export class Game implements GameData {
 
             const ct=Math.max(this.gas.currentRadius>0?2000/this.gas.currentRadius:this.gas.mapSize/100,3)
 
-            this.gas.clearGas(ct)   
+            this.gas.clearGas(ct);
+            const sd=Math.floor(ct*1000)-500
+            for (const player of this.livingPlayers) {
+                player.sendGameOverPacket(true,sd);
+            }
 
             this.setGameData({ allowJoin: false, over: true });
 
@@ -462,14 +467,13 @@ export class Game implements GameData {
                     movement.up = movement.down = movement.left = movement.right = false;
                     player.attacking = false;
                     player.sendEmote(player.loadout.emotes[4]);
-                    player.sendGameOverPacket(true);
                     this.pluginManager.emit("player_did_win", player);
                 }
                 setTimeout(()=>{
                     this.setGameData({ stopped: true });
                     Logger.log(`Game ${this.id} | Ended`);
                 },100)
-            }, Math.floor(ct*1000)-500);
+            }, sd);
         }
 
         if (this.aliveCount >= this.gamemode.maxPlayersPerGame) {

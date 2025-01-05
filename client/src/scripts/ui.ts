@@ -1793,6 +1793,7 @@ export async function setUpUI(game: Game): Promise<void> {
         }
     );
     addCheckboxListener("#toggle-ambient-particles", "cv_ambient_particles");
+    addCheckboxListener("#toggle-brighteffects", "cv_brighteffects");
 
     const { gameUi } = game.uiManager.ui;
 

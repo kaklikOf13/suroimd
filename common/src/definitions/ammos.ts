@@ -102,7 +102,7 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
         {
             idString: "50cal",
             name: ".50 Cal",
-            maxStackSize: 9,
+            maxStackSize: 39,
             dropAmmout:5,
             characteristicColor: {
                 hue: 0,
@@ -117,7 +117,7 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
             idString: "338lap",
             name: ".338 Lapua Magnum",
             maxStackSize: 9,
-            dropAmmout:5,
+            dropAmmout:6,
             characteristicColor: {
                 hue: 75,
                 saturation: 100,
@@ -138,14 +138,14 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
             defaultCasingFrame: "casing_45acp",
             hideUnlessPresent: true,
             maxStackSize: 60,
-            dropAmmout:49,
+            dropAmmout:47,
             size:0.035
         },
         {
             idString: "curadell",
             name: "Curadell",
             maxStackSize: 10,
-            dropAmmout:6,
+            dropAmmout:2,
             characteristicColor: {
                 hue: 26,
                 saturation: 100,

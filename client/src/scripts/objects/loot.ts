@@ -14,7 +14,7 @@ import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { type Player } from "./player";
-import type { SkinDefinition } from "@common/definitions/skins";
+import type { SkinDefinition } from "@common/definitions/loadout/skins";
 
 export class Loot extends GameObject.derive(ObjectCategory.Loot) {
     definition!: LootDefinition;

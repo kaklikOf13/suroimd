@@ -57,6 +57,8 @@ export const CVarCasters = Object.freeze({
     cv_cooler_graphics: Casters.toBoolean,
     cv_vignetting: Casters.toBoolean,
     cv_ambient_particles: Casters.toBoolean,
+    cv_brighteffects: Casters.toBoolean,
+
     cv_blur_splash: Casters.toBoolean,
 
     cv_rules_acknowledged: Casters.toBoolean,
@@ -159,7 +161,7 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_use_old_menu_music: false,
     cv_region: "",
     cv_camera_shake_fx: true,
-    cv_killfeed_style: "text",
+    cv_killfeed_style: "icon",
     cv_weapon_slot_style: "colored",
     cv_movement_smoothing: true,
     cv_responsive_rotation: true,
@@ -171,6 +173,7 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_cooler_graphics: true,
     cv_vignetting: true,
     cv_ambient_particles: true,
+    cv_brighteffects:true,
     cv_blur_splash: !isMobile.any, // blur kills splash screen performance on phones from my testing
 
     cv_rules_acknowledged: false,
@@ -205,10 +208,10 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
         }
     },
 
-    cv_crosshair_color: "#000000",
+    cv_crosshair_color: "#ff0000",
     cv_crosshair_size: 1.5,
     cv_crosshair_stroke_color: "#000000",
-    cv_crosshair_stroke_size: 0,
+    cv_crosshair_stroke_size: 1,
 
     cv_autopickup: true,
     cv_autopickup_dual_guns: true,
@@ -218,8 +221,8 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_mute_audio: false,
     //
 
-    pf_show_fps: false,
-    pf_show_ping: false,
+    pf_show_fps: true,
+    pf_show_ping: true,
     pf_show_pos: false,
 
     mb_controls_enabled: true,

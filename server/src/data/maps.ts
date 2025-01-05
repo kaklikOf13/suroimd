@@ -14,7 +14,7 @@ import { GameMap } from "../map";
 import { Player, type PlayerContainer } from "../objects/player";
 import { getLootFromTable, LootTables } from "./lootTables";
 import { PerkCategories } from "@common/definitions/perks";
-import { Skins } from "@common/definitions/skins";
+import { Skins } from "@common/definitions/loadout/skins";
 import { Backpacks } from "@common/definitions/backpacks";
 import { Guns } from "@common/definitions/guns";
 import { FloorNames, IslandReturn } from "@common/utils/terrain";

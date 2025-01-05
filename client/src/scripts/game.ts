@@ -133,6 +133,7 @@ export class Game {
 
     gameStarted = false;
     gameOver = false;
+    startedOn:number=0;
     playing=false;
     spectating = false;
     error = false;
@@ -159,7 +160,7 @@ export class Game {
         return this._ilumination
     }
     set ilumination(v:number){
-        if(this.pixi.renderer){
+        if(this.pixi.renderer&&this.console.getBuiltInCVar("cv_brighteffects")){
             this.pixi.renderer.canvas.style.filter=`brightness(${v})`
             this._ilumination=v
         }
@@ -445,10 +446,10 @@ export class Game {
         this._socket.binaryType = "arraybuffer";
 
         this._socket.onopen = (): void => {
-            this.stop_music()
             this.soundManager.stopAll()
             this.gameStarted = true;
             this.gameOver = false;
+            this.startedOn=Date.now()
             this.spectating = false;
             this.disconnectReason = "";
 
@@ -530,6 +531,7 @@ export class Game {
                     }
                 );
             }
+            this.stop_music()
         };
 
         // Handle incoming messages
@@ -597,11 +599,15 @@ export class Game {
                 this.processUpdate(packet.output);
                 break;
             case packet instanceof GameOverPacket:
-                this.playing=false
                 if(packet.output.won){
                     this.change_music(this.menu_music,0.1)
                 }
-                this.uiManager.showGameOverScreen(packet.output);
+                const gs=this.startedOn
+                setTimeout(()=>{
+                    if(gs!=this.startedOn)
+                    this.playing=false
+                    this.uiManager.showGameOverScreen(packet.output);
+                },packet.output.stopAfter)
                 break;
             case packet instanceof KillFeedPacket:
                 this.uiManager.processKillFeedPacket(packet.output);
