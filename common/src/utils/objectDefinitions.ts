@@ -630,6 +630,11 @@ export type BaseBulletDefinition = {
     readonly speed: number
     readonly range: number
 
+    readonly headshot?:{
+        readonly chance:number
+        readonly modify:number
+    }
+
     readonly tracer: {
         readonly opacity: number
         readonly width: number

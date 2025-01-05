@@ -1835,7 +1835,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         return amount;
     }
 
-    override damage(params: DamageParams): void {
+    override damage(params: DamageParams,headshot=1): void {
         if (this.invulnerable) return;
 
         const { source, weaponUsed } = params;
@@ -1851,7 +1851,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         // Reductions are merged additively
         amount *= this.game.gamemode.globalDamage - ((
             (this.inventory.helmet?.damageReduction ?? 0) + (this.inventory.vest?.damageReduction ?? 0)
-        )*this.game.gamemode.armorProtection)*(this.downed?.8:1);
+        )*this.game.gamemode.armorProtection)*(this.downed?.8:1)*(headshot);
 
         amount = this._clampDamageAmount(amount);
 

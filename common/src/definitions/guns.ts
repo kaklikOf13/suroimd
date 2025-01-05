@@ -290,7 +290,11 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     damage: 13,
                     obstacleMultiplier: 1,
                     speed: 0.16,
-                    range: 120
+                    range: 120,
+                    headshot:{
+                        chance:0.15,
+                        modify:1.4,
+                    }
                 },
                 dual: {
                     leftRightOffset: 1.3,
@@ -340,7 +344,11 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     damage: 9,
                     obstacleMultiplier: 1,
                     speed: 0.16,
-                    range: 70
+                    range: 70,
+                    headshot:{
+                        chance:0.1,
+                        modify:1.35,
+                    }
                 },
                 dual: {
                     leftRightOffset: 1.3,
@@ -397,7 +405,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     damage: 24.5,
                     obstacleMultiplier: 1.5,
                     speed: 0.26,
-                    range: 160
+                    range: 160,
                 },
                 dual: {
                     leftRightOffset: 1.3,
@@ -451,6 +459,9 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     tracer: {
                         color: 0xE2C910,
                         saturatedColor: 0xFFBF00
+                    },
+                    headshot:{
+                        chance:0.09,
                     }
                 },
                 dual: {
@@ -515,7 +526,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     tracer: {
                         opacity: 0.8,
                         width: 1.1
-                    }
+                    },
                 },
                 dual: {
                     leftRightOffset: 1.3,
@@ -563,7 +574,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     damage: 15.5,
                     obstacleMultiplier: 1,
                     speed: 0.25,
-                    range: 130
+                    range: 130,
                 }
             },
             {
@@ -597,7 +608,10 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     damage: 7.75,
                     obstacleMultiplier: 1,
                     speed: 0.16,
-                    range: 85
+                    range: 85,
+                    headshot:{
+                        chance:0.2
+                    }
                 }
             },
             {
@@ -738,7 +752,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     damage: 14,
                     obstacleMultiplier: 1.5,
                     speed: 0.26,
-                    range: 160
+                    range: 160,
                 }
             },
             {
@@ -775,7 +789,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     range: 180,
                     tracer: {
                         length: 1.6
-                    }
+                    },
                 }
             },
             {
@@ -920,6 +934,9 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     range: 110,
                     tracer: {
                         opacity: 0.5
+                    },
+                    headshot:{
+                        chance:0.2
                     }
                 }
             },
@@ -1254,6 +1271,9 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     range: 50,
                     tracer: {
                         length: 0.7
+                    },
+                    headshot:{
+                        chance:0.2
                     }
                 }
             },
@@ -1527,6 +1547,10 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     tracer: {
                         width: 1.4,
                         length: 2.7
+                    },
+                    headshot:{
+                        chance:0.02,
+                        modify:1.05,
                     }
                 }
             },
@@ -1567,6 +1591,10 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     tracer: {
                         width: 1.6,
                         length: 3.7
+                    },
+                    headshot:{
+                        chance:0.02,
+                        modify:1.05,
                     }
                 }
             },
@@ -1607,6 +1635,10 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     tracer: {
                         width: 1.3,
                         length: 2.6
+                    },
+                    headshot:{
+                        chance:0.02,
+                        modify:1.05,
                     }
                 }
             },
@@ -1647,7 +1679,11 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         width: 2.5,
                         length: 4.2
                     },
-                    range: 300
+                    range: 300,
+                    headshot:{
+                        chance:0.02,
+                        modify:1.05,
+                    }
                 }
             },
             {
@@ -1687,7 +1723,11 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         width: 1.1,
                         length: 1.7
                     },
-                    lastShotFX: true
+                    lastShotFX: true,
+                    headshot:{
+                        chance:0.02,
+                        modify:1.05,
+                    }
                 }
             },
             {
@@ -1726,6 +1766,10 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     range: 180,
                     tracer: {
                         width: 1.2
+                    },
+                    headshot:{
+                        chance:0.02,
+                        modify:1.05,
                     }
                 }
             },
@@ -2856,6 +2900,10 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         width: 2.3,
                         opacity:0.4,
                         length: 1.3
+                    },
+                    headshot:{
+                        chance:0.02,
+                        modify:1.05,
                     }
                 }
             },
@@ -2896,6 +2944,10 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     tracer: {
                         width: 3,
                         length: 0.7,
+                    },
+                    headshot:{
+                        chance:0.1,
+                        modify:1.09,
                     }
                 }
             },
@@ -2952,7 +3004,11 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     damage: 18,
                     obstacleMultiplier: 2,
                     range: 275 * 2.25,
-                    speed: 0.2565
+                    speed: 0.2565,
+                    headshot:{
+                        chance:0.02,
+                        modify:1.05,
+                    }
                 },
                 fireMode: FireMode.Auto,
                 gasParticles:gasParticlePresets.automatic,
@@ -3126,6 +3182,10 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     tracer: {
                         opacity: 0.15,
                         length: 2
+                    },
+                    headshot:{
+                        chance:0.02,
+                        modify:1.05,
                     }
                 },
                 noMuzzleFlash: true
@@ -3284,7 +3344,11 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     damage: 90,
                     obstacleMultiplier: 1.6,
                     speed: 0.26,
-                    range: 1000
+                    range: 1000,
+                    headshot:{
+                        chance:0.02,
+                        modify:1.05,
+                    }
                 },
                 dual: {
                     ammoSpawnAmount:65,
@@ -3352,6 +3416,10 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         length: 1,
                         width: 1,
                     },
+                    headshot:{
+                        chance:0.02,
+                        modify:1.05,
+                    }
                 }
             },
             {
@@ -3390,6 +3458,9 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     range: 70,
                     tracer: {
                         opacity: 0.5
+                    },
+                    headshot:{
+                        chance:0.2
                     }
                 }
             },

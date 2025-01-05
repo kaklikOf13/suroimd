@@ -95,7 +95,11 @@ export class Bullet extends BaseBullet {
 
                 const { point, normal } = collision.intersection;
 
-                (object as Player | Obstacle | Building).hitEffect(point, Math.atan2(normal.y, normal.x));
+                if(object.isPlayer){
+                    (object as Player).hitEffect(point, Math.atan2(normal.y, normal.x),this.headshot?"headshot":undefined);
+                }else{
+                    (object as Obstacle | Building).hitEffect(point, Math.atan2(normal.y, normal.x));
+                }
 
                 this.damagedIDs.add(object.id);
 

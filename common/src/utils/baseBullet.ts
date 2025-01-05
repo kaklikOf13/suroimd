@@ -31,6 +31,7 @@ export interface BulletOptions {
     readonly reflectionCount?: number
     readonly variance?: number
     readonly rangeOverride?: number
+    readonly headshot?:boolean
 }
 
 type GameObject = {
@@ -72,6 +73,7 @@ export class BaseBullet {
     readonly rangeVariance: number;
 
     dead = false;
+    headshot=false;
 
     readonly definition: BulletDefinition;
 
@@ -107,6 +109,8 @@ export class BaseBullet {
         this.maxDistanceSquared = this.maxDistance ** 2;
 
         this.direction = Vec.create(Math.sin(this.rotation), -Math.cos(this.rotation));
+
+        this.headshot=options.headshot??false
 
         this.velocity = Vec.scale(
             this.direction,
@@ -178,7 +182,10 @@ export class BaseBullet {
         stream.writeLayer(this.layer);
         stream.writeFloat(this.rangeVariance, 0, 1, 4);
         stream.writeUint8(this.reflectionCount);
-        stream.writeObjectId(this.sourceID);
+        stream.writeObjectId(this.sourceID)
+        stream.writeBooleanGroup(
+            this.headshot
+        )
 
         // don't care about damage
         // don't care about dtc
@@ -207,7 +214,7 @@ export class BaseBullet {
             traceWidthMod,
             traceLengthMod,
             this.saturate,
-            this.thin
+            this.thin,
         );
 
         if (hasMods) {
@@ -253,6 +260,10 @@ export class BaseBullet {
         const sourceID = stream.readObjectId();
 
         const [
+            headshot
+        ]=stream.readBooleanGroup()
+
+        const [
             hasMods,
             speedMod,
             rangeMod,
@@ -260,7 +271,7 @@ export class BaseBullet {
             traceWidthMod,
             traceLengthMod,
             saturate,
-            thin
+            thin,
         ] = stream.readBooleanGroup();
 
         const modifiers = hasMods
@@ -296,7 +307,8 @@ export class BaseBullet {
             rangeOverride,
             modifiers,
             saturate,
-            thin
+            thin,
+            headshot:headshot??false
         };
     }
 }

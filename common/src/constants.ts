@@ -277,6 +277,10 @@ export const defaultBulletTemplate = {
         particle: false,
         zIndex: ZIndexes.Bullets
     },
+    headshot:{
+        chance:0.1,
+        modify:1.35,
+    },
     allowRangeOverride: false,
     lastShotFX: false,
     noCollision: false

@@ -68,7 +68,8 @@ export class Bullet extends BaseBullet {
             rotation: Angle.normalize(options.rotation),
             source: definition,
             sourceID: shooter.id,
-            variance: variance ? randomFloat(0, variance) : undefined
+            variance: variance ? randomFloat(0, variance) : undefined,
+            headshot:definition.headshot?Math.random()<=definition.headshot!.chance:false
         });
 
         this.clipDistance = options.rangeOverride ?? this.definition.range;
@@ -162,7 +163,11 @@ export class Bullet extends BaseBullet {
                 }
                 this.currentDamage-=isPlayer?object.health:isObstacle?object.health:0;
 
-                object.damage({amount:r.damage,source:r.source,weaponUsed:r.weapon,position:r.position})
+                if(object.isPlayer){
+                    object.damage({amount:r.damage,source:r.source,weaponUsed:r.weapon},this.headshot?this.definition.headshot!.modify:undefined)
+                }else{
+                    object.damage({amount:r.damage,source:r.source,weaponUsed:r.weapon,position:r.position})
+                }
 
                 this.dead = true;
             }
