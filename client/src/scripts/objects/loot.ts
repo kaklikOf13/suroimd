@@ -118,6 +118,7 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
                 }
                 case ItemType.Throwable: {
                     backgroundTexture = "loot_background_throwable";
+                    this.images.item.setRotation(-0.52)
                     break;
                 }
                 case ItemType.Perk: {

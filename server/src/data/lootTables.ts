@@ -484,7 +484,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
                 { table: "guns", weight: 0.05 }
             ]
         },
-        ...["mcx_spear", "hp18", "stoner_63", "mini14", "maul", "m590m", "dual_rsh12"].reduce(
+        ...["mcx_spear", "hp18", "stoner_63","model_37","zombie_hatchet", "mini14", "maul", "m590m", "dual_rsh12"].reduce(
             (acc, item) => {
                 acc[`gun_mount_${item}`] = [{ item, weight: 1 }];
                 return acc;

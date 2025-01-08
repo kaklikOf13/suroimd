@@ -2414,7 +2414,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             const count = this.inventory.items.getItem(item);
             const def = Loots.fromString(item);
 
-            const pos=this.hitbox.randomPoint()
 
             if (count > 0) {
                 if (
@@ -2423,19 +2422,21 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 ) continue;
 
                 if (def.itemType === ItemType.Ammo && count !== Infinity) {
+                    const angle = randomFloat(0, Math.PI * 2);
+                    const pos=Vec.create(position.x+(Math.cos(angle)*this.hitbox.radius),position.y+(Math.sin(angle)*this.hitbox.radius))
                     let left = count;
                     let subtractAmount = 0;
 
                     do {
                         left -= subtractAmount = Numeric.min(left, def.maxStackSize);
                         const loot=this.game.addLoot(item, pos, layer, { count: subtractAmount,jitterSpawn:true });
-                        loot!.push(Math.atan2(pos.x-this.position.x,pos.y-this.position.y),0.37)
+                        loot!.push(Math.atan2(pos.y-position.y,pos.x-position.x),0.09)
                     } while (left > 0);
 
                     continue;
                 }
 
-                this.game.addLoot(item, pos, layer, { count });
+                this.game.addLoot(item, position, layer, { count });
                 this.inventory.items.setItem(item, 0);
             }
         }
@@ -2447,7 +2448,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             }
             const item = this.inventory[itemType];
             if (item?.noDrop === false) {
-                this.game.addLoot(item, this.position, this.layer);
+                this.game.addLoot(item, position, this.layer);
             }
         }
 
@@ -2457,17 +2458,16 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             // Drop skin
             const { skin } = this.loadout;
             if (skin.hideFromLoadout) {
-
-                this.game.addLoot(skin, this.hitbox.randomPoint(), layer);
+                this.game.addLoot(skin, position, layer);
             }
         }
 
         if(this.dropable.perks){
             for (const perk of this.perks) {
                 if (!perk.noDrop) {
-                    this.game.addLoot(perk, this.hitbox.randomPoint(), layer);
+                    this.game.addLoot(perk, position, layer);
                 } else if (perk.noDrop && perk.category === PerkCategories.Halloween) {
-                    this.game.addLoot(PerkIds.PlumpkinGamble, this.hitbox.randomPoint(), layer);
+                    this.game.addLoot(PerkIds.PlumpkinGamble, position, layer);
                 }
             }
         }

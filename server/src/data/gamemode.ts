@@ -288,6 +288,7 @@ export type GamemodeMap=`${keyof typeof Maps}${string}`|({
 export interface Gamemode{
     readonly weaponsSelect:boolean
     readonly globalDamage:number
+    readonly globalRange:number
     readonly gas:GasConfig
     readonly spawn:Spawn
     readonly armorProtection:number
@@ -342,6 +343,7 @@ export const DefaultGamemode:Gamemode={
 
     adrenalineLoss:0.0004,
     globalDamage:.75,
+    globalRange:2.25,
     armorProtection:1,
 
     defaultGroup:-1,
@@ -357,7 +359,7 @@ export const DefaultGamemode:Gamemode={
         kill:5,
         position:0.1,
         becomeKillLeader:10,
-        killKillLeader:10,
+        killKillLeader:8,
         reviveFriend:3,
         win:10,
     }

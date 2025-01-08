@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="72"
-   height="72"
-   viewBox="0 0 19.05 19.050001"
+   width="65"
+   height="65"
+   viewBox="0 0 17.197917 17.197918"
    version="1.1"
    id="svg5"
    inkscape:version="1.4 (86a8ad7, 2024-10-11)"
@@ -28,7 +28,7 @@
      showgrid="false"
      units="px"
      inkscape:zoom="4.6072423"
-     inkscape:cx="47.642383"
+     inkscape:cx="47.750907"
      inkscape:cy="58.928961"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
@@ -63,8 +63,8 @@
     <rect
        style="fill:#d9d8e8;fill-opacity:1;stroke:#656374;stroke-width:1.58485;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
        id="rect846"
-       width="17.465147"
-       height="17.465147"
+       width="15.613068"
+       height="15.613068"
        x="0.79242498"
        y="0.79242498"
        ry="1.0990396"
@@ -72,29 +72,29 @@
     <circle
        style="fill:none;fill-opacity:1;stroke:#646176;stroke-width:0.631031;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path9697"
-       cx="16.097973"
-       cy="2.9521503"
-       r="0.73269308" />
+       cx="14.474906"
+       cy="2.7231238"
+       r="0.65499514" />
     <circle
        style="fill:none;fill-opacity:1;stroke:#646176;stroke-width:0.631031;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path9697-6"
-       cx="16.150839"
-       cy="16.083687"
-       r="0.73269308" />
+       cx="14.522166"
+       cy="14.462135"
+       r="0.65499514" />
     <circle
        style="fill:none;fill-opacity:1;stroke:#646176;stroke-width:0.631031;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path9697-7"
-       cx="2.9256918"
-       cy="16.083687"
-       r="0.73269308" />
+       cx="2.699471"
+       cy="14.462135"
+       r="0.65499514" />
     <circle
        style="fill:none;fill-opacity:1;stroke:#646176;stroke-width:0.631031;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path9697-5"
-       cx="3.0051222"
-       cy="2.9521503"
-       r="0.73269308" />
+       cx="2.7704782"
+       cy="2.7231238"
+       r="0.65499514" />
     <path
-       d="m 2.3283574,11.641661 h 1.9049939 v 1.587495 H 2.3283574 Z M 10.477496,8.1491717 q 0,0.8995805 -0.7619979,1.5557451 -0.2328326,0.2010827 -0.5079984,0.4021652 l -2.2754094,1.640412 h 3.5454057 v 1.481662 H 4.7625138 V 11.218329 L 8.5725017,8.4666707 v -0.529165 q 0,-0.634998 -0.634998,-0.634998 H 4.9741798 V 5.8208458 h 3.3866559 q 1.1112465,0 1.6086616,0.5079984 0.5079987,0.4974151 0.5079987,1.6086615 z m 6.244148,0 q 0,0.8995805 -0.761998,1.5557451 -0.232832,0.2010827 -0.507998,0.4021652 l -2.275409,1.640412 h 3.545405 v 1.481662 H 11.006662 V 11.218329 L 14.81665,8.4666707 v -0.529165 q 0,-0.634998 -0.634998,-0.634998 H 11.218328 V 5.8208458 h 3.386656 q 1.111246,0 1.608662,0.5079984 0.507998,0.4974151 0.507998,1.6086615 z"
+       d="m 2.1654805,10.491161 h 1.7029801 v 1.41915 H 2.1654805 Z M 9.4504491,7.3690304 q 0,0.8041851 -0.6811923,1.3907672 -0.208142,0.179759 -0.4541281,0.3595178 L 6.2810136,10.585771 h 3.1694355 v 1.32454 H 4.3415084 v -1.79759 L 7.7474687,7.6528605 V 7.1798104 q 0,-0.5676601 -0.5676601,-0.5676601 H 4.5307284 v -1.32454 h 3.0275203 q 0.9934051,0 1.4380721,0.454128 0.4541283,0.4446671 0.4541283,1.4380721 z m 5.5819919,0 q 0,0.8041851 -0.681193,1.3907672 -0.208141,0.179759 -0.454127,0.3595178 l -2.034115,1.4664556 h 3.169435 v 1.32454 H 9.9235001 v -1.79759 L 13.32946,7.6528605 V 7.1798104 q 0,-0.5676601 -0.56766,-0.5676601 h -2.64908 v -1.32454 h 3.02752 q 0.993405,0 1.438073,0.454128 0.454128,0.4446671 0.454128,1.4380721 z"
        id="text1"
        style="font-size:10.5833px;font-family:'Russo One';-inkscape-font-specification:'Russo One, Normal';text-align:center;text-anchor:middle;fill:#8c90a1;stroke-width:0.211667;stroke-linecap:round;stroke-linejoin:round;paint-order:markers fill stroke"
        aria-label=".22" />

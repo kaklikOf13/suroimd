@@ -432,7 +432,7 @@ export class Inventory {
         { count, data }: { count?: number, data?: ItemData<Def> } = {}
     ): void {
         this.owner.game
-            .addLoot(toDrop, this.owner.hitbox.randomPoint(), this.owner.layer, { jitterSpawn: false, pushVel: 0, count, data })
+            .addLoot(toDrop, this.owner.position, this.owner.layer, { jitterSpawn: false, pushVel: 0, count, data })
     }
 
     removeThrowable(type: ReifiableDef<ThrowableDefinition>, drop = true, removalCount?: number): void {
@@ -613,6 +613,12 @@ export class Inventory {
 
         switch (itemType) {
             case ItemType.Healing:
+                const itemAmount = this.items.getItem(idString);
+                const removalAmount=itemAmount/2
+
+                this._dropItem(definition, { count: removalAmount });
+                this.items.decrementItem(idString, removalAmount);
+                break;
             case ItemType.Ammo: {
                 const itemAmount = this.items.getItem(idString);
                 const removalAmount = Numeric.min(itemAmount, Math.max(Math.ceil(itemAmount / 2),Math.ceil((definition as AmmoDefinition).dropAmmout/4)));

@@ -262,8 +262,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 recoilMultiplier: 0.8,
                 recoilDuration: 90,
                 fireMode: FireMode.Single,
-                shotSpread: 5,
-                moveSpread: 10,
+                shotSpread: 3,
+                moveSpread: 6,
                 length: 4.7,
                 fists: {
                     left: Vec.create(40, 0),
@@ -287,7 +287,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 extendedCapacity: 24,
                 reloadTime: 1.5,
                 ballistics: {
-                    damage: 13,
+                    damage: 14,
                     obstacleMultiplier: 1,
                     speed: 0.16,
                     range: 120,
@@ -299,8 +299,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 dual: {
                     leftRightOffset: 1.3,
                     fireDelay: 75,
-                    shotSpread: 7,
-                    moveSpread: 15,
+                    shotSpread: 5,
+                    moveSpread: 9,
                     capacity: 30,
                     extendedCapacity: 48,
                     reloadTime: 2.9
@@ -402,7 +402,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 capacity: 7,
                 reloadTime: 2.1,
                 ballistics: {
-                    damage: 24.5,
+                    damage: 25,
                     obstacleMultiplier: 1.5,
                     speed: 0.26,
                     range: 160,
@@ -679,7 +679,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     damage: 9,
                     obstacleMultiplier: 1,
                     speed: 0.27,
-                    range: 130
+                    range: 75
                 }
             },
             {
@@ -713,7 +713,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     damage: 10.5,
                     obstacleMultiplier: 1,
                     speed: 0.25,
-                    range: 160,
+                    range: 120,
                     tracer: {
                         opacity: 0.5
                     }
@@ -1239,9 +1239,9 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 recoilMultiplier: 0.5,
                 recoilDuration: 550,
                 fireMode: FireMode.Single,
-                shotSpread: 5,
-                moveSpread: 7,
-                jitterRadius: 3.4,
+                shotSpread: 8,
+                moveSpread: 10,
+                jitterRadius: 3.1,
                 bulletCount: 12,
                 length: 7.85,
                 fists: {
@@ -1268,7 +1268,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     damage: 10,
                     obstacleMultiplier: 1,
                     speed: 0.17,
-                    range: 50,
+                    range: 38,
                     tracer: {
                         length: 0.7
                     },
@@ -1311,7 +1311,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     damage: 4.5,
                     obstacleMultiplier: 0.5,
                     speed: 0.2,
-                    range: 60,
+                    range: 50,
                     tracer: {
                         length: 0.3
                     }
@@ -2692,7 +2692,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     damage: 19,
                     obstacleMultiplier: 1,
                     speed: 0.2475,
-                    range: 675
+                    range: 300
                 }
             },
             /*{
@@ -2773,7 +2773,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     damage: 6.5,
                     obstacleMultiplier: 1,
                     speed: 0.20,
-                    range: 70
+                    range: 50
                 }
             },
             {
@@ -2789,7 +2789,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ballistics: {
                     damage: 10.8,
                     obstacleMultiplier: 5,
-                    range: 200 * 2.25,
+                    range: 200,
                     speed: 0.2925
                 },
                 fireMode: FireMode.Auto,
@@ -2853,8 +2853,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ballistics: {
                     damage: 89,
                     obstacleMultiplier: 1.5,
-                    speed: 0.4095,
-                    range: 1170,
+                    speed: 0.4,
+                    range: 360,
                     tracer: {
                         width: 2.4,
                         length: 2.45
@@ -2964,7 +2964,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ballistics: {
                     damage: 19,
                     obstacleMultiplier: 2,
-                    range: 200 * 2.25,
+                    range: 200,
                     speed: 0.27
                 },
                 fireMode: FireMode.Auto,
@@ -3003,7 +3003,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ballistics: {
                     damage: 18,
                     obstacleMultiplier: 2,
-                    range: 275 * 2.25,
+                    range: 275,
                     speed: 0.2565,
                     headshot:{
                         chance:0.02,
@@ -3045,7 +3045,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ballistics: {
                     damage: 15,
                     obstacleMultiplier: 2,
-                    range: 220 * 2.25,
+                    range: 220,
                     speed: 0.28125
                 },
                 gasParticles:gasParticlePresets.automatic,
@@ -3222,7 +3222,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     damage: 13,
                     obstacleMultiplier: 1,
                     speed: 0.27,
-                    range: 130
+                    range: 78
                 }
             },
             {
@@ -3341,7 +3341,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 capacity: 5,
                 reloadTime: 3,
                 ballistics: {
-                    damage: 90,
+                    damage: 100,
                     obstacleMultiplier: 1.6,
                     speed: 0.26,
                     range: 1000,
@@ -3522,59 +3522,6 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 }
             },
             {
-                idString: "medic_pistol",
-                name: "Medic Pistol",
-                ammoType: "medic_charge",
-                ammoSpawnAmount: 120,
-                fireDelay: 60,
-                switchDelay: 250,
-                recoilMultiplier: 0.7,
-                recoilDuration: 300,
-                fireMode: FireMode.Single,
-                shotSpread: 1,
-                moveSpread: 2,
-                length: 4.7,
-                fists: {
-                    left: Vec.create(40, 0),
-                    right: Vec.create(40, 0),
-                    leftZIndex: 4,
-                    rightZIndex: 4,
-                    animationDuration: 100
-                },
-                image: { position: Vec.create(65, 0) },
-                casingParticles: [{
-                    position: Vec.create(3.5, 0.5),
-                    velocity: {
-                        y: {
-                            min: 2,
-                            max: 18
-                        }
-                    }
-                }],
-                gasParticles: gasParticlePresets.pistol,
-                capacity: 7,
-                extendedCapacity: 10,
-                reloadTime: 2.5,
-                ballistics: {
-                    damage: 3,
-                    heal:true,
-                    obstacleMultiplier: 1,
-                    speed: 0.18,
-                    range: 120,
-                    tracer:{
-                        length:2.5,
-                        opacity:1,
-                        color:0x11ee11
-                    }
-                },
-                dual: {
-                    leftRightOffset: 1.3,
-                    capacity: 14,
-                    extendedCapacity: 20,
-                    reloadTime: 3.7
-                }
-            },
-            {
                 idString: "uzi_22lr",
                 name: "Uzi .22LR",
                 ammoType: "22lr",
@@ -3708,6 +3655,59 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     }
                 }],
                 gasParticles:gasParticlePresets.automatic,
+            },
+            {
+                idString: "medic_pistol",
+                name: "Medic Pistol",
+                ammoType: "medic_charge",
+                ammoSpawnAmount: 120,
+                fireDelay: 100,
+                switchDelay: 250,
+                recoilMultiplier: 0.7,
+                recoilDuration: 300,
+                fireMode: FireMode.Single,
+                shotSpread: 1,
+                moveSpread: 2,
+                length: 4.7,
+                fists: {
+                    left: Vec.create(40, 0),
+                    right: Vec.create(40, 0),
+                    leftZIndex: 4,
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                image: { position: Vec.create(65, 0) },
+                casingParticles: [{
+                    position: Vec.create(3.5, 0.5),
+                    velocity: {
+                        y: {
+                            min: 2,
+                            max: 18
+                        }
+                    }
+                }],
+                gasParticles: gasParticlePresets.pistol,
+                capacity: 7,
+                extendedCapacity: 10,
+                reloadTime: 2.5,
+                ballistics: {
+                    damage: 3,
+                    heal:true,
+                    obstacleMultiplier: 1,
+                    speed: 0.18,
+                    range: 120,
+                    tracer:{
+                        length:2.5,
+                        opacity:1,
+                        color:0x11ee11
+                    }
+                },
+                dual: {
+                    leftRightOffset: 1.3,
+                    capacity: 14,
+                    extendedCapacity: 20,
+                    reloadTime: 3.7
+                }
             },
         ] satisfies ReadonlyArray<RawDefinition<RawGunDefinition>>).map(e => {
             if (e.dual === undefined) {

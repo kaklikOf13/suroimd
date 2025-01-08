@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="72"
-   height="72"
-   viewBox="0 0 19.05 19.050001"
+   width="65"
+   height="65"
+   viewBox="0 0 17.197917 17.197918"
    version="1.1"
    id="svg5"
    inkscape:version="1.4 (86a8ad7, 2024-10-11)"
@@ -28,7 +28,7 @@
      showgrid="false"
      units="px"
      inkscape:zoom="4.6072423"
-     inkscape:cx="25.937425"
+     inkscape:cx="26.045949"
      inkscape:cy="58.928961"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
@@ -63,8 +63,8 @@
     <rect
        style="fill:#e2b709;fill-opacity:1;stroke:#886e05;stroke-width:1.58485;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
        id="rect846"
-       width="17.465147"
-       height="17.465147"
+       width="15.613068"
+       height="15.613068"
        x="0.79242498"
        y="0.79242498"
        ry="1.0990396"
@@ -72,29 +72,29 @@
     <circle
        style="fill:none;fill-opacity:1;stroke:#886e05;stroke-width:0.631031;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path9697"
-       cx="16.097973"
-       cy="2.9521503"
-       r="0.73269308" />
+       cx="14.474906"
+       cy="2.7231238"
+       r="0.65499514" />
     <circle
        style="fill:none;fill-opacity:1;stroke:#886e05;stroke-width:0.631031;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path9697-6"
-       cx="16.150839"
-       cy="16.083687"
-       r="0.73269308" />
+       cx="14.522166"
+       cy="14.462135"
+       r="0.65499514" />
     <circle
        style="fill:none;fill-opacity:1;stroke:#886e05;stroke-width:0.631031;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path9697-7"
-       cx="2.9256918"
-       cy="16.083687"
-       r="0.73269308" />
+       cx="2.699471"
+       cy="14.462135"
+       r="0.65499514" />
     <circle
        style="fill:none;fill-opacity:1;stroke:#886e05;stroke-width:0.631031;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path9697-5"
-       cx="3.0051222"
-       cy="2.9521503"
-       r="0.73269308" />
+       cx="2.7704782"
+       cy="2.7231238"
+       r="0.65499514" />
     <path
-       d="m 7.2866249,11.477625 q 1.9621499,0.142875 2.7622501,0.142875 0.219075,0 0.3429,-0.123825 0.13335,-0.13335 0.13335,-0.352425 V 10.287 q -0.9239252,0.1905 -1.6192501,0.1905 h -0.66675 q -0.6477,0 -1.038225,-0.390525 -0.390525,-0.3905245 -0.390525,-1.0382245 v -1.23825 q 0,-0.8667749 0.43815,-1.2858749 0.43815,-0.428625 1.3716,-0.428625 h 1.8097501 q 0.93345,0 1.3716,0.428625 0.43815,0.4191 0.43815,1.2858749 V 11.14425 q 0,0.93345 -0.43815,1.3716 -0.43815,0.43815 -1.3716,0.43815 -1.3049251,0 -3.1432501,-0.1905 z M 9.3821248,9.1440005 q 0.542925,0 1.1430002,-0.09525 v -1.04775 q 0,-0.5714999 -0.5715002,-0.5714999 H 9.0963749 q -0.5715,0 -0.5715,0.5714999 v 0.809625 q 0,0.142875 0.09525,0.238125 0.09525,0.09525 0.238125,0.09525 z"
+       d="m 6.5979518,10.34452 q 1.7540751,0.127724 2.4693292,0.127724 0.1958433,0 0.3065374,-0.110694 0.119209,-0.119209 0.119209,-0.315052 V 9.2801542 Q 8.6670792,9.4504527 8.0454895,9.4504527 H 7.4494446 q -0.5790151,0 -0.9281271,-0.349112 Q 6.1722054,8.7522291 6.1722054,8.173214 V 7.0662734 q 0,-0.7748583 0.3916867,-1.1495152 0.3916867,-0.3831717 1.2261496,-0.3831717 h 1.6178364 q 0.8344629,0 1.2261499,0.3831717 0.391686,0.3746569 0.391686,1.1495152 v 2.9802246 q 0,0.834463 -0.391686,1.226149 -0.391687,0.391687 -1.2261499,0.391687 -1.1665452,0 -2.8099263,-0.170299 z m 1.873284,-2.0861567 q 0.4853509,0 1.0217916,-0.085149 V 7.2365719 q 0,-0.5108955 -0.5108959,-0.5108955 H 8.2157881 q -0.5108957,0 -0.5108957,0.5108955 v 0.7237689 q 0,0.1277239 0.085149,0.2128732 0.085149,0.085149 0.2128732,0.085149 z"
        id="text1"
        style="font-size:9.525px;font-family:'Russo One';-inkscape-font-specification:'Russo One, Normal';fill:#715b04;stroke-width:0.631031;stroke-linecap:round;stroke-linejoin:round;paint-order:markers stroke fill"
        aria-label="9" />

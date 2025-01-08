@@ -215,6 +215,11 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             damageDelay: 220,
         },
         {
+            [inheritFrom]:"hatchet",
+            idString: "zombie_hatchet",
+            name: "Zombie Hatchet",
+        },
+        {
             idString: "fire_hatchet",
             name: "Fire Hatchet",
             damage: 50,

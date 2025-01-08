@@ -101,8 +101,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                 if (definition.gunMount.type === "melee") {
                     this.mountSprite.scale.set(-0.95, -0.95);
                     this.mountSprite
-                        .setPos(-12.5, 7)
-                        .setRotation(Math.PI / 4);
+                        .setPos(-12.5, 7);
                 }
 
                 this.container.addChild(this.mountSprite);

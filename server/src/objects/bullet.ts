@@ -72,7 +72,7 @@ export class Bullet extends BaseBullet {
             headshot:definition.headshot?Math.random()<=definition.headshot!.chance:false
         });
 
-        this.clipDistance = options.rangeOverride ?? this.definition.range;
+        this.clipDistance = options.rangeOverride ?? this.definition.range*game.gamemode.globalRange;
         this.game = game;
         this.sourceGun = source;
         this.shooter = shooter;

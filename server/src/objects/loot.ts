@@ -123,7 +123,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 const vecCollisionNorm = Vec.create(vecCollision.x / dist, vecCollision.y / dist);
                 const vRelativeVelocity = Vec.create(this.velocity.x - object.velocity.x, this.velocity.y - object.velocity.y);
 
-                const speed = (vRelativeVelocity.x * vecCollisionNorm.x + vRelativeVelocity.y * vecCollisionNorm.y) * 0.7;
+                const speed = (vRelativeVelocity.x * vecCollisionNorm.x + vRelativeVelocity.y * vecCollisionNorm.y) * 0.65;
 
                 if (speed < 0) continue;
 
@@ -167,7 +167,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
         };
 
         this.position = Vec.add(this.position, calculateSafeDisplacement());
-        this.velocity = Vec.scale(this.velocity, 1 / (1 + this.game.dt * 0.01));
+        this.velocity = Vec.scale(this.velocity, 1 / (1 + this.game.dt * 0.008));
 
         this.position = Vec.add(this.position, calculateSafeDisplacement());
         this.position.x = Numeric.clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
