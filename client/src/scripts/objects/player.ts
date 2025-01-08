@@ -34,7 +34,7 @@ import { GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { type Particle, type ParticleEmitter } from "./particles";
 import type { AllowedEmoteSources } from "@common/packets/inputPacket";
-import { Auras, type AuraDefinition } from "@common/definitions/loadout/aura";
+import { ExtraLoadout, ExtraLoadoutList, type AuraDefinition, type ExtraLoadoutDefinition } from "@common/definitions/loadout/extra_loadout";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
@@ -89,6 +89,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     healAura=false
 
     private _skin: ReferenceTo<SkinDefinition> = "";
+    extra_loadout_fist?: ExtraLoadoutDefinition;
 
     readonly images: {
         readonly aimTrail: TilingSprite
@@ -689,15 +690,32 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             const skinFrame=skinDef.frame??skinID
 
+            if(data.full!.fist_loadout??0>0){
+                this.extra_loadout_fist=ExtraLoadout[ExtraLoadoutList[data.full!.fist_loadout!-1]]
+            }else{
+                this.extra_loadout_fist=undefined
+            }
+
             body
                 .setFrame(`${skinFrame}_base`)
                 .setTint(tint);
-            leftFist
-                .setFrame(`${skinFrame}_fist`)
-                .setTint(tint);
-            rightFist
-                .setFrame(`${skinFrame}_fist`)
-                .setTint(tint);
+            if(this.extra_loadout_fist){
+                leftFist
+                    .setFrame(`${this.extra_loadout_fist.frame}`)
+                    .setTint(tint);
+                rightFist
+                    .setFrame(`${this.extra_loadout_fist.frame}`)
+                    .setTint(tint)
+                    .scale.set(1,-1);
+            }else{
+                leftFist
+                    .setFrame(`${skinFrame}_fist`)
+                    .setTint(tint);
+                rightFist
+                    .setFrame(`${skinFrame}_fist`)
+                    .setTint(tint)
+                    .scale.set(1,1);
+            }
             leftLeg
                 ?.setFrame(`${skinFrame}_fist`)
                 .setTint(tint);
@@ -814,7 +832,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     }
                     if(this.healAura){
                         //@ts-ignore
-                        this.setAura(Auras.medic_aura,itemDef.healType===HealType.Adrenaline?0x11ff11:0xff1111,Perks.fromString(PerkIds.HealingAura).radius*0.23)
+                        this.setAura(ExtraLoadout.medic_aura,itemDef.healType===HealType.Adrenaline?0x11ff11:0xff1111,Perks.fromString(PerkIds.HealingAura).radius*0.23)
                     }
                     healing=true
                     break;
@@ -828,7 +846,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     }
                     if(this.healAura){
                         //@ts-ignore
-                        this.setAura(Auras.medic_aura,0xff1166,Perks.fromString(PerkIds.HealingAura).radius*0.23)
+                        this.setAura(ExtraLoadout.medic_aura,0xff1166,Perks.fromString(PerkIds.HealingAura).radius*0.23)
                     }
                     healing=true
                     break;
@@ -2099,7 +2117,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         this.images.aura=new Container()
         const skin=Skins.fromStringSafe(this._skin)
         if(skin?.shiny){
-            this._setAura((Auras["shiny_aura"]),skin.backpackTint??tint,1)
+            this._setAura(ExtraLoadout["shiny_aura"] as AuraDefinition,skin.backpackTint??tint,1)
         }
         if(aura){
             this._setAura(cloneDeep(aura),tint,scale)
@@ -2108,7 +2126,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     }
     _setAura(aura:AuraDefinition,tint:number,scale:number=1){
         if(aura.subaura){
-            this._setAura(aura.subaura,tint)
+            this._setAura(aura.subaura as AuraDefinition,tint)
             return
         }
         const auraSprite = new SuroiSprite(aura.frame);

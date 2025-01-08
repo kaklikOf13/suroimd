@@ -52,6 +52,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             readonly activeItem: WeaponDefinition
             readonly sizeMod: number
             readonly skin: SkinDefinition
+            readonly fist_loadout?:number
             readonly helmet?: ArmorDefinition
             readonly vest?: ArmorDefinition
             readonly backpack: BackpackDefinition
@@ -239,7 +240,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 backpack,
                 halloweenThrowableSkin,
                 activeDisguise,
-                blockEmoting
+                blockEmoting,
+                fist_loadout,
             } }
         ): void {
             stream.writeLayer(layer);
@@ -266,6 +268,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             stream.writeFloat(sizeMod, 0, 4, 1);
 
             Skins.writeToStream(stream, skin);
+
+            stream.writeUint8(fist_loadout??0);
 
             if (hasHelmet) Armors.writeToStream(stream, helmet);
             if (hasVest) Armors.writeToStream(stream, vest);
@@ -328,6 +332,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 activeItem: Loots.readFromStream(stream),
                 sizeMod: stream.readFloat(0, 4, 1),
                 skin: Skins.readFromStream(stream),
+                fist_loadout:stream.readUint8(),
                 helmet: hasHelmet ? Armors.readFromStream(stream) : undefined,
                 vest: hasVest ? Armors.readFromStream(stream) : undefined,
                 backpack: Backpacks.readFromStream(stream),

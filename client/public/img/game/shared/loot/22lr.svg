@@ -28,7 +28,7 @@
      showgrid="false"
      units="px"
      inkscape:zoom="4.6072423"
-     inkscape:cx="47.750907"
+     inkscape:cx="47.642383"
      inkscape:cy="58.928961"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
@@ -93,16 +93,10 @@
        cx="3.0051222"
        cy="2.9521503"
        r="0.73269308" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:'Russo One';-inkscape-font-specification:'Russo One, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#8c90a1;stroke:none;stroke-width:0.211667;stroke-linecap:round;stroke-linejoin:round;paint-order:markers fill stroke;fill-opacity:1"
-       x="9.5250015"
-       y="13.229156"
-       id="text1"><tspan
-         sodipodi:role="line"
-         id="tspan1"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:'Russo One';-inkscape-font-specification:'Russo One, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke:none;stroke-width:0.211667;fill:#8c90a1;fill-opacity:1"
-         x="9.5250015"
-         y="13.229156">.22</tspan></text>
+    <path
+       d="m 2.3283574,11.641661 h 1.9049939 v 1.587495 H 2.3283574 Z M 10.477496,8.1491717 q 0,0.8995805 -0.7619979,1.5557451 -0.2328326,0.2010827 -0.5079984,0.4021652 l -2.2754094,1.640412 h 3.5454057 v 1.481662 H 4.7625138 V 11.218329 L 8.5725017,8.4666707 v -0.529165 q 0,-0.634998 -0.634998,-0.634998 H 4.9741798 V 5.8208458 h 3.3866559 q 1.1112465,0 1.6086616,0.5079984 0.5079987,0.4974151 0.5079987,1.6086615 z m 6.244148,0 q 0,0.8995805 -0.761998,1.5557451 -0.232832,0.2010827 -0.507998,0.4021652 l -2.275409,1.640412 h 3.545405 v 1.481662 H 11.006662 V 11.218329 L 14.81665,8.4666707 v -0.529165 q 0,-0.634998 -0.634998,-0.634998 H 11.218328 V 5.8208458 h 3.386656 q 1.111246,0 1.608662,0.5079984 0.507998,0.4974151 0.507998,1.6086615 z"
+       id="text1"
+       style="font-size:10.5833px;font-family:'Russo One';-inkscape-font-specification:'Russo One, Normal';text-align:center;text-anchor:middle;fill:#8c90a1;stroke-width:0.211667;stroke-linecap:round;stroke-linejoin:round;paint-order:markers fill stroke"
+       aria-label=".22" />
   </g>
 </svg>

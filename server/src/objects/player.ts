@@ -75,7 +75,7 @@ export interface PlayerContainer {
 export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     private static readonly baseHitbox = new CircleHitbox(GameConstants.player.radius);
 
-    override readonly fullAllocBytes = 16;
+    override readonly fullAllocBytes = 17;
     override readonly partialAllocBytes = 16;
     override readonly damageable = true;
 
@@ -88,6 +88,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     halloweenThrowableSkin = false;
     activeBloodthirstEffect = false;
     activeDisguise?: ObstacleDefinition;
+
+    fist_loadout:number=0;
 
     teamID?: number;
     colorIndex = 0; // Assigned in the team.ts file.
@@ -2828,7 +2830,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 activeDisguise: this.activeDisguise,
                 blockEmoting: this.blockEmoting,
                 sizeMod:this._sizeMod,
-                healAura:this.hasPerk(PerkIds.HealingAura)
+                healAura:this.hasPerk(PerkIds.HealingAura),
+                fist_loadout:this.fist_loadout
             }
         };
 
