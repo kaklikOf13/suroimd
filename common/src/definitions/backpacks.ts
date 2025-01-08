@@ -42,6 +42,7 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                     "22lr":160,
                     "50cal": 40,
                     "338lap": 18,
+                    "medic_charge": 25,
                     "power_cell": Infinity,
                     "curadell": 1,
                     "firework_rocket": 10,
@@ -53,7 +54,7 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                     "ice_grenade":1,
                 },
                 noDrop: true,
-                capacity:7,
+                capacity:8,
             },
             backpack(
                 ["Basic"],
@@ -72,6 +73,7 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                         "22lr":300,
                         "50cal": 60,
                         "338lap": 24,
+                        "medic_charge": 50,
                         "power_cell": Infinity,
                         "curadell": 2,
                         "firework_rocket": 20,
@@ -83,7 +85,7 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                         "ice_grenade":2,
                     },
                     defaultTint: 0xeeeeee,
-                    capacity:12,
+                    capacity:11,
                 }
             ),
             backpack(
@@ -103,6 +105,7 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                         "22lr":550,
                         "50cal": 80,
                         "338lap": 30,
+                        "medic_charge": 120,
                         "power_cell": Infinity,
                         "curadell": 3,
                         "firework_rocket": 30,
@@ -114,7 +117,7 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                         "ice_grenade":3,
                     },
                     defaultTint: 0x63754b,
-                    capacity:24,
+                    capacity:23,
                 }
             ),
             backpack(
@@ -131,6 +134,7 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                         "762mm": 300,
                         "45acp":300,
                         "9mm": 420,
+                        "medic_charge": 200,
                         "22lr":550,
                         "50cal": 100,
                         "338lap": 42,
@@ -146,7 +150,7 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                         "airstrike":4,
                     },
                     defaultTint: 0x3f3f3f,
-                    capacity:36,
+                    capacity:35,
                 }
             )
         ];

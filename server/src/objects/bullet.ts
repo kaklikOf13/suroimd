@@ -164,7 +164,11 @@ export class Bullet extends BaseBullet {
                 this.currentDamage-=isPlayer?object.health:isObstacle?object.health:0;
 
                 if(object.isPlayer){
-                    object.damage({amount:r.damage,source:r.source,weaponUsed:r.weapon},this.headshot?this.definition.headshot!.modify:undefined)
+                    if(this.definition.heal){
+                        object.health+=this.definition.damage
+                    }else{
+                        object.damage({amount:r.damage,source:r.source,weaponUsed:r.weapon},this.headshot?this.definition.headshot!.modify:undefined)
+                    }
                 }else{
                     object.damage({amount:r.damage,source:r.source,weaponUsed:r.weapon,position:r.position})
                 }

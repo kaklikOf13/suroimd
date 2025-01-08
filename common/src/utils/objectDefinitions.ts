@@ -629,6 +629,7 @@ export type BaseBulletDefinition = {
     readonly obstacleMultiplier: number
     readonly speed: number
     readonly range: number
+    readonly heal?:boolean
 
     readonly headshot?:{
         readonly chance:number

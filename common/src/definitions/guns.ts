@@ -3522,6 +3522,59 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 }
             },
             {
+                idString: "medic_pistol",
+                name: "Medic Pistol",
+                ammoType: "medic_charge",
+                ammoSpawnAmount: 120,
+                fireDelay: 60,
+                switchDelay: 250,
+                recoilMultiplier: 0.7,
+                recoilDuration: 300,
+                fireMode: FireMode.Single,
+                shotSpread: 1,
+                moveSpread: 2,
+                length: 4.7,
+                fists: {
+                    left: Vec.create(40, 0),
+                    right: Vec.create(40, 0),
+                    leftZIndex: 4,
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                image: { position: Vec.create(65, 0) },
+                casingParticles: [{
+                    position: Vec.create(3.5, 0.5),
+                    velocity: {
+                        y: {
+                            min: 2,
+                            max: 18
+                        }
+                    }
+                }],
+                gasParticles: gasParticlePresets.pistol,
+                capacity: 7,
+                extendedCapacity: 10,
+                reloadTime: 2.5,
+                ballistics: {
+                    damage: 3,
+                    heal:true,
+                    obstacleMultiplier: 1,
+                    speed: 0.18,
+                    range: 120,
+                    tracer:{
+                        length:2.5,
+                        opacity:1,
+                        color:0x11ee11
+                    }
+                },
+                dual: {
+                    leftRightOffset: 1.3,
+                    capacity: 14,
+                    extendedCapacity: 20,
+                    reloadTime: 3.7
+                }
+            },
+            {
                 idString: "uzi_22lr",
                 name: "Uzi .22LR",
                 ammoType: "22lr",

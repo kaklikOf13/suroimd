@@ -134,9 +134,11 @@ const DefaultRoles:Record<string,Gamerole>={
             melee:"battlesaw",
             backpack:"tactical_pack",
             helmet:"medic_helmet",
+            gun1:"medic_pistol",
             perks:[PerkIds.SelfRevive,PerkIds.HealingAura],
         },
         items:{
+            "medic_charge":400,
             "gauze":7,
             "medikit":2,
             "cola":4,

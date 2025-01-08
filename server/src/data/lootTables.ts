@@ -763,7 +763,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "tango_51", weight: 0.65 },
             { item: "stoner_63", weight: 0.6 },
             { item: "sv98", weight: 0.5 },
-            { item: "m134_22lr", weight: 0.2 },
+            { item: "medic_pistol", weight: 0.2 },
             { item: "radio", weight: 0.1 },
         ],
         legendary_guns:[
@@ -785,6 +785,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "dual_rsh12", weight: 0.5 },
             { item: "awms", weight: 0.4 },
             { item: "m134", weight: 0.4 },
+            { item: "m134_22lr", weight: 0.2 },
             { item: "nuke_radio", weight: 0.1 },
         ],
         guns: [
@@ -792,14 +793,14 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { table: "uncommon_guns", weight: 21 },
             { table: "rare_guns", weight: 9.5 },
             { table: "epic_guns", weight: 0.7 },
-            { table: "legendary_guns", weight: 0.05 },
+            { table: "legendary_guns", weight: 0.04 },
         ],
         special_guns: [
             { table: "common_guns", weight: 24 },
             { table: "uncommon_guns", weight: 24 },
             { table: "rare_guns", weight: 10 },
             { table: "epic_guns", weight: 0.8 },
-            { table: "legendary_guns", weight: 0.08 },
+            { table: "legendary_guns", weight: 0.065 },
         ],
         healing_items: [
             { item: "gauze", count: 5, weight: 3 },
@@ -849,7 +850,9 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "22lr", count: 100, weight: 1.05 },
             { item: "12g", count: 10, weight: 0.75 },
             { item: "50cal", count: 20, weight: 0.05 },
-            { item: "338lap", count: 6, weight: 0.005 }
+            { item: "medic_charge", count: 30, weight: 0.006 },
+            { item: "338lap", count: 6, weight: 0.005 },
+            { item: "curadell", count: 1, weight: 0.003 }
         ],
         throwables: [
             { item: "frag_grenade", count: 2, weight: 1 },

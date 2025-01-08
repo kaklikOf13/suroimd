@@ -142,6 +142,20 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
             size:0.035
         },
         {
+            idString: "medic_charge",
+            name: "Medic Charge",
+            maxStackSize: 40,
+            dropAmmout:30,
+            hideUnlessPresent:true,
+            characteristicColor: {
+                hue: 120,
+                saturation: 87,
+                lightness: 50
+            },
+            defaultCasingFrame: "casing_556x45mm",
+            size:0.025
+        },
+        {
             idString: "curadell",
             name: "Curadell",
             maxStackSize: 10,

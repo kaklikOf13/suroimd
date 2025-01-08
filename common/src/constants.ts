@@ -283,7 +283,8 @@ export const defaultBulletTemplate = {
     },
     allowRangeOverride: false,
     lastShotFX: false,
-    noCollision: false
+    noCollision: false,
+    heal:false
 };
 
 export const TentTints = {
