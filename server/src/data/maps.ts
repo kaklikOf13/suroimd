@@ -570,15 +570,22 @@ const maps:Record<string, MapDefinition> = {
                                 max:70,
                                 min:50,
                                 objects:DefaultChooses.LootTables
+                            },
+                            {
+                                objects:DefaultChooses.Bushs,
+                                min:80,
+                                max:120,
+                            },
+                            {
+                                objects:DefaultChooses.Trees,
+                                min:60,
+                                max:120,
                             }
                         ],
                         obstacles:{
                             rock:40,
                             oak_tree: 20,
-                            small_oak_tree: 50,
-                            birch_tree: 10,
-                            pine_tree: 5,
-                            loot_tree: 2,
+                            loot_tree: 1,
                         },
                         loots:{
                             ground_loot:30,
@@ -666,14 +673,21 @@ const maps:Record<string, MapDefinition> = {
                                 max:40,
                                 min:20,
                                 objects:DefaultChooses.LootTables
+                            },
+
+                            {
+                                objects:DefaultChooses.Bushs,
+                                min:50,
+                                max:60,
+                            },
+                            {
+                                objects:DefaultChooses.Trees,
+                                min:30,
+                                max:50,
                             }
                         ],
                         obstacles:{
                             rock:20,
-                            oak_tree: 10,
-                            small_oak_tree: 20,
-                            birch_tree: 7,
-                            pine_tree: 3,
                         },
                         loots:{
                             ground_loot:10,
@@ -761,13 +775,20 @@ const maps:Record<string, MapDefinition> = {
                                 max:8,
                                 min:5,
                                 objects:DefaultChooses.LootTables
+                            },
+                            {
+                                objects:DefaultChooses.Bushs,
+                                min:20,
+                                max:30,
+                            },
+                            {
+                                objects:DefaultChooses.Trees,
+                                min:10,
+                                max:25,
                             }
                         ],
                         obstacles:{
                             rock:10,
-                            small_oak_tree: 3,
-                            birch_tree: 2,
-                            pine_tree: 1,
                         },
                         loots:{
                             ground_loot:5,
@@ -846,6 +867,16 @@ const maps:Record<string, MapDefinition> = {
                                 min:2,
                                 objects:DefaultChooses.SpecialLootTables
                             },
+                            {
+                                objects:DefaultChooses.Bushs,
+                                min:1,
+                                max:1,
+                            },
+                            {
+                                objects:DefaultChooses.Trees,
+                                min:1,
+                                max:1,
+                            }
                         ],
                         obstacles:{
                             rock:6,
@@ -864,18 +895,6 @@ const maps:Record<string, MapDefinition> = {
                             minWideWidth: 4,
                             maxWideWidth: 1
                         },
-                        obstacleClumps: [
-                            {
-                                clumpAmount: 2,
-                                clump: {
-                                    minAmount: 2,
-                                    maxAmount: 4,
-                                    jitter: 5,
-                                    obstacles: ["small_oak_tree"],
-                                    radius: 12
-                                }
-                            },
-                        ],
                     },
                 ],
                 max:7,

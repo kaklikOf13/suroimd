@@ -84,7 +84,7 @@ export abstract class BaseHitbox<T extends HitboxType = HitboxType> implements D
             case HitboxType.Polygon:
                 const pos=strm.readFullPosition()
                 const points=strm.readArray(()=>{
-                    return strm.readFullPosition()
+                    return Vec.add(strm.readPosition(),pos)
                 },2)
                 return new PolygonHitbox(points,pos)
         }
@@ -612,9 +612,10 @@ export class PolygonHitbox extends BaseHitbox<HitboxType.Polygon> {
     }
     writeStream(strm:SuroiByteStream):void{
         strm.writeUint8(this.type)
-        strm.writeFullPosition(this.center);
+        const pos=Vec.add(this.toRectangle().min,this.center)
+        strm.writeFullPosition(pos);
         strm.writeArray(this.points,(v)=>{
-            strm.writeFullPosition(v)
+            strm.writePosition(Vec.sub(v,pos))
         },2);
     }
 
