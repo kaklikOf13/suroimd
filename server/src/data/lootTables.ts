@@ -538,9 +538,9 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             [{ table: "airdrop_skins_def",spawnSeparately:true,count:5, weight: 1 }],
 
             [{ table: "airdrop_melee",spawnSeparately:true,count:3, weight: 1 }],
-            [{ table: "ammo",spawnSeparately:true,count:10, weight: 1 }],
+            [{ table: "ammo",spawnSeparately:true,count:5, weight: 1 }],
 
-            [{ table: "big_airdrop_guns",spawnSeparately:true,count:5, weight: 1 }],
+            [{ table: "big_airdrop_guns",spawnSeparately:true,count:8, weight: 1 }],
 
             [{ table: "special_throwables", count: 5,spawnSeparately:true, weight: 2 }]
         ],
@@ -552,14 +552,14 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             [{ table: "airdrop_skins_def",spawnSeparately:true,count:5, weight: 1 }],
 
             [{ table: "airdrop_melee",spawnSeparately:true,count:3, weight: 1 }],
-            [{ table: "ammo",spawnSeparately:true,count:10, weight: 1 }],
+            [{ table: "ammo",spawnSeparately:true,count:5, weight: 1 }],
 
-            [{ table: "gold_big_airdrop_guns",spawnSeparately:true,count:5, weight: 1 }],
+            [{ table: "gold_big_airdrop_guns",spawnSeparately:true,count:8, weight: 1 }],
 
             [{ table: "special_throwables", count: 5,spawnSeparately:true, weight: 2 }]
         ],
         big_airdrop_guns:[
-            [{ table: "epic_guns", weight: 1 },{ table: "legendary_guns", weight: 0.1 }],
+            [{ table: "epic_guns", weight: 1 },{ table: "legendary_guns", weight: 0.12 }],
         ],
         gold_big_airdrop_guns:[
             [{ table: "legendary_guns", weight: 1 },{ table: "epic_guns", weight: 0.1 }],

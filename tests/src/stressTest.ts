@@ -1,8 +1,8 @@
 import { WebSocket, type MessageEvent } from "ws";
 import { GameConstants, InputActions, ObjectCategory } from "../../common/src/constants";
-import { Emotes, type EmoteDefinition } from "../../common/src/definitions/emotes";
+import { Emotes, type EmoteDefinition } from "../../common/src/definitions/loadout/emotes";
 import { Loots } from "../../common/src/definitions/loots";
-import { Skins, type SkinDefinition } from "../../common/src/definitions/skins";
+import { Skins, type SkinDefinition } from "../../common/src/definitions/loadout/skins";
 import { GameOverPacket } from "../../common/src/packets/gameOverPacket";
 import { areDifferent, PlayerInputPacket, type InputAction, type PlayerInputData } from "../../common/src/packets/inputPacket";
 import { JoinPacket } from "../../common/src/packets/joinPacket";
@@ -21,7 +21,7 @@ console.log("start");
 const config = {
     mainAddress: "http://127.0.0.1:8000",
     gameAddress: "ws://127.0.0.1:800<ID>",
-    botCount: 79,
+    botCount: 10,
     joinDelay: 100,
     rejoinOnDeath: false
 };

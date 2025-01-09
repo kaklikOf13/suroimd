@@ -12,7 +12,7 @@ export const Config = {
 
     maxGames: 5,
 
-    tps: 40,
+    tps: 60,
 
     roles: {
         developr: { password: "developr", isDev: true },
