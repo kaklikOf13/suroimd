@@ -488,7 +488,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
         },
         {
             name: "Mirv Grenade",
-            damage: 120,
+            damage: 130,
             obstacleMultiplier: 1.2,
             radius: {
                 min: 10,
@@ -497,7 +497,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             subthrowable:{
                 proj:"mirv_subgrenade",
                 count:6,
-                speed:Vec.create(0,0.035)
+                speed:Vec.create(0,0.034)
             },
             cameraShake: {
                 duration: 200,
@@ -505,7 +505,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             },
             animation: {
                 duration: 1000,
-                tint: 0x9114ff,
+                tint: 0x005bf9,
                 scale: 1.5
             },
             shrapnelCount: 0,
@@ -523,11 +523,11 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
         },
         {
             name: "SubMirv Grenade",
-            damage: 50,
+            damage: 60,
             obstacleMultiplier: 1.15,
             radius: {
-                min: 5,
-                max: 12
+                min: 7,
+                max: 14
             },
             cameraShake: {
                 duration: 100,
@@ -535,10 +535,10 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             },
             animation: {
                 duration: 800,
-                tint: 0x5614ae,
+                tint: 0x005bf9,
                 scale: 1
             },
-            shrapnelCount: 4,
+            shrapnelCount: 3,
             ballistics: {
                 damage: 5,
                 obstacleMultiplier: 1,

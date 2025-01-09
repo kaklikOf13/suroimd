@@ -141,7 +141,7 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
             name: "Mirv Grenade",
             fuseTime: 4000,
             size:0.9,
-            impactDamage: 1,
+            impactDamage: 3,
             obstacleMultiplier: 20,
             cookable: true,
             image: {
@@ -168,8 +168,8 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
         {
             idString: "mirv_subgrenade",
             name: "Mirv Sub Grenade",
-            canInvertASpeedtrue:true,
-            fuseTime: 3000,
+            canInvertASpeed:true,
+            fuseTime: 2000,
             impactDamage: 1,
             obstacleMultiplier: 20,
             cookable: true,
@@ -261,7 +261,7 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
             fuseTime: 2000,
             impactDamage: 1,
             initialAngularSpeed:0.002,
-            canInvertASpeedtrue:true,
+            canInvertASpeed:true,
             obstacleMultiplier: 20,
             cookable: true,
             image: {

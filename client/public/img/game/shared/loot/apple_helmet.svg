@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
    version="1.1"
-   width="90"
-   height="100"
-   viewBox="0 0 90 100"
+   width="99.999954"
+   height="72.307602"
+   viewBox="0 0 99.999954 72.307602"
    id="svg34"
    sodipodi:docname="apple_helmet.svg"
    inkscape:version="1.4 (86a8ad7, 2024-10-11)"
@@ -23,7 +23,7 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="3.3602598"
      inkscape:cx="13.689418"
-     inkscape:cy="102.81943"
+     inkscape:cy="102.52183"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
      inkscape:window-x="-8"
@@ -137,7 +137,7 @@
        x2="100.02868"
        y2="74.886787"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(0,1.094327,-1.1212269,0,106.04537,-88.795062)" /><linearGradient
+       gradientTransform="matrix(1.1212275,0,0,1.0943264,-95.642276,-51.175142)" /><linearGradient
        inkscape:collect="always"
        id="linearGradient1789"><stop
          style="stop-color:#ed2929;stop-opacity:1;"
@@ -175,10 +175,10 @@
        cy="49.462063"
        fx="58.324707"
        fy="49.462063"
-       r="36.1538"
+       r="36.153801"
        gradientTransform="matrix(1.1810906,-0.03292556,0.03853871,1.3824428,-12.468259,-17.202066)"
        gradientUnits="userSpaceOnUse" /></defs><g
-     transform="matrix(1.2847794,0,0,1.901718,-275.99017,-299.81455)"
+     transform="matrix(0,1.2847794,-1.901718,0,399.81455,-275.99017)"
      id="g32"
      style="stroke-width:0.776644;stroke-dasharray:none"><g
        data-paper-data="{&quot;isPaintingLayer&quot;:true}"
@@ -193,10 +193,10 @@
        transform="matrix(1,0,0,1.018134,0,-2.8831074)" /></g><path
      id="path5"
      style="fill:url(#radialGradient3);stroke:#000000;stroke-width:13.209;stroke-linecap:round;stroke-dasharray:none;paint-order:markers stroke fill"
-     d="m 44.133008,93.395503 c -20.726424,0 -37.5285082,-19.423535 -37.5285082,-43.383679 0,-23.960137 16.8462442,-41.9925287 37.5285082,-43.3836732 26.638857,-1.7918014 30.801748,86.7673522 0,86.7673522 z"
+     d="m 6.6044998,44.133008 c 0,-20.726424 19.4235352,-37.5285082 43.3836792,-37.5285082 23.960137,0 41.992529,16.8462442 43.383673,37.5285082 1.791802,26.638857 -86.7673522,30.801748 -86.7673522,0 z"
      sodipodi:nodetypes="ssss" /><g
      id="g876"
-     transform="matrix(0,-1.1896843,1.2189289,0,15.334552,79.116204)"
+     transform="matrix(1.1896843,0,0,1.2189289,20.883799,15.334552)"
      style="stroke-width:2.68387;stroke-dasharray:none"><g
        id="g860"
        style="stroke-width:2.68387;stroke-dasharray:none"><path

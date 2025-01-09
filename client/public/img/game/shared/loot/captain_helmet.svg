@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   width="90"
-   height="100.032"
+   width="100.0203"
+   height="75.099022"
    xml:space="preserve"
    version="1.1"
    id="svg1"
-   sodipodi:docname="captain_helmet_world.svg"
+   sodipodi:docname="captain_helmet.svg"
    inkscape:version="1.4 (86a8ad7, 2024-10-11)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -37,7 +37,7 @@
    gradientTransform="matrix(0.97519478,0,0,0.6470966,5.6754059,56.302564)"
    id="color-1"
    gradientUnits="userSpaceOnUse"
-   r="23.54514"
+   r="23.545139"
    cy="193.51105"
    cx="244.17558">
    <stop
@@ -51,17 +51,18 @@
   </radialGradient>
   <radialGradient
    gradientUnits="userSpaceOnUse"
-   gradientTransform="matrix(0.54108093,-0.00635499,0.0103258,0.87916612,25.982299,5.9671429)"
-   r="54.16183"
+   gradientTransform="matrix(-0.00635499,-0.54108093,0.87916612,-0.0103258,5.9671429,74.0497)"
+   r="54.161831"
    fy="44.75174"
-   fx="70.61481"
+   fx="70.614807"
    cy="44.75174"
-   cx="70.61481"
+   cx="70.614807"
    id="radialGradient6"
    xlink:href="#color-1" />
  </defs>
  <g
-   id="g1">
+   id="g1"
+   transform="rotate(90,50.016,50.016)">
   <title
    id="title1">Layer 1</title>
   <g
@@ -84,12 +85,12 @@
    fill="url(#radialGradient6)"
    d="M 45.52851,92.032 C 24.80208,92.032 8,73.22842 8,50.03303 8,26.83765 24.84624,9.38081 45.52851,8.03406 c 26.63886,-1.73461 30.80175,83.99794 0,83.99794 z"
    id="path5"
-   style="paint-order:stroke fill markers"
+   style="fill:url(#radialGradient6);paint-order:stroke fill markers"
    sodipodi:nodetypes="sscs" />
   <path
-   transform="rotate(-90 43.8425 49.1751)"
+   transform="rotate(-90,43.8425,49.1751)"
    id="svg_1"
-   d="m40.84249,48.50231l2.29181,0l0.70819,-2.17721l0.70819,2.17721l2.29181,0l-1.85411,1.34558l0.70822,2.17721l-1.85411,-1.34561l-1.85411,1.34561l0.70822,-2.17721l-1.85411,-1.34558z"
+   d="m 40.84249,48.50231 h 2.29181 l 0.70819,-2.17721 0.70819,2.17721 h 2.29181 l -1.85411,1.34558 0.70822,2.17721 -1.85411,-1.34561 -1.85411,1.34561 0.70822,-2.17721 z"
    stroke-width="8"
    stroke="#fce500"
    fill="#000000" />

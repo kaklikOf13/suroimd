@@ -843,6 +843,7 @@ export class Inventory {
                 if (this.activeWeapon.category === ItemType.Throwable) {
                     this.activeWeapon.stopUse();
                 }
+                if(this.owner.inventory.items.getItem(itemString.toString())<=0)return
 
                 this.owner.setDirty();
                 this.owner.dirty.weapons = true;

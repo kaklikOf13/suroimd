@@ -179,7 +179,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         if(this.z==0){
             this.velocity.x=this.velocity.x*0.85
             this.velocity.y=this.velocity.y*0.85
-            this._angularVelocity=Math.max(this._angularVelocity*.85,0)
+            this._angularVelocity=Numeric.lerp(this._angularVelocity,0,0.1)
         }else{
             this.z=Numeric.clamp(this.z-(this.definition.zDecay*this.game.dt),0,1)
         }

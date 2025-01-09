@@ -895,7 +895,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 spawnHitbox: new CircleHitbox(8.5),
                 rotationMode: RotationMode.Full,
                 hitbox: new CircleHitbox(3.5),
-                variations: 6
+                variations: 7,
             }]),
 
             tree([{
@@ -915,6 +915,20 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     particle: "oak_tree_particle",
                     residue: "oak_tree_residue"
                 }
+            }]),
+
+            tree([{
+                name: "Trumpet Tree",
+                health: 230,
+                scaleProps: {
+                    spawnMin: 0.75,
+                    spawnMax: 1.2,
+                    destroy: 0.9
+                },
+                spawnHitbox: new CircleHitbox(8.5),
+                rotationMode: RotationMode.Full,
+                hitbox: new CircleHitbox(3.5),
+                variations: 7,
             }]),
 
             tree([{
@@ -1434,8 +1448,8 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 zIndex: ZIndexes.ObstaclesLayer3
             },
             {
-                idString: "blueberry_bush",
-                name: "Blueberry Bush",
+                idString: "berry_bush",
+                name: "berry Bush",
                 material: "bush",
                 health: 330,
                 scale: {
@@ -1447,6 +1461,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 noCollisions: true,
                 rotationMode: RotationMode.Full,
                 particleVariations: 2,
+                variations:4,
                 zIndex: ZIndexes.ObstaclesLayer3,
                 spawnWithLoot: true,
                 lootTable: "special_bush",

@@ -247,6 +247,33 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             keyframesSpeed:1.05,
         },
         {
+            idString: "halberd",
+            name: "Halberd",
+            damage: 70,
+            rotationalAnimation: true,
+            obstacleMultiplier: 2,
+            piercingMultiplier: 2,
+            iceMultiplier: 5,
+            radius: 2.05,
+            swingSound: "heavy_swing",
+            offset: Vec.create(5.4, -0.5),
+            cooldown: 500,
+            fists: {
+                animationDuration: 150,
+                left: Vec.create(40, -25),
+                right: Vec.create(40, 15)
+            },
+            image: {
+                position: Vec.create(42, 20),
+                angle: 90,
+                useAngle: 65,
+                lootScale: 0.7
+            },
+            damageDelay: 250,
+            keyframes:MeleeDefaultAnims.swing,
+            keyframesSpeed:1.15,
+        },
+        {
             idString: "crowbar",
             name: "Crowbar",
             swingSound: "heavy_swing",

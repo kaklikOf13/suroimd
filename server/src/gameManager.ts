@@ -214,14 +214,10 @@ export const games: Record<string,GameContainer | undefined> = {};
 
 
 if (isMainThread) {
-    aliveCount=0
-    for(const g of Object.values(games)){
-        aliveCount+=(!g||g?.stopped)?0:g?.aliveCount
-    }
     if(!(typeof Config.gamemode==="string"||Array.isArray(Config.gamemode))){
         const base=Config.gamemode.switchSchedule
         currentGMSTime=Config.gamemode.switchSchedule
-        setInterval(() => {
+        setInterval(async() => {
             if(currentGMSTime<=0){
                 //@ts-expect-error
                 currentGamemode = Config.gamemode.rotation[gamemodeIndex = (gamemodeIndex + 1) % Config.gamemode.rotation.length];
@@ -229,14 +225,12 @@ if (isMainThread) {
                 GMC=Gamemodes[typeof currentGamemode==="string"?currentGamemode:currentGamemode[0]]
 
                 for(const g of Object.values(games)){
-                    if(g&&g.worker&&!(g.started||g.stopped)){
+                    if(g&&g.worker&&(!g.started||g.stopped)){
                         g.sendMessage({
                             type:WorkerMessages.Stop,
                         })
-                        setTimeout(((game:GameContainer)=>{
-                            game.worker.terminate()
-                            delete games[game.id]
-                        }).bind(g),2000)
+                        //await g.worker.terminate()
+                        delete games[g.id]
                     }
                 }
 
@@ -245,6 +239,10 @@ if (isMainThread) {
                 Logger.log(`Switching gamemode to ${currentGamemode}`);
             }else{
                 currentGMSTime--;
+            }
+            aliveCount=0
+            for(const g of Object.values(games)){
+                aliveCount+=(!g||g?.stopped)?0:g?.aliveCount
             }
         },1000);
     }
@@ -313,11 +311,12 @@ if (isMainThread) {
                 break;
             }
             case WorkerMessages.Stop:{
-                if(!game.stopped){
-                    game.killEveryone()
-                    game.StartGame()
-                }
-                s.close()
+                game.killEveryone()
+                game.StartGame()
+                setTimeout(()=>{
+                    s.close()
+                    process.exit(0)  
+                },4000)
                 break;
             }
             case WorkerMessages.UpdateMaxTeamSize: {

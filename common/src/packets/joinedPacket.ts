@@ -5,6 +5,7 @@ import { createPacket } from "./packet";
 export type JoinedPacketData = {
     readonly emotes: ReadonlyArray<EmoteDefinition | undefined>
     readonly groupMode:boolean
+    readonly date:bigint
 } & ({
     readonly maxTeamSize: TeamSize.Solo
 } | {
@@ -20,6 +21,7 @@ export const JoinedPacket = createPacket("JoinedPacket")<JoinedPacketData>({
         }
 
         stream.writeUint8(data.groupMode?1:0);
+        stream.writeInt64(data.date)
 
         const { emotes } = data;
 
@@ -43,6 +45,7 @@ export const JoinedPacket = createPacket("JoinedPacket")<JoinedPacketData>({
         const maxTeamSize: TeamSize = stream.readUint8();
         const teamID = maxTeamSize !== TeamSize.Solo ? stream.readUint8() : undefined;
         const groupMode=stream.readUint8()>0;
+        const date=stream.readInt64()
 
         const emoteSlots = stream.readBooleanGroup();
 
@@ -50,6 +53,7 @@ export const JoinedPacket = createPacket("JoinedPacket")<JoinedPacketData>({
             groupMode,
             maxTeamSize,
             teamID,
+            date,
             emotes: Array.from({ length: 6 }, (_, i) => emoteSlots[i] ? Emotes.readFromStream(stream) : undefined)
         } as JoinedPacketData;
     }

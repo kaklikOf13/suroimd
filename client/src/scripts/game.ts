@@ -225,6 +225,7 @@ export class Game {
     }
 
     menu_music!: Sound;
+    win_music!: Sound;
 
     gameplay_musics:Sound[]=[];
 
@@ -336,22 +337,30 @@ export class Game {
             autoPlay: false,
             volume: game.console.getBuiltInCVar("cv_music_volume")
         });
+        setTimeout(game.play_music.bind(game,game.menu_music),2000)
+        game.win_music = sound.add("win_music", {
+            url:  `./audio/music/win_music.mp3`,
+            singleInstance: true,
+            preload: true,
+            autoPlay: false,
+            volume: game.console.getBuiltInCVar("cv_music_volume")
+        });
 
-        game.gameplay_musics.push(sound.add("gameplay_music", {
+        game.gameplay_musics.push(sound.add("gameplay_music-1", {
             url: `./audio/music/gameplay_music-1.mp3`,
             singleInstance: true,
             preload: true,
             autoPlay: false,
             volume: game.console.getBuiltInCVar("cv_music_volume")
         }));
-        game.gameplay_musics.push(sound.add("gameplay_music", {
+        game.gameplay_musics.push(sound.add("gameplay_music-2", {
             url: `./audio/music/gameplay_music-2.mp3`,
             singleInstance: true,
             preload: true,
             autoPlay: false,
             volume: game.console.getBuiltInCVar("cv_music_volume")
         }));
-        game.gameplay_musics.push(sound.add("gameplay_music", {
+        game.gameplay_musics.push(sound.add("gameplay_music-3", {
             url: `./audio/music/gameplay_music-3.mp3`,
             singleInstance: true,
             preload: true,
@@ -360,8 +369,6 @@ export class Game {
         }));
 
         game.music=undefined
-
-        game.play_music(game.menu_music)
 
         return game
     }
@@ -574,7 +581,7 @@ export class Game {
                 if (!this.error) void this.endGame();
             }
 
-            this.change_music(this.menu_music)
+            if(this.music!=this.win_music)this.change_music(this.menu_music)
             
 
             if (reason.startsWith("Invalid game version")) {
@@ -591,6 +598,14 @@ export class Game {
         switch (true) {
             case packet instanceof JoinedPacket:
                 this.startGame(packet.output);
+                if(packet.output.date>0){
+                    const inventoryMsg = this.uiManager.ui.inventoryMsg;
+                    const date=new Date(Number(packet.output.date))
+                    inventoryMsg.text(date.toUTCString()).fadeIn(250);
+
+                    clearTimeout(this.inventoryMsgTimeout);
+                    this.inventoryMsgTimeout = window.setTimeout(() => inventoryMsg.fadeOut(250), 2500);
+                }
                 break;
             case packet instanceof MapPacket:
                 this.map.updateFromPacket(packet.output);
@@ -599,8 +614,8 @@ export class Game {
                 this.processUpdate(packet.output);
                 break;
             case packet instanceof GameOverPacket:
-                if(packet.output.won){
-                    this.change_music(this.menu_music,0.1)
+                if(packet.output.won&&packet.output.wonToo){
+                    this.change_music(this.win_music,0.1)
                 }
                 const gs=this.startedOn
                 setTimeout(()=>{
@@ -735,7 +750,7 @@ export class Game {
 
             this.playing=false
             ui.splashUi.fadeIn(400, () => {
-                this.change_music(this.menu_music)
+                if(this.music!=this.win_music)this.change_music(this.menu_music)
                 ui.teamContainer.html("");
                 ui.actionContainer.hide();
                 ui.gameMenu.hide();

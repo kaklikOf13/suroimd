@@ -54,6 +54,7 @@ const DefaultRoles:Record<string,Gamerole>={
             backpack:"tactical_pack",
             infinityAmmo:true,
         },
+        adrenaline:100,
         items:{
             "cola":8,
             "tablets":4,
@@ -321,6 +322,7 @@ export interface Gamemode{
     readonly emotes_replace?:string
     readonly canRespawn?:boolean
     readonly keepInventory?:boolean
+    readonly data?:number
     readonly factions?:{
         readonly count:number
         readonly spawnIslands?:number[]
@@ -345,6 +347,8 @@ export const DefaultGamemode:Gamemode={
     globalDamage:.75,
     globalRange:2.25,
     armorProtection:1,
+
+    data:Date.UTC(87,2,24,2,4,25),
 
     defaultGroup:-1,
     group:false,
@@ -445,6 +449,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
             buttonText:"manhunt",
             icon:""
         },
+        data:Date.UTC(88,2,10,1,23,15),
         airdrop:{
             particlesCount:15,
             crate:"big_airdrop_crate_locked",
@@ -759,6 +764,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
     factions:{
         map:"double_island",
         group:true,
+        data:Date.UTC(88,2,10,1,23,15),
         gas:{
             damage:[1,1,2,2,4,4,8,8,10,10,12,12],
             airdrop:[3,5],

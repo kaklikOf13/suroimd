@@ -28,7 +28,6 @@ export const JoinPacket = createPacket("JoinPacket")<JoinPacketCreation, JoinPac
     serialize(stream, data) {
         const emotes = data.emotes;
         const hasBadge = data.badge !== undefined;
-        console.log(GameConstants.protocolVersion)
         stream.writeBooleanGroup2(
             data.isMobile,
             hasBadge,

@@ -352,6 +352,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "firework_launcher", weight: 0.01 }
         ],
         special_bush: [
+            { item:NullString, weight: 3},
             { table: "special_equipment", weight: 1 },
             { table: "healing_items", weight: 1 },
             { table: "scopes", weight: 1 }

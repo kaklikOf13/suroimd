@@ -1194,7 +1194,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         this.images.muzzleFlash.setVisible(imagePresent);
 
         this.images.altWeapon.setVisible(weaponDef.itemType === ItemType.Gun && (weaponDef.isDual ?? false));
-
+        this.images.weapon.setAngle(0)
         switch (weaponDef.itemType) {
             case ItemType.Gun: {
                 this.images.rightFist.setZIndex((fists as SingleGunNarrowing["fists"]).rightZIndex);
@@ -1216,6 +1216,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 this.images.rightFist.setZIndex(4);
                 this.images.body.setZIndex(2);
                 this.images.weapon.setZIndex(reference.image?.zIndex ?? 5);
+                this.images.weapon.setAngle(60)
                 break;
             }
         }

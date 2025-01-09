@@ -333,7 +333,7 @@ export class Game implements GameData {
             if (bullet.dead) {
                 const onHitExplosion = bullet.definition.onHitExplosion;
                 if(!bullet.reflected){
-                    if(bullet.currentDamage>0&&r.length>0&&!(r[0].object.isPlayer||r[0].object.isBuilding)){
+                    if(bullet.currentDamage>0&&r.length>0&&!(r[0].object.isPlayer||r[0].object.isBuilding||bullet.definition.onHitExplosion)){
                         bullet.continueB()
                     }
                     if(onHitExplosion){
@@ -388,11 +388,11 @@ export class Game implements GameData {
         this.gas.tick();
 
         // Delete players that haven't sent a JoinPacket after 5 seconds
-        for (const player of this.connectingPlayers) {
+        /*for (const player of this.connectingPlayers) {
             if (this.now - player.joinTime > 10000) {
                 player.disconnect("JoinPacket not received after 5 seconds");
             }
-        }
+        }*/
 
         // First loop over players: movement, animations, & actions
         for (const player of this.grid.pool.getCategory(ObjectCategory.Player)) {
@@ -821,7 +821,8 @@ export class Game implements GameData {
                     maxTeamSize: this.maxTeamSize,
                     teamID: player.teamID ?? 0,
                     groupMode:this.gamemode.group,
-                    emotes: player.loadout.emotes
+                    emotes: player.loadout.emotes,
+                    date:BigInt(this.gamemode.data??0)
                 }
             )
         );

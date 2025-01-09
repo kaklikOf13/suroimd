@@ -1262,6 +1262,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this.revive()
         }
         if(dropAll)this.dropAll()
+        if(role.adrenaline)this.adrenaline=role.adrenaline
         //Equipaments
         if(role.equipments.vest){
             this.inventory.vest=Armors.fromStringSafe(role.equipments.vest)
@@ -2596,6 +2597,20 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
         const packet = GameOverPacket.create({
             won,
+            wonToo:true,
+            playerID: this.id,
+            kills: this.kills,
+            damageDone: this.damageDone,
+            damageTaken: this.damageTaken,
+            timeAlive: (this.game.now - this.joinTime) / 1000,
+            rank: won ? 1 as const : this.game.aliveCount + 1,
+            score:this.score,
+            stopAfter
+        } as GameOverData);
+
+        const packetTF = GameOverPacket.create({
+            won,
+            wonToo:false,
             playerID: this.id,
             kills: this.kills,
             damageDone: this.damageDone,
@@ -2609,7 +2624,11 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.sendPacket(packet);
 
         for (const spectator of this.spectators) {
-            spectator.sendPacket(packet);
+            if(this.isAllie(spectator)){
+                spectator.sendPacket(packet)
+            }else{
+                spectator.sendPacket(packetTF)
+            }
         }
     }
 

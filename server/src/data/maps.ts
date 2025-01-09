@@ -119,6 +119,13 @@ export type ObstacleClump = {
     }
 };
 const DefaultChooses:Record<string,WeightedMapOBJ[]>={
+    Trees:[
+        {obstacle:"small_oak_tree", weight:20},
+        {obstacle:"oak_tree", weight:17},
+        {obstacle:"birch_tree", weight:10},
+        {obstacle:"pine_tree", weight:4},
+        {obstacle:"trumpet_tree", weight:2.2},
+    ],
     LootTables:[
         {obstacle:"regular_crate", weight:10},
         {obstacle:"grenade_crate", weight:7},
@@ -170,6 +177,10 @@ const DefaultChooses:Record<string,WeightedMapOBJ[]>={
         {build:"mobile_home", weight:0.7},
         {build:"small_bunker", weight:0.05},
         {build:"construction_site", weight:0.05},
+    ],
+    Bushs:[
+        {obstacle:"bush", weight:1.2},
+        {obstacle:"berry_bush", weight:0.8},
     ],
 }
 const maps:Record<string, MapDefinition> = {
@@ -248,10 +259,6 @@ const maps:Record<string, MapDefinition> = {
                             oil_tank: 25,
                             // christmas_tree: 1, // winter mode
                             oak_tree: 40,
-                            small_oak_tree: 100,
-                            birch_tree: 30,
-                            pine_tree: 20,
-                            loot_tree: 5,
                             regular_crate: 150,
                             flint_crate: 12,
                             aegis_crate: 12,
@@ -260,10 +267,8 @@ const maps:Record<string, MapDefinition> = {
                             rock: 430,
                             river_chest: 2,
                             river_rock: 70,
-                            bush: 180,
                             // birthday_cake: 100, // birthday mode
                             lily_pad: 30,
-                            blueberry_bush: 50,
                             barrel:70,
                             viking_chest: 2,
                             super_barrel: 20,
@@ -272,6 +277,18 @@ const maps:Record<string, MapDefinition> = {
                             loot_barrel: 3,
                             flint_stone: 1
                         },
+                        chooses:[
+                            {
+                                objects:DefaultChooses.Bushs,
+                                min:210,
+                                max:250,
+                            },
+                            {
+                                objects:DefaultChooses.Trees,
+                                min:150,
+                                max:190,
+                            }
+                        ],
                         obstacleClumps: [
                             {
                                 clumpAmount: 140,
@@ -940,7 +957,7 @@ const maps:Record<string, MapDefinition> = {
                     bush: 13,
                     // birthday_cake: 100, // birthday mode
                     lily_pad: 6,
-                    blueberry_bush: 5,
+                    berry_bush: 5,
                     barrel:10,
                     viking_chest: 1,
                     super_barrel: 5,
@@ -1072,7 +1089,7 @@ const maps:Record<string, MapDefinition> = {
                     river_rock: 13,
                     bush: 20,
                     lily_pad: 7,
-                    blueberry_bush: 8,
+                    berry_bush: 8,
                     barrel:13,
                     viking_chest: 1,
                     super_barrel: 7,
