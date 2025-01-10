@@ -456,7 +456,7 @@ export class Game implements GameData {
         ) {
             this.pluginManager.emit("game_end", this);
 
-            const ct=Math.max(this.gas.currentRadius>0?2000/this.gas.currentRadius:this.gas.mapSize/100,3)
+            const ct=Math.max(this.gas.currentRadius>0?(this.gas.mapSize*5.5)/this.gas.currentRadius:this.gas.mapSize/100,3)
 
             this.gas.clearGas(ct);
             const sd=Math.floor(ct*1000)-500
