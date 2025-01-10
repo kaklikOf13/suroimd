@@ -815,6 +815,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "8x_scope", weight: 0.1 },
             { item: "15x_scope", weight: 0.025 },
             { item: "20x_scope", weight: 0.01 },
+            { item: "30x_scope", weight: 0.00025 }
         ],
         equipment: [
             { item: "basic_helmet", weight: 1 },
@@ -882,7 +883,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "4x_scope", weight: 0.45 },
             { item: "8x_scope", weight: 0.1 },
             { item: "15x_scope", weight: 0.03 },
-            { item: "20x_scope", weight: 0.01 }
+            { item: "20x_scope", weight: 0.01 },
+            { item: "30x_scope", weight: 0.0005 }
         ],
         special_equipment: [
             { item: "basic_helmet", weight: 1 },
@@ -914,7 +916,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "4x_scope", weight: 1 },
             { item: "8x_scope", weight: 0.5 },
             { item: "15x_scope", weight: 0.1 },
-            { item: "20x_scope", weight: 0.08 }
+            { item: "20x_scope", weight: 0.08 },
+            { item: "30x_scope", weight: 0.0026 }
         ],
         airdrop_healing_items: [
             { item: "gauze", count: 7, weight: 1.5 },
