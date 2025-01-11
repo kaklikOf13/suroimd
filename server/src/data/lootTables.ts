@@ -47,13 +47,13 @@ export class LootItem {
     ) { }
 }
 
-export function getLootFromTable(tableID: string): LootItem[] {
-    const lootTable = resolveTable(tableID);
+export function getLootFromTable(tableID: string,lootTables?:Record<string,LootTable>): LootItem[] {
+    const lootTable = resolveTable(tableID,lootTables);
     if (lootTable === undefined) {
         throw new ReferenceError(`Unknown loot table: ${tableID}`);
     }
 
-    const isSimple = isArray(lootTable);
+    const isSimple = lootTable instanceof Array;
     const { min, max, noDuplicates, loot } = isSimple
         ? {
             min: 1,
@@ -67,34 +67,35 @@ export function getLootFromTable(tableID: string): LootItem[] {
 
     return (
         isSimple && isArray(loot[0])
-            ? (loot as readonly WeightedItem[][]).map(innerTable => getLoot(innerTable))
+            ? (loot as readonly WeightedItem[][]).map(innerTable => getLoot(innerTable,lootTables))
             : min === 1 && max === 1
-                ? getLoot(loot as WeightedItem[], noDuplicates)
+                ? getLoot(loot as WeightedItem[],lootTables, noDuplicates)
                 : Array.from(
                     { length: random(min, max) },
-                    () => getLoot(loot as WeightedItem[], noDuplicates)
+                    () => getLoot(loot as WeightedItem[],lootTables, noDuplicates)
                 )
     ).flat();
 }
 
-export function resolveTable(tableID: string): LootTable {
-    return LootTables[GameConstants.modeName]?.[tableID] ?? LootTables.normal[tableID];
+export function resolveTable(tableID: string,lootTables?:Record<string,LootTable>): LootTable {
+    return (lootTables?lootTables[tableID]:undefined)??(LootTables[GameConstants.modeName]?.[tableID] ?? LootTables.normal[tableID]);
 }
 
-function getLoot(items: WeightedItem[], noDuplicates?: boolean): LootItem[] {
+function getLoot(items: WeightedItem[],tables?:Record<string,LootTable>, noDuplicates?: boolean): LootItem[] {
     const selection = items.length === 1
         ? items[0]
         : weightedRandom(items, items.map(({ weight }) => weight));
+
 
     if ("table" in selection) {
         if(selection.spawnSeparately){
             const ret:LootItem[]=[]
             for(let i=0;i<selection.count;i++){
-                ret.push(...getLootFromTable(selection.table))
+                ret.push(...getLootFromTable(selection.table,tables))
             }
             return ret
         }else{
-            return getLootFromTable(selection.table);
+            return getLootFromTable(selection.table,tables);
         }
     }
 

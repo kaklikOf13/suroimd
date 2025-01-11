@@ -119,6 +119,7 @@ export class GameMap {
         ir.rivers.push(...rivers)
         this.islands.push(ir)
         this._generateClearings(def.clearings,def,ir);
+        Object.entries(def.buildings ?? {}).forEach(([building, count]) => this._generateBuildings(building,def, count,ir));
         for(const cd of def.chooses??[]){
             const count=random(cd.min,cd.max)
             const weights=cd.objects.map(({ weight }) => weight)
@@ -131,7 +132,6 @@ export class GameMap {
                 }
             }
         }
-        Object.entries(def.buildings ?? {}).forEach(([building, count]) => this._generateBuildings(building,def, count,ir));
         for (const clump of def.obstacleClumps ?? []) {
             this._generateObstacleClumps(clump,ir);
         }
@@ -724,7 +724,7 @@ export class GameMap {
         }
 
         for (const lootData of definition.lootSpawners) {
-            for (const item of getLootFromTable(lootData.table)) {
+            for (const item of getLootFromTable(lootData.table,this.game.gamemode.lootTables)) {
                 this.game.addLoot(
                     item.idString,
                     Vec.addAdjust(position, lootData.position, orientation),
@@ -967,7 +967,7 @@ export class GameMap {
 
     private _generateLoots(table: string, count: number,ir:IslandReturn): void {
         for (let i = 0; i < count; i++) {
-            const loot = getLootFromTable(table);
+            const loot = getLootFromTable(table,this.game.gamemode.lootTables);
 
             const position = this.getRandomPosition(
                 new CircleHitbox(5),

@@ -197,13 +197,13 @@ const maps:Record<string, MapDefinition> = {
                     {
                         rivers: {
                             minAmount: 1,
-                            maxAmount: 5,
-                            maxWideAmount: 2,
-                            wideChance: 0.35,
-                            minWidth: 12,
-                            maxWidth: 28,
-                            minWideWidth: 27,
-                            maxWideWidth: 34,
+                            maxAmount: 3,
+                            maxWideAmount: 1,
+                            wideChance: 0.25,
+                            minWidth: 11,
+                            maxWidth: 27,
+                            minWideWidth: 26,
+                            maxWideWidth: 33,
                         },
                         loots: {
                             ground_loot: 100

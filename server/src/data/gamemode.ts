@@ -11,6 +11,7 @@ import { Airstrike, Airstrikes } from "@common/definitions/guns"
 import { type Player } from "../objects/player"
 import { GiveRoleAfterDownsArgs, GiveRoleAfterDownsPlugin, GiveRoleAfterStartArgs, GiveRoleAfterStartPlugin, StartWithRolePlugin } from "../defaultPlugins/rolesPlugins"
 import { ReloadGamemodePlugin } from "../defaultPlugins/reloadGamemodePlugin"
+import { LootTable } from "./lootTables"
 export const enum GasMode {
     Staged,
     Debug,
@@ -301,6 +302,7 @@ export interface Gamemode{
     readonly start_after:number
     readonly defaultGroup:number
     readonly adrenalineLoss:number
+    readonly lootTables?:Record<string,LootTable>
     readonly button?:{
         readonly icon: string
         readonly buttonCss: string
@@ -564,6 +566,11 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                 }
             }]
         },
+        lootTables:{
+            aegis_golden_case:[
+                { item: "apple_launcher", weight: 1 },
+            ]
+        },
         button:{
             buttonCss:"btn-redmode",
             buttonText:"apples-mode",
@@ -654,9 +661,13 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
 
                     "g17_scoped",
                     "dual_g17_scoped",
+
+                    "medic_pistol",
+                    "dual_medic_pistol",
                 ],
                 selectableMelees:[
                     "baseball_bat",
+                    "battlesaw",
                     "maul",
                     "steelfang",
                     "seax",

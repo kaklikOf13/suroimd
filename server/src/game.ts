@@ -16,7 +16,7 @@ import { SpectatePacket } from "@common/packets/spectatePacket";
 import { type PingSerialization } from "@common/packets/updatePacket";
 import { CircleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { EaseFunctions, Geometry, Numeric, Statistics } from "@common/utils/math";
-import { mergeDeep, Timeout } from "@common/utils/misc";
+import { cloneDeep, mergeDeep, Timeout } from "@common/utils/misc";
 import { ItemType, MapObjectSpawnMode, SetArray, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { pickRandomInArray, random, randomFloat, randomPointInsideCircle, randomRotation } from "@common/utils/random";
 import { type SuroiByteStream } from "@common/utils/suroiByteStream";
@@ -51,6 +51,7 @@ import { Building } from "./objects/building";
 import { Guns } from "@common/definitions/guns";
 import { Melees } from "@common/definitions/melees";
 import { DefaultGamemode, Gamemode, Gamemodes, SpawnMode } from "./data/gamemode";
+import { LootTable, LootTables } from "./data/lootTables";
 /*
     eslint-disable
 
@@ -103,7 +104,6 @@ export class Game implements GameData {
     readonly maxTeamSize: TeamSize;
 
     readonly teamMode: boolean;
-    
 
     readonly teams = new SetArray<Team>();
     readonly npcTeams = new Map<number,Team>();

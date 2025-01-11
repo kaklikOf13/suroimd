@@ -107,11 +107,11 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         this.collidable = !definition.noCollisions;
 
         if (definition.hasLoot) {
-            this.loot = getLootFromTable(definition.lootTable ?? definition.idString);
+            this.loot = getLootFromTable(definition.lootTable ?? definition.idString,this.game.gamemode.lootTables);
         }
 
         if (definition.spawnWithLoot) {
-            for (const item of getLootFromTable(definition.lootTable ?? definition.idString)) {
+            for (const item of getLootFromTable(definition.lootTable ?? definition.idString,this.game.gamemode.lootTables)) {
                 this.game.addLoot(
                     item.idString,
                     this.position,
@@ -154,7 +154,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         this.setDirty()
         if (this.definition.hasLoot) {
             this.loot.length=0
-            this.loot.push(...getLootFromTable(this.definition.lootTable ?? this.definition.idString));
+            this.loot.push(...getLootFromTable(this.definition.lootTable ?? this.definition.idString,this.game.gamemode.lootTables));
         }
         if (!(this.definition.isWindow && this.definition.noCollisions)) this.collidable = true;
         const hitboxRotation = this.definition.rotationMode === RotationMode.Limited ? this._rotation as Orientation : 0;
