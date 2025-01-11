@@ -1913,6 +1913,8 @@ export async function setUpUI(game: Game): Promise<void> {
         toggleHideRules.prop("checked", true);
     }).toggle(game.console.getBuiltInCVar("cv_rules_acknowledged") && !game.console.getBuiltInCVar("cv_hide_rules_button"));
 
+    addCheckboxListener("#toggle-status", "dv_toggle_status");
+
     // Import settings
     $("#import-settings-btn").on("click", () => {
         if (!confirm("This option will overwrite all settings and reload the page. Continue?")) return;

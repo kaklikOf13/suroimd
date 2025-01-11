@@ -1,8 +1,8 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Wed, 25 Dec 2024 01:59:30 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Fri, 10 Jan 2025 23:05:07 GMT
 
-## 🇦🇱 Shqip (88% Complete) - ab.hjson
+## 🇦🇱 Shqip (87% Complete) - ab.hjson
 
 ### (No Invalid Keys)
 
@@ -15,6 +15,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
+- Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `msg_not_enough_space` is not defined
@@ -50,13 +51,14 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
+- Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `go_score` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 
-## 🇨🇿 Čeština (92% Complete) - cz.hjson
+## 🇨🇿 Čeština (91% Complete) - cz.hjson
 
 ### (No Invalid Keys)
 
@@ -71,6 +73,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
+- Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `msg_not_enough_space` is not defined
@@ -105,6 +108,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
+- Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `msg_not_enough_space` is not defined
@@ -136,7 +140,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_sa` is not defined
 - Key `region_as` is not defined
 
-## 🇪🇪 Eesti (97% Complete) - et.hjson
+## 🇪🇪 Eesti (96% Complete) - et.hjson
 
 ### (No Invalid Keys)
 
@@ -146,13 +150,14 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
+- Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `go_score` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 
-## 🇫🇷 Français (97% Complete) - fr.hjson
+## 🇫🇷 Français (96% Complete) - fr.hjson
 
 ### (No Invalid Keys)
 
@@ -162,6 +167,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
+- Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `go_score` is not defined
@@ -177,6 +183,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
+- Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `go_score` is not defined
@@ -200,6 +207,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
+- Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `msg_not_enough_space` is not defined
@@ -225,13 +233,14 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
+- Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `go_score` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 
-## 🇯🇵 日本語 (92% Complete) - jp.hjson
+## 🇯🇵 日本語 (91% Complete) - jp.hjson
 
 ### (No Invalid Keys)
 
@@ -246,6 +255,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
+- Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `msg_not_enough_space` is not defined
@@ -260,7 +270,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 
-## 🇱🇹 Lietuvių (92% Complete) - lt.hjson
+## 🇱🇹 Lietuvių (91% Complete) - lt.hjson
 
 ### (No Invalid Keys)
 
@@ -275,6 +285,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
+- Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `msg_not_enough_space` is not defined
@@ -289,7 +300,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 
-## 🇱🇻 Latviešu (92% Complete) - lv.hjson
+## 🇱🇻 Latviešu (91% Complete) - lv.hjson
 
 ### (No Invalid Keys)
 
@@ -304,6 +315,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
+- Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `msg_not_enough_space` is not defined
@@ -318,7 +330,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 
-## 🇵🇱 Polski (97% Complete) - pl.hjson
+## 🇵🇱 Polski (96% Complete) - pl.hjson
 
 ### (No Invalid Keys)
 
@@ -328,6 +340,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
+- Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `go_score` is not defined
@@ -356,6 +369,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
+- Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `msg_not_enough_space` is not defined
@@ -389,6 +403,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
+- Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `msg_not_enough_space` is not defined
@@ -424,13 +439,14 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
+- Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `go_score` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 
-## 🇮🇳 தமிழ் (91% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (90% Complete) - ta.hjson
 
 ### (No Invalid Keys)
 
@@ -446,6 +462,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
+- Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `msg_not_enough_space` is not defined
@@ -470,6 +487,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
+- Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `go_score` is not defined
@@ -496,6 +514,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
+- Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `msg_not_enough_space` is not defined
@@ -524,7 +543,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 
-## 🇻🇳 Tiếng Việt (97% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (96% Complete) - vi.hjson
 
 ### Invalid Keys
 
@@ -537,6 +556,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
+- Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `go_score` is not defined
@@ -555,6 +575,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
+- Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `go_score` is not defined

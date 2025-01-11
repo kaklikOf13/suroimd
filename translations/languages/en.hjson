@@ -94,6 +94,8 @@
   "weapon_melee_tp":"Melee"
   "weapon_gun_tp":"Guns"
 
+  "status_needs":"Enable The Status On Settings First"
+
   "weapon_category_0":"Guns"
   "weapon_category_1":"Melees"
   "loadout_crosshairs": "Crosshairs"

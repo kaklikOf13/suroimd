@@ -61,6 +61,7 @@ import { randomVector, randomFloat, pickRandomInArray } from "../../../common/sr
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { FloorNames } from "@common/utils/terrain";
 import { PerkIds } from "@common/definitions/perks";
+export { showStatus } from "./status"
 
 /* eslint-disable @stylistic/indent */
 
