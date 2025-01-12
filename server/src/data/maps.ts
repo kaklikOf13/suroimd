@@ -1239,7 +1239,7 @@ const maps:Record<string, MapDefinition> = {
             { name: "Can't read props of null", position: Vec.create(0.4, 0.5) }
         ]
     },
-    /*singleBuilding: {
+    singleBuilding: {
         width: 1024,
         height: 1024,
         beachSize: 32,
@@ -1248,7 +1248,7 @@ const maps:Record<string, MapDefinition> = {
             map.generateBuilding(building, Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
-    singleObstacle: {
+    /*singleObstacle: {
         width: 256,
         height: 256,
         beachSize: 8,

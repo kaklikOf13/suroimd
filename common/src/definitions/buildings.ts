@@ -1227,6 +1227,64 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "hazel_crate", position: Vec.create(0, 0) }
                 ]
             },
+            {
+                idString: "hotel_kitchen",
+                name: "Hotel Kitchen",
+                material: "stone",
+                particle: "wall_particle",
+                hitbox: new GroupHitbox(
+                    new RectangleHitbox(Vec.create(-26, -26.2), Vec.create(25.9, -23.8)),
+                    new RectangleHitbox(Vec.create(-26, -26.2), Vec.create(-23.5, -3.55)),
+                    new RectangleHitbox(Vec.create(-26, 6.9), Vec.create(-23.5, 26.35)),
+                    new RectangleHitbox(Vec.create(-26, 23.9), Vec.create(25.9, 26.35)),
+                    new RectangleHitbox(Vec.create(23.5, -14.3), Vec.create(25.9, 26.35)),
+                ),
+                spawnHitbox: RectangleHitbox.fromRect(110, 70),
+                ceilingHitbox: RectangleHitbox.fromRect(65, 48),
+                floorImages: [
+                    {
+                        key: "hotel_kitchen_floor",
+                        position: Vec.create(0, 0)
+                    },
+                ],
+                ceilingImages: [
+                ],
+                floors: [
+                    {
+                        type: FloorNames.Stone,
+                        hitbox: RectangleHitbox.fromRect(65, 48, Vec.create(0, 0))
+                    }
+                ],
+                obstacles: [
+                    { idString: "tv", position: Vec.create(1.1, -23), rotation: 1 },
+
+                    { idString: "chair", position: Vec.create(-4.5, -5.5), rotation: 3 },
+                    { idString: "chair", position: Vec.create(-4.7, 3), rotation: 3 },
+                    { idString: "chair", position: Vec.create(-6.7, 10.5), rotation: 3 },
+                    { idString: "chair", position: Vec.create(8.5, -5), rotation: 1 },
+                    { idString: "chair", position: Vec.create(7.8, 3.2), rotation: 1 },
+                    { idString: "chair", position: Vec.create(9, 10.5), rotation: 1 },
+
+                    { idString: "small_table", position: Vec.create(1.7, -5.3), rotation: 1 },
+                    { idString: "small_table", position: Vec.create(1.7, 2.5), rotation: 1, variation:1 },
+                    { idString: "small_table", position: Vec.create(1.7, 10.3), rotation: 1 },
+
+                    { idString: "trash_can", position: Vec.create(-20, -18) },
+                    { idString: "kitchen_unit_3", position: Vec.create(-19.7, -9.2), rotation: 1 },
+                    { idString: "stove", position: Vec.create(-20, 0.2), rotation: 1 },
+                    { idString: "kitchen_unit_1", position: Vec.create(-19.85, 8.5), rotation:1 },
+                    { idString: "kitchen_unit_1", position: Vec.create(-19.85, 14.5), rotation:1 },
+                    { idString: "kitchen_unit_2", position: Vec.create(-20.3, 20.7), rotation:1 },
+                    { idString: "kitchen_unit_1", position: Vec.create(-14, 20.35), rotation:2 },
+
+                    { idString: "water_cooler", position: Vec.create(20.3, 2.8), rotation: 3 },
+                    { idString: "fridge", position: Vec.create(19.9, 10.8), rotation: 3 },
+                    { idString: "potted_plant", position: Vec.create(19.4, 19) },
+
+                    { idString: "window", position: Vec.create(-24.7, 1.7), rotation: 2 },
+                    { idString: "door", position: Vec.create(24.8, -19.8), rotation: 1 },
+                ]
+            },
 
             warehouseLayout([1, [
                 // top left
