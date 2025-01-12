@@ -95,6 +95,41 @@ const MeleeDefaultAnims:Record<string,MeleeDefinition["keyframes"]>={
             },
         },
     ],
+    bat:[
+        {
+            animationDuration: 100,
+            fist:{
+                left: Vec.create(10, -45),
+                right: Vec.create(20, -40)
+            },
+            image:{
+                position: Vec.create(20, -40),
+                angle: -140,
+            },
+        },
+        {
+            animationDuration: 100,
+            fist:{
+                left: Vec.create(-10, -50),
+                right: Vec.create(10, -45)
+            },
+            image:{
+                position: Vec.create(10, -45),
+                angle: -180,
+            },
+        },
+        {
+            animationDuration: 100,
+            fist:{
+                left: Vec.create(55, 5),
+                right: Vec.create(75, 0)
+            },
+            image:{
+                position: Vec.create(55, 5),
+                angle: 30,
+            },
+        },
+    ]
 }
 
 export const DEFAULT_HAND_RIGGING = Object.freeze({
@@ -147,23 +182,27 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             swingSound: "heavy_swing",
             damage: 34,
             obstacleMultiplier: 1.5,
-            radius: 3.8,
-            offset: Vec.create(3.8, 2.2),
-            cooldown: 340,
+            radius: 5,
+            offset: Vec.create(3, -2),
+            cooldown: 400,
+            damageDelay:250,
             fists: {
                 animationDuration: 150,
-                left: Vec.create(55, -15),
-                right: Vec.create(45, 0),
+                left: Vec.create(10, -45),
+                right: Vec.create(20, -40),
                 useLeft: Vec.create(28, -15),
                 useRight: Vec.create(50, -15)
             },
             image: {
-                position: Vec.create(35, 45),
                 usePosition: Vec.create(115, -14),
-                angle: 110,
+                position: Vec.create(20, -40),
+                angle: -140,
                 useAngle: 0,
-                lootScale: 0.55
+                lootScale: 0.55,
+                center:Vec.create(-65,0)
             },
+            keyframes:MeleeDefaultAnims.bat,
+            keyframesSpeed:1.2
         },
         {
             idString: "feral_claws",
@@ -298,31 +337,6 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                 lootScale: 0.65
             },
             reskins: ["winter"]
-        },
-        {
-            idString: "kbar",
-            name: "K-bar",
-            swingSound: "soft_swing",
-            damage: 25,
-            obstacleMultiplier: 1.25,
-            radius: 2.7,
-            iceMultiplier: 0.1,
-            offset: Vec.create(3.1, 0.9),
-            cooldown: 225,
-            fists: {
-                animationDuration: 100,
-                left: Vec.create(38, -35),
-                right: Vec.create(38, 35),
-                useLeft: Vec.create(38, -35),
-                useRight: Vec.create(70, 20)
-            },
-            image: {
-                position: Vec.create(62, 42),
-                usePosition: Vec.create(90, 8),
-                angle: 15,
-                useAngle: 5,
-                lootScale: 0.8
-            }
         },
         {
             idString: "sickle",
@@ -518,9 +532,9 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             damage: 41,
             swingSound: "soft_swing",
             obstacleMultiplier: 1.1,
-            radius: 2.5,
+            radius: 5.5,
             // maxTargets: Infinity, - TODO: It must hit multiple targets at once, however enabling this causes melee through wall bug to appear
-            offset: Vec.create(7.2, 0.5),
+            offset: Vec.create(4, 0),
             rotationalAnimation: true,
             piercingMultiplier: 0.95,
             cooldown: 650,
@@ -531,25 +545,25 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             image: {
                 position: Vec.create(10, -45),
                 lootScale: 0.6,
-                angle: -85,
+                angle: -180,
                 zIndex:3,
-                center:Vec.create(-40,40)
+                center:Vec.create(-55,-10)
             },
-            damageDelay: 250,
+            damageDelay: 350,
             keyframes:[
                 {
-                    animationDuration: 100, //50
+                    animationDuration: 200, //50
                     fist:{
                         left: Vec.create(-10, -50),
                         right: Vec.create(10, -45)
                     },
                     image:{
                         position: Vec.create(10, -45),
-                        angle: -120,
+                        angle: -180,
                     },
                 },
                 {
-                    animationDuration: 100, //50
+                    animationDuration: 250, //50
                     fist:{
                         left: Vec.create(55, 5),
                         right: Vec.create(75, 0)
@@ -722,6 +736,32 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                 useAngle: -80,
                 lootScale: 0.9
             },
+        },
+        {
+            idString: "kbar",
+            name: "K-bar",
+            swingSound: "soft_swing",
+            damage: 25,
+            obstacleMultiplier: 1.25,
+            radius: 2.7,
+            iceMultiplier: 0.1,
+            offset: Vec.create(3.1, 0.9),
+            cooldown: 225,
+            fists: {
+                animationDuration: 100,
+                left: DEFAULT_HAND_RIGGING.left,
+                right: DEFAULT_HAND_RIGGING.right,
+                useLeft: DEFAULT_HAND_RIGGING.left,
+                useRight: Vec.create(75, 10)
+            },
+            image: {
+                position: DEFAULT_HAND_RIGGING.right,
+                usePosition: Vec.create(75, 10),
+                center:Vec.create(-23,0),
+                angle: 15,
+                useAngle: -70,
+                lootScale: 0.8
+            }
         },
     ]
 );
