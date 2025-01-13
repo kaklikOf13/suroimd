@@ -441,6 +441,9 @@ export class Minimap {
                 debugGraphics.fill(0xff0000);
             }
         }
+        for (const f of this._terrain.floors[this.game.layer??Layer.Ground]) {
+            drawHitbox(f.hitbox, FloorTypes[f.type].color, debugGraphics);
+        }
 
         this.game.camera.addObject(debugGraphics);
     }

@@ -1228,61 +1228,82 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ]
             },
             {
-                idString: "hotel_kitchen",
-                name: "Hotel Kitchen",
+                idString: "hotel_floor1",
+                name: "Hotel Floor1",
                 material: "stone",
                 particle: "wall_particle",
                 hitbox: new GroupHitbox(
-                    new RectangleHitbox(Vec.create(-26, -26.2), Vec.create(25.9, -23.8)),
-                    new RectangleHitbox(Vec.create(-26, -26.2), Vec.create(-23.5, -3.55)),
-                    new RectangleHitbox(Vec.create(-26, 6.9), Vec.create(-23.5, 26.35)),
-                    new RectangleHitbox(Vec.create(-26, 23.9), Vec.create(25.9, 26.35)),
-                    new RectangleHitbox(Vec.create(23.5, -14.3), Vec.create(25.9, 26.35)),
+                    new RectangleHitbox(Vec.create(-63.4, -51.2), Vec.create(-11.5, -48.8)),
+                    new RectangleHitbox(Vec.create(-63.4, -51.2), Vec.create(-60.9, -28.55)),
+                    new RectangleHitbox(Vec.create(-63.4, -18.1), Vec.create(-60.9, 1.35)),
+                    new RectangleHitbox(Vec.create(-63.4, -1.1), Vec.create(-11.5, 1.35)),
+                    new RectangleHitbox(Vec.create(-13.9, -39.3), Vec.create(-11.5, 1.35)),
                 ),
-                spawnHitbox: RectangleHitbox.fromRect(110, 70),
+                spawnHitbox: RectangleHitbox.fromRect(80, 80),
                 ceilingHitbox: RectangleHitbox.fromRect(65, 48),
                 floorImages: [
                     {
-                        key: "hotel_kitchen_floor",
+                        key: "hotel_floor1",
                         position: Vec.create(0, 0)
                     },
                 ],
                 ceilingImages: [
                 ],
                 floors: [
+                    //Kitchen
                     {
-                        type: FloorNames.Stone,
-                        hitbox: RectangleHitbox.fromRect(65, 48, Vec.create(0, 0))
+                        type: FloorNames.Wood,
+                        hitbox: new RectangleHitbox(Vec.create(-62.5, -50), Vec.create(-12, 0))
                     }
                 ],
+                puzzle: {
+                    triggerOnSolve: "speaker",
+                    delay: 500
+                },
+                sounds: {
+                    solved: "speaker_2",
+                    position: Vec.create(17.37, -45.5),
+                    maxRange: 400,
+                    falloff: 0.5
+                },
                 obstacles: [
-                    { idString: "tv", position: Vec.create(1.1, -23), rotation: 1 },
+                    //Hotel Kitchen
+                    { idString: "tv", position: Vec.create(-36.3, -48), rotation: 1 },
 
-                    { idString: "chair", position: Vec.create(-4.5, -5.5), rotation: 3 },
-                    { idString: "chair", position: Vec.create(-4.7, 3), rotation: 3 },
-                    { idString: "chair", position: Vec.create(-6.7, 10.5), rotation: 3 },
-                    { idString: "chair", position: Vec.create(8.5, -5), rotation: 1 },
-                    { idString: "chair", position: Vec.create(7.8, 3.2), rotation: 1 },
-                    { idString: "chair", position: Vec.create(9, 10.5), rotation: 1 },
+                    { idString: "chair", position: Vec.create(-41.9, -30.5), rotation: 3 },
+                    { idString: "chair", position: Vec.create(-42.1, -22), rotation: 3 },
+                    { idString: "chair", position: Vec.create(-44.1, -14.5), rotation: 3 },
+                    { idString: "chair", position: Vec.create(-28.9, -30), rotation: 1 },
+                    { idString: "chair", position: Vec.create(-29.6, -21.8), rotation: 1 },
+                    { idString: "chair", position: Vec.create(-28.4, -14.5), rotation: 1 },
 
-                    { idString: "small_table", position: Vec.create(1.7, -5.3), rotation: 1 },
-                    { idString: "small_table", position: Vec.create(1.7, 2.5), rotation: 1, variation:1 },
-                    { idString: "small_table", position: Vec.create(1.7, 10.3), rotation: 1 },
+                    { idString: "small_table", position: Vec.create(-35.7, -30.3), rotation: 1 },
+                    { idString: "small_table", position: Vec.create(-35.7, -22.5), rotation: 1, variation:1 },
+                    { idString: "small_table", position: Vec.create(-35.7, -14.7), rotation: 1 },
 
-                    { idString: "trash_can", position: Vec.create(-20, -18) },
-                    { idString: "kitchen_unit_3", position: Vec.create(-19.7, -9.2), rotation: 1 },
-                    { idString: "stove", position: Vec.create(-20, 0.2), rotation: 1 },
-                    { idString: "kitchen_unit_1", position: Vec.create(-19.85, 8.5), rotation:1 },
-                    { idString: "kitchen_unit_1", position: Vec.create(-19.85, 14.5), rotation:1 },
-                    { idString: "kitchen_unit_2", position: Vec.create(-20.3, 20.7), rotation:1 },
-                    { idString: "kitchen_unit_1", position: Vec.create(-14, 20.35), rotation:2 },
+                    { idString: "trash_can", position: Vec.create(-57.4, -43) },
+                    { idString: "kitchen_unit_3", position: Vec.create(-57.1, -34.2), rotation: 1 },
+                    { idString: "stove", position: Vec.create(-57.4, -24.8), rotation: 1 },
+                    { idString: "kitchen_unit_1", position: Vec.create(-57.25, -16.5), rotation:1 },
+                    { idString: "kitchen_unit_1", position: Vec.create(-57.25, -10.5), rotation:1 },
+                    { idString: "kitchen_unit_2", position: Vec.create(-57.7, -4.2), rotation:1 },
+                    { idString: "kitchen_unit_1", position: Vec.create(-51.4, -4.65), rotation:2 },
 
-                    { idString: "water_cooler", position: Vec.create(20.3, 2.8), rotation: 3 },
-                    { idString: "fridge", position: Vec.create(19.9, 10.8), rotation: 3 },
-                    { idString: "potted_plant", position: Vec.create(19.4, 19) },
+                    { idString: "water_cooler", position: Vec.create(-17.1, -22.2), rotation: 3 },
+                    { idString: "fridge", position: Vec.create(-17.5, -14.2), rotation: 3 },
+                    { idString: "potted_plant", position: Vec.create(-18.5, -6) },
 
-                    { idString: "window", position: Vec.create(-24.7, 1.7), rotation: 2 },
-                    { idString: "door", position: Vec.create(24.8, -19.8), rotation: 1 },
+                    { idString: "window", position: Vec.create(-62.4, -23.05), rotation: 2 },
+                    { idString: "door", position: Vec.create(-12.6, -44.8), rotation: 1 },
+
+                    //Work Room
+                    { idString: "speaker", position: Vec.create(17.37, -45.5), rotation:0, puzzlePiece: true},
+
+                    { idString: "filing_cabinet", position: Vec.create(32.15, -44.7), rotation:0},
+                    { idString: "filing_cabinet", position: Vec.create(39, -44.7), rotation:0},
+                    { idString: "filing_cabinet", position: Vec.create(45.55, -44.7), rotation:0},
+
+                    { idString: "potted_plant", position: Vec.create(56, -41)},
                 ]
             },
 

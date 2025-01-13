@@ -1052,33 +1052,35 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         // Find and resolve collisions
         this.nearObjects = this.game.grid.intersectsHitbox(this._hitbox, this.layer);
-        for (const potential of this.nearObjects) {
-            const { isObstacle, isBuilding } = potential;
+        for(let i=0;i<5;i++){
+            for (const potential of this.nearObjects) {
+                const { isObstacle, isBuilding } = potential;
 
-            if (
-                (isObstacle || isBuilding)
-                && this.mapPerkOrDefault(
-                    PerkIds.AdvancedAthletics,
-                    () => {
-                        return potential.definition.material !== "tree"
-                            && (
-                                !isObstacle
-                                || !potential.definition.isWindow
-                                || !potential.dead
-                            );
-                    },
-                    true
-                )
-                && potential.collidable
-                && potential.hitbox?.collidesWith(this._hitbox)
-            ) {
-                if (isObstacle && potential.definition.isStair) {
-                    const oldLayer = this.layer;
-                    potential.handleStairInteraction(this);
-                    if (this.layer !== oldLayer) this.setDirty();
-                    this.activeStair = potential;
-                } else {
-                    this._hitbox.resolveCollision(potential.hitbox);
+                if (
+                    (isObstacle || isBuilding)
+                    && this.mapPerkOrDefault(
+                        PerkIds.AdvancedAthletics,
+                        () => {
+                            return potential.definition.material !== "tree"
+                                && (
+                                    !isObstacle
+                                    || !potential.definition.isWindow
+                                    || !potential.dead
+                                );
+                        },
+                        true
+                    )
+                    && potential.collidable
+                    && potential.hitbox?.collidesWith(this._hitbox)
+                ) {
+                    if (isObstacle && potential.definition.isStair) {
+                        const oldLayer = this.layer;
+                        potential.handleStairInteraction(this);
+                        if (this.layer !== oldLayer) this.setDirty();
+                        this.activeStair = potential;
+                    } else {
+                        this._hitbox.resolveCollision(potential.hitbox);
+                    }
                 }
             }
         }
