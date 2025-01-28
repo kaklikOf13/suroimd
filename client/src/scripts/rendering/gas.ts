@@ -3,7 +3,7 @@ import { type UpdatePacketDataOut } from "@common/packets/updatePacket";
 import { Numeric } from "@common/utils/math";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
-import { Graphics } from "pixi.js";
+import { Color, Graphics } from "pixi.js";
 import { getTranslatedString } from "../../translations";
 import { type Game } from "../game";
 import { COLORS, UI_DEBUG_MODE } from "../utils/constants";
@@ -153,7 +153,7 @@ export class GasRender {
             .lineTo(GasRender._overdraw, GasRender._overdraw)
             .lineTo(-GasRender._overdraw, GasRender._overdraw)
             .closePath()
-            .fill(COLORS.gas)
+            .fill("#fff8")
             .moveTo(0, 1);
 
         const tau = 2 * Math.PI;
@@ -172,9 +172,9 @@ export class GasRender {
     update(gas: Gas): void {
         let position: Vector;
         let radius: number;
-
+        let interpFactor=0
         if (gas.state === GasState.Advancing) {
-            const interpFactor = Numeric.clamp((Date.now() - gas.lastUpdateTime) / gas.game.serverDt, 0, 1);
+            interpFactor = Numeric.clamp((Date.now() - gas.lastUpdateTime) / gas.game.serverDt, 0, 1);
             position = Vec.lerp(gas.lastPosition, gas.position, interpFactor);
             radius = Numeric.lerp(gas.lastRadius, gas.radius, interpFactor);
         } else {
@@ -192,5 +192,15 @@ export class GasRender {
         }
         this._graphics.position.copyFrom(center);
         this._graphics.scale.set(rad);
+        this._graphics.tint=rgbaToTint(lerpColor(new Color("#f12"),new Color("#21f"),Numeric.clamp((gas.radius/gas.game.map.width)-0.1,0,1)))
     }
+}
+function rgbaToTint(c:Color):number {
+    return ((c.red*255) << 16) | ((c.green*255) << 8) | (c.blue*255);
+}
+function lerpColor(color1:Color, color2:Color, t:number):Color{
+    const r = Numeric.lerp(color1.red,color2.red,t)
+    const g = Numeric.lerp(color1.green,color2.green,t)
+    const b = Numeric.lerp(color1.blue,color2.blue,t)
+    return new Color([r,g,b])
 }
