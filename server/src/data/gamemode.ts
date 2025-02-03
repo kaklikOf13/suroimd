@@ -12,6 +12,7 @@ import { type Player } from "../objects/player"
 import { GiveRoleAfterDownsArgs, GiveRoleAfterDownsPlugin, GiveRoleAfterStartArgs, GiveRoleAfterStartPlugin, StartWithRolePlugin } from "../defaultPlugins/rolesPlugins"
 import { ReloadGamemodePlugin } from "../defaultPlugins/reloadGamemodePlugin"
 import { LootTable } from "./lootTables"
+import { NullString } from "@common/utils/objectDefinitions"
 export const enum GasMode {
     Staged,
     Debug,
@@ -438,7 +439,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
         map:"deathmatch"
     },
     desert:{
-        adrenalineLoss:0.002,
+        adrenalineLoss:0.001,
         data:Date.UTC(91,4,13,3,26,30),
         lootTables:{
             ammo: [
@@ -540,6 +541,56 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                 { item: "c4", count: 2, weight: 0.6 },
                 { item: "airstrike", count: 1, weight: 0.25 },
             ],
+            aegis_golden_case: [
+                [{ item: "sergeant_helmet", weight: 1 }],
+                [{ item: "fire_hatchet", weight: 1 }],
+                [
+                    { item: "super90", weight: 1 },
+                    { item: "an94", weight: 1 },
+                    { item: "m590m", weight: 0.5 },
+                    { item: "mg5", weight: 0.5 },
+                    { item: "usas12", weight: 0.1 },
+                    { item: "pkp", weight: 0.1 }
+                ],
+                [{ table: "vests", weight: 1 }],
+                [{ table: "backpacks", weight: 1 }],
+                [{ table: "special_healing_items", weight: 1 }],
+                [{ table: "special_scopes", weight: 1 }],
+            ],
+            shiny_skins:[
+                { item: "shiny_anonymous", weight: 1.3 },
+                { item: "shiny_max_mcfly", weight: 0.95  },
+            ],
+            gold_airdrop_crate: [
+                [{ table: "airdrop_equipment", weight: 1 }],
+                [{ table: "airdrop_scopes", weight: 1 }],
+                [{ table: "airdrop_healing_items", weight: 1 }],
+                [{ item: NullString, weight: 2.5 },{ table: "airdrop_skins", weight: .6 },{ table: "shiny_skins", weight: 1 }],
+                [{ table: "perks", weight: 1 }],
+                [{ table: "airdrop_melee", weight: 1 }],
+                [{ table: "ammo", weight: 1 }],
+                [{ table: "legendary_guns", weight: 1 }],
+                [{ table: "special_throwables", count: 1, weight: 2 }]
+            ],
+            airdrop_melee: [
+                { item: NullString, weight: 1 },
+                { item: "hatchet", weight: 0.3 },
+                { item: "maul", weight: 0.25 },
+                { item: "fire_hatchet", weight: 0.2 },
+                { item: "battlesaw", weight: 0.1 },
+            ],
+            perks: {
+                min: 1,
+                max: 1,
+                noDuplicates: true,
+                loot: [
+                    { item: PerkIds.Flechettes, weight: 1 },
+                    { item: PerkIds.SecondWind, weight: 1 },
+                    { item: PerkIds.FieldMedic, weight: 1 },
+                    { item: PerkIds.SabotRounds, weight: 1 },
+                    { item: PerkIds.AdvancedAthletics, weight: 1 },
+                ]
+            },
         },
         map:"desert",
     },

@@ -64,7 +64,6 @@ export function getLootFromTable(tableID: string,lootTables?:Record<string,LootT
         : lootTable.noDuplicates
             ? { ...lootTable, loot: [...lootTable.loot] } // cloning the array is necessary because noDuplicates mutates it
             : lootTable;
-
     return (
         isSimple && isArray(loot[0])
             ? (loot as readonly WeightedItem[][]).map(innerTable => getLoot(innerTable,lootTables))
@@ -78,7 +77,7 @@ export function getLootFromTable(tableID: string,lootTables?:Record<string,LootT
 }
 
 export function resolveTable(tableID: string,lootTables?:Record<string,LootTable>): LootTable {
-    return (lootTables?lootTables[tableID]:undefined)??(LootTables[GameConstants.modeName]?.[tableID] ?? LootTables.normal[tableID]);
+    return (lootTables?lootTables[tableID]:undefined)??(LootTables.normal[tableID]);
 }
 
 function getLoot(items: WeightedItem[],tables?:Record<string,LootTable>, noDuplicates?: boolean): LootItem[] {
@@ -207,6 +206,16 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
                 { table: "special_scopes", weight: 0.3 }
             ]
         },
+        md_crate: {
+            min: 4,
+            max: 6,
+            loot: [
+                { item: "airstrike", weight: 2.5 },
+                { item: "curadell", weight: 1.5 },
+                { item: "radio", weight: 0.45 },
+                { item: "nuke_radio", weight: 0.1 },
+            ]
+        },
         survival_crate: [
             [
                 { item: "hp18", weight: 1.1 },
@@ -230,7 +239,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             [{ table: "helmets", weight: 1 }],
             [{ table: "vests", weight: 1 }],
             [{ table: "backpacks", weight: 1 }],
-            [{ table: "special_healing_items", weight: 1 }]
+            [{ table: "special_healing_items", weight: 1 }],
+            [{ table: "special_scopes", weight: 1 }]
         ],
         frozen_crate: [
             [
@@ -998,6 +1008,25 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             ]
         ],
         fall_perks: {
+            min: 1,
+            max: 1,
+            noDuplicates: true,
+            loot: [
+                { item: PerkIds.InfiniteAmmo, weight: 1 },
+                { item: PerkIds.ExtendedMags, weight: 1 },
+                { item: PerkIds.Flechettes, weight: 1 },
+                { item: PerkIds.DemoExpert, weight: 1 },
+                { item: PerkIds.SecondWind, weight: 1 },
+                { item: PerkIds.FieldMedic, weight: 1 },
+                { item: PerkIds.SabotRounds, weight: 1 },
+                { item: PerkIds.AdvancedAthletics, weight: 1 },
+                { item: PerkIds.Toploaded, weight: 1 },
+                { item: PerkIds.CloseQuartersCombat, weight: 1 },
+                { item: PerkIds.LowProfile, weight: 1 },
+                { item: PerkIds.Berserker, weight: 1 }
+            ]
+        },
+        perks: {
             min: 1,
             max: 1,
             noDuplicates: true,

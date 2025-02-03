@@ -71,7 +71,7 @@ export const FloorTypes: Record<FloorNames, FloorDefinition> = {
     }
 };
 
-function jaggedRectangle(
+export function jaggedRectangle(
     hitbox: RectangleHitbox,
     spacing: number,
     variation: number,

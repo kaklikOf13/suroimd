@@ -2701,15 +2701,15 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 itemType: ItemType.Gun,
                 ammoType: "45acp",
                 ammoSpawnAmount: 48,
-                capacity: 12,
-                reloadTime: 1.3,
+                capacity: 10,
+                reloadTime: 1.4,
                 switchDelay: 250,
                 fireDelay: 140,
                 ballistics: {
                     damage: 22,
                     obstacleMultiplier: 1,
-                    range: 220,
-                    speed: 0.28125
+                    range: 180,
+                    speed: 0.23
                 },
                 fireMode: FireMode.Single,
                 fists: {
@@ -2734,7 +2734,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     fireDelay: 120,
                     shotSpread: 8,
                     moveSpread: 12,
-                    capacity: 24,
+                    capacity: 20,
                     reloadTime: 3
                 }
             },

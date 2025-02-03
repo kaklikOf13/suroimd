@@ -1027,7 +1027,13 @@ export class GameMap {
         const getPosition = params?.getPosition ?? (() => {
             switch (spawnMode) {
                 case MapObjectSpawnMode.Grass: {
-                    return () => params?.ir?.grassHB.randomPoint()
+                    return () => {
+                        const rp=params?.ir?.grassHBR.randomPoint()
+                        return Vec.create(
+                            Numeric.clamp(rp?.x??0,(params?.ir?.grassHBR.min.x)??0-width*1.1,(params?.ir?.grassHBR.max.x)??this.width+width*1.1),
+                            Numeric.clamp(rp?.y??0,(params?.ir?.grassHBR.min.y)??0-height*1.1,(params?.ir?.grassHBR.max.y)??this.height+height*1.1),
+                        )
+                    }
                 }
                 case MapObjectSpawnMode.GrassAndSand: {
                     return () => {

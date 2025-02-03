@@ -926,6 +926,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 },
                 spawnHitbox: new CircleHitbox(12),
                 rotationMode: RotationMode.Full,
+                zIndex: ZIndexes.ObstaclesLayer5,
                 hitbox: new CircleHitbox(4),
                 frames:{
                     particle:"desert_tree_particle"
@@ -1415,18 +1416,20 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 idString: "statue",
                 name: "Statue",
                 material: "stone",
-                health: 600,
+                health: 450,
                 resistanceLevel: 2,
                 hasLoot: false,
                 noResidue:true,
+                allowFlyover: FlyoverPref.Never,
                 scale: {
                     spawnMin: 1,
                     spawnMax: 1,
-                    destroy: 0.9
+                    destroy: 0.8
                 },
                 spawnMode: MapObjectSpawnMode.GrassAndSand,
-                hitbox: RectangleHitbox.fromRect(17.5, 17.5),
+                hitbox: RectangleHitbox.fromRect(18.7, 18.7),
                 rotationMode: RotationMode.Limited,
+                zIndex:ZIndexes.ObstaclesLayer4,
                 particleVariations: 2,
                 frames:{
                     particle:"flint_stone_particle"
@@ -1586,6 +1589,19 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                             name: "Survival Crate",
                             rotationMode: RotationMode.None,
                             hideOnMap: true
+                        }
+                    ), 6
+                ],
+                [
+                    crate(
+                        {
+                            idString: "md_crate",
+                            name: "MD Crate",
+                            frames:{
+                                particle:"survival_crate_particle",
+                                residue:"survival_crate_residue"
+                            },
+                            rotationMode: RotationMode.None,
                         }
                     ), 6
                 ],
@@ -4527,12 +4543,12 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 material: "metal_heavy",
                 health: 1000,
                 indestructible: true,
+                invisible:true,
                 role: ObstacleSpecialRoles.Stair,
                 activeEdges: {
                     high: 2,
                     low: 0
                 },
-                invisible: true,
                 hitbox: RectangleHitbox.fromRect(10, 11.5),
                 frames: {
                     particle: "metal_particle"

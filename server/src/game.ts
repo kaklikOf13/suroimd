@@ -16,7 +16,7 @@ import { SpectatePacket } from "@common/packets/spectatePacket";
 import { type PingSerialization } from "@common/packets/updatePacket";
 import { CircleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { EaseFunctions, Geometry, Numeric, Statistics } from "@common/utils/math";
-import { cloneDeep, mergeDeep, Timeout } from "@common/utils/misc";
+import { mergeDeep, Timeout } from "@common/utils/misc";
 import { ItemType, MapObjectSpawnMode, SetArray, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { pickRandomInArray, random, randomFloat, randomPointInsideCircle, randomRotation } from "@common/utils/random";
 import { type SuroiByteStream } from "@common/utils/suroiByteStream";
@@ -51,7 +51,6 @@ import { Building } from "./objects/building";
 import { Guns } from "@common/definitions/guns";
 import { Melees } from "@common/definitions/melees";
 import { DefaultGamemode, Gamemode, Gamemodes, SpawnMode } from "./data/gamemode";
-import { LootTable, LootTables } from "./data/lootTables";
 /*
     eslint-disable
 
@@ -232,9 +231,12 @@ export class Game implements GameData {
         this.grid = new Grid(this, width, height);
 
         if(gamemode){
-            this.gamemode=mergeDeep(DefaultGamemode,Gamemodes[typeof gamemode==="string"?gamemode:pickRandomInArray(gamemode)])
+            const gm=Gamemodes[typeof gamemode==="string"?gamemode:pickRandomInArray(gamemode)]
+            this.gamemode=mergeDeep(DefaultGamemode,gm)
             this.teamMode=this.gamemode.group?true:this.maxTeamSize > TeamSize.Solo;
             this.maxTeamSize=this.gamemode.group?TeamSize.Squad:this.maxTeamSize;
+            //@ts-ignore
+            this.gamemode.lootTables=gm.lootTables
         }else{
             this.teamMode = this.maxTeamSize > TeamSize.Solo;
             this.gamemode=DefaultGamemode

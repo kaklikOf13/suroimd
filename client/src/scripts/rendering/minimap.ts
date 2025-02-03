@@ -469,17 +469,17 @@ export class Minimap {
         );
         this.terrain.addRivers(rivers)
 
+        for(const f of mapPacket.floors){
+            this._terrain.addFloor(f.type,BaseHitbox.fromJSON(f.hitbox),f.layer)
+        }
+
         for (const object of this._objects) {
             if (object.isBuilding) {
                 for (const floor of object.definition.floors) {
                     const hitbox = floor.hitbox.transform(object.position, 1, object.orientation);
-                    this._terrain.addFloor(floor.type, hitbox, floor.layer ?? object.layer ?? 0,true);
+                    this._terrain.addFloor(floor.type, hitbox, floor.layer ?? object.layer ?? 0,!floor.visible);
                 }
             }
-        }
-
-        for(const f of mapPacket.floors){
-            this._terrain.addFloor(f.type,BaseHitbox.fromJSON(f.hitbox),f.layer)
         }
 
         this.renderMap();

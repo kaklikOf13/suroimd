@@ -64,7 +64,8 @@ export class Parachute extends BaseGameObject.derive(ObjectCategory.Parachute) {
                         case object.isObstacle: {
                             object.damage({
                                 amount: Infinity,
-                                source: crate
+                                source: crate,
+                                resistanceDamage:Infinity
                             });
                             break;
                         }

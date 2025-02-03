@@ -4,8 +4,8 @@ import { type Orientation, type Variation } from "../typings";
 import { CircleHitbox, GroupHitbox, PolygonHitbox, RectangleHitbox, type Hitbox } from "../utils/hitbox";
 import { type DeepPartial } from "../utils/misc";
 import { MapObjectSpawnMode, NullString, ObjectDefinitions, type ObjectDefinition, type ReferenceOrRandom, type ReferenceTo } from "../utils/objectDefinitions";
-import { pickRandomInArray, randomBoolean } from "../utils/random";
-import { FloorNames } from "../utils/terrain";
+import { pickRandomInArray, randomBoolean, SeededRandom } from "../utils/random";
+import { FloorNames, jaggedRectangle } from "../utils/terrain";
 import { Vec, type Vector } from "../utils/vector";
 import { Badges } from "./loadout/badges";
 import { FlyoverPref, Materials, RotationMode, type ObstacleDefinition } from "./obstacles";
@@ -158,6 +158,7 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly floors: ReadonlyArray<{
         readonly type: FloorNames
         readonly hitbox: Hitbox
+        readonly visible?:boolean
         // specified as an offset relative to the building in which this floor appears
         readonly layer?: number
     }>
@@ -251,7 +252,18 @@ const warehouseObstacle = {
     regular_crate: 2,
     flint_crate: 1,
     aegis_crate: 1,
-    survival_crate: .3
+    survival_crate: .1
+};
+const battlecratesObstacle = {
+    regular_crate: 2,
+    aegis_crate: 1.5,
+    grenade_crate: 1.3,
+    survival_crate: .3,
+    md_crate: .1
+};
+const boxes = {
+    box: 2,
+    grenade_box: 0.9,
 };
 
 const fireworkWarehouseObstacle = {
@@ -4906,10 +4918,10 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 },
                 obstacles: [
                     /*  couch parts (note by pap)
-                      couch_end_right
-                      couch_end_left
-                      couch_part
-                      couch_corner
+                    couch_end_right
+                    couch_end_left
+                    couch_part
+                    couch_corner
                     */
 
                     { idString: "fire_exit_railing", position: Vec.create(73.5, -56), rotation: 0 },
@@ -5120,6 +5132,192 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 subBuildings: [
                     { idString: "small_bunker_main", position: Vec.create(0, -5), layer: -2 },
                     { idString: "small_bunker_entrance", position: Vec.create(0, 20), layer: -1 }
+                ]
+            },
+            {
+                idString: "desert_bunker",
+                name: "Desert Bunker",
+                material: "metal_heavy",
+                particle: "metal_particle",
+                reflectBullets: true,
+                hitbox: RectangleHitbox.fromRect(12, 1, Vec.create(0, 12.3)),
+                floorImages: [{
+                    key: "small_bunker_entrance_floor",
+                    position: Vec.create(0, 20),
+                    scale: Vec.create(2.2, 2.2)
+                }],
+                spawnHitbox: RectangleHitbox.fromRect(60, 60, Vec.create(0, 20)),
+                obstacles: [
+                    { idString:"statue", position: Vec.create(0, 20), rotation: 1 }
+                ],
+                bulletMask: RectangleHitbox.fromRect(11, 30, Vec.create(0, 30)),
+                subBuildings: [
+                    { idString: "desert_bunker_main", position: Vec.create(0, -5), layer: -2 },
+                    { idString: "desert_bunker_entrance", position: Vec.create(0, 20), layer: -1 }
+                ]
+            },
+            {
+                idString: "desert_bunker_entrance",
+                name: "Desert Bunker Entrance",
+                reflectBullets: true,
+                collideWithLayers: Layers.All,
+                visibleFromLayers: Layers.All,
+                material: "metal_heavy",
+                particle: "metal_particle",
+                hitbox: new GroupHitbox(
+                    // RectangleHitbox.fromRect(12, 1, Vec.create(0, -7.5)),
+                    RectangleHitbox.fromRect(1.9, 16.6, Vec.create(6.1, 0.15)),
+                    RectangleHitbox.fromRect(1.9, 16.6, Vec.create(-6.1, 0.15))
+                ),
+                spawnHitbox: RectangleHitbox.fromRect(75, 75, Vec.create(0, 0)),
+                floorImages: [{
+                    key: "small_bunker_entrance_floor",
+                    position: Vec.create(0, 0),
+                    scale: Vec.create(2.2, 2.2)
+                }],
+                floors: [
+                    { type: FloorNames.Metal, hitbox: RectangleHitbox.fromRect(10, 18, Vec.create(0, 0)) }
+                ],
+                obstacles: [
+                    { idString: "bunker_stair", position: Vec.create(0, 2.6), rotation: 0 }
+                ],
+                lootSpawners: []
+            },
+            {
+                idString: "desert_bunker_main",
+                name: "Desert Bunker Main",
+                reflectBullets: true,
+                collideWithLayers: Layers.Adjacent,
+                material: "metal_heavy",
+                particle: "metal_particle",
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(44.5, 1.7, Vec.create(0, -18)),
+                    RectangleHitbox.fromRect(1.7, 37.9, Vec.create(21.5, 0)),
+                    RectangleHitbox.fromRect(1.7, 37.9, Vec.create(-21.5, 0)),
+                    RectangleHitbox.fromRect(16, 1.7, Vec.create(-13.1, 18)),
+                    RectangleHitbox.fromRect(16, 1.7, Vec.create(13.1, 18))
+                ),
+                spawnHitbox: RectangleHitbox.fromRect(55, 55, Vec.create(0, 5)),
+                ceilingHitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(42, 34.5),
+                    RectangleHitbox.fromRect(10, 20, Vec.create(0, 20))
+                ),
+                floorImages: [
+                    {
+                        key: "desert_bunker_floor",
+                        position: Vec.create(0, 0),
+                        scale: Vec.create(2.2, 2.2)
+                    }
+                ],
+                floors: [
+                    {
+                        type: FloorNames.Stone,
+                        hitbox: new GroupHitbox(
+                            RectangleHitbox.fromRect(42, 34.5),
+                            RectangleHitbox.fromRect(10, 4.5, Vec.create(0, 19))
+                        )
+                    },
+                    {
+                        type: FloorNames.Metal,
+                        hitbox: RectangleHitbox.fromRect(10, 12, Vec.create(0, 27)),
+                        layer: -1
+                    }
+                ],
+                obstacles: [
+                    { idString: "metal_door", position: Vec.create(0.25, 18.3), rotation: 0 },
+                    { idString: "aegis_golden_case", position:Vec.create(0,0),rotation:0},
+                ],
+                lootSpawners: [
+                ]
+            },
+            {
+                idString: "battlefield",
+                name: "Battlefield",
+                reflectBullets: true,
+                floorImages: [],
+                floors:[
+                    {hitbox:new PolygonHitbox(jaggedRectangle(RectangleHitbox.fromRect(230,500,Vec.create(0,0)),11,12,new SeededRandom(2314))),type:FloorNames.SandBeach,visible:true},
+                    {hitbox:new PolygonHitbox(jaggedRectangle(RectangleHitbox.fromRect(55,55,Vec.create(0,0)),3,2,new SeededRandom(231412))),type:FloorNames.Sand,visible:true},
+                    {hitbox:new PolygonHitbox(jaggedRectangle(RectangleHitbox.fromRect(80,80,Vec.create(0,160)),3,2,new SeededRandom(231413))),type:FloorNames.Sand,visible:true},
+                    {hitbox:new PolygonHitbox(jaggedRectangle(RectangleHitbox.fromRect(80,80,Vec.create(0,-160)),3,2,new SeededRandom(231414))),type:FloorNames.Sand,visible:true},
+                ],
+                noBulletCollision:true,
+                noCollisions:true,
+                spawnHitbox: RectangleHitbox.fromRect(280,580, Vec.create(0, 0)),
+                obstacles: [
+                    //Center
+                    {idString:"big_desert_tree",position:Vec.create(0,0)},
+                    {idString:"md_crate",position:Vec.create(10,0)},
+                    {idString:battlecratesObstacle,position:Vec.create(-10,0)},
+
+                    //Bottom Side
+                    {idString:battlecratesObstacle,position:Vec.create(-30,190)},
+                    {idString:battlecratesObstacle,position:Vec.create(-40,190)},
+                    {idString:battlecratesObstacle,position:Vec.create(-35,200)},
+
+                    //Top Side
+                    {idString:battlecratesObstacle,position:Vec.create(-30,-190)},
+                    {idString:battlecratesObstacle,position:Vec.create(-40,-190)},
+                    {idString:battlecratesObstacle,position:Vec.create(-35,-200)},
+
+                    //Random
+                    {idString:"sandbags",position:Vec.create(-40,80),rotation:0},
+                    {idString:"sandbags",position:Vec.create(-54,80),rotation:0},
+                    {idString:"sandbags",position:Vec.create(40,-30),rotation:0},
+                    {idString:"sandbags",position:Vec.create(54,-30),rotation:0},
+                    {idString:"sandbags",position:Vec.create(68,-30),rotation:2},
+                    
+                    {idString:"oak_tree_desert",position:Vec.create(-20,120)},
+                    {idString:"oak_tree_desert",position:Vec.create(76,36)},
+                    {idString:"oak_tree_desert",position:Vec.create(-34,-65)},
+                    {idString:"oak_tree_desert",position:Vec.create(5,31)},
+
+                    {idString:"barrel",position:Vec.create(23,-23)},
+                    {idString:"barrel",position:Vec.create(23,-174)},
+
+                    {idString:"oil_tank",position:Vec.create(63,150)},
+
+                    {idString:battlecratesObstacle,position:Vec.create(30,-100)},
+                    {idString:battlecratesObstacle,position:Vec.create(40,-100)},
+                    {idString:battlecratesObstacle,position:Vec.create(35,-90)},
+
+                    {idString:battlecratesObstacle,position:Vec.create(-92,-67)},
+                    {idString:battlecratesObstacle,position:Vec.create(-82,-67)},
+                    {idString:battlecratesObstacle,position:Vec.create(-92,-77)},
+                    {idString:battlecratesObstacle,position:Vec.create(-82,-77)},
+
+                    {idString:boxes,position:Vec.create(60,200)},
+                    {idString:boxes,position:Vec.create(65,200)},
+                    {idString:boxes,position:Vec.create(75,200)},
+                    {idString:boxes,position:Vec.create(60,205)},
+                    {idString:boxes,position:Vec.create(75,205)},
+                    {idString:boxes,position:Vec.create(65,210)},
+                    {idString:boxes,position:Vec.create(70,210)},
+                    {idString:boxes,position:Vec.create(60,215)},
+                    {idString:boxes,position:Vec.create(65,215)},
+                    {idString:boxes,position:Vec.create(70,215)},
+
+                    /*{idString:boxes,position:Vec.create(60,200)},
+                    {idString:boxes,position:Vec.create(65,200)},
+                    {idString:boxes,position:Vec.create(70,200)},
+                    {idString:boxes,position:Vec.create(75,200)},
+                    {idString:boxes,position:Vec.create(60,205)},
+                    {idString:boxes,position:Vec.create(65,205)},
+                    {idString:boxes,position:Vec.create(70,205)},
+                    {idString:boxes,position:Vec.create(75,205)},
+                    {idString:boxes,position:Vec.create(60,210)},
+                    {idString:boxes,position:Vec.create(65,210)},
+                    {idString:boxes,position:Vec.create(70,210)},
+                    {idString:boxes,position:Vec.create(75,210)},
+                    {idString:boxes,position:Vec.create(60,215)},
+                    {idString:boxes,position:Vec.create(65,215)},
+                    {idString:boxes,position:Vec.create(70,215)},
+                    {idString:boxes,position:Vec.create(75,215)},*/
+                ],
+                spawnMode:MapObjectSpawnMode.Grass,
+                subBuildings: [
+                    {idString:"desert_bunker",position:Vec.create(0,150), orientation:2},
+                    {idString:"desert_bunker",position:Vec.create(0,150), orientation:0}
                 ]
             },
             {
