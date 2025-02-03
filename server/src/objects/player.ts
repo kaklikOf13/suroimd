@@ -1268,9 +1268,19 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         //Equipaments
         if(role.equipments.vest){
             this.inventory.vest=Armors.fromStringSafe(role.equipments.vest)
+            if(this.inventory.vest){
+                for(const p of this.inventory.vest.givePerks){
+                    this.perks.addPerk(Perks.fromString(p),true)
+                }
+            }
         }
         if(role.equipments.helmet){
             this.inventory.helmet=Armors.fromStringSafe(role.equipments.helmet)
+            if(this.inventory.helmet){
+                for(const p of this.inventory.helmet.givePerks){
+                    this.perks.addPerk(Perks.fromString(p),true)
+                }
+            }
         }
         if(role.equipments.backpack){
             this.inventory.backpack=Backpacks.fromStringSafe(role.equipments.backpack)??this.inventory.backpack
@@ -1299,7 +1309,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
         if(role.equipments.perks){
             for(const v of role.equipments.perks){
-                this.perks.addPerk(Perks.fromString(typeof v === "object" ? pickRandomInArray(v):v))
+                this.perks.addPerk(Perks.fromString(typeof v === "object" ? pickRandomInArray(v):v),true)
             }
         }
         if(role.equipments.skin&&Skins.hasString(role.equipments.skin)){
@@ -2467,6 +2477,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         if(this.dropable.perks){
             for (const perk of this.perks) {
+                if(this.perks.fromRoles.includes(perk.idString))continue
                 if (!perk.noDrop) {
                     this.game.addLoot(perk, position, layer);
                 } else if (perk.noDrop && perk.category === PerkCategories.Halloween) {

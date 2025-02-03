@@ -336,10 +336,10 @@ const maps:Record<string, MapDefinition> = {
         ]
     },
     desert: {
-        width: 1900,
-        height: 1900,
+        width: 1800,
+        height: 1800,
         oceanSize: 128,
-        beachSize: 32,
+        beachSize: 55,
         islands:[
             {
                 spawn:IslandSpawns.Center,
@@ -358,12 +358,11 @@ const maps:Record<string, MapDefinition> = {
                         loots: {
                             ground_loot: 100
                         },
-                        beachSize:32,
-                        interiorSize:1650,
+                        beachSize:55,
+                        interiorSize:1700,
                         beach:FloorNames.SandBeach,
                         grass:FloorNames.Sand,
                         buildings:{
-                            port_complex: 1,
                             sea_traffic_control: 1,
                             armory: 1,
                             refinery: 1,

@@ -1,9 +1,11 @@
 import { ItemType, ObjectDefinitions, type ItemDefinition } from "../utils/objectDefinitions";
+import { PerkIds } from "./perks";
 
 export type ArmorDefinition = ItemDefinition & {
     readonly itemType: ItemType.Armor
     readonly armorType: ArmorType
     readonly level: number
+    readonly givePerks:PerkIds[]
     readonly damageReduction: number
 } & ({
     readonly armorType: ArmorType.Vest
@@ -22,7 +24,8 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
     "Armors",
     {
         itemType: ItemType.Armor,
-        noDrop: false
+        noDrop: false,
+        givePerks:[]
     },
     ([derive]) => {
         const vest = derive((name: string) => ({
@@ -67,14 +70,16 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
             helmet(
                 ["Apple"],
                 {
-                    level: 4,
-                    damageReduction: 0.25
+                    level: 3,
+                    givePerks:[PerkIds.InfiniteAmmo],
+                    damageReduction: 0.2
                 }
             ),
             helmet(
                 ["Captain"],
                 {
                     level: 4,
+                    givePerks:[PerkIds.Captain],
                     damageReduction: 0.25
                 }
             ),
@@ -82,6 +87,7 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
                 ["Medic"],
                 {
                     level: 4,
+                    givePerks:[PerkIds.SelfRevive,PerkIds.HealingAura],
                     damageReduction: 0.25
                 }
             ),
@@ -96,6 +102,7 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
                 ["Sergeant"],
                 {
                     level: 3,
+                    givePerks:[PerkIds.ExtendedMags],
                     damageReduction: 0.2
                 }
             ),

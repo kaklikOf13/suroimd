@@ -12,6 +12,7 @@ export type UpdatablePerkDefinition = PerkDefinition & { readonly updateInterval
 export class ServerPerkManager extends PerkManager {
     private readonly _selfData: Record<string, unknown> = {};
 
+    readonly fromRoles:PerkIds[]=[]
     constructor(
         readonly owner: Player,
         perks?: number | readonly PerkDefinition[]
@@ -24,10 +25,11 @@ export class ServerPerkManager extends PerkManager {
      * @param perk The perk to add
      * @returns Whether the perk was already present (and thus nothing has changed)
      */
-    override addPerk(perk: PerkDefinition): boolean {
+    override addPerk(perk: PerkDefinition,fromRole=false): boolean {
         const idString = perk.idString;
         const owner = this.owner;
         const absent = super.addPerk(perk);
+        if(fromRole)this.fromRoles.push(perk.idString)
 
         if ("updateInterval" in perk) {
             (owner.perkUpdateMap ??= new Map<UpdatablePerkDefinition, number>())
@@ -120,6 +122,10 @@ export class ServerPerkManager extends PerkManager {
         const has = super.removePerk(perk);
 
         if (has) {
+            const i=this.fromRoles.indexOf(idString)
+            if(i!=-1){
+                this.fromRoles.splice(i,1)
+            }
             // ! evil starts here
             // some perks need to perform cleanup on removal
             switch (idString) {

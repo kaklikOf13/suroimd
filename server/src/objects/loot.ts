@@ -2,7 +2,7 @@ import { GameConstants, InventoryMessages, ObjectCategory, PlayerActions } from 
 import { ArmorType } from "@common/definitions/armors";
 import { type GunDefinition } from "@common/definitions/guns";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
-import { PerkCategories } from "@common/definitions/perks";
+import { PerkCategories, Perks } from "@common/definitions/perks";
 import { PickupPacket } from "@common/packets/pickupPacket";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer } from "@common/utils/layer";
@@ -421,14 +421,32 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 break;
             }
             case ItemType.Armor: {
+                let can=false
                 switch (definition.armorType) {
                     case ArmorType.Helmet:
-                        if (player.inventory.helmet) createNewItem({ type: player.inventory.helmet, count: 1 });
+                        if (player.inventory.helmet) {
+                            createNewItem({ type: player.inventory.helmet, count: 1 })
+                            for(const p of player.inventory.helmet.givePerks){
+                                player.perks.removePerk(Perks.fromString(p))
+                            }
+                        };
                         player.inventory.helmet = definition;
+                        can=true
                         break;
                     case ArmorType.Vest:
-                        if (player.inventory.vest) createNewItem({ type: player.inventory.vest, count: 1 });
+                        if (player.inventory.vest){
+                            createNewItem({ type: player.inventory.vest, count: 1 })
+                            for(const p of player.inventory.vest.givePerks){
+                                player.perks.removePerk(Perks.fromString(p))
+                            }
+                        }
                         player.inventory.vest = definition;
+                        can=true
+                }
+                if(can){
+                    for(const p of definition.givePerks){
+                        player.perks.addPerk(Perks.fromString(p),true)
+                    }
                 }
 
                 player.setDirty();
@@ -480,6 +498,9 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                     perkToRemove = currentPerks.find(perk => perk.category === PerkCategories.Normal);
                 }
 
+                if(perkToRemove&&player.perks.fromRoles.includes(perkToRemove?.idString)){
+                    perkToRemove=null
+                }
                 // If a perk to remove has been identified, remove it
                 if (perkToRemove) {
                     if (!perkToRemove.noDrop) {

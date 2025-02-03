@@ -17,7 +17,7 @@ import { GunItem } from "./gunItem";
 import { InventoryItem } from "./inventoryItem";
 import { MeleeItem } from "./meleeItem";
 import { ThrowableItem } from "./throwableItem";
-import { PerkIds } from "@common/definitions/perks";
+import { PerkIds, Perks } from "@common/definitions/perks";
 
 type ReifiableItem =
     GunItem |
@@ -665,6 +665,9 @@ export class Inventory {
                         break;
                     }
                 }
+                for(const p of definition.givePerks){
+                    this.owner.perks.removePerk(Perks.fromString(p))
+                }
                 this._dropItem(definition);
                 break;
             }
@@ -673,7 +676,7 @@ export class Inventory {
             }
 
             case ItemType.Perk: {
-                if (!this.owner.hasPerk(definition)) return;
+                if (!this.owner.hasPerk(definition)||this.owner.perks.fromRoles.includes(definition.idString)) return;
                 this.owner.perks.removePerk(definition);
                 this._dropItem(definition);
                 this.owner.dirty.perks = true;

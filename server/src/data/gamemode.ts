@@ -82,7 +82,6 @@ const DefaultRoles:Record<string,Gamerole>={
             melee:"fire_hatchet",
             backpack:"tactical_pack",
             helmet:"captain_helmet",
-            perks:[PerkIds.Captain]
         },
         items:{
             "gauze":15,
@@ -109,7 +108,6 @@ const DefaultRoles:Record<string,Gamerole>={
             melee:"seax",
             backpack:"tactical_pack",
             helmet:"sergeant_helmet",
-            perks:[PerkIds.ExtendedMags,PerkIds.CloseQuartersCombat],
         },
         items:{
             "9mm":150,
@@ -137,7 +135,6 @@ const DefaultRoles:Record<string,Gamerole>={
             backpack:"tactical_pack",
             helmet:"medic_helmet",
             gun1:"medic_pistol",
-            perks:[PerkIds.SelfRevive,PerkIds.HealingAura],
         },
         items:{
             "medic_charge":400,
@@ -441,7 +438,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
         map:"deathmatch"
     },
     desert:{
-        adrenalineLoss:0.0034,
+        adrenalineLoss:0.002,
         data:Date.UTC(91,4,13,3,26,30),
         lootTables:{
             ammo: [
