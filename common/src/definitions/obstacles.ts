@@ -330,6 +330,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     melee_crate_particle:          { base: "wood_particle",    tint: 0x23374c },
     tango_crate_particle:          { base: "wood_particle",    tint: 0x3f4c39 },
     wall_particle:                 { base: "wood_particle",    tint: 0xafa08c },
+    bartable_particle:             { base: "wood_particle",    tint: 0x78381f },
     flint_stone_particle_1:        { base: "stone_particle_1", tint: 0x26272c },
     flint_stone_particle_2:        { base: "stone_particle_2", tint: 0x26272c },
     gold_rock_particle_1:          { base: "stone_particle_1", tint: 0xaa8534 },
@@ -3144,6 +3145,19 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 },
                 hideOnMap: true,
                 hitbox: RectangleHitbox.fromRect(1.1, 15.1, Vec.create(-0.25, 0)),
+                rotationMode: RotationMode.Limited,
+                zIndex: ZIndexes.ObstaclesLayer2
+            },
+            {
+                idString: "bartable",
+                material: "wood",
+                indestructible:true,
+                allowFlyover:FlyoverPref.Sometimes,
+                noBulletCollision:true,
+                hitbox: new GroupHitbox(
+                    new RectangleHitbox(Vec.create(-15,-29.7),Vec.create(-6.55,29.5)),
+                    new RectangleHitbox(Vec.create(-15,-29.7),Vec.create(15,-21.2))
+                ),
                 rotationMode: RotationMode.Limited,
                 zIndex: ZIndexes.ObstaclesLayer2
             },

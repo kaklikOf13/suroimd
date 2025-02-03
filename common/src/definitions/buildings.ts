@@ -1239,7 +1239,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "hazel_crate", position: Vec.create(0, 0) }
                 ]
             },
-            {
+            /*{
                 idString: "hotel_floor1",
                 name: "Hotel Floor1",
                 material: "stone",
@@ -1317,7 +1317,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
 
                     { idString: "potted_plant", position: Vec.create(56, -41)},
                 ]
-            },
+            },*/
 
             warehouseLayout([1, [
                 // top left
@@ -5390,6 +5390,50 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ]
             },
             {
+                idString: "desert_town",
+                name: "Desert Town",
+                reflectBullets: true,
+                floorImages: [],
+                floors:[
+                    {hitbox:new PolygonHitbox(jaggedRectangle(RectangleHitbox.fromRect(300,500,Vec.create(0,0)),11,12,new SeededRandom(2314))),type:FloorNames.SandBeach,visible:true},
+
+                    {hitbox:RectangleHitbox.fromRect(12,300,Vec.create(0,-96)),type:FloorNames.Dirt,visible:true},
+                    {hitbox:RectangleHitbox.fromRect(80,12,Vec.create(35,48)),type:FloorNames.Dirt,visible:true},
+                ],
+                noBulletCollision:true,
+                noCollisions:true,
+                spawnHitbox: RectangleHitbox.fromRect(320,580, Vec.create(0, 0)),
+                obstacles: [
+
+                    /*{idString:boxes,position:Vec.create(60,200)},
+                    {idString:boxes,position:Vec.create(65,200)},
+                    {idString:boxes,position:Vec.create(70,200)},
+                    {idString:boxes,position:Vec.create(75,200)},
+                    {idString:boxes,position:Vec.create(60,205)},
+                    {idString:boxes,position:Vec.create(65,205)},
+                    {idString:boxes,position:Vec.create(70,205)},
+                    {idString:boxes,position:Vec.create(75,205)},
+                    {idString:boxes,position:Vec.create(60,210)},
+                    {idString:boxes,position:Vec.create(65,210)},
+                    {idString:boxes,position:Vec.create(70,210)},
+                    {idString:boxes,position:Vec.create(75,210)},
+                    {idString:boxes,position:Vec.create(60,215)},
+                    {idString:boxes,position:Vec.create(65,215)},
+                    {idString:boxes,position:Vec.create(70,215)},
+                    {idString:boxes,position:Vec.create(75,215)},*/
+                ],
+                spawnMode:MapObjectSpawnMode.Grass,
+                subBuildings: [
+                    {idString:"tavern",position:Vec.create(50,150), orientation:0},
+                    {idString:"porta_potty",position:Vec.create(80,-80), orientation:3},
+                    {idString:"porta_potty",position:Vec.create(60,-80), orientation:3},
+
+                    {idString:{red_house:1,red_house_v2:1},position:Vec.create(0,80), orientation:1},
+                    {idString:"green_house",position:Vec.create(-80,80), orientation:2},
+                    
+                ]
+            },
+            {
                 idString: "barn_top_floor_shadow",
                 name: "Barn Shadow",
                 spawnHitbox: new GroupHitbox(
@@ -7206,7 +7250,125 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                         container_6: 1
                     }, position: Vec.create(30, -58), orientation: 1 }
                 ]
-            }
+            },
+            {
+                idString: "tavern",
+                name: "Tavern",
+                material: "wood",
+                particle: "bartable_particle",
+                reflectBullets: false,
+                hitbox: new GroupHitbox(
+                    //Left
+                    new RectangleHitbox(Vec.create(-48.2,-48.2),Vec.create(-45.8,-7.4)),
+                    new RectangleHitbox(Vec.create(-48.2,3),Vec.create(-45.8,23)),
+                    new RectangleHitbox(Vec.create(-48.2,34),Vec.create(-45.8,48.2)),
+
+                    //Right
+                    new RectangleHitbox(Vec.create(46.15,-48.2),Vec.create(48.2,48.2)),
+
+                    //Bottom
+                    new RectangleHitbox(Vec.create(-48.2,46.15),Vec.create(48.2,48.2)),
+
+                    //Top
+                    new RectangleHitbox(Vec.create(-48.2,-48.2),Vec.create(-17.2,-46.15)),
+                    new RectangleHitbox(Vec.create(9.5,-48.2),Vec.create(48.2,-46.15)),
+
+                    new RectangleHitbox(Vec.create(-20.5,-59.1),Vec.create(-17.2,-46.15)),
+                    new RectangleHitbox(Vec.create(9.5,-59.1),Vec.create(12.7,-46.15)),
+                ),
+                floorImages: [{
+                    key: "tavern_floor",
+                    position: Vec.create(-0.5, -5.5),
+                    scale: Vec.create(2, 2)
+                }],
+                ceilingImages: [{
+                    key: "tavern_ceiling",
+                    position: Vec.create(0, 0),
+                    scale: Vec.create(2.25, 2.25)
+                }],
+                floors:[
+                    {hitbox:RectangleHitbox.fromRect(95,95),type:FloorNames.Wood},
+                    {hitbox:RectangleHitbox.fromRect(33,15,Vec.create(-3.7,-50.6)),type:FloorNames.Wood}
+                ],
+                spawnHitbox: RectangleHitbox.fromRect(110, 110),
+                ceilingHitbox:RectangleHitbox.fromRect(95,95),
+                puzzle: {
+                    triggerOnSolve: "speaker",
+                    delay: 1000
+                },
+                sounds: {
+                    solved: "speaker_2",
+                    position: Vec.create(10, 43.7),
+                    maxRange: 400,
+                    falloff: 0.5
+                },
+                obstacles: [
+                    //Windows
+                    {idString:"window",position:Vec.create(-47,-2.3),rotation:0},
+                    {idString:"window",position:Vec.create(-47,28.5),rotation:0},
+                    //Tables
+                    {idString:"round_table",position:Vec.create(-4.5,-23)},
+                    {idString:"chair",position:Vec.create(-4.5,-28),rotation:2},
+                    {idString:"chair",position:Vec.create(-4.5,-18),rotation:0},
+                    {idString:"chair",position:Vec.create(-9.5,-23),rotation:3},
+                    {idString:"chair",position:Vec.create(0.5,-23),rotation:1},
+
+                    {idString:"round_table",position:Vec.create(-4.5,-1)},
+                    {idString:"chair",position:Vec.create(-4.5,-6),rotation:2},
+                    {idString:"chair",position:Vec.create(-4.5,4),rotation:0},
+                    {idString:"chair",position:Vec.create(-9.5,-1),rotation:3},
+                    {idString:"chair",position:Vec.create(0.5,-1),rotation:1},
+
+                    {idString:"round_table",position:Vec.create(-4.5,23)},
+                    {idString:"chair",position:Vec.create(-4.5,28),rotation:0},
+                    {idString:"chair",position:Vec.create(-4.5,18),rotation:2},
+                    {idString:"chair",position:Vec.create(-9.5,23),rotation:3},
+                    {idString:"chair",position:Vec.create(0.5,23),rotation:1},
+
+                    {idString:"round_table",position:Vec.create(-29.5,-23)},
+                    {idString:"chair",position:Vec.create(-29.5,-28),rotation:2},
+                    {idString:"chair",position:Vec.create(-29.5,-18),rotation:0},
+                    {idString:"chair",position:Vec.create(-34.5,-23),rotation:3},
+                    {idString:"chair",position:Vec.create(-25.5,-23),rotation:1},
+
+                    {idString:"round_table",position:Vec.create(-29.5,-1)},
+                    {idString:"chair",position:Vec.create(-29.5,-6),rotation:2},
+                    {idString:"chair",position:Vec.create(-29.5,4),rotation:0},
+                    {idString:"chair",position:Vec.create(-34.5,-1),rotation:3},
+                    {idString:"chair",position:Vec.create(-25.5,-1),rotation:1},
+
+                    {idString:"round_table",position:Vec.create(-29.5,23)},
+                    {idString:"chair",position:Vec.create(-29.5,28),rotation:0},
+                    {idString:"chair",position:Vec.create(-29.5,18),rotation:2},
+                    {idString:"chair",position:Vec.create(-34.5,23),rotation:3},
+                    {idString:"chair",position:Vec.create(-25.5,23),rotation:1},
+                    
+                    //Entrace
+                    {idString:"vending_machine",position:Vec.create(-25,-42),rotation:0},
+                    {idString:"water_cooler",position:Vec.create(-34.5,-43),rotation:0},
+
+                    //Kitchen
+                    {idString:"bartable",position:Vec.create(31.2,0),rotation:0},
+
+                    {idString:"stove",position:Vec.create(42.6,-7),rotation:3},
+                    {idString:"kitchen_unit_1",position:Vec.create(42.3,1),rotation:3},
+                    {idString:"kitchen_unit_3",position:Vec.create(42.3,9),rotation:3},
+
+                    { idString: "speaker", position: Vec.create(10, 43.1), rotation: 2, puzzlePiece: true },
+                    { idString: {
+                        "gun_mount_model_37":4.9,
+                        "gun_mount_mcx_spear":1,
+                        "gun_mount_stoner_63":0.15
+                    }, position: Vec.create(-3, 44.2), rotation: 2, puzzlePiece: true },
+
+                    //outside
+                    { idString: "dumpster", position: Vec.create(53, 10), rotation: 2},
+                    { idString: "dumpster", position: Vec.create(53, 25), rotation: 2},
+                    { idString: "trash_bag", position: Vec.create(53, 35)},
+                ],
+                subBuildings: [
+                ]
+            },
         ] satisfies Missing[];
     }
 );
