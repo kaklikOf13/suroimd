@@ -37,6 +37,7 @@ export interface DamageParams {
     readonly amount: number
     readonly source?: GameObject | KillfeedEventType.Gas | KillfeedEventType.Airdrop | KillfeedEventType.BleedOut | KillfeedEventType.FinallyKilled
     readonly weaponUsed?: GunItem | MeleeItem | ThrowableItem | Explosion
+    readonly resistanceDamage?:number
 }
 
 export type CollidableGameObject<

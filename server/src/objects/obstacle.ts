@@ -173,25 +173,14 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
         const weaponIsItem = weaponUsed instanceof InventoryItem;
         const weaponDef = weaponIsItem ? weaponUsed.definition : undefined;
-        if (
-            (
-                definition.impenetrable
-                && (!(
-                    (
-                        weaponDef?.itemType === ItemType.Melee
-                        && weaponDef.piercingMultiplier !== undefined
-                    )
-                    || source instanceof Obstacle
-                )
-                || (weaponDef?.itemType === ItemType.Melee && definition.material === "stone" && !weaponDef?.stonePiercing))
-            )
-            || this.game.pluginManager.emit("obstacle_will_damage", {
-                obstacle: this,
-                ...params
-            })
-        ) {
+        if (definition.resistanceLevel>(params.resistanceDamage||0)) {
             return;
         }
+
+        this.game.pluginManager.emit("obstacle_will_damage", {
+            obstacle: this,
+            ...params
+        })
 
         this.health -= amount;
         this.setPartialDirty();

@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="110"
-   height="110"
-   viewBox="0 0 29.104167 29.104168"
+   width="104.84322"
+   height="77.33326"
+   viewBox="0 0 27.739768 20.461093"
    version="1.1"
    id="svg1"
    xml:space="preserve"
@@ -24,8 +24,8 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
      inkscape:zoom="4"
-     inkscape:cx="29"
-     inkscape:cy="61.375"
+     inkscape:cx="68.875"
+     inkscape:cy="41.375"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
      inkscape:window-x="-8"
@@ -146,13 +146,17 @@
        id="clip0_619_1202-02"><rect
          width="110"
          height="110"
-         fill="white"
-         id="rect56-3" /></clipPath><clipPath
+         fill="#ffffff"
+         id="rect56-3"
+         x="0"
+         y="0" /></clipPath><clipPath
        id="clip0_619_1202-8"><rect
          width="110"
          height="110"
-         fill="white"
-         id="rect56-6" /></clipPath><style
+         fill="#ffffff"
+         id="rect56-6"
+         x="0"
+         y="0" /></clipPath><style
        id="style1-7">
       .cls-1, .cls-2 {
         stroke-width: 1.5px;
@@ -185,8 +189,10 @@
        id="clip0_619_1202-1-5"><rect
          width="110"
          height="110"
-         fill="white"
-         id="rect56-0-9" /></clipPath><style
+         fill="#ffffff"
+         id="rect56-0-9"
+         x="0"
+         y="0" /></clipPath><style
        id="style1-0-2">
       .cls-1, .cls-2 {
         stroke-width: 1.5px;
@@ -219,8 +225,10 @@
        id="clip0_619_1202-0-2"><rect
          width="110"
          height="110"
-         fill="white"
-         id="rect56-1-8" /></clipPath><style
+         fill="#ffffff"
+         id="rect56-1-8"
+         x="0"
+         y="0" /></clipPath><style
        id="style1-6-9">
       .cls-1, .cls-2 {
         stroke-width: 1.5px;
@@ -253,13 +261,15 @@
        id="clip0_619_1202-86"><rect
          width="110"
          height="110"
-         fill="white"
-         id="rect56-7" /></clipPath></defs><g
+         fill="#ffffff"
+         id="rect56-7"
+         x="0"
+         y="0" /></clipPath></defs><g
      inkscape:label="Шар 1"
      inkscape:groupmode="layer"
      id="layer1"><g
        id="g1"
-       transform="matrix(0.33934392,0,0,0.33934392,-22.571376,-37.406651)"><g
+       transform="matrix(0.33934392,0,0,0.33934392,-23.253576,-41.728189)"><g
          id="layer7-7"
          inkscape:label="Шар 2" /><g
          id="layer8"

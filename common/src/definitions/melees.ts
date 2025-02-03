@@ -6,6 +6,7 @@ export type MeleeDefinition = InventoryItemDefinition & {
     readonly itemType: ItemType.Melee
 
     readonly damage: number
+    readonly resistanceDamage?:number
     readonly obstacleMultiplier: number
     readonly piercingMultiplier?: number // If it does less dmg vs pierceable objects than it would vs a normal one
     readonly stonePiercing?: boolean
@@ -151,6 +152,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
         iceMultiplier: 0.01,
         maxTargets: 1,
         damageDelay:50,
+        resistanceDamage:0,
         image: {
             zIndex: 1
         },
@@ -235,6 +237,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             idString: "hatchet",
             name: "Hatchet",
             damage: 45,
+            resistanceDamage:1,
             rotationalAnimation: true,
             obstacleMultiplier: 2,
             piercingMultiplier: 1.5,
@@ -264,6 +267,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             idString: "fire_hatchet",
             name: "Fire Hatchet",
             damage: 50,
+            resistanceDamage:1,
             rotationalAnimation: true,
             obstacleMultiplier: 2,
             piercingMultiplier: 2,
@@ -291,6 +295,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             idString: "halberd",
             name: "Halberd",
             damage: 70,
+            resistanceDamage:2,
             rotationalAnimation: true,
             obstacleMultiplier: 2,
             piercingMultiplier: 2,
@@ -319,6 +324,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             name: "Crowbar",
             swingSound: "heavy_swing",
             damage: 40,
+            resistanceDamage:1,
             obstacleMultiplier: 2.2,
             piercingMultiplier: 2,
             radius: 2.58,
@@ -370,6 +376,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             idString: "maul",
             name: "Maul",
             damage: 60,
+            resistanceDamage:2,
             iceMultiplier: 5,
             rotationalAnimation: true,
             swingSound: "heavy_swing",
@@ -482,6 +489,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             name: "Ice Pick",
             swingSound: "heavy_swing",
             damage: 35,
+            resistanceDamage:1,
             obstacleMultiplier: 1.9,
             piercingMultiplier: 1,
             iceMultiplier: 5,
@@ -508,6 +516,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             idString: "seax",
             name: "Seax",
             damage: 45,
+            resistanceDamage:1,
             swingSound: "heavy_swing",
             obstacleMultiplier: 1.5,
             radius: 2.7,
@@ -532,6 +541,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             idString: "falchion",
             name: "Falchion",
             damage: 41,
+            resistanceDamage:1,
             swingSound: "soft_swing",
             obstacleMultiplier: 1.1,
             radius: 5.5,
@@ -605,6 +615,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             name: "Chain Saw",
             devItem: true,
             damage: 25,
+            resistanceDamage:3,
             fireMode: FireMode.Auto,
             obstacleMultiplier: 2,
             piercingMultiplier: 2,

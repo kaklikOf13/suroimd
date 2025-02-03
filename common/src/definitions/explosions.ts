@@ -5,6 +5,7 @@ import { type DecalDefinition } from "./decals";
 
 export interface ExplosionDefinition extends ObjectDefinition {
     readonly damage: number
+    readonly resistanceDamage?: number
     readonly obstacleMultiplier: number
     readonly radius: {
         readonly min: number
@@ -553,20 +554,20 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
         },
         {
             name: "Airstrike Bomb",
-            damage: 55,
+            damage: 60,
             obstacleMultiplier: 1.15,
             radius: {
-                min: 8,
-                max: 20
+                min: 16,
+                max: 26
             },
             cameraShake: {
-                duration: 300,
-                intensity: 10
+                duration: 250,
+                intensity: 9
             },
             animation: {
-                duration: 800,
-                tint: 0x555511,
-                scale: 1
+                duration: 1000,
+                tint: 0x888811,
+                scale: 2
             },
             shrapnelCount: 4,
             ballistics: {
@@ -577,7 +578,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
                 rangeVariance: 1,
                 shrapnel: true
             },
-            
+            resistanceDamage:3,
             sound: "airstrike_explosion",
             decal: "explosion_decal"
         },
@@ -607,7 +608,8 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
                 rangeVariance: 1,
                 shrapnel: true
             },
-            sound: "airstrike_explosion",
+            resistanceDamage:3,
+            sound: "metal_heavy_destroyed",
             decal: "explosion_decal"
         },
         {

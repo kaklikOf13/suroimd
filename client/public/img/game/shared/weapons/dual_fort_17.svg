@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="118.821"
-   height="110"
-   viewBox="0 0 31.438056 29.104168"
+   width="118.82095"
+   height="80.948784"
+   viewBox="0 0 31.438042 21.4177"
    version="1.1"
    id="svg1"
    xml:space="preserve"
@@ -24,7 +24,7 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
      inkscape:zoom="4"
-     inkscape:cx="75"
+     inkscape:cx="75.125"
      inkscape:cy="68.375"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
@@ -147,7 +147,7 @@
      inkscape:label="Шар 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="rotate(30,14.003723,14.062365)"><g
+     transform="rotate(30,23.555732,11.502912)"><g
        id="layer7"
        inkscape:label="Шар 2"
        transform="matrix(0.3239168,-0.18701345,0.18701345,0.3239168,17.456425,29.828526)" /><g

@@ -66,8 +66,8 @@ type GetName<Member extends number> = GetEnumMemberName<typeof ObstacleSpecialRo
 type RawObstacleDefinition = ObjectDefinition & {
     readonly material: typeof Materials[number]
     readonly health: number
-    readonly indestructible: boolean
-    readonly impenetrable: boolean
+    readonly resistanceLevel:number
+    readonly indestructible:boolean
     readonly noHitEffect: boolean
     readonly noDestroyEffect?: boolean
     readonly noResidue: boolean
@@ -416,8 +416,8 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
 /* eslint-enable @stylistic/key-spacing, @stylistic/no-multi-spaces */
 
 const defaultObstacle: DeepPartial<RawObstacleDefinition> = {
-    indestructible: false,
-    impenetrable: false,
+    resistanceLevel:0,
+    indestructible:false,
     noHitEffect: false,
     noResidue: false,
     invisible: false,
@@ -897,6 +897,40 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hitbox: new CircleHitbox(3.5),
                 variations: 7,
             }]),
+            tree([{
+                name: "Oak Tree Desert",
+                health: 180,
+                scaleProps: {
+                    spawnMin: 0.75,
+                    spawnMax: 1.2,
+                    destroy: 0.9
+                },
+                spawnHitbox: new CircleHitbox(8.5),
+                rotationMode: RotationMode.Full,
+                hitbox: new CircleHitbox(3.5),
+                variations: 2,
+                frames:{
+                    particle:"desert_tree_particle"
+                }
+            }]),
+
+            {
+                idString: "big_desert_tree",
+                name: "Big Desert Tree",
+                material:"tree",
+                health: 250,
+                scale: {
+                    spawnMin: 0.75,
+                    spawnMax: 1.2,
+                    destroy: 0.9
+                },
+                spawnHitbox: new CircleHitbox(12),
+                rotationMode: RotationMode.Full,
+                hitbox: new CircleHitbox(4),
+                frames:{
+                    particle:"desert_tree_particle"
+                }
+            },
 
             tree([{
                 name: "Small Oak Tree",
@@ -1364,7 +1398,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     name: "Flint Stone",
                     material: "stone",
                     health: 200,
-                    impenetrable: true,
+                    resistanceLevel: 2,
                     hasLoot: true,
                     scale: {
                         spawnMin: 1,
@@ -1377,6 +1411,27 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     particleVariations: 2
                 }
             ]),
+            {
+                idString: "statue",
+                name: "Statue",
+                material: "stone",
+                health: 600,
+                resistanceLevel: 2,
+                hasLoot: false,
+                noResidue:true,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.9
+                },
+                spawnMode: MapObjectSpawnMode.GrassAndSand,
+                hitbox: RectangleHitbox.fromRect(17.5, 17.5),
+                rotationMode: RotationMode.Limited,
+                particleVariations: 2,
+                frames:{
+                    particle:"flint_stone_particle"
+                }
+            },
             {
                 idString: "bush",
                 name: "Bush",
@@ -1588,7 +1643,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     name: "Ammo Crate",
                     material: "cardboard",
                     health: 160,
-                    impenetrable: true,
+                    resistanceLevel: 1,
                     scale: {
                         spawnMin: 1,
                         spawnMax: 1,
@@ -2485,6 +2540,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     reflectBullets: true,
                     hasLoot: true,
                     health: 300,
+                    resistanceLevel:1,
                     scale: {
                         spawnMin: 1,
                         spawnMax: 1,
@@ -3492,7 +3548,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 health: 500,
                 noResidue: true,
                 hideOnMap: true,
-                impenetrable: true,
+                resistanceLevel: 2,
                 rotationMode: RotationMode.Limited,
                 role: ObstacleSpecialRoles.Wall,
                 allowFlyover: FlyoverPref.Never,
@@ -4036,7 +4092,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     destroy: 0.9
                 },
                 health: 220,
-                impenetrable: true,
+                resistanceLevel: 1,
                 hasLoot: true,
                 reflectBullets: true,
                 hitbox: RectangleHitbox.fromRect(13.1, 4.2, Vec.create(0, -0.25)),

@@ -335,6 +335,99 @@ const maps:Record<string, MapDefinition> = {
             { name: "Deepwood", position: Vec.create(0.5, 0.65) }
         ]
     },
+    desert: {
+        width: 1900,
+        height: 1900,
+        oceanSize: 128,
+        beachSize: 32,
+        islands:[
+            {
+                spawn:IslandSpawns.Center,
+                chooses:[
+                    {
+                        rivers: {
+                            minAmount: 1,
+                            maxAmount: 3,
+                            maxWideAmount: 1,
+                            wideChance: 0.25,
+                            minWidth: 11,
+                            maxWidth: 27,
+                            minWideWidth: 26,
+                            maxWideWidth: 33,
+                        },
+                        loots: {
+                            ground_loot: 100
+                        },
+                        beachSize:32,
+                        interiorSize:1650,
+                        beach:FloorNames.SandBeach,
+                        grass:FloorNames.Sand,
+                        buildings:{
+                            port_complex: 1,
+                            sea_traffic_control: 1,
+                            armory: 1,
+                            refinery: 1,
+                            warehouse: 7,
+                            green_house: 4,
+                            blue_house: 4,
+                            red_house: 4,
+                            red_house_v2: 4,
+                            construction_site: 1,
+                            mobile_home: 16,
+                            porta_potty: 23,
+                            container_3: 3,
+                            container_4: 3,
+                            container_5: 3,
+                            container_6: 3,
+                            container_7: 3,
+                            container_8: 3,
+                            container_9: 3,
+                            container_10: 3
+                        },
+                        majorBuildings: ["armory", "refinery"],
+                        quadBuildingLimit: {
+                            red_house: 1,
+                            red_house_v2: 1,
+                            warehouse: 2,
+                            green_house: 1,
+                            blue_house: 1,
+                            mobile_home: 3,
+                            porta_potty: 3,
+                            construction_site: 1
+                        },
+                        obstacles:{
+                            oil_tank: 25,
+                            regular_crate: 170,
+                            flint_crate: 25,
+                            grenade_crate: 55,
+                            rock: 460,
+                            river_chest: 1,
+                            river_rock: 10,
+                            barrel:75,
+                            propane_tank:30,
+                            viking_chest: 2,
+                            super_barrel: 25,
+                            melee_crate: 2,
+                            gold_rock: 1,
+                            loot_barrel: 2,
+                            flint_stone: 6,
+                            oak_tree_desert:160,
+                            big_desert_tree:60,
+                        },
+                    },
+                ],
+                major:true
+            },
+        ],
+        places: [
+            { name: "Banana", position: Vec.create(0.23, 0.2) },
+            { name: "Takedown", position: Vec.create(0.23, 0.8) },
+            { name: "Lavlandet", position: Vec.create(0.75, 0.2) },
+            { name: "Noskin Narrows", position: Vec.create(0.72, 0.8) },
+            { name: "Mt. Sanger", position: Vec.create(0.5, 0.35) },
+            { name: "Deepwood", position: Vec.create(0.5, 0.65) }
+        ]
+    },
     islands: {
         width: 4000,
         height: 4000,

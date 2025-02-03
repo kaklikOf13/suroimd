@@ -96,7 +96,8 @@ export class Explosion {
                                 * ((dist > min) ? (max - dist) / (max - min) : 1),
 
                             source: this.source,
-                            weaponUsed: this
+                            weaponUsed: this,
+                            resistanceDamage:this.definition.resistanceDamage
                         });
 
                         // Destroy pallets

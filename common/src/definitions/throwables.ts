@@ -48,6 +48,7 @@ export type ThrowableDefinition = InventoryItemDefinition & {
     readonly hitboxRadius: number
     readonly fireDelay: number
     readonly detonation: {
+        readonly cexplodeOnBuilding?:boolean
         readonly explosion?: ReferenceTo<ExplosionDefinition>
         readonly particles?: SyncedParticleSpawnerDefinition
         readonly spookyParticles?: SyncedParticleSpawnerDefinition
@@ -210,6 +211,7 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
                 angle: 60
             },
             detonation: {
+                cexplodeOnBuilding:true,
                 explosion: "airstrike_bomb_explosion",
             },
             animation: {
@@ -253,7 +255,7 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
                     rightFist: Vec.create(4, 2.15)
                 }
             },
-            size:2,
+            size:0.9,
         },
         {
             idString: "tactical_nuke",

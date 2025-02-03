@@ -136,6 +136,17 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
     detonate(delay: number): void {
         this._activated = true;
         this.setDirty();
+        if(this.definition.detonation.cexplodeOnBuilding){
+            const objects = this.game.grid.intersectsHitbox(this.hitbox);
+            for (const object of objects) {
+                if(!object.isBuilding||!object.definition.ceilingHitbox||!object.hitbox)continue
+                const hb=object.definition.ceilingHitbox.transform(object.hitbox.getCenter())
+                if (this.hitbox.collidesWith(hb)) {
+                    this.game.removeProjectile(this);
+                    return
+                }
+            }
+        }
         setTimeout(() => {
             if (this.dead) return;
 

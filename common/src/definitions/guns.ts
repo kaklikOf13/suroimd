@@ -2695,20 +2695,20 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     range: 300
                 }
             },
-            /*{
+            {
                 idString: "fort_17",
                 name: "Fort-17",
                 itemType: ItemType.Gun,
                 ammoType: "45acp",
                 ammoSpawnAmount: 48,
                 capacity: 12,
-                reloadTime: 1.2,
+                reloadTime: 1.3,
                 switchDelay: 250,
                 fireDelay: 140,
                 ballistics: {
-                    damage: 21,
+                    damage: 22,
                     obstacleMultiplier: 1,
-                    range: 220 * 2.25,
+                    range: 220,
                     speed: 0.28125
                 },
                 fireMode: FireMode.Single,
@@ -2735,10 +2735,9 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     shotSpread: 8,
                     moveSpread: 12,
                     capacity: 24,
-                    reloadTime: 2.4
+                    reloadTime: 3
                 }
-            },*/
-        
+            },
             {
                 idString: "p90",
                 name: "P90",
@@ -3115,7 +3114,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 itemType: ItemType.Gun,
                 ammoType: "45acp",
                 ammoSpawnAmount: 100,
-                capacity: 50,
+                capacity: 30,
+                extendedCapacity:50,
                 reloadTime: 3,
                 fireDelay: 75,
                 switchDelay: 350,
