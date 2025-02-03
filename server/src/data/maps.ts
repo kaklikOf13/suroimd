@@ -363,6 +363,7 @@ const maps:Record<string, MapDefinition> = {
                         beach:FloorNames.SandBeach,
                         grass:FloorNames.Sand,
                         buildings:{
+                            battlefield:1,
                             sea_traffic_control: 1,
                             armory: 1,
                             refinery: 1,
@@ -381,7 +382,6 @@ const maps:Record<string, MapDefinition> = {
                             container_8: 2,
                             container_9: 2,
                             container_10: 3,
-                            battlefield:1
                         },
                         majorBuildings: ["armory", "refinery","battlefield"],
                         quadBuildingLimit: {

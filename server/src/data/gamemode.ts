@@ -439,13 +439,13 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
         map:"deathmatch"
     },
     desert:{
-        adrenalineLoss:0.001,
+        adrenalineLoss:0.0006,
         data:Date.UTC(91,4,13,3,26,30),
         lootTables:{
             ammo: [
+                { item: "45acp", count: 60, weight: 1.1 },
                 { item: "556mm", count: 60, weight: 1 },
                 { item: "762mm", count: 60, weight: 1 },
-                { item: "45acp", count: 60, weight: 1 },
                 { item: "12g", count: 10, weight: 0.75 },
                 { item: "50cal", count: 20, weight: 0.05 },
                 { item: "medic_charge", count: 30, weight: 0.006 },
@@ -546,16 +546,28 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                 [{ item: "fire_hatchet", weight: 1 }],
                 [
                     { item: "super90", weight: 1 },
-                    { item: "an94", weight: 1 },
                     { item: "m590m", weight: 0.5 },
-                    { item: "mg5", weight: 0.5 },
                     { item: "usas12", weight: 0.1 },
+                ],
+                [{ table: "vests", weight: 1 }],
+                [{ table: "backpacks", weight: 1 }],
+                [{ table: "special_healing_items", weight: 1 }],
+                [{ table: "special_scopes", weight: 1 }],
+                [{ item: "shiny_hasanger", weight: 1 }],
+            ],
+            aegis_golden_case1: [
+                [{ item: "sergeant_helmet", weight: 1 }],
+                [{ item: "fire_hatchet", weight: 1 }],
+                [
+                    { item: "an94", weight: 1 },
+                    { item: "mg5", weight: 0.5 },
                     { item: "pkp", weight: 0.1 }
                 ],
                 [{ table: "vests", weight: 1 }],
                 [{ table: "backpacks", weight: 1 }],
                 [{ table: "special_healing_items", weight: 1 }],
                 [{ table: "special_scopes", weight: 1 }],
+                [{ item: "shiny_123op", weight: 1 }],
             ],
             shiny_skins:[
                 { item: "shiny_anonymous", weight: 1.3 },

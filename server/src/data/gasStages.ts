@@ -22,114 +22,84 @@ export const DefaultGasStages: GasStage[] = [
         state: GasState.Waiting,
         duration: 90,
         oldRadius: 0.762,
-        newRadius: 0.546,
+        newRadius: 0.381,
         dps: 0,
         summonAirdrop: true
     },
     {
         state: GasState.Advancing,
-        duration: 30,
+        duration: 60,
         oldRadius: 0.762,
-        newRadius: 0.546,
+        newRadius: 0.381,
         dps: 1
-    },
-    {
-        state: GasState.Waiting,
-        duration: 90,
-        oldRadius: 0.546,
-        newRadius: 0.381,
-        dps: 1,
-        summonAirdrop: true
-    },
-    {
-        state: GasState.Advancing,
-        duration: 30,
-        oldRadius: 0.546,
-        newRadius: 0.381,
-        dps: 2
     },
     {
         state: GasState.Waiting,
         duration: 60,
         oldRadius: 0.381,
         newRadius: 0.238,
+        dps: 1
+    },
+    {
+        state: GasState.Advancing,
+        duration: 40,
+        oldRadius: 0.381,
+        newRadius: 0.238,
         dps: 2
     },
     {
-        state: GasState.Advancing,
-        duration: 20,
-        oldRadius: 0.381,
-        newRadius: 0.238,
-        dps: 3
-    },
-    {
         state: GasState.Waiting,
         duration: 45,
         oldRadius: 0.238,
-        newRadius: 0.120,
-        dps: 3,
+        newRadius: 0.095,
+        dps: 2,
         summonAirdrop: true
     },
     {
         state: GasState.Advancing,
-        duration: 10,
+        duration: 30,
         oldRadius: 0.238,
-        newRadius: 0.130,
+        newRadius: 0.095,
         dps: 3
-    },
-    {
-        state: GasState.Waiting,
-        duration: 45,
-        oldRadius: 0.130,
-        newRadius: 0.095,
-        dps: 4,
-        summonAirdrop: true
-    },
-    {
-        state: GasState.Advancing,
-        duration: 10,
-        oldRadius: 0.130,
-        newRadius: 0.095,
-        dps: 4
     },
     {
         state: GasState.Waiting,
         duration: 30,
         oldRadius: 0.095,
         newRadius: 0.048,
-        dps: 4.5
+        dps: 3.5
     },
     {
         state: GasState.Advancing,
-        duration: 5,
+        duration: 12,
         oldRadius: 0.095,
         newRadius: 0.048,
-        dps: 5
+        dps: 4
     },
     {
         state: GasState.Waiting,
         duration: 20,
         oldRadius: 0.048,
         newRadius: 0.024,
-        dps: 6
+        dps: 5
     },
     {
         state: GasState.Advancing,
-        duration: 5,
+        duration: 16,
         oldRadius: 0.048,
         newRadius: 0.024,
         dps: 6.5
     },
     {
         state: GasState.Waiting,
-        duration: 10,
+        duration: 12,
         oldRadius: 0.024,
         newRadius: 0,
         dps: 7.5
     },
     {
         state: GasState.Advancing,
-        duration: 5,
+        duration: 10,
         oldRadius: 0.024,
         newRadius: 0,
         dps: 9

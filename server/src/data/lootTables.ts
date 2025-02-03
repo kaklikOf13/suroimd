@@ -656,6 +656,13 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "dual_rsh12", weight: 0.025 },
             { item: "g19", weight: 0.0005 }
         ],
+        aegis_golden_case1: [
+            { item: "deagle", weight: 1 },
+            { item: "rsh12", weight: 0.5 },
+            { item: "dual_deagle", weight: 0.05 },
+            { item: "dual_rsh12", weight: 0.025 },
+            { item: "g19", weight: 0.0005 }
+        ],
         fire_hatchet_case: [
             { item: "fire_hatchet", weight: 1 }
         ],

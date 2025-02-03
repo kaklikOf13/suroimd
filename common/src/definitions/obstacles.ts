@@ -1424,10 +1424,10 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 scale: {
                     spawnMin: 1,
                     spawnMax: 1,
-                    destroy: 0.8
+                    destroy: 0.85
                 },
                 spawnMode: MapObjectSpawnMode.GrassAndSand,
-                hitbox: RectangleHitbox.fromRect(18.7, 18.7),
+                hitbox: RectangleHitbox.fromRect(19, 19),
                 rotationMode: RotationMode.Limited,
                 zIndex:ZIndexes.ObstaclesLayer4,
                 particleVariations: 2,
@@ -2526,6 +2526,17 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hasLoot: true,
                 frames: {
                     particle: "gold_aegis_case_particle"
+                }
+            },
+            {
+                [inheritFrom]:"aegis_golden_case",
+                idString: "aegis_golden_case1",
+                material: "wood",
+                hasLoot: true,
+                frames: {
+                    particle: "gold_aegis_case_particle",
+                    residue:"aegis_golden_case_residue",
+                    base:"aegis_golden_case"
                 }
             },
             {
