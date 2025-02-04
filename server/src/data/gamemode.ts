@@ -300,6 +300,10 @@ export interface Gamemode{
     readonly start_after:number
     readonly defaultGroup:number
     readonly adrenalineLoss:number
+    readonly roles?:{
+        readonly enabled:boolean
+        readonly haveHelmet?:boolean
+    }
     readonly lootTables?:Record<string,LootTable>
     readonly button?:{
         readonly icon: string
@@ -369,6 +373,11 @@ export const DefaultGamemode:Gamemode={
     }
 }
 export const Gamemodes:Record<string,Partial<Gamemode>>={
+    memorys:{
+        roles:{
+            enabled:true,
+        }
+    },
     deathmatch:{
         adrenalineLoss:0.0001,
         button:{
@@ -737,7 +746,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                 { item: "shiny_max_mcfly", weight: 0.95  },
             ],
             aegis_golden_case: [
-                [{ item: "lastman_king_helmet", weight: 1 }],
+                [{ item: "lastwoman_helmet", weight: 1 }],
                 [
                     { item: "tango_51", weight: 1 },
                     { item: "sv98", weight: 0.5 },
@@ -750,7 +759,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                 [{ table: "backpacks", weight: 1 }],
                 [{ table: "special_healing_items", weight: 1 }],
                 [{ table: "special_scopes", weight: 1 }],
-                [{ item: "shiny_max_mcfly", weight: 1 }],
+                [{ item: "shiny_amanda_corey", weight: 1 }],
             ],
             melee: [
                 { item: "hatchet", weight: 2 },

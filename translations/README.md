@@ -1,8 +1,8 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Tue, 14 Jan 2025 18:04:23 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Tue, 04 Feb 2025 22:21:38 GMT
 
-## 🇦🇱 Shqip (87% Complete) - ab.hjson
+## 🇦🇱 Shqip (86% Complete) - ab.hjson
 
 ### (No Invalid Keys)
 
@@ -12,6 +12,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `fist_ld` is not defined
+- Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
@@ -41,13 +43,16 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
+- Key `role_medic_role` is not defined
 
-## 🇧🇷 Português (Brasil) (97% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (95% Complete) - br.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `fist_ld` is not defined
+- Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
@@ -57,8 +62,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `go_score` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
+- Key `role_medic_role` is not defined
 
-## 🇨🇿 Čeština (91% Complete) - cz.hjson
+## 🇨🇿 Čeština (90% Complete) - cz.hjson
 
 ### (No Invalid Keys)
 
@@ -70,6 +76,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `fist_ld` is not defined
+- Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
@@ -87,8 +95,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
+- Key `role_medic_role` is not defined
 
-## 🇩🇪 Deutsch (83% Complete) - de.hjson
+## 🇩🇪 Deutsch (82% Complete) - de.hjson
 
 ### (No Invalid Keys)
 
@@ -105,6 +114,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `fist_ld` is not defined
+- Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
@@ -139,31 +150,17 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_eu` is not defined
 - Key `region_sa` is not defined
 - Key `region_as` is not defined
+- Key `role_medic_role` is not defined
 
-## 🇪🇪 Eesti (96% Complete) - et.hjson
-
-### (No Invalid Keys)
-
-### Undefined Keys
-
-- Key `msg_punishment_warn_agreement` is not defined
-- Key `loadout_weapons` is not defined
-- Key `weapon_melee_tp` is not defined
-- Key `weapon_gun_tp` is not defined
-- Key `status_needs` is not defined
-- Key `weapon_category_0` is not defined
-- Key `weapon_category_1` is not defined
-- Key `go_score` is not defined
-- Key `20x_scope` is not defined
-- Key `BLR` is not defined
-
-## 🇫🇷 Français (96% Complete) - fr.hjson
+## 🇪🇪 Eesti (95% Complete) - et.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
 - Key `msg_punishment_warn_agreement` is not defined
+- Key `fist_ld` is not defined
+- Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
@@ -173,13 +170,17 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `go_score` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
+- Key `role_medic_role` is not defined
 
-## 🇬🇷 Ελληνικά (97% Complete) - gr.hjson
+## 🇫🇷 Français (95% Complete) - fr.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `msg_punishment_warn_agreement` is not defined
+- Key `fist_ld` is not defined
+- Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
@@ -189,8 +190,28 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `go_score` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
+- Key `role_medic_role` is not defined
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (90% Complete) - hk_mo.hjson
+## 🇬🇷 Ελληνικά (95% Complete) - gr.hjson
+
+### (No Invalid Keys)
+
+### Undefined Keys
+
+- Key `fist_ld` is not defined
+- Key `roles_ld` is not defined
+- Key `loadout_weapons` is not defined
+- Key `weapon_melee_tp` is not defined
+- Key `weapon_gun_tp` is not defined
+- Key `status_needs` is not defined
+- Key `weapon_category_0` is not defined
+- Key `weapon_category_1` is not defined
+- Key `go_score` is not defined
+- Key `20x_scope` is not defined
+- Key `BLR` is not defined
+- Key `role_medic_role` is not defined
+
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (89% Complete) - hk_mo.hjson
 
 ### (No Invalid Keys)
 
@@ -204,6 +225,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `fist_ld` is not defined
+- Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
@@ -223,13 +246,16 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
+- Key `role_medic_role` is not defined
 
-## 🇭🇺 Magyar (97% Complete) - hu.hjson
+## 🇭🇺 Magyar (95% Complete) - hu.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `fist_ld` is not defined
+- Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
@@ -239,8 +265,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `go_score` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
+- Key `role_medic_role` is not defined
 
-## 🇯🇵 日本語 (91% Complete) - jp.hjson
+## 🇯🇵 日本語 (90% Complete) - jp.hjson
 
 ### (No Invalid Keys)
 
@@ -252,6 +279,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `fist_ld` is not defined
+- Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
@@ -269,8 +298,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
+- Key `role_medic_role` is not defined
 
-## 🇱🇹 Lietuvių (91% Complete) - lt.hjson
+## 🇱🇹 Lietuvių (90% Complete) - lt.hjson
 
 ### (No Invalid Keys)
 
@@ -282,6 +312,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `fist_ld` is not defined
+- Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
@@ -299,8 +331,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
+- Key `role_medic_role` is not defined
 
-## 🇱🇻 Latviešu (91% Complete) - lv.hjson
+## 🇱🇻 Latviešu (90% Complete) - lv.hjson
 
 ### (No Invalid Keys)
 
@@ -312,6 +345,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `fist_ld` is not defined
+- Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
@@ -329,14 +364,17 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
+- Key `role_medic_role` is not defined
 
-## 🇵🇱 Polski (96% Complete) - pl.hjson
+## 🇵🇱 Polski (95% Complete) - pl.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
 - Key `msg_punishment_warn_agreement` is not defined
+- Key `fist_ld` is not defined
+- Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
@@ -346,8 +384,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `go_score` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
+- Key `role_medic_role` is not defined
 
-## 🎀 Cute Engwish (90% Complete) - qen.hjson
+## 🎀 Cute Engwish (89% Complete) - qen.hjson
 
 ### Invalid Keys
 
@@ -366,6 +405,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `fist_ld` is not defined
+- Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
@@ -383,8 +424,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
+- Key `role_medic_role` is not defined
 
-## 🇷🇴 Română (85% Complete) - ro.hjson
+## 🇷🇴 Română (84% Complete) - ro.hjson
 
 ### (No Invalid Keys)
 
@@ -400,6 +442,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `fist_ld` is not defined
+- Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
@@ -429,13 +473,16 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
+- Key `role_medic_role` is not defined
 
-## 🇷🇺 Русский (97% Complete) - ru.hjson
+## 🇷🇺 Русский (95% Complete) - ru.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `fist_ld` is not defined
+- Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
@@ -445,8 +492,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `go_score` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
+- Key `role_medic_role` is not defined
 
-## 🇮🇳 தமிழ் (90% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (89% Complete) - ta.hjson
 
 ### (No Invalid Keys)
 
@@ -459,6 +507,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `donate` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `fist_ld` is not defined
+- Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
@@ -477,13 +527,16 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
+- Key `role_medic_role` is not defined
 
-## 🇹🇷 Turkısh (97% Complete) - tr.hjson
+## 🇹🇷 Turkısh (95% Complete) - tr.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `fist_ld` is not defined
+- Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
@@ -493,8 +546,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `go_score` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
+- Key `role_medic_role` is not defined
 
-## 🇹🇼 中文（繁體） (84% Complete) - tw.hjson
+## 🇹🇼 中文（繁體） (83% Complete) - tw.hjson
 
 ### (No Invalid Keys)
 
@@ -511,6 +565,8 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `copied` is not defined
 - Key `settings_ambience_volume` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `fist_ld` is not defined
+- Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
@@ -542,8 +598,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
+- Key `role_medic_role` is not defined
 
-## 🇻🇳 Tiếng Việt (96% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (95% Complete) - vi.hjson
 
 ### Invalid Keys
 
@@ -553,6 +610,8 @@ This file is a report of all errors and missing keys in the translation files of
 
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `fist_ld` is not defined
+- Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
@@ -562,8 +621,9 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `go_score` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
+- Key `role_medic_role` is not defined
 
-## 🇨🇳 中文（简体） (97% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (95% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -572,6 +632,8 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_punishment_warn_agreement` is not defined
+- Key `fist_ld` is not defined
+- Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
 - Key `weapon_melee_tp` is not defined
 - Key `weapon_gun_tp` is not defined
@@ -581,4 +643,5 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `go_score` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
+- Key `role_medic_role` is not defined
 

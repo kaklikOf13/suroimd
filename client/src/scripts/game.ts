@@ -480,6 +480,7 @@ export class Game {
             const joinPacket: JoinPacketCreation = {
                 isMobile: this.inputManager.isMobile,
                 name: this.console.getBuiltInCVar("cv_player_name"),
+                role:this.console.getBuiltInCVar("cv_loadout_role"),
                 skin: Loots.fromStringSafe(
                     this.console.getBuiltInCVar("cv_loadout_skin")
                 ) ?? Loots.fromString(

@@ -86,7 +86,7 @@ export const enum PerkIds {
     SelfRevive="self_revive",
     HealingAura="healing_aura",
 
-    FlorestKing="florest_king"
+    FlorestQueen="florest_queen"
 }
 
 export const enum PerkCategories {
@@ -447,8 +447,8 @@ const perks = [
         radius:15.5,
     },
     {
-        idString: PerkIds.FlorestKing,
-        name: "Florest King",
+        idString: PerkIds.FlorestQueen,
+        name: "Florest Queen",
         description: "Biggest Size, Flechettes, Advanced Athletics, Infinite Ammo, Extend Mags.",
         category: PerkCategories.Normal,
         type: PerkQualities.Positive,

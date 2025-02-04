@@ -3,6 +3,7 @@ import { type Result, type ResultRes } from "@common/utils/misc";
 import { isMobile } from "pixi.js";
 import { type Stringable } from "./gameConsole";
 import { Casters, type CVarChangeListener, type CVarFlags, type ConVar, type ExtractConVarValue } from "./variables";
+import { ExtraLoadoutList } from "@common/definitions/loadout/extra_loadout";
 
 /*
     eslint-disable
@@ -23,6 +24,7 @@ export const CVarCasters = Object.freeze({
     cv_player_name: Casters.toString,
 
     cv_loadout_skin: Casters.toString,
+    cv_loadout_role: Casters.toInt,
     cv_loadout_badge: Casters.toString,
     cv_loadout_melee:Casters.toString,
     cv_loadout_gun1:Casters.toString,
@@ -104,8 +106,8 @@ export const CVarCasters = Object.freeze({
     dv_lobby_clearing: Casters.toBoolean,
     dv_weapon_preset: Casters.toString,
 
-    dv_toggle_status:Casters.toBoolean,
-    dv_stats:Casters.toString
+    st_toggle_status:Casters.toBoolean,
+    st_stats:Casters.toString
 } satisfies Record<string, (val: string) => Result<unknown, string>>);
 
 type GetRes<R extends Result<unknown, unknown>> = R extends ResultRes<infer Res> ? Res : never;
@@ -140,7 +142,7 @@ type SimpleCVarMapping = {
 
 export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_player_name: "",
-
+    cv_loadout_role:ExtraLoadoutList.indexOf("medic_role"),
     cv_loadout_skin: GameConstants.player.defaultSkin,
     cv_loadout_badge: "",
     cv_loadout_melee:"",
@@ -239,8 +241,8 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     dv_lobby_clearing: false,
     dv_weapon_preset: "",
 
-    dv_toggle_status:false,
-    dv_stats:"",
+    st_toggle_status:false,
+    st_stats:"",
 } satisfies SimpleCVarMapping);
 
 export const defaultBinds = Object.freeze({

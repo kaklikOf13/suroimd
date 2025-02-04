@@ -99,11 +99,11 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
                 }
             ),
             helmet(
-                ["LastMan King"],
+                ["LastWoman"],
                 {
                     level: 3,
                     damageReduction: 0.2,
-                    givePerks:[PerkIds.FlorestKing],
+                    givePerks:[PerkIds.FlorestQueen],
                 }
             ),
             helmet(

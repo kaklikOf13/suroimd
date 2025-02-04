@@ -89,10 +89,13 @@
   "settings_joystick_size": "Joystick size"
   "settings_joystick_opacity": "Joystick opacity"
   "loadout_skins": "Skins"
+  "fist_ld":"Fists"
+  "roles_ld":"Roles"
   "loadout_emotes": "Emotes"
   "loadout_weapons": "Weapons"
   "weapon_melee_tp":"Melee"
   "weapon_gun_tp":"Guns"
+  
 
   "status_needs":"Enable The Status On Settings First"
 
@@ -344,4 +347,6 @@
   "region_eu": "Europe"
   "region_sa": "South America"
   "region_as": "Asia"
+
+  "role_medic_role":"Medic"
 }

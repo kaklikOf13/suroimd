@@ -51,6 +51,8 @@ import { Building } from "./objects/building";
 import { Guns } from "@common/definitions/guns";
 import { Melees } from "@common/definitions/melees";
 import { DefaultGamemode, Gamemode, Gamemodes, SpawnMode } from "./data/gamemode";
+import { ExtraLoadout, ExtraLoadoutList, ExtraLoadoutType } from "@common/definitions/loadout/extra_loadout";
+import { Perks } from "@common/definitions/perks";
 /*
     eslint-disable
 
@@ -803,6 +805,23 @@ export class Game implements GameData {
             if(packet.melee&&Melees.fromStringSafe(packet.melee)&&weapons[1].includes(packet.melee)){
                 player.inventory.addOrReplaceWeapon(2,Melees.fromString(packet.melee as never))
             }
+        }
+        if(this.gamemode.roles&&this.gamemode.roles.enabled){
+            setTimeout(()=>{
+                try{
+                    const role=ExtraLoadout[ExtraLoadoutList[packet.role]]
+                    if(role.type!==ExtraLoadoutType.Role){
+                        player.disconnect("invalid_role")
+                        return
+                    }
+                    for(const r of role.perks){
+                        player.perks.addPerk(Perks.fromString(r),true)
+                        player.fullDirty()
+                    }
+                }catch{
+                    player.disconnect("invalid_role");
+                }
+            },2000)
         }
 
         this.livingPlayers.add(player);

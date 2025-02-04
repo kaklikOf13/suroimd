@@ -13,6 +13,8 @@ export type JoinPacketData = {
     readonly skin: SkinDefinition
     readonly badge?: BadgeDefinition
 
+    readonly role: number
+
     readonly emotes: ReadonlyArray<EmoteDefinition | undefined>,
 
     gun1?:string,
@@ -44,6 +46,7 @@ export const JoinPacket = createPacket("JoinPacket")<JoinPacketCreation, JoinPac
 
         stream.writeUint16(GameConstants.protocolVersion);
         stream.writePlayerName(data.name);
+        stream.writeUint16(data.role)
 
         Loots.writeToStream(stream, data.skin);
 
@@ -86,6 +89,7 @@ export const JoinPacket = createPacket("JoinPacket")<JoinPacketCreation, JoinPac
             protocolVersion: stream.readUint16(),
             name: stream.readPlayerName().replaceAll(/<[^>]+>/g, "").trim(), // Regex strips out HTML
             isMobile,
+            role:stream.readUint16(),
 
             skin: Loots.readFromStream(stream),
             badge: hasBadge ? Badges.readFromStream(stream) : undefined,

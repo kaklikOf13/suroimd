@@ -319,6 +319,15 @@
             height: 90px;
             transform: rotate(90deg);
         }
+        .skin-helmet {
+            position: relative;
+            bottom: 100px;
+            background-repeat: no-repeat;
+            left: 0px;
+            width: 100px;
+            height: 100px;
+            transform: rotate(90deg) scale(92%);
+        }
 
         .skin-left-fist,
         .skin-right-fist {
@@ -331,6 +340,46 @@
 
         .skin-right-fist {
             left: 68px;
+        }
+    }
+
+    #tab-skins-content{
+        .skins-header {
+            font-size: 2em;
+            font-weight: bold;
+            width: 100%;
+            @include variables.text-shadow;
+        }
+    }
+
+    #roles-list {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        height: 100%;
+
+        .roles-list-item-container {
+            width: 140px;
+            height: 170px;
+            padding: 8px;
+            margin: 8px;
+            border: 5px solid transparent;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+
+            &.selected {
+                border-color: palette.$orange;
+            }
+        }
+
+        .roles-name {
+            font-weight: bold;
+            @include variables.text-shadow;
+            text-align: center;
         }
     }
 

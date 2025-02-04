@@ -27,6 +27,7 @@ import { Crosshairs, getCrosshair } from "./utils/crosshairs";
 import { html, requestFullscreen } from "./utils/misc";
 import type { TranslationKeys } from "../typings/translations";
 import { Loots } from "@common/definitions/loots";
+import { ExtraLoadout, ExtraLoadoutList, ExtraLoadoutType, type RoleDefinition } from "@common/definitions/loadout/extra_loadout";
 
 /*
     eslint-disable
@@ -1055,6 +1056,53 @@ export async function setUpUI(game: Game): Promise<void> {
         }
     );
 
+    (()=>{
+        const rolesList = $<HTMLDivElement>("#roles-list");
+
+        const rolesUiCache: Record<string, JQuery<HTMLDivElement>> = {};
+        const currentRole = ExtraLoadoutList[game.console.getBuiltInCVar("cv_loadout_role")];
+
+        function selectRole(idString: string): void {
+            if(!rolesUiCache[idString])return
+            rolesUiCache[idString].addClass("selected")
+                .siblings()
+                .removeClass("selected");
+        }
+
+        for (const idx in ExtraLoadoutList) {
+            const idString=ExtraLoadoutList[idx]
+            const role=ExtraLoadout[idString]
+            if(role.type!==ExtraLoadoutType.Role)continue
+            // noinspection CssUnknownTarget
+            const roleItem = rolesUiCache[idString] = $<HTMLDivElement>(
+                `<div id="role-${idString}" class="roles-list-item-container${idString === currentRole ? " selected" : ""}">
+                    <div class="skin">
+                        <div class="skin-base" style="background-image: url('./img/game/shared/skins/${role.frame}_base.svg')"></div>
+                        <div class="skin-left-fist" style="background-image: url('./img/game/shared/skins/${role.frame}_fist.svg')"></div>
+                        <div class="skin-right-fist" style="background-image: url('./img/game/shared/skins/${role.frame}_fist.svg')"></div>
+                        <div class="skin-helmet" style="background-image: url('./img/game/shared/equipment/${role.helmet}_helmet_world.svg')"></div>
+                    </div>
+                    <span class="role-name">${getTranslatedString(("role_"+idString) as TranslationKeys)}</span>
+                </div>`
+            );
+
+            roleItem.on("click", () => {
+                //@ts-ignore
+                game.console.setBuiltInCVar("cv_loadout_role", idx as number);
+                selectRole(idString);
+            });
+
+            rolesList.append(roleItem);
+        }
+
+        game.console.variables.addChangeListener(
+            "cv_loadout_role",
+            (_, role) => {
+                selectRole(ExtraLoadoutList[role]);
+            }
+        );
+    })()
+
     // Load emotes
     function handleEmote(slot: "win" | "death"): void { // eipi can you improve this so that it uses `EMOTE_SLOTS` items with index >3
         const emote = $(`#emote-wheel-bottom .emote-${slot} .fa-xmark`);
@@ -1913,7 +1961,7 @@ export async function setUpUI(game: Game): Promise<void> {
         toggleHideRules.prop("checked", true);
     }).toggle(game.console.getBuiltInCVar("cv_rules_acknowledged") && !game.console.getBuiltInCVar("cv_hide_rules_button"));
 
-    addCheckboxListener("#toggle-status", "dv_toggle_status");
+    addCheckboxListener("#toggle-status", "st_toggle_status");
 
     // Import settings
     $("#import-settings-btn").on("click", () => {
