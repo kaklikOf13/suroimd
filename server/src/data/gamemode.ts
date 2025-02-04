@@ -738,7 +738,6 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
             ],
             aegis_golden_case: [
                 [{ item: "lastman_king_helmet", weight: 1 }],
-                [{ item: "fire_hatchet", weight: 1 }],
                 [
                     { item: "tango_51", weight: 1 },
                     { item: "sv98", weight: 0.5 },
