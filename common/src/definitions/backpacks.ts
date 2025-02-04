@@ -54,7 +54,7 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                     "ice_grenade":1,
                 },
                 noDrop: true,
-                capacity:10,
+                capacity:11,
             },
             backpack(
                 ["Basic"],
@@ -85,7 +85,7 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                         "ice_grenade":2,
                     },
                     defaultTint: 0xeeeeee,
-                    capacity:14,
+                    capacity:15,
                 }
             ),
             backpack(
@@ -117,7 +117,7 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                         "ice_grenade":3,
                     },
                     defaultTint: 0x63754b,
-                    capacity:27,
+                    capacity:28,
                 }
             ),
             backpack(
@@ -150,7 +150,7 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                         "airstrike":4,
                     },
                     defaultTint: 0x3f3f3f,
-                    capacity:40,
+                    capacity:41,
                 }
             )
         ];

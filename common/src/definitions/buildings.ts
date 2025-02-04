@@ -5395,14 +5395,14 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 reflectBullets: true,
                 floorImages: [],
                 floors:[
-                    {hitbox:new PolygonHitbox(jaggedRectangle(RectangleHitbox.fromRect(300,500,Vec.create(0,0)),11,12,new SeededRandom(2314))),type:FloorNames.SandBeach,visible:true},
+                    {hitbox:new PolygonHitbox(jaggedRectangle(RectangleHitbox.fromRect(350,500,Vec.create(0,0)),11,12,new SeededRandom(13))),type:FloorNames.SandBeach,visible:true},
 
                     {hitbox:RectangleHitbox.fromRect(12,300,Vec.create(0,-96)),type:FloorNames.Dirt,visible:true},
                     {hitbox:RectangleHitbox.fromRect(80,12,Vec.create(35,48)),type:FloorNames.Dirt,visible:true},
                 ],
                 noBulletCollision:true,
                 noCollisions:true,
-                spawnHitbox: RectangleHitbox.fromRect(320,580, Vec.create(0, 0)),
+                spawnHitbox: RectangleHitbox.fromRect(360,550, Vec.create(0, 0)),
                 obstacles: [
 
                     /*{idString:boxes,position:Vec.create(60,200)},
@@ -5430,6 +5430,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
 
                     {idString:{red_house:1,red_house_v2:1},position:Vec.create(0,80), orientation:1},
                     {idString:"green_house",position:Vec.create(-80,80), orientation:2},
+
+                    {idString:"armory",position:Vec.create(-90,-80), orientation:0},
                     
                 ]
             },

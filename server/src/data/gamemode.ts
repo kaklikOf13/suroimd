@@ -439,7 +439,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
         map:"deathmatch"
     },
     desert:{
-        adrenalineLoss:0.0006,
+        adrenalineLoss:0.0003,
         data:Date.UTC(91,4,13,3,26,30),
         lootTables:{
             ammo: [
@@ -451,6 +451,31 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                 { item: "medic_charge", count: 30, weight: 0.006 },
                 { item: "338lap", count: 6, weight: 0.005 },
                 { item: "curadell", count: 1, weight: 0.003 }
+            ],
+            survival_crate: [
+                [
+                    { item: "hp18", weight: 1.1 },
+                    { item: "model_37", weight: 1 },
+                    { item: "flues", weight: .9 },
+                    { item: "m3k", weight: .23 },
+                    { item: "vepr12", weight: .2 },
+                    { item: "m590m", weight: .01 },
+                    { item: "usas12", weight: .005 }
+                ],
+                [
+                    { item: "ak47", weight: 1 },
+                    { item: "aug", weight: 1 },
+                    { item: "m16a4", weight: .6 },
+                    { item: "cz600", weight: .1 },
+                    { item: "mosin_nagant", weight: .05 },
+                    { item: "tango_51", weight: .01 },
+                    { item: "sv98", weight: 0.005 },
+                ],
+                [{ table: "helmets", weight: 1 }],
+                [{ table: "vests", weight: 1 }],
+                [{ table: "backpacks", weight: 1 }],
+                [{ table: "special_healing_items", weight: 1 }],
+                [{ table: "special_scopes", weight: 1 }]
             ],
             common_guns:[
                 { item: "fort_17", weight: 1 },
@@ -591,6 +616,11 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                 { item: "fire_hatchet", weight: 0.2 },
                 { item: "battlesaw", weight: 0.1 },
             ],
+            flint_stone: [
+                { table: "legendary_guns", weight: 2 },
+                { item: "9mm", weight: 0.5 },
+                { item: "22lr", weight: 0.5 },
+            ],
             perks: {
                 min: 1,
                 max: 1,
@@ -605,6 +635,136 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
             },
         },
         map:"desert",
+    },
+    florest:{
+        data:Date.UTC(92,3,24,1,22,23),
+        map:"florest",
+        lootTables:{
+            ammo: [
+                { item: "762mm", count: 60, weight: 1 },
+                { item: "9mm", count: 60, weight: 1 },
+                { item: "22lr", count: 100, weight: 1.05 },
+                { item: "12g", count: 10, weight: 0.75 },
+                { item: "50cal", count: 20, weight: 0.05 },
+                { item: "medic_charge", count: 30, weight: 0.006 },
+                { item: "338lap", count: 6, weight: 0.005 },
+                { item: "curadell", count: 1, weight: 0.003 }
+            ],
+            common_guns:[
+                { item: "g19", weight: 1 },
+                { item: "m1895", weight: 0.9 },
+                { item: "taurus_tx22", weight: 0.55 },
+                { item: "cz75a", weight: 0.4 },
+            ],
+            uncommon_guns:[
+                { item: "ak47", weight: 1 },
+                { item: "bar", weight: 0.82 },
+                { item: "lewis_gun", weight: 0.7 },
+                { item: "hp18", weight: 0.7 },
+                { item: "saf200", weight: 0.6 },
+                { item: "micro_uzi", weight: 0.55 },
+                { item: "uzi_22lr", weight: 0.55 },
+                { item: "flues", weight: 0.55 },
+                { item: "mp40", weight: 0.5 },
+                { item: "mp5", weight: 0.45 },
+                { item: "model_37", weight: 0.49 },
+                { item: "mp5e", weight: 0.48 },
+                { item: "sks", weight: 0.47 },
+            ],
+            rare_guns:[
+                { item: "arx160", weight:1 },
+                { item: "rifle_cbc", weight: 0.85 },
+                { item: "m3k", weight: 0.8 },
+                { item: "mg36", weight: 0.6 },
+            ],
+            epic_guns:[
+                { item: "vss", weight: 1.1 },
+                { item: "sr25", weight: 1 },
+                { item: "mcx_spear", weight: 1 },
+                { item: "deagle", weight: 0.9 },
+                { item: "vepr12", weight: 0.8 },
+                { item: "vector", weight: 0.8 },
+                { item: "mosin_nagant", weight: 0.7 },
+                { item: "tango_51", weight: 0.65 },
+                { item: "sv98", weight: 0.5 },
+                { item: "medic_pistol", weight: 0.2 },
+                { item: "radio", weight: 0.1 },
+            ],
+            legendary_guns:[
+                { item: "m1_garand", weight: 1.1 },
+                { item: "svd", weight: 1.05 },
+                { item: "vickers", weight: 1 },
+                { item: "pp19", weight: 1 },
+                { item: "mg5", weight: 1 },
+                { item: "pkp", weight: 1 },
+                { item: "super90", weight: 0.8 },
+                { item: "m590m", weight: 0.8 },
+                { item: "usas12", weight: 0.6 },
+                { item: "mk18", weight: 0.5 },
+                { item: "l115a1", weight: 0.5 },
+                { item: "pfeifer_zeliska", weight: 0.5 },
+                { item: "dual_rsh12", weight: 0.5 },
+                { item: "awms", weight: 0.4 },
+                { item: "m134", weight: 0.4 },
+                { item: "m134_22lr", weight: 0.2 },
+                { item: "nuke_radio", weight: 0.1 },
+            ],
+            survival_crate: [
+                [
+                    { item: "hp18", weight: 1.1 },
+                    { item: "model_37", weight: 1 },
+                    { item: "flues", weight: .9 },
+                    { item: "m3k", weight: .23 },
+                    { item: "vepr12", weight: .2 },
+                    { item: "m590m", weight: .01 },
+                    { item: "usas12", weight: .005 }
+                ],
+                [
+                    { item: "ak47", weight: 1 },
+                    { item: "mp40", weight: 1.05 },
+                    { item: "mosin_nagant", weight: .05 },
+                    { item: "tango_51", weight: .01 },
+                    { item: "sv98", weight: 0.005 },
+                ],
+                [{ table: "helmets", weight: 1 }],
+                [{ table: "vests", weight: 1 }],
+                [{ table: "backpacks", weight: 1 }],
+                [{ table: "special_healing_items", weight: 1 }],
+                [{ table: "special_scopes", weight: 1 }]
+            ],
+            shiny_skins:[
+                { item: "shiny_anonymous", weight: 1.3 },
+                { item: "shiny_max_mcfly", weight: 0.95  },
+            ],
+            aegis_golden_case: [
+                [{ item: "lastman_king_helmet", weight: 1 }],
+                [{ item: "fire_hatchet", weight: 1 }],
+                [
+                    { item: "tango_51", weight: 1 },
+                    { item: "sv98", weight: 0.5 },
+                    { item: "pfeifer_zeliska", weight: 0.1 },
+                    { item: "awms", weight: 0.09 },
+                    { item: "dual_pfeifer_zeliska", weight: 0.01 },
+                ],
+                [{ item: "battlesaw", weight: 1 }],
+                [{ table: "vests", weight: 1 }],
+                [{ table: "backpacks", weight: 1 }],
+                [{ table: "special_healing_items", weight: 1 }],
+                [{ table: "special_scopes", weight: 1 }],
+                [{ item: "shiny_max_mcfly", weight: 1 }],
+            ],
+            melee: [
+                { item: "hatchet", weight: 2 },
+                { item: "fire_hatchet", weight: 1.5 },
+                { item: "maul", weight: 0.9 },
+            ],
+            airdrop_melee: [
+                { item: NullString, weight: 1 },
+                { item: "hatchet", weight: 0.4 },
+                { item: "fire_hatchet", weight: 0.3 },
+                { item: "maul", weight: 0.2 },
+            ],
+        }
     },
     manhunt:{
         group:true,

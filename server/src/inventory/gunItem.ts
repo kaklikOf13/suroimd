@@ -1,6 +1,6 @@
 import { AnimationType, FireMode, InventoryMessages } from "@common/constants";
 import { type GunDefinition } from "@common/definitions/guns";
-import { PerkData, PerkIds } from "@common/definitions/perks";
+import { PerkData, PerkIds, Perks } from "@common/definitions/perks";
 import { PickupPacket } from "@common/packets/pickupPacket";
 import { Orientation } from "@common/typings";
 import { type BulletOptions } from "@common/utils/baseBullet";
@@ -183,17 +183,19 @@ export class GunItem extends InventoryItem<GunDefinition> {
         // ! evil starts here
         let modifiersModified = false; // lol
         let doSplinterGrouping = false;
+        if(this.owner.hasPerk(PerkIds.Flechettes)){
+            const perk=Perks.fromString(PerkIds.Flechettes)
+            if (definition.ballistics.onHitExplosion === undefined && !definition.summonAirdrop) {
+                doSplinterGrouping = true;
+                //@ts-ignore
+                modifiers.damage *= perk.damageMod;
+                //@ts-ignore
+                modifyForDamageMod(perk.damageMod);
+                modifiersModified = true;
+            }
+        }
         for (const perk of owner.perks) {
             switch (perk.idString) {
-                case PerkIds.Flechettes: {
-                    if (definition.ballistics.onHitExplosion === undefined && !definition.summonAirdrop) {
-                        doSplinterGrouping = true;
-                        modifiers.damage *= perk.damageMod;
-                        modifyForDamageMod(perk.damageMod);
-                        modifiersModified = true;
-                    }
-                    break;
-                }
                 case PerkIds.SabotRounds: {
                     modifiers.range *= perk.rangeMod;
                     modifiers.speed *= perk.speedMod;

@@ -36,7 +36,17 @@ export class PerkManager implements PerkCollection {
 
     hasPerk(perk: PerkDefinition | PerkNames): boolean {
         const idString = typeof perk === "object" ? perk.idString : perk;
-        return (this._perks & (1 << Perks.idStringToNumber[idString])) !== 0;
+        const ok=((this._perks & (1 << Perks.idStringToNumber[idString])) !== 0)
+        if(!ok){
+            for(const p of this.asList()){
+                if(p.extends&&p.extends.includes(idString))return true
+            }
+        }
+        return ok;
+    }
+    hasPerk2(perk: PerkDefinition | PerkNames): boolean {
+        const idString = typeof perk === "object" ? perk.idString : perk;
+        return ((this._perks & (1 << Perks.idStringToNumber[idString])) !== 0);
     }
 
     /**

@@ -335,6 +335,144 @@ const maps:Record<string, MapDefinition> = {
             { name: "Deepwood", position: Vec.create(0.5, 0.65) }
         ]
     },
+    florest: {
+        width: 1700,
+        height: 1700,
+        oceanSize: 128,
+        beachSize: 32,
+        islands:[
+            {
+                spawn:IslandSpawns.Center,
+                chooses:[
+                    {
+                        rivers: {
+                            minAmount: 1,
+                            maxAmount: 3,
+                            maxWideAmount: 1,
+                            wideChance: 0.25,
+                            minWidth: 11,
+                            maxWidth: 27,
+                            minWideWidth: 26,
+                            maxWideWidth: 33,
+                        },
+                        loots: {
+                            ground_loot: 100
+                        },
+                        beachSize:50,
+                        interiorSize:1600,
+                        beach:FloorNames.Sand,
+                        grass:FloorNames.Grass,
+                        buildings:{
+                            small_bridge: Infinity,
+                            desert_bunker:1,
+                            sea_traffic_control: 1,
+                            armory: 1,
+                            small_bunker: 2,
+                            refinery: 1,
+                            warehouse: 3,
+                            green_house: 2,
+                            blue_house: 2,
+                            red_house: 2,
+                            red_house_v2: 2,
+                            construction_site: 1,
+                            mobile_home: 8,
+                            porta_potty: 9,
+                            container_3: 2,
+                            container_4: 2,
+                            container_5: 2,
+                            container_6: 2,
+                            container_7: 2,
+                            container_8: 2,
+                            container_9: 2,
+                            container_10: 2
+                        },
+                        majorBuildings: ["armory", "refinery"],
+                        quadBuildingLimit: {
+                            red_house: 1,
+                            red_house_v2: 1,
+                            warehouse: 2,
+                            green_house: 1,
+                            blue_house: 1,
+                            mobile_home: 3,
+                            porta_potty: 3,
+                            construction_site: 1
+                        },
+                        obstacles:{
+                            oil_tank: 10,
+                            regular_crate: 60,
+                            flint_crate: 11,
+                            aegis_crate: 12,
+                            survival_crate:4,
+                            grenade_crate: 50,
+                            rock: 240,
+                            river_chest: 1,
+                            river_rock: 10,
+                            barrel:40,
+                            viking_chest: 1,
+                            super_barrel: 5,
+                            melee_crate: 2,
+                            gold_rock: 1,
+                            loot_barrel: 1,
+                            flint_stone: 2
+                        },
+                        chooses:[
+                            {
+                                objects:DefaultChooses.Bushs,
+                                min:170,
+                                max:190,
+                            },
+                            {
+                                objects:DefaultChooses.Trees,
+                                min:290,
+                                max:300,
+                            }
+                        ],
+                        obstacleClumps: [
+                            {
+                                clumpAmount: 150,
+                                clump: {
+                                    minAmount: 7,
+                                    maxAmount: 10,
+                                    jitter: 7,
+                                    obstacles: ["small_oak_tree"],
+                                    radius: 14
+                                }
+                            },
+                            {
+                                clumpAmount: 110,
+                                clump: {
+                                    minAmount: 6,
+                                    maxAmount: 8,
+                                    jitter: 7,
+                                    obstacles: ["birch_tree"],
+                                    radius: 13
+                                }
+                            },
+                            {
+                                clumpAmount: 15,
+                                clump: {
+                                    minAmount: 4,
+                                    maxAmount: 6,
+                                    jitter: 5,
+                                    obstacles: ["pine_tree","birch_tree"],
+                                    radius: 12
+                                }
+                            }
+                        ],
+                    },
+                ],
+                major:true
+            },
+        ],
+        places: [
+            { name: "Banana", position: Vec.create(0.23, 0.2) },
+            { name: "Takedown", position: Vec.create(0.23, 0.8) },
+            { name: "Lavlandet", position: Vec.create(0.75, 0.2) },
+            { name: "Noskin Narrows", position: Vec.create(0.72, 0.8) },
+            { name: "Mt. Sanger", position: Vec.create(0.5, 0.35) },
+            { name: "Deepwood", position: Vec.create(0.5, 0.65) }
+        ]
+    },
     desert: {
         width: 1800,
         height: 1800,
@@ -410,7 +548,7 @@ const maps:Record<string, MapDefinition> = {
                             melee_crate: 2,
                             gold_rock: 1,
                             loot_barrel: 2,
-                            flint_stone: 6,
+                            flint_stone: 8,
                             oak_tree_desert:160,
                             big_desert_tree:60,
                         },

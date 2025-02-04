@@ -977,14 +977,14 @@ export class UIManager {
     private readonly _perkSlots: Array<JQuery<HTMLDivElement> | undefined> = [];
     private readonly _animationTimeouts: Array<number | undefined> = [];
     updatePerkSlot(perkDef: PerkDefinition, index: number): void {
-        if (index > 3) index = 0; // overwrite stuff ig?
+        if (index > 4) index = 0; // overwrite stuff ig?
         // no, write a hud that can handle it
 
         const container = this._perkSlots[index] ??= $<HTMLDivElement>(`#perk-slot-${index}`);
         container.attr("data-idString", perkDef.idString);
         container.children(".item-tooltip").html(`<strong>${perkDef.name}</strong><br>${perkDef.description}`);
         container.children(".item-image").attr("src", `./img/game/shared/perks/${perkDef.idString}.svg`);
-        container.css("visibility", this.perks.hasPerk(perkDef.idString) ? "visible" : "hidden");
+        container.css("visibility", this.perks.hasPerk2(perkDef.idString) ? "visible" : "hidden");
 
         container.css("outline", !perkDef.noDrop ? "" : "none");
 
@@ -1002,7 +1002,7 @@ export class UIManager {
     }
 
     resetPerkSlots(): void {
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 4; i++) {
             this.resetPerkSlot(i);
         }
     }

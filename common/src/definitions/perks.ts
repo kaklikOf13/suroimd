@@ -21,6 +21,8 @@ export interface BasicPerk extends ItemDefinition {
     readonly sizeMod?:number
     readonly adrenSet?:number
     readonly adrenDecay?:number
+
+    readonly extends?:PerkIds[]
 }
 
 const defaultTemplate = {
@@ -83,6 +85,8 @@ export const enum PerkIds {
     Captain="captain_perk",
     SelfRevive="self_revive",
     HealingAura="healing_aura",
+
+    FlorestKing="florest_king"
 }
 
 export const enum PerkCategories {
@@ -440,7 +444,16 @@ const perks = [
         category: PerkCategories.Normal,
         type: PerkQualities.Positive,
 
-        radius:15,
+        radius:15.5,
+    },
+    {
+        idString: PerkIds.FlorestKing,
+        name: "Florest King",
+        description: "Biggest Size, Flechettes, Advanced Athletics, Infinite Ammo, Extend Mags.",
+        category: PerkCategories.Normal,
+        type: PerkQualities.Positive,
+        sizeMod:1.2,
+        extends:[PerkIds.Flechettes, PerkIds.AdvancedAthletics, PerkIds.InfiniteAmmo, PerkIds.ExtendedMags]
     },
 ] as const satisfies ReadonlyArray<
     GetMissing<
