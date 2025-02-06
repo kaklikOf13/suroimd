@@ -2712,7 +2712,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                             break
                     }
                     if (!this.canDrop||!bb) break;
-                    //this.action?.cancel();
+                    if(this.action&&this.action.type===PlayerActions.UseItem)this.action?.cancel();
                     inventory.dropItem(action.item);
                     break;
                 }

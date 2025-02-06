@@ -575,34 +575,6 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                 { item: "c4", count: 2, weight: 0.6 },
                 { item: "airstrike", count: 1, weight: 0.25 },
             ],
-            aegis_golden_case: [
-                [{ item: "sergeant_helmet", weight: 1 }],
-                [{ item: "fire_hatchet", weight: 1 }],
-                [
-                    { item: "super90", weight: 1 },
-                    { item: "m590m", weight: 0.5 },
-                    { item: "usas12", weight: 0.1 },
-                ],
-                [{ table: "vests", weight: 1 }],
-                [{ table: "backpacks", weight: 1 }],
-                [{ table: "special_healing_items", weight: 1 }],
-                [{ table: "special_scopes", weight: 1 }],
-                [{ item: "shiny_hasanger", weight: 1 }],
-            ],
-            aegis_golden_case1: [
-                [{ item: "sergeant_helmet", weight: 1 }],
-                [{ item: "fire_hatchet", weight: 1 }],
-                [
-                    { item: "an94", weight: 1 },
-                    { item: "mg5", weight: 0.5 },
-                    { item: "pkp", weight: 0.1 }
-                ],
-                [{ table: "vests", weight: 1 }],
-                [{ table: "backpacks", weight: 1 }],
-                [{ table: "special_healing_items", weight: 1 }],
-                [{ table: "special_scopes", weight: 1 }],
-                [{ item: "shiny_123op", weight: 1 }],
-            ],
             shiny_skins:[
                 { item: "shiny_anonymous", weight: 1.3 },
                 { item: "shiny_max_mcfly", weight: 0.95  },
@@ -684,7 +656,6 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                 { item: "arx160", weight:1 },
                 { item: "rifle_cbc", weight: 0.85 },
                 { item: "m3k", weight: 0.8 },
-                { item: "mg36", weight: 0.6 },
             ],
             epic_guns:[
                 { item: "vss", weight: 1.1 },

@@ -5179,6 +5179,28 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ]
             },
             {
+                idString: "secret_bunker",
+                name: "Secret Bunker",
+                material: "metal_heavy",
+                particle: "metal_particle",
+                reflectBullets: true,
+                hitbox: RectangleHitbox.fromRect(12, 1, Vec.create(0, 12.3)),
+                floorImages: [{
+                    key: "small_bunker_entrance_floor",
+                    position: Vec.create(0, 20),
+                    scale: Vec.create(2.2, 2.2)
+                }],
+                spawnHitbox: RectangleHitbox.fromRect(60, 60, Vec.create(0, 20)),
+                obstacles: [
+                    { idString:"statue", position: Vec.create(0, 20), rotation: 1 }
+                ],
+                bulletMask: RectangleHitbox.fromRect(11, 30, Vec.create(0, 30)),
+                subBuildings: [
+                    { idString: "secret_bunker_main", position: Vec.create(0, -5), layer: -2 },
+                    { idString: "desert_bunker_entrance", position: Vec.create(0, 20), layer: -1 }
+                ]
+            },
+            {
                 idString: "desert_bunker_entrance",
                 name: "Desert Bunker Entrance",
                 reflectBullets: true,
@@ -5247,7 +5269,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ],
                 obstacles: [
                     { idString: "metal_door", position: Vec.create(0.25, 18.3), rotation: 0 },
-                    { idString: "aegis_golden_case", position:Vec.create(0,0),rotation:0},
+                    { idString: "red_case", position:Vec.create(0,0),rotation:0},
                 ],
                 lootSpawners: [
                 ]
@@ -5294,7 +5316,54 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 ],
                 obstacles: [
                     { idString: "metal_door", position: Vec.create(0.25, 18.3), rotation: 0 },
-                    { idString: "aegis_golden_case1", position:Vec.create(0,0),rotation:0},
+                    { idString: "blue_case", position:Vec.create(0,0),rotation:0},
+                ],
+                lootSpawners: [
+                ]
+            },
+            {
+                idString: "secret_bunker_main",
+                name:"Secret Bunker Main",
+                reflectBullets: true,
+                collideWithLayers: Layers.Adjacent,
+                material: "metal_heavy",
+                particle: "metal_particle",
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(44.5, 1.7, Vec.create(0, -18)),
+                    RectangleHitbox.fromRect(1.7, 37.9, Vec.create(21.5, 0)),
+                    RectangleHitbox.fromRect(1.7, 37.9, Vec.create(-21.5, 0)),
+                    RectangleHitbox.fromRect(16, 1.7, Vec.create(-13.1, 18)),
+                    RectangleHitbox.fromRect(16, 1.7, Vec.create(13.1, 18))
+                ),
+                spawnHitbox: RectangleHitbox.fromRect(55, 55, Vec.create(0, 5)),
+                ceilingHitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(42, 34.5),
+                    RectangleHitbox.fromRect(10, 20, Vec.create(0, 20))
+                ),
+                floorImages: [
+                    {
+                        key: "desert_bunker_floor",
+                        position: Vec.create(0, 0),
+                        scale: Vec.create(2.2, 2.2)
+                    }
+                ],
+                floors: [
+                    {
+                        type: FloorNames.Stone,
+                        hitbox: new GroupHitbox(
+                            RectangleHitbox.fromRect(42, 34.5),
+                            RectangleHitbox.fromRect(10, 4.5, Vec.create(0, 19))
+                        )
+                    },
+                    {
+                        type: FloorNames.Metal,
+                        hitbox: RectangleHitbox.fromRect(10, 12, Vec.create(0, 27)),
+                        layer: -1
+                    }
+                ],
+                obstacles: [
+                    { idString: "metal_door", position: Vec.create(0.25, 18.3), rotation: 0 },
+                    { idString: "aegis_golden_case", position:Vec.create(0,0),rotation:0},
                 ],
                 lootSpawners: [
                 ]

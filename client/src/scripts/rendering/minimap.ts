@@ -166,6 +166,7 @@ export class Minimap {
         ctx.zIndex = ZIndexes.Ground;
 
         for(const f of this.terrain.floors[this.game.layer??Layer.Ground]){
+            if(f.build)continue
             this.drawTerrainHB(ctx,scale,f)
         }
 

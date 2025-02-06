@@ -656,12 +656,33 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "dual_rsh12", weight: 0.025 },
             { item: "g19", weight: 0.0005 }
         ],
-        aegis_golden_case1: [
-            { item: "deagle", weight: 1 },
-            { item: "rsh12", weight: 0.5 },
-            { item: "dual_deagle", weight: 0.05 },
-            { item: "dual_rsh12", weight: 0.025 },
-            { item: "g19", weight: 0.0005 }
+        red_case: [
+            [{ item: "sergeant_helmet", weight: 1 }],
+            [{ item: "fire_hatchet", weight: 1 }],
+            [
+                { item: "super90", weight: 1 },
+                { item: "m590m", weight: 0.5 },
+                { item: "usas12", weight: 0.1 },
+            ],
+            [{ table: "vests", weight: 1 }],
+            [{ table: "backpacks", weight: 1 }],
+            [{ table: "special_healing_items", weight: 1 }],
+            [{ table: "special_scopes", weight: 1 }],
+            [{ item: "shiny_hasanger", weight: 1 }],
+        ],
+        blue_case: [
+            [{ item: "sergeant_helmet", weight: 1 }],
+            [{ item: "fire_hatchet", weight: 1 }],
+            [
+                { item: "an94", weight: 1 },
+                { item: "mg5", weight: 0.5 },
+                { item: "pkp", weight: 0.1 }
+            ],
+            [{ table: "vests", weight: 1 }],
+            [{ table: "backpacks", weight: 1 }],
+            [{ table: "special_healing_items", weight: 1 }],
+            [{ table: "special_scopes", weight: 1 }],
+            [{ item: "shiny_123op", weight: 1 }],
         ],
         fire_hatchet_case: [
             { item: "fire_hatchet", weight: 1 }

@@ -2531,14 +2531,11 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             },
             {
                 [inheritFrom]:"aegis_golden_case",
-                idString: "aegis_golden_case1",
-                material: "wood",
-                hasLoot: true,
-                frames: {
-                    particle: "gold_aegis_case_particle",
-                    residue:"aegis_golden_case_residue",
-                    base:"aegis_golden_case"
-                }
+                idString: "red_case"
+            },
+            {
+                [inheritFrom]:"aegis_golden_case",
+                idString: "blue_case"
             },
             {
                 idString: "falchion_case",

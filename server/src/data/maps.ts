@@ -266,7 +266,7 @@ const maps:Record<string, MapDefinition> = {
                             grenade_crate: 55,
                             rock: 430,
                             river_chest: 2,
-                            river_rock: 70,
+                            river_rock: 30,
                             // birthday_cake: 100, // birthday mode
                             lily_pad: 30,
                             barrel:70,
@@ -347,13 +347,13 @@ const maps:Record<string, MapDefinition> = {
                     {
                         rivers: {
                             minAmount: 1,
-                            maxAmount: 3,
+                            maxAmount: 2,
                             maxWideAmount: 1,
                             wideChance: 0.25,
                             minWidth: 11,
-                            maxWidth: 27,
+                            maxWidth: 20,
                             minWideWidth: 26,
-                            maxWideWidth: 33,
+                            maxWideWidth: 28,
                         },
                         loots: {
                             ground_loot: 100
@@ -364,7 +364,7 @@ const maps:Record<string, MapDefinition> = {
                         grass:FloorNames.Grass,
                         buildings:{
                             small_bridge: Infinity,
-                            desert_bunker:1,
+                            secret_bunker:1,
                             sea_traffic_control: 1,
                             armory: 1,
                             small_bunker: 2,

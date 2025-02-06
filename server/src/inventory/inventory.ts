@@ -614,8 +614,8 @@ export class Inventory {
         switch (itemType) {
             case ItemType.Healing:
                 const itemAmount = this.items.getItem(idString);
-                const removalAmount=itemAmount/2
-
+                const removalAmount=Math.ceil(itemAmount/2)
+                if(removalAmount>itemAmount)break
                 this._dropItem(definition, { count: removalAmount });
                 this.items.decrementItem(idString, removalAmount);
                 break;
@@ -946,7 +946,7 @@ export class ItemCollection<ItemDef extends LootDefinition> {
      * @param amount By how much to decrement the count. Defaults to 1
      */
     decrementItem(key: ReferenceTo<ItemDef>, amount = 1): void {
-        this.setItem(key, Numeric.max(this.getItem(key) - amount, 0));
+        this.setItem(key, Math.floor(Numeric.max(this.getItem(key) - amount, 0)));
     }
 
     // addChangeListener(listener: (key: ReferenceTo<ItemDef>, oldValue: number, newValue: number) => void): void {
