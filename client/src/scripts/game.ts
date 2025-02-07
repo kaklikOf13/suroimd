@@ -57,7 +57,7 @@ import { GameConsole } from "./utils/console/gameConsole";
 import { COLORS, EMOTE_SLOTS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
 import { loadTextures, SuroiSprite } from "./utils/pixi";
 import { Tween } from "./utils/tween";
-import { randomVector, randomFloat, pickRandomInArray } from "../../../common/src/utils/random";
+import { randomVector, randomFloat, pickRandomInArray, random } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { FloorNames } from "@common/utils/terrain";
 import { PerkIds } from "@common/definitions/perks";
@@ -169,10 +169,43 @@ export class Game {
 
     night:number=0
 
+    extra_ilum=0
+    thunder_delay=0
+    thunders=false
+    thundersSFX:Sound[]=[]
+
     day:boolean=true
 
     raining:number=0
     rainingDest:number=0
+
+    bolt():Promise<void>{
+        return new Promise<void>((resolve, reject) => {
+            let stage=true
+            const t=pickRandomInArray(this.thundersSFX)
+            t.play()
+            const f=()=>{
+                if(stage){
+                    if(this.extra_ilum<2){
+                        this.extra_ilum+=0.15
+                    }else{
+                        this.extra_ilum=2
+                        stage=false
+                    }
+                }else{
+                    this.extra_ilum-=0.17
+                    if(this.extra_ilum<=0){
+                        this.extra_ilum=0
+                        clearInterval(inter)
+                        resolve()
+                        return
+                    }
+                }
+                this.updateIlumin()
+            }
+            const inter=setInterval(f,11)
+        })
+    }
 
     music:Sound|undefined=undefined;
 
@@ -369,9 +402,27 @@ export class Game {
             volume: game.console.getBuiltInCVar("cv_music_volume")
         }));
 
+        game.thundersSFX.push(sound.add("thunder_1", {
+            url: `./audio/ambience/thunder_1.mp3`,
+            singleInstance: true,
+            preload: true,
+            autoPlay: false,
+            volume: game.console.getBuiltInCVar("cv_music_volume")
+        }));
+        game.thundersSFX.push(sound.add("thunder_2", {
+            url: `./audio/ambience/thunder_2.mp3`,
+            singleInstance: true,
+            preload: true,
+            autoPlay: false,
+            volume: game.console.getBuiltInCVar("cv_music_volume")
+        }));
+
         game.music=undefined
 
         return game
+    }
+    updateIlumin(){
+        this.ilumination=Numeric.clamp(1-(this.raining/4)-(this.night/3),.2,1)+this.extra_ilum
     }
     updateVisualEvents(){
         if(this.playing){
@@ -379,16 +430,33 @@ export class Game {
             if((this.night==1&&this.day)||(this.night==0&&!this.day)){
                 this.day=!this.day
             }
-            this.ilumination=Numeric.clamp(1-(this.raining/4)-(this.night/3),.2,1)
+            this.updateIlumin()
+            if(this.thunders){
+                if(this.thunder_delay>0){
+                    this.thunder_delay-=1
+                }else{
+                    this.bolt()
+                    this.thunder_delay=random(12,17)
+                }
+            }
 
             if(this.raining>0){
-                if(this.ambience?.name!==GameConstants.natural_events.rain.ambience){
-                    this.ambience?.stop()
-                    this.ambience=this.soundManager.play(GameConstants.natural_events.rain.ambience, { loop: true, ambient: true })
-                }
                 if(Math.abs(this.rainingDest-this.raining)<=0.01){
                     this.raining=this.rainingDest
                     this.rainingDest=Math.random()<=GameConstants.natural_events.rain.stopChance?0:Numeric.round(randomFloat(.1,1),3)
+                }
+                if(this.thunders){
+                    if(this.ambience?.name!==GameConstants.natural_events.rain.storm.ambience){
+                        this.ambience?.stop()
+                        this.ambience=this.soundManager.play(GameConstants.natural_events.rain.storm.ambience, { loop: true, ambient: true })
+                    }
+                    if(Math.random()<=GameConstants.natural_events.rain.storm.stopChance)this.thunders=!this.thunders
+                }else{
+                    if(this.ambience?.name!==GameConstants.natural_events.rain.ambience){
+                        this.ambience?.stop()
+                        this.ambience=this.soundManager.play(GameConstants.natural_events.rain.ambience, { loop: true, ambient: true })
+                    }
+                    if(Math.random()<=GameConstants.natural_events.rain.storm.chance[1])this.thunders=!this.thunders
                 }
                 if(this.map.terrainGraphics.visible&&this.console.getBuiltInCVar("cv_ambient_particles")){
                     const zoom=this.camera.zoom/70
@@ -424,9 +492,13 @@ export class Game {
                 }
             }else if(Math.random()<=GameConstants.natural_events.rain.chance){
                 this.rainingDest=randomFloat(.1,1)
+                if(Math.random()<=GameConstants.natural_events.rain.storm.chance[0]){
+                    this.addTimeout(()=>this.thunders=true,random(30,1100))
+                }
             }else{
                 if(MODE.ambience&&this.ambience?.name!==MODE.ambience){
                     this.ambience?.stop()
+                    this.thunders=false
                     this.ambience = this.soundManager.play(MODE.ambience, { loop: true, ambient: true });
                 }
             }
@@ -746,6 +818,7 @@ export class Game {
 
     async endGame(): Promise<void> {
         const ui = this.uiManager.ui;
+        this.ambience?.stop()
 
         return await new Promise(resolve => {
             ui.splashOptions.addClass("loading");

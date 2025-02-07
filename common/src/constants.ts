@@ -57,6 +57,11 @@ export const GameConstants = freezeDeep({
             transition:0.07,
             raindrop:"ripple_particle",
             ambience:"rain_ambience",
+            storm:{
+                ambience:"storm_ambience",
+                chance:[0.15,0.001],
+                stopChance:0.005
+            }
         }
     },
     player: {
