@@ -402,27 +402,9 @@ export class Game {
             volume: game.console.getBuiltInCVar("cv_music_volume")
         }));
 
-        game.thundersSFX.push(sound.add("thunder_1", {
-            url: `./audio/ambience/thunder_1.mp3`,
-            singleInstance: true,
-            preload: true,
-            autoPlay: false,
-            volume: game.console.getBuiltInCVar("cv_ambience_volume")
-        }));
-        game.thundersSFX.push(sound.add("thunder_2", {
-            url: `./audio/ambience/thunder_2.mp3`,
-            singleInstance: true,
-            preload: true,
-            autoPlay: false,
-            volume: game.console.getBuiltInCVar("cv_ambience_volume")
-        }));
-        game.thundersSFX.push(sound.add("thunder_3", {
-            url: `./audio/ambience/thunder_3.mp3`,
-            singleInstance: true,
-            preload: true,
-            autoPlay: false,
-            volume: game.console.getBuiltInCVar("cv_ambience_volume")
-        }));
+        game.thundersSFX.push(sound.find("thunder_1"));
+        game.thundersSFX.push(sound.find("thunder_2"));
+        game.thundersSFX.push(sound.find("thunder_3"));
 
         game.music=undefined
 

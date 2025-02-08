@@ -9,7 +9,7 @@ import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
-import { COLORS, HITBOX_COLORS, HITBOX_DEBUG_MODE, TEAMMATE_COLORS } from "../utils/constants";
+import { COLORS, HITBOX_COLORS, TEAMMATE_COLORS } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
@@ -125,7 +125,7 @@ export class ThrowableProjectile extends GameObject.derive(ObjectCategory.Throwa
     }
 
     override updateDebugGraphics(): void {
-        if (!HITBOX_DEBUG_MODE || !this.radius) return;
+        if (!this.game.console.getBuiltInCVar("db_hitbox") || !this.radius) return;
 
         this.debugGraphics.clear();
 

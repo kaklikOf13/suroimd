@@ -1,8 +1,8 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Sat, 08 Feb 2025 18:05:31 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Sat, 08 Feb 2025 18:55:35 GMT
 
-## 🇦🇱 Shqip (86% Complete) - ab.hjson
+## 🇦🇱 Shqip (85% Complete) - ab.hjson
 
 ### (No Invalid Keys)
 
@@ -12,6 +12,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `settings_debug` is not defined
+- Key `settings_vinhetting` is not defined
+- Key `settings_bright_effects` is not defined
+- Key `settings_hitbox_debug` is not defined
 - Key `fist_ld` is not defined
 - Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
@@ -46,12 +50,16 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇧🇷 Português (Brasil) (95% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (94% Complete) - br.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `settings_debug` is not defined
+- Key `settings_vinhetting` is not defined
+- Key `settings_bright_effects` is not defined
+- Key `settings_hitbox_debug` is not defined
 - Key `fist_ld` is not defined
 - Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
@@ -66,7 +74,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇨🇿 Čeština (90% Complete) - cz.hjson
+## 🇨🇿 Čeština (88% Complete) - cz.hjson
 
 ### (No Invalid Keys)
 
@@ -76,8 +84,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `settings_debug` is not defined
 - Key `settings_ambience_volume` is not defined
+- Key `settings_vinhetting` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_bright_effects` is not defined
+- Key `settings_hitbox_debug` is not defined
 - Key `fist_ld` is not defined
 - Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
@@ -100,7 +112,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇩🇪 Deutsch (81% Complete) - de.hjson
+## 🇩🇪 Deutsch (80% Complete) - de.hjson
 
 ### (No Invalid Keys)
 
@@ -115,8 +127,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
 - Key `copied` is not defined
+- Key `settings_debug` is not defined
 - Key `settings_ambience_volume` is not defined
+- Key `settings_vinhetting` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_bright_effects` is not defined
+- Key `settings_hitbox_debug` is not defined
 - Key `fist_ld` is not defined
 - Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
@@ -156,13 +172,17 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_as` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇪🇪 Eesti (95% Complete) - et.hjson
+## 🇪🇪 Eesti (93% Complete) - et.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
 - Key `msg_punishment_warn_agreement` is not defined
+- Key `settings_debug` is not defined
+- Key `settings_vinhetting` is not defined
+- Key `settings_bright_effects` is not defined
+- Key `settings_hitbox_debug` is not defined
 - Key `fist_ld` is not defined
 - Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
@@ -177,13 +197,17 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇫🇷 Français (95% Complete) - fr.hjson
+## 🇫🇷 Français (93% Complete) - fr.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
 - Key `msg_punishment_warn_agreement` is not defined
+- Key `settings_debug` is not defined
+- Key `settings_vinhetting` is not defined
+- Key `settings_bright_effects` is not defined
+- Key `settings_hitbox_debug` is not defined
 - Key `fist_ld` is not defined
 - Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
@@ -198,12 +222,16 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇬🇷 Ελληνικά (95% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (94% Complete) - gr.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `settings_debug` is not defined
+- Key `settings_vinhetting` is not defined
+- Key `settings_bright_effects` is not defined
+- Key `settings_hitbox_debug` is not defined
 - Key `fist_ld` is not defined
 - Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
@@ -218,7 +246,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (88% Complete) - hk_mo.hjson
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (87% Complete) - hk_mo.hjson
 
 ### (No Invalid Keys)
 
@@ -230,8 +258,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
 - Key `copied` is not defined
+- Key `settings_debug` is not defined
 - Key `settings_ambience_volume` is not defined
+- Key `settings_vinhetting` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_bright_effects` is not defined
+- Key `settings_hitbox_debug` is not defined
 - Key `fist_ld` is not defined
 - Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
@@ -256,12 +288,16 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇭🇺 Magyar (95% Complete) - hu.hjson
+## 🇭🇺 Magyar (94% Complete) - hu.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `settings_debug` is not defined
+- Key `settings_vinhetting` is not defined
+- Key `settings_bright_effects` is not defined
+- Key `settings_hitbox_debug` is not defined
 - Key `fist_ld` is not defined
 - Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
@@ -276,7 +312,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇯🇵 日本語 (90% Complete) - jp.hjson
+## 🇯🇵 日本語 (88% Complete) - jp.hjson
 
 ### (No Invalid Keys)
 
@@ -286,8 +322,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `settings_debug` is not defined
 - Key `settings_ambience_volume` is not defined
+- Key `settings_vinhetting` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_bright_effects` is not defined
+- Key `settings_hitbox_debug` is not defined
 - Key `fist_ld` is not defined
 - Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
@@ -310,7 +350,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇱🇹 Lietuvių (90% Complete) - lt.hjson
+## 🇱🇹 Lietuvių (88% Complete) - lt.hjson
 
 ### (No Invalid Keys)
 
@@ -320,8 +360,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `settings_debug` is not defined
 - Key `settings_ambience_volume` is not defined
+- Key `settings_vinhetting` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_bright_effects` is not defined
+- Key `settings_hitbox_debug` is not defined
 - Key `fist_ld` is not defined
 - Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
@@ -344,7 +388,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇱🇻 Latviešu (90% Complete) - lv.hjson
+## 🇱🇻 Latviešu (88% Complete) - lv.hjson
 
 ### (No Invalid Keys)
 
@@ -354,8 +398,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `settings_debug` is not defined
 - Key `settings_ambience_volume` is not defined
+- Key `settings_vinhetting` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_bright_effects` is not defined
+- Key `settings_hitbox_debug` is not defined
 - Key `fist_ld` is not defined
 - Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
@@ -378,13 +426,17 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇵🇱 Polski (95% Complete) - pl.hjson
+## 🇵🇱 Polski (93% Complete) - pl.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
 - Key `msg_punishment_warn_agreement` is not defined
+- Key `settings_debug` is not defined
+- Key `settings_vinhetting` is not defined
+- Key `settings_bright_effects` is not defined
+- Key `settings_hitbox_debug` is not defined
 - Key `fist_ld` is not defined
 - Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
@@ -399,7 +451,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🎀 Cute Engwish (88% Complete) - qen.hjson
+## 🎀 Cute Engwish (87% Complete) - qen.hjson
 
 ### Invalid Keys
 
@@ -416,8 +468,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
 - Key `copied` is not defined
+- Key `settings_debug` is not defined
 - Key `settings_ambience_volume` is not defined
+- Key `settings_vinhetting` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_bright_effects` is not defined
+- Key `settings_hitbox_debug` is not defined
 - Key `fist_ld` is not defined
 - Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
@@ -440,7 +496,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇷🇴 Română (84% Complete) - ro.hjson
+## 🇷🇴 Română (82% Complete) - ro.hjson
 
 ### (No Invalid Keys)
 
@@ -454,8 +510,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_vpn_reason` is not defined
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
+- Key `settings_debug` is not defined
 - Key `settings_ambience_volume` is not defined
+- Key `settings_vinhetting` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_bright_effects` is not defined
+- Key `settings_hitbox_debug` is not defined
 - Key `fist_ld` is not defined
 - Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
@@ -490,12 +550,16 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇷🇺 Русский (95% Complete) - ru.hjson
+## 🇷🇺 Русский (94% Complete) - ru.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `settings_debug` is not defined
+- Key `settings_vinhetting` is not defined
+- Key `settings_bright_effects` is not defined
+- Key `settings_hitbox_debug` is not defined
 - Key `fist_ld` is not defined
 - Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
@@ -510,7 +574,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇮🇳 தமிழ் (89% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (88% Complete) - ta.hjson
 
 ### (No Invalid Keys)
 
@@ -521,8 +585,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `news` is not defined
 - Key `donate` is not defined
+- Key `settings_debug` is not defined
 - Key `settings_ambience_volume` is not defined
+- Key `settings_vinhetting` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_bright_effects` is not defined
+- Key `settings_hitbox_debug` is not defined
 - Key `fist_ld` is not defined
 - Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
@@ -546,12 +614,16 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇹🇷 Turkısh (95% Complete) - tr.hjson
+## 🇹🇷 Turkısh (94% Complete) - tr.hjson
 
 ### (No Invalid Keys)
 
 ### Undefined Keys
 
+- Key `settings_debug` is not defined
+- Key `settings_vinhetting` is not defined
+- Key `settings_bright_effects` is not defined
+- Key `settings_hitbox_debug` is not defined
 - Key `fist_ld` is not defined
 - Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
@@ -566,7 +638,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇹🇼 中文（繁體） (83% Complete) - tw.hjson
+## 🇹🇼 中文（繁體） (81% Complete) - tw.hjson
 
 ### (No Invalid Keys)
 
@@ -581,8 +653,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_punishment_warn_agreement` is not defined
 - Key `donate` is not defined
 - Key `copied` is not defined
+- Key `settings_debug` is not defined
 - Key `settings_ambience_volume` is not defined
+- Key `settings_vinhetting` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_bright_effects` is not defined
+- Key `settings_hitbox_debug` is not defined
 - Key `fist_ld` is not defined
 - Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
@@ -619,7 +695,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇻🇳 Tiếng Việt (95% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (93% Complete) - vi.hjson
 
 ### Invalid Keys
 
@@ -628,7 +704,11 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_punishment_warn_agreement` is not defined
+- Key `settings_debug` is not defined
+- Key `settings_vinhetting` is not defined
 - Key `settings_ambient_particles` is not defined
+- Key `settings_bright_effects` is not defined
+- Key `settings_hitbox_debug` is not defined
 - Key `fist_ld` is not defined
 - Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined
@@ -643,7 +723,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇨🇳 中文（简体） (95% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (94% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -652,6 +732,10 @@ This file is a report of all errors and missing keys in the translation files of
 ### Undefined Keys
 
 - Key `msg_punishment_warn_agreement` is not defined
+- Key `settings_debug` is not defined
+- Key `settings_vinhetting` is not defined
+- Key `settings_bright_effects` is not defined
+- Key `settings_hitbox_debug` is not defined
 - Key `fist_ld` is not defined
 - Key `roles_ld` is not defined
 - Key `loadout_weapons` is not defined

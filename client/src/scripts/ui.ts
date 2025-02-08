@@ -1857,6 +1857,8 @@ export async function setUpUI(game: Game): Promise<void> {
     addCheckboxListener("#toggle-ambient-particles", "cv_ambient_particles");
     addCheckboxListener("#toggle-brighteffects", "cv_brighteffects");
 
+    addCheckboxListener("#toggle-hitbox-debug", "db_hitbox");
+
     const { gameUi } = game.uiManager.ui;
 
     game.console.variables.addChangeListener(
