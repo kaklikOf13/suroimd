@@ -39,7 +39,7 @@ export const HealingItems = ObjectDefinitions.withDefault<HealingItemDefinition>
                 {
                     restoreAmount: 15,
                     useTime: 3,
-                    size:0.3
+                    size:0.25
                 }
             ),
             healing(
@@ -47,7 +47,7 @@ export const HealingItems = ObjectDefinitions.withDefault<HealingItemDefinition>
                 {
                     restoreAmount: 100,
                     useTime: 6,
-                    size:1
+                    size:0.9
                 }
             ),
             adren(
@@ -55,7 +55,7 @@ export const HealingItems = ObjectDefinitions.withDefault<HealingItemDefinition>
                 {
                     restoreAmount: 25,
                     useTime: 3,
-                    size:.65
+                    size:.4
                 }
             ),
             adren(
@@ -63,7 +63,7 @@ export const HealingItems = ObjectDefinitions.withDefault<HealingItemDefinition>
                 {
                     restoreAmount: 50,
                     useTime: 5,
-                    size:.18
+                    size:.15
                 }
             )
         ];
