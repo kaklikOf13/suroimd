@@ -47,7 +47,7 @@ export const GameConstants = freezeDeep({
     gridSize: 32,
     maxPosition: Constants.MAX_POSITION,
     modeName: "normal" satisfies Mode as Mode,
-    music_chance:0.0009,
+    music_chance:0.0002,
     natural_events:{
         daynightDelay:500,
         rain:{
