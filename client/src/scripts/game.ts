@@ -407,14 +407,21 @@ export class Game {
             singleInstance: true,
             preload: true,
             autoPlay: false,
-            volume: game.console.getBuiltInCVar("cv_music_volume")
+            volume: game.console.getBuiltInCVar("cv_ambience_volume")
         }));
         game.thundersSFX.push(sound.add("thunder_2", {
             url: `./audio/ambience/thunder_2.mp3`,
             singleInstance: true,
             preload: true,
             autoPlay: false,
-            volume: game.console.getBuiltInCVar("cv_music_volume")
+            volume: game.console.getBuiltInCVar("cv_ambience_volume")
+        }));
+        game.thundersSFX.push(sound.add("thunder_3", {
+            url: `./audio/ambience/thunder_3.mp3`,
+            singleInstance: true,
+            preload: true,
+            autoPlay: false,
+            volume: game.console.getBuiltInCVar("cv_ambience_volume")
         }));
 
         game.music=undefined
@@ -1192,7 +1199,7 @@ export class Game {
                 if(this.music.instances[0].progress==1){
                     this.music=undefined
                 }
-            }else if(this.playing&&this.gameStarted&&Math.random()<=0.01&&Math.random()<=0.01){
+            }else if(this.playing&&this.gameStarted&&Math.random()<=GameConstants.music_chance){
                 if(this.music&&this.music.instances.length==0){
                     this.music=undefined
                 }
