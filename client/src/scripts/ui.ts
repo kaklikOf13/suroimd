@@ -795,6 +795,10 @@ export async function setUpUI(game: Game): Promise<void> {
             link: "https://www.youtube.com/@GAMERIO1"
         },
         {
+            name: "SilverDotWare",
+            link: "https://www.youtube.com/@silverdotware"
+        },
+        {
             name: "N00B.I0",
             link: "https://www.youtube.com/@N00B.I0"
         },
@@ -823,9 +827,19 @@ export async function setUpUI(game: Game): Promise<void> {
             link: "https://www.youtube.com/@LeeMinHaiz"
         }
     ];
+    const special_youtubers=[
+        {
+            name: "NAMERIO",
+            link: "https://www.youtube.com/@namerio1"
+        },
+    ]
     const youtuber = pickRandomInArray(youtubers);
     $("#youtube-featured-name").text(youtuber.name);
     $("#youtube-featured-content").attr("href", youtuber.link).removeAttr("target");
+
+    const syoutuber = pickRandomInArray(special_youtubers);
+    $("#special-youtube-featured-name").text(syoutuber.name);
+    $("#special-youtube-featured-content").attr("href", youtuber.link).removeAttr("target");
 
     const streamers = [
         {

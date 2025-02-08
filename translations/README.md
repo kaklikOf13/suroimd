@@ -1,6 +1,6 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Tue, 04 Feb 2025 22:21:38 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Sat, 08 Feb 2025 18:05:31 GMT
 
 ## 🇦🇱 Shqip (86% Complete) - ab.hjson
 
@@ -20,6 +20,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
+- Key `special_youtubr` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
@@ -59,6 +60,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
+- Key `special_youtubr` is not defined
 - Key `go_score` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
@@ -84,6 +86,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
+- Key `special_youtubr` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
@@ -97,7 +100,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇩🇪 Deutsch (82% Complete) - de.hjson
+## 🇩🇪 Deutsch (81% Complete) - de.hjson
 
 ### (No Invalid Keys)
 
@@ -122,6 +125,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
+- Key `special_youtubr` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
@@ -167,6 +171,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
+- Key `special_youtubr` is not defined
 - Key `go_score` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
@@ -187,6 +192,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
+- Key `special_youtubr` is not defined
 - Key `go_score` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
@@ -206,12 +212,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
+- Key `special_youtubr` is not defined
 - Key `go_score` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (89% Complete) - hk_mo.hjson
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (88% Complete) - hk_mo.hjson
 
 ### (No Invalid Keys)
 
@@ -233,6 +240,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
+- Key `special_youtubr` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
@@ -262,6 +270,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
+- Key `special_youtubr` is not defined
 - Key `go_score` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
@@ -287,6 +296,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
+- Key `special_youtubr` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
@@ -320,6 +330,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
+- Key `special_youtubr` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
@@ -353,6 +364,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
+- Key `special_youtubr` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
@@ -381,12 +393,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
+- Key `special_youtubr` is not defined
 - Key `go_score` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🎀 Cute Engwish (89% Complete) - qen.hjson
+## 🎀 Cute Engwish (88% Complete) - qen.hjson
 
 ### Invalid Keys
 
@@ -413,6 +426,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
+- Key `special_youtubr` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
@@ -450,6 +464,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
+- Key `special_youtubr` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
@@ -489,6 +504,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
+- Key `special_youtubr` is not defined
 - Key `go_score` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
@@ -515,6 +531,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
+- Key `special_youtubr` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
@@ -543,6 +560,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
+- Key `special_youtubr` is not defined
 - Key `go_score` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
@@ -573,6 +591,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
+- Key `special_youtubr` is not defined
 - Key `msg_not_enough_space` is not defined
 - Key `msg_item_already_equipped` is not defined
 - Key `msg_better_item_equipped` is not defined
@@ -618,6 +637,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
+- Key `special_youtubr` is not defined
 - Key `go_score` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
@@ -640,6 +660,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `status_needs` is not defined
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
+- Key `special_youtubr` is not defined
 - Key `go_score` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
