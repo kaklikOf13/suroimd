@@ -3258,6 +3258,26 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 noResidue: true
             },
             {
+                idString: "tavern_table",
+                name: "Tavern Table",
+                material: "wood",
+                health: 100,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.9
+                },
+                hideOnMap: true,
+                hitbox: new CircleHitbox(6.12),
+                rotationMode: RotationMode.Full,
+                frames: {
+                    particle: "furniture_particle"
+                },
+                zIndex: ZIndexes.ObstaclesLayer3,
+                noCollisions: true,
+                noResidue: true
+            },
+            {
                 idString: "chair",
                 name: "Chair",
                 material: "wood",
@@ -3421,6 +3441,27 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hitbox: RectangleHitbox.fromRect(21.7, 1.5, Vec.create(0, -0.4)),
                 rotationMode: RotationMode.Limited,
                 allowFlyover: FlyoverPref.Never,
+                frames: {
+                    particle: "furniture_particle"
+                }
+            },
+            {
+                idString: "tavern_door",
+                name: "Tavern Door",
+                material: "wood",
+                health: 180,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.95
+                },
+                hideOnMap: true,
+                hitbox: RectangleHitbox.fromRect(17, 1.7, Vec.create(0, -0.4)),
+                rotationMode: RotationMode.Limited,
+                allowFlyover: FlyoverPref.Never,
+                role: ObstacleSpecialRoles.Door,
+                zIndex: ZIndexes.ObstaclesLayer3,
+                hingeOffset: Vec.create(-7, 0),
                 frames: {
                     particle: "furniture_particle"
                 }
