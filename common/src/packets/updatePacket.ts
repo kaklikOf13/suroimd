@@ -491,7 +491,7 @@ const enum UpdateFlags {
     DeletedPlayers = 1 << 10,
     AliveCount = 1 << 11,
     Planes = 1 << 12,
-    MapPings = 1 << 13
+    MapPings = 1 << 13,
 }
 
 export type MapPingSerialization = {
@@ -589,6 +589,12 @@ export type UpdatePacketDataCommon = {
         readonly newRadius: number
     }
     readonly gasProgress?: number
+    readonly nature?:{
+        readonly brightness:number
+        readonly rain:number
+        readonly thunderstorm:boolean
+        readonly bolt:boolean
+    }
     readonly newPlayers?: ReadonlyArray<{
         readonly id: number
         readonly name: string
@@ -642,7 +648,13 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
         let flags = 0;
         // save the current index to write flags later
         const flagsIdx = strm.index;
-        strm.writeUint16(0);
+        strm.writeUint16(0).
+        writeBooleanGroup(data.nature!==undefined)
+        if(data.nature!==undefined){
+            strm.writeBooleanGroup(data.nature.thunderstorm,data.nature.bolt)
+            strm.writeFloat(data.nature.brightness,0,3,3)
+            strm.writeFloat(data.nature.rain,0,1,1)
+        }
 
         if (data.playerData) {
             if (Object.keys(data.playerData).length > 0) {
@@ -815,6 +827,16 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
         const data = {} as Mutable<UpdatePacketDataOut>;
 
         const flags = stream.readUint16();
+        const [hasNature]=stream.readBooleanGroup()
+        if(hasNature){
+            const bg=stream.readBooleanGroup()
+            data.nature={
+                brightness:stream.readFloat(0,3,3),
+                rain:stream.readFloat(0,1,1),
+                thunderstorm:bg[0],
+                bolt:bg[1]
+            }
+        }
 
         if (flags & UpdateFlags.PlayerData) {
             data.playerData = deserializePlayerData(stream);

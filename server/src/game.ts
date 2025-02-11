@@ -261,6 +261,59 @@ export class Game implements GameData {
         this.tick();
     }
 
+    extra_ilum=0;
+    tslru=0
+
+    readonly nature={
+        brightness:1,
+        rain:0,
+        thunderstorm:false,
+        bolt:false,
+
+        rainDest:0,
+        day:true,
+        daytime:0,
+    }
+
+    updateNature(){
+        const nature=this.gamemode.nature
+        if(this.nature.rain>0){
+            if(this.nature.bolt){
+                this.extra_ilum=Numeric.lerp(this.extra_ilum,2.1,0.4)
+                if(this.extra_ilum>=2){
+                    this.extra_ilum=2
+                    this.nature.bolt=false
+                }
+            }else if(Math.random()<=nature.rain.storm.boltChance){
+                this.nature.bolt=true
+            }else{
+                this.extra_ilum=Numeric.lerp(this.extra_ilum,0,0.45)
+            }
+            if(this.nature.thunderstorm){
+                if(Math.random()<=nature.rain.storm.stopChance)this.nature.thunderstorm=!this.nature.thunderstorm
+            }else{
+                if(Math.random()<=nature.rain.storm.stopChance)this.nature.thunderstorm=!this.nature.thunderstorm
+            }
+            if(Math.abs(this.nature.rainDest-this.nature.rain)<=0.01){
+                this.nature.rain=this.nature.rainDest
+                this.nature.rainDest=Math.random()<=nature.rain.stopChance?0:Numeric.round(randomFloat(.15,1),3)
+            }
+        }else if(Math.random()<=nature.rain.chance){
+            this.nature.rainDest=randomFloat(.1,1)
+            this.nature.thunderstorm=false
+            this.extra_ilum=Numeric.lerp(this.extra_ilum,0,0.6)
+            if(Math.random()<=this.gamemode.nature.rain.storm.chance[0]){
+                this.addTimeout(()=>this.nature.thunderstorm=true,random(30,1100))
+            }
+        }
+        this.nature.brightness=Numeric.clamp(Numeric.clamp(1-(this.nature.rain/4)-(this.nature.daytime/3),.2,1)+this.extra_ilum,0,3)
+        this.nature.daytime=Numeric.clamp(this.nature.daytime+((this.nature.day?1:-1)*nature.daynightDelay),0,1)
+        if((this.nature.daytime==1&&this.nature.day)||(this.nature.daytime==0&&!this.nature.day)){
+            this.nature.day=!this.nature.day
+        }
+        this.nature.rain=Numeric.round(Numeric.lerp(this.nature.rain,this.nature.rainDest,nature.rain.transition),3)
+    }
+
     onMessage(stream: SuroiByteStream, player: Player): void {
         const packetStream = new PacketStream(stream);
         while (true) {
@@ -429,6 +482,13 @@ export class Game implements GameData {
             if (!player.joined) continue;
 
             player.postPacket();
+        }
+
+        if(this.tslru===0){
+            this.updateNature()
+            this.tslru=2
+        }else{
+            this.tslru--
         }
 
         // Reset everything

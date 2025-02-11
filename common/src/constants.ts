@@ -47,22 +47,11 @@ export const GameConstants = freezeDeep({
     gridSize: 32,
     maxPosition: Constants.MAX_POSITION,
     modeName: "normal" satisfies Mode as Mode,
-
-    natural_events:{
-        daynightDelay:500,
-        rain:{
-            raindropsCount:80,
-            chance:0.001,
-            stopChance:.4,
-            transition:0.07,
-            raindrop:"ripple_particle",
-            ambience:"rain_ambience",
-            storm:{
-                ambience:"storm_ambience",
-                chance:[0.15,0.001],
-                stopChance:0.005
-            }
-        }
+    rain:{
+        raindropsCount:80,
+        raindrop:"ripple_particle",
+        ambience:"rain_ambience",
+        storm_ambience:"storm_ambience",
     },
     player: {
         radius: 2.25,

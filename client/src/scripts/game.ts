@@ -166,20 +166,9 @@ export class Game {
             this._ilumination=v
         }
     }
-
-    night:number=0
-
-    extra_ilum=0
-    thunder_delay=0
-    thunders=false
     thundersSFX:Sound[]=[]
 
-    day:boolean=true
-
-    raining:number=0
-    rainingDest:number=0
-
-    bolt():Promise<void>{
+    /*bolt():Promise<void>{
         return new Promise<void>((resolve, reject) => {
             let stage=true
             const t=pickRandomInArray(this.thundersSFX)
@@ -205,7 +194,7 @@ export class Game {
             }
             const inter=setInterval(f,11)
         })
-    }
+    }*/
 
     music:Sound|undefined=undefined;
 
@@ -421,46 +410,43 @@ export class Game {
 
         return game
     }
-    updateIlumin(){
+    raining=0
+    thunderstorm=false
+    bolt=false
+    boltR=false
+    /*updateIlumin(){
         this.ilumination=Numeric.clamp(1-(this.raining/4)-(this.night/3),.2,1)+this.extra_ilum
-    }
+    }*/
     updateVisualEvents(){
         if(this.playing){
-            this.night=Numeric.clamp(this.night+((this.day?1:-1)/GameConstants.natural_events.daynightDelay),0,1)
+            /*this.night=Numeric.clamp(this.night+((this.day?1:-1)/GameConstants.natural_events.daynightDelay),0,1)
             if((this.night==1&&this.day)||(this.night==0&&!this.day)){
                 this.day=!this.day
-            }
-            this.updateIlumin()
-            if(this.thunders){
-                if(this.thunder_delay>0){
-                    this.thunder_delay-=1
-                }else{
-                    this.bolt()
-                    this.thunder_delay=random(12,17)
-                }
+            }*/
+            //this.updateIlumin()
+            if(this.bolt&&!this.boltR){
+                const t=pickRandomInArray(this.thundersSFX)
+                this.boltR=true
+                t.play(undefined,()=>{
+                    this.boltR=false
+                })
             }
 
             if(this.raining>0){
-                if(Math.abs(this.rainingDest-this.raining)<=0.01){
-                    this.raining=this.rainingDest
-                    this.rainingDest=Math.random()<=GameConstants.natural_events.rain.stopChance?0:Numeric.round(randomFloat(.1,1),3)
-                }
-                if(this.thunders){
-                    if(this.ambience?.name!==GameConstants.natural_events.rain.storm.ambience){
+                if(this.thunderstorm){
+                    if(this.ambience?.name!==GameConstants.rain.storm_ambience){
                         this.ambience?.stop()
-                        this.ambience=this.soundManager.play(GameConstants.natural_events.rain.storm.ambience, { loop: true, ambient: true })
+                        this.ambience=this.soundManager.play(GameConstants.rain.storm_ambience, { loop: true, ambient: true })
                     }
-                    if(Math.random()<=GameConstants.natural_events.rain.storm.stopChance)this.thunders=!this.thunders
                 }else{
-                    if(this.ambience?.name!==GameConstants.natural_events.rain.ambience){
+                    if(this.ambience?.name!==GameConstants.rain.ambience){
                         this.ambience?.stop()
-                        this.ambience=this.soundManager.play(GameConstants.natural_events.rain.ambience, { loop: true, ambient: true })
+                        this.ambience=this.soundManager.play(GameConstants.rain.ambience, { loop: true, ambient: true })
                     }
-                    if(Math.random()<=GameConstants.natural_events.rain.storm.chance[1])this.thunders=!this.thunders
                 }
                 if(this.map.terrainGraphics.visible&&this.console.getBuiltInCVar("cv_ambient_particles")){
                     const zoom=this.camera.zoom/70
-                    const count=Math.ceil(this.raining*GameConstants.natural_events.rain.raindropsCount*zoom)
+                    const count=Math.ceil(this.raining*GameConstants.rain.raindropsCount*zoom)
                     const This=this
                     for(let i=0;i<count;i++){
                         this.particleManager.spawnParticle({
@@ -473,7 +459,7 @@ export class Game {
                                 return randomVector(x - width, x + width, y - height, y + height);
                             },
                             frames:[
-                                GameConstants.natural_events.rain.raindrop,
+                                GameConstants.rain.raindrop,
                             ],
                             lifetime:Math.floor(Math.random()*(500-200)+200),
                             speed:Vec.create(0,0),
@@ -490,24 +476,12 @@ export class Game {
                         })
                     }
                 }
-            }else if(Math.random()<=GameConstants.natural_events.rain.chance){
-                this.rainingDest=randomFloat(.1,1)
-                if(Math.random()<=GameConstants.natural_events.rain.storm.chance[0]){
-                    this.addTimeout(()=>this.thunders=true,random(30,1100))
-                }
             }else{
                 if(MODE.ambience&&this.ambience?.name!==MODE.ambience){
                     this.ambience?.stop()
-                    this.thunders=false
                     this.ambience = this.soundManager.play(MODE.ambience, { loop: true, ambient: true });
                 }
             }
-            this.raining=Numeric.round(Numeric.lerp(this.raining,this.rainingDest,GameConstants.natural_events.rain.transition),3)
-        }else{
-            this.night=0
-            this.raining=0
-            this.rainingDest=0
-            this.day=true
         }
         this.addTimeout(this.updateVisualEvents.bind(this),300)
     }
@@ -1070,6 +1044,13 @@ export class Game {
                 object.destroy();
                 this.objects.delete(object);
             }
+        }
+
+        if(this.console.getBuiltInCVar("cv_brighteffects")&&updateData.nature){
+            this.thunderstorm=updateData.nature.thunderstorm
+            this.raining=updateData.nature.rain
+            this.ilumination=updateData.nature.brightness
+            this.bolt=updateData.nature.bolt
         }
 
         for (const bullet of updateData.deserializedBullets ?? []) {

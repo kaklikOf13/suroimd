@@ -331,6 +331,19 @@ export interface Gamemode{
         readonly count:number
         readonly spawnIslands?:number[]
     }
+    readonly nature:{
+        readonly daynightDelay:number,
+        readonly rain:{
+            readonly chance:number,
+            readonly stopChance:number,
+            readonly transition:number,
+            readonly storm:{
+                readonly chance:[number,number],
+                readonly stopChance:number
+                readonly boltChance:number
+            }
+        }
+    },
 }
 export const DefaultGamemode:Gamemode={
     gas:{
@@ -370,7 +383,21 @@ export const DefaultGamemode:Gamemode={
         killKillLeader:8,
         reviveFriend:3,
         win:10,
-    }
+    },
+
+    nature:{
+        daynightDelay:1/((5*60)*2),
+        rain:{
+            chance:0.0005,
+            stopChance:.0001,
+            transition:0.0015,
+            storm:{
+                chance:[0.15,0.0005],
+                stopChance:0.000015,
+                boltChance:0.0035
+            }
+        }
+    },
 }
 export const Gamemodes:Record<string,Partial<Gamemode>>={
     memorys:{

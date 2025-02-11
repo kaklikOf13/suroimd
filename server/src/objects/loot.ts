@@ -149,7 +149,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                     river.getClosestT(this.position)
                 );
 
-                this.push(Math.atan2(tangent.y, tangent.x), -0.001);
+                this.push(Math.atan2(tangent.y, tangent.x), (-0.001)-(0.002*this.game.nature.rainDest));
                 break;
             }
         }

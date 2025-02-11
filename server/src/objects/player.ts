@@ -1407,6 +1407,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         }
                     );
             }
+            if(game.tslru==2){
+                packet.nature=game.nature
+            }
 
             for (const object of game.fullDirtyObjects) {
                 if (!this.visibleObjects.has(object as GameObject)) continue;
