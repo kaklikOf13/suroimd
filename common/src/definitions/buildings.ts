@@ -7384,31 +7384,31 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     {idString:"chair",position:Vec.create(-9.5,-23),rotation:3},
                     {idString:"chair",position:Vec.create(0.5,-23),rotation:1},
 
-                    {idString:"round_table",position:Vec.create(-4.5,-1)},
+                    {idString:"tavern_table",position:Vec.create(-4.5,-1)},
                     {idString:"chair",position:Vec.create(-4.5,-6),rotation:2},
                     {idString:"chair",position:Vec.create(-4.5,4),rotation:0},
                     {idString:"chair",position:Vec.create(-9.5,-1),rotation:3},
                     {idString:"chair",position:Vec.create(0.5,-1),rotation:1},
 
-                    {idString:"round_table",position:Vec.create(-4.5,23)},
+                    {idString:"tavern_table",position:Vec.create(-4.5,23)},
                     {idString:"chair",position:Vec.create(-4.5,28),rotation:0},
                     {idString:"chair",position:Vec.create(-4.5,18),rotation:2},
                     {idString:"chair",position:Vec.create(-9.5,23),rotation:3},
                     {idString:"chair",position:Vec.create(0.5,23),rotation:1},
 
-                    {idString:"round_table",position:Vec.create(-29.5,-23)},
+                    {idString:"tavern_table",position:Vec.create(-29.5,-23)},
                     {idString:"chair",position:Vec.create(-29.5,-28),rotation:2},
                     {idString:"chair",position:Vec.create(-29.5,-18),rotation:0},
                     {idString:"chair",position:Vec.create(-34.5,-23),rotation:3},
                     {idString:"chair",position:Vec.create(-25.5,-23),rotation:1},
 
-                    {idString:"round_table",position:Vec.create(-29.5,-1)},
+                    {idString:"tavern_table",position:Vec.create(-29.5,-1)},
                     {idString:"chair",position:Vec.create(-29.5,-6),rotation:2},
                     {idString:"chair",position:Vec.create(-29.5,4),rotation:0},
                     {idString:"chair",position:Vec.create(-34.5,-1),rotation:3},
                     {idString:"chair",position:Vec.create(-25.5,-1),rotation:1},
 
-                    {idString:"round_table",position:Vec.create(-29.5,23)},
+                    {idString:"tavern_table",position:Vec.create(-29.5,23)},
                     {idString:"chair",position:Vec.create(-29.5,28),rotation:0},
                     {idString:"chair",position:Vec.create(-29.5,18),rotation:2},
                     {idString:"chair",position:Vec.create(-34.5,23),rotation:3},
@@ -7417,6 +7417,8 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     //Entrace
                     {idString:"vending_machine",position:Vec.create(-25,-42),rotation:0},
                     {idString:"water_cooler",position:Vec.create(-34.5,-43),rotation:0},
+                    {idString:"tavern_door",position:Vec.create(-10.3,-47),rotation:0},
+                    {idString:"tavern_door",position:Vec.create(2.5,-47),rotation:2},
 
                     //Kitchen
                     {idString:"bartable",position:Vec.create(31.2,0),rotation:0},

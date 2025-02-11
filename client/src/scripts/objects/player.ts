@@ -27,7 +27,7 @@ import { getTranslatedString } from "../../translations";
 import { type TranslationKeys } from "../../typings/translations";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
-import { BULLET_WHIZ_SCALE, COLORS, DIFF_LAYER_HITBOX_OPACITY, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
+import { BULLET_WHIZ_SCALE, COLORS, DIFF_LAYER_HITBOX_OPACITY, GHILLIE_TINT, HITBOX_COLORS, PIXI_SCALE } from "../utils/constants";
 import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
@@ -868,7 +868,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.action = action;
         }
 
-        if (this.isActivePlayer && layerChanged && HITBOX_DEBUG_MODE) {
+        if (this.isActivePlayer && layerChanged && this.game.console.getBuiltInCVar("db_hitbox")) {
             game.addTimeout(() => {
                 for (const object of game.objects) {
                     object.updateDebugGraphics();
@@ -985,7 +985,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     }
 
     override updateDebugGraphics(): void {
-        if (!HITBOX_DEBUG_MODE) return;
+        if (!this.game.console.getBuiltInCVar("db_hitbox")) return;
 
         const ctx = this.debugGraphics;
         ctx.clear();

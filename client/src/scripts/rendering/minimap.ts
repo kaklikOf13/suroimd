@@ -10,7 +10,7 @@ import $ from "jquery";
 import { Color, Container, Graphics, RenderTexture, Sprite, Text, isMobile, type ColorSource, type Texture } from "pixi.js";
 import { getTranslatedString } from "../../translations";
 import { type Game } from "../game";
-import { COLORS, DIFF_LAYER_HITBOX_OPACITY, FOOTSTEP_HITBOX_LAYER, HITBOX_DEBUG_MODE, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
+import { COLORS, DIFF_LAYER_HITBOX_OPACITY, FOOTSTEP_HITBOX_LAYER, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
 import { SuroiSprite, drawGroundGraphics, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { GasRender } from "./gas";
 
@@ -402,7 +402,7 @@ export class Minimap {
             this.placesContainer.addChild(text);
         }
 
-        if (HITBOX_DEBUG_MODE) {
+        if (this.game.console.getBuiltInCVar("db_hitbox")) {
             this.renderMapDebug();
         }
     }

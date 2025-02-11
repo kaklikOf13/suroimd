@@ -11,7 +11,7 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { Container, Graphics } from "pixi.js";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
-import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE } from "../utils/constants";
 import { drawGroundGraphics, drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
@@ -76,7 +76,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
             const hitboxes = this.ceilingHitbox instanceof GroupHitbox ? this.ceilingHitbox.hitboxes : [this.ceilingHitbox];
 
             let graphics: Graphics | undefined;
-            if (HITBOX_DEBUG_MODE) {
+            if (this.game.console.getBuiltInCVar("db_hitbox")) {
                 graphics = new Graphics();
                 graphics.zIndex = 100;
                 this.game.camera.addObject(graphics);
@@ -435,7 +435,7 @@ export class Building extends GameObject.derive(ObjectCategory.Building) {
     }
 
     override updateDebugGraphics(): void {
-        if (!HITBOX_DEBUG_MODE) return;
+        if (!this.game.console.getBuiltInCVar("db_hitbox")) return;
 
         const definition = this.definition;
         const alpha = this.layer === this.game.activePlayer?.layer as number | undefined ? 1 : DIFF_LAYER_HITBOX_OPACITY;

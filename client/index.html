@@ -314,6 +314,22 @@
             </a>
           </div>
           <div class="featured-container">
+            <p class="featured-heading" translation="special_youtubr"></p>
+            <a
+              class="featured-content"
+              id="special-youtube-featured-content"
+              href=""
+              target="_blank"
+            >
+              <img
+                class="featured-logo"
+                src="./img/misc/youtube-gold-icon.svg"
+                alt="YouTube icon"
+              />
+              <span class="featured-name" id="special-youtube-featured-name"></span>
+            </a>
+          </div>
+          <div class="featured-container">
             <p class="featured-heading" translation="featured_streamr"></p>
             <a
               class="featured-content"
@@ -722,6 +738,7 @@
         <button class="tab" id="tab-interface"><i class="fa-solid fa-list"></i><span translation="settings_interface" use-html></span></button>
         <button class="tab" id="tab-import-export"><i class="fa-solid fa-file-export"></i><span translation="settings_save_load"></span></button>
         <button class="tab" id="tab-mobile"><i class="fa-solid fa-mobile"></i><span translation="settings_mobile"></span></button>
+        <button class="tab" id="tab-debug"><i class="fa-solid fa-debug"></i><span translation="settings_debug"></span></button>
       </div>
       <div id="settings-tabs" class="persistent-scrollbar">
         <div class="tab-content active" id="tab-volume-content">
@@ -812,7 +829,7 @@
           </div>
           <div class="modal-item checkbox-setting">
             <label>
-              <span class="setting-title" translation="brighteffects"></span>
+              <span class="setting-title" translation="settings_bright_effects"></span>
               <input type="checkbox" id="toggle-brighteffects">
             </label>
           </div>
@@ -979,6 +996,14 @@
               <i class="fa-solid fa-trash"></i>
               <span translation="settings_reset_settings"></span>
             </button>
+          </div>
+        </div>
+        <div class="tab-content" id="tab-debug-content" style="display: none">
+          <div class="modal-item checkbox-setting">
+            <label>
+              <span class="setting-title" translation="settings_hitbox_debug"></span>
+              <input type="checkbox" id="toggle-hitbox-debug">
+            </label>
           </div>
         </div>
         <div class="tab-content" id="tab-mobile-content" style="display: none">

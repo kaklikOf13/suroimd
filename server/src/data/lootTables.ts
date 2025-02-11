@@ -155,6 +155,15 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { table: "throwables", weight: 0.2 },
             { table: "melee", weight: 0.04 }
         ],
+        bottle_crate:[
+            { table: "healing_items", weight: 1.3 },
+            { table: "ammo", weight: 1.1 },
+            { table: "scopes", weight: 0.85 },
+            { table: "throwables", weight: 0.5 },
+            { table: "equipment", weight: 0.35 },
+            { table: "guns", weight: 0.1 },
+            { table: "melee", weight: 0.04 }
+        ],
         hazel_crate: [
             [{ item: "firework_launcher", weight: 1 }],
             [{ item: "1st_birthday", weight: 1 }]

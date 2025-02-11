@@ -893,7 +893,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     spawnMax: 1.2,
                     destroy: 0.9
                 },
-                spawnHitbox: new CircleHitbox(8.5),
+                spawnHitbox: new CircleHitbox(7.8),
                 rotationMode: RotationMode.Full,
                 hitbox: new CircleHitbox(3.5),
                 variations: 7,
@@ -906,7 +906,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     spawnMax: 1.2,
                     destroy: 0.9
                 },
-                spawnHitbox: new CircleHitbox(8.5),
+                spawnHitbox: new CircleHitbox(8),
                 rotationMode: RotationMode.Full,
                 hitbox: new CircleHitbox(3.5),
                 variations: 2,
@@ -925,7 +925,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     spawnMax: 1.2,
                     destroy: 0.9
                 },
-                spawnHitbox: new CircleHitbox(12),
+                spawnHitbox: new CircleHitbox(11),
                 rotationMode: RotationMode.Full,
                 zIndex: ZIndexes.ObstaclesLayer5,
                 hitbox: new CircleHitbox(4),
@@ -942,7 +942,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     spawnMax: 1.2,
                     destroy: 0.75
                 },
-                spawnHitbox: new CircleHitbox(8.5),
+                spawnHitbox: new CircleHitbox(7.8),
                 rotationMode: RotationMode.Full,
                 hitbox: new CircleHitbox(3.5),
                 variations: 3,
@@ -961,9 +961,9 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     spawnMax: 1.2,
                     destroy: 0.9
                 },
-                spawnHitbox: new CircleHitbox(8.5),
+                spawnHitbox: new CircleHitbox(8),
                 rotationMode: RotationMode.Full,
-                hitbox: new CircleHitbox(3.5),
+                hitbox: new CircleHitbox(4),
                 variations: 7,
             }]),
 
@@ -1007,7 +1007,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     destroy: 0.9
                 },
                 hitbox: new CircleHitbox(2.5),
-                spawnHitbox: new CircleHitbox(8.5),
+                spawnHitbox: new CircleHitbox(7.9),
                 rotationMode: RotationMode.Full,
                 allowFlyOver: FlyoverPref.Never
             }]),
@@ -1021,7 +1021,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     destroy: 0.9
                 },
                 hitbox: new CircleHitbox(3.5),
-                spawnHitbox: new CircleHitbox(8.5),
+                spawnHitbox: new CircleHitbox(7.9),
                 rotationMode: RotationMode.Full,
                 variations: 2,
                 allowFlyOver: FlyoverPref.Never
@@ -3159,6 +3159,43 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 zIndex: ZIndexes.ObstaclesLayer2
             },
             {
+                idString: "bottle_crate",
+                name: "Bottle Crate",
+                material: "wood",
+                health: 110,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.9
+                },
+                hitbox: RectangleHitbox.fromRect(6, 5, Vec.create(0, 0.13)),
+                rotationMode: RotationMode.Limited,
+                allowFlyover: FlyoverPref.Always,
+                hasLoot: true,
+                frames: {
+                    particle: "furniture_particle"
+                }
+            },
+            {
+                idString: "bottle_case",
+                name: "Bottle Case",
+                material: "wood",
+                lootTable:"bottle_crate",
+                health: 110,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.9
+                },
+                hitbox: RectangleHitbox.fromRect(9.4, 6, Vec.create(0, -0.2)),
+                rotationMode: RotationMode.Limited,
+                allowFlyover: FlyoverPref.Always,
+                hasLoot: true,
+                frames: {
+                    particle: "furniture_particle"
+                }
+            },
+            {
                 idString: "small_table",
                 name: "Small Table",
                 material: "wood",
@@ -3203,6 +3240,26 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             {
                 idString: "round_table",
                 name: "Round Table",
+                material: "wood",
+                health: 100,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.9
+                },
+                hideOnMap: true,
+                hitbox: new CircleHitbox(6.12),
+                rotationMode: RotationMode.Full,
+                frames: {
+                    particle: "furniture_particle"
+                },
+                zIndex: ZIndexes.ObstaclesLayer3,
+                noCollisions: true,
+                noResidue: true
+            },
+            {
+                idString: "tavern_table",
+                name: "Tavern Table",
                 material: "wood",
                 health: 100,
                 scale: {
@@ -3384,6 +3441,27 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hitbox: RectangleHitbox.fromRect(21.7, 1.5, Vec.create(0, -0.4)),
                 rotationMode: RotationMode.Limited,
                 allowFlyover: FlyoverPref.Never,
+                frames: {
+                    particle: "furniture_particle"
+                }
+            },
+            {
+                idString: "tavern_door",
+                name: "Tavern Door",
+                material: "wood",
+                health: 180,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.95
+                },
+                hideOnMap: true,
+                hitbox: RectangleHitbox.fromRect(17, 1.7, Vec.create(0, -0.4)),
+                rotationMode: RotationMode.Limited,
+                allowFlyover: FlyoverPref.Never,
+                role: ObstacleSpecialRoles.Door,
+                zIndex: ZIndexes.ObstaclesLayer3,
+                hingeOffset: Vec.create(-7, 0),
                 frames: {
                     particle: "furniture_particle"
                 }

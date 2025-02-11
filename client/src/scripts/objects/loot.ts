@@ -9,7 +9,7 @@ import { ItemType, LootRadius } from "@common/utils/objectDefinitions";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
-import { DIFF_LAYER_HITBOX_OPACITY, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
+import { DIFF_LAYER_HITBOX_OPACITY, GHILLIE_TINT, HITBOX_COLORS } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
@@ -180,7 +180,7 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
     }
 
     override updateDebugGraphics(): void {
-        if (!HITBOX_DEBUG_MODE) return;
+        if (!this.game.console.getBuiltInCVar("db_hitbox")) return;
 
         this.debugGraphics.clear();
         drawHitbox(

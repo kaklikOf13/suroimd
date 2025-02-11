@@ -1479,7 +1479,7 @@ const maps:Record<string, MapDefinition> = {
             map.generateBuilding(building, Vec.create(this.width / 2, this.height / 2), 0);
         }
     },
-    /*singleObstacle: {
+    singleObstacle: {
         width: 256,
         height: 256,
         beachSize: 8,
@@ -1488,7 +1488,7 @@ const maps:Record<string, MapDefinition> = {
             map.generateObstacle(obstacle, Vec.create(this.width / 2, this.height / 2), { layer: 0, rotation: 0 });
         }
     },
-    gunsTest: (() => {
+    /*gunsTest: (() => {
         const Guns = Loots.byType(ItemType.Gun);
 
         return {
