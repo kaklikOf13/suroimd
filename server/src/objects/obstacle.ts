@@ -203,9 +203,6 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         if (!notDead) {
             this.health = 0;
             this.dead = true;
-            if (definition.weaponSwap && source instanceof BaseGameObject && source.isPlayer) {
-                source.swapWeaponRandomly(weaponIsItem ? weaponUsed : weaponUsed?.weapon, true);
-            }
 
             if (
                 this.game.pluginManager.emit("obstacle_will_destroy", {
@@ -224,17 +221,6 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 //                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
                 // FIXME This is implying that obstacles won't explode if destroyed by non–game objects
                 this.game.addExplosion(definition.explosion, this.position, source, source.layer, weaponIsItem ? weaponUsed : weaponUsed?.weapon);
-            }
-
-            // Pumpkin Bombs
-            if (
-                source instanceof BaseGameObject
-                && source.isPlayer
-                && source.perks.hasPerk(PerkIds.PlumpkinBomb)
-                && definition.material === "pumpkin"
-            ) {
-                this.playMaterialDestroyedSound = false;
-                this.game.addExplosion("pumpkin_explosion", this.position, source, source.layer);
             }
 
             if (definition.particlesOnDestroy !== undefined) {

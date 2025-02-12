@@ -123,9 +123,7 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
                 }
                 case ItemType.Perk: {
                     // FIXME bad
-                    backgroundTexture = definition.idString === PerkIds.PlumpkinGamble
-                        ? "loot_background_plumpkin_gamble"
-                        : "loot_background_perk";
+                    backgroundTexture = "loot_background_perk";
                     break;
                 }
             }

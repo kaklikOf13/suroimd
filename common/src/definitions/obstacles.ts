@@ -376,16 +376,6 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     red_metal_auto_door_particle:  { base: "metal_particle_1", tint: 0x401a1a },
     blue_metal_auto_door_particle: { base: "metal_particle_1", tint: 0x1a1a40 },
 
-    red_gift_particle:             { base: "toilet_particle",  tint: 0x962626 },
-    green_gift_particle:           { base: "toilet_particle",  tint: 0x377130 },
-    blue_gift_particle:            { base: "toilet_particle",  tint: 0x264b96 },
-    purple_gift_particle:          { base: "toilet_particle",  tint: 0x692d69 },
-    black_gift_particle:           { base: "toilet_particle",  tint: 0x1b1b1b },
-
-    pumpkin_particle:              { base: "pumpkin_particle_base", tint: 0xff8c01 },
-    plumpkin_particle:             { base: "pumpkin_particle_base", tint: 0x8a4c70 },
-    diseased_plumpkin_particle:    { base: "pumpkin_particle_base", tint: 0x654646 },
-
     apple_particle:                { base: "pumpkin_particle_base", tint: 0xed2929 },
 
     tent_particle_1:               { base: "ceiling_particle", tint: TentTints.red },
@@ -833,30 +823,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 residue: "barrel_residue"
             }
         }));
-        const gift = derive(
-            (
-                color: "red" | "green" | "blue" | "purple" | "black",
-                explode = false
-            ) => ({
-                idString: `${color}_gift`,
-                name: `${color.charAt(0).toUpperCase() + color.slice(1)} Gift`,
-                material: "cardboard",
-                hideOnMap: true,
-                health: 60,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 0.8
-                },
-                rotationMode: RotationMode.Limited,
-                allowFlyover: FlyoverPref.Never,
-                hitbox: RectangleHitbox.fromRect(4.4, 4.4),
-                zIndex: ZIndexes.ObstaclesLayer2,
-                hasLoot: true,
-                explosion: explode ? "coal_explosion" : undefined
-            })
-        );
-
         const withWinterVariation = (
             ...defs: ReadonlyArray<
                 Missing | [
@@ -870,16 +836,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
 
                 return [
                     base,
-                    {
-                        [inheritFrom]: base.idString,
-                        idString: `${base.idString}_winter`,
-                        variations: variants,
-                        frames: {
-                            particle: base.frames?.particle ?? `${base.idString}_particle`,
-                            residue: base.noResidue ? undefined : base.frames?.residue ?? `${base.idString}_residue`
-                        },
-                        lootTable: (base.hasLoot || base.spawnWithLoot) ? (base.lootTable ?? base.idString) : undefined
-                    }
                 ];
             }
         );
@@ -966,38 +922,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hitbox: new CircleHitbox(4),
                 variations: 7,
             }]),
-
-            tree([{
-                name: "Dormant Oak Tree",
-                health: 120,
-                scaleProps: {
-                    spawnMin: 0.75,
-                    spawnMax: 1.2,
-                    destroy: 0.9
-                },
-                spawnHitbox: new CircleHitbox(8.5),
-                rotationMode: RotationMode.Full,
-                hitbox: new CircleHitbox(2.5),
-                variations: 2,
-                allowFlyOver: FlyoverPref.Never,
-                zIndex: ZIndexes.ObstaclesLayer4
-            }]),
-
-            tree([{
-                name: "Maple Tree",
-                health: 290,
-                scaleProps: {
-                    spawnMin: 0.75,
-                    spawnMax: 1.2,
-                    destroy: 0.9
-                },
-                spawnHitbox: new CircleHitbox(20),
-                rotationMode: RotationMode.Full,
-                hitbox: new CircleHitbox(5.5),
-                variations: 3,
-                allowFlyOver: FlyoverPref.Never
-            }]),
-
             tree([{
                 name: "Pine Tree",
                 health: 180,
@@ -1052,66 +976,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     reflectBullets: true
                 }, 2
             ]),
-
-            {
-                idString: "christmas_tree",
-                name: "Christmas Tree",
-                material: "tree",
-                health: 720,
-                scale: {
-                    spawnMin: 0.9,
-                    spawnMax: 1.1,
-                    destroy: 0.75
-                },
-                hitbox: new CircleHitbox(10),
-                spawnHitbox: new CircleHitbox(15),
-                rotationMode: RotationMode.Full,
-                zIndex: ZIndexes.ObstaclesLayer4,
-                allowFlyover: FlyoverPref.Never,
-                hasLoot: true,
-                glow: {
-                    tint: 0xffff00,
-                    scale: 1.5,
-                    alpha: 0.8,
-                    scaleAnim: {
-                        to: 2,
-                        duration: 1e3
-                    }
-                }
-            },
-
-            {
-                idString: "stump",
-                name: "Stump",
-                material: "tree",
-                health: 180,
-                scale: {
-                    spawnMin: 0.9,
-                    spawnMax: 1,
-                    destroy: 0.5
-                },
-                hitbox: new CircleHitbox(2.9),
-                rotationMode: RotationMode.Full
-            },
-
-            {
-                idString: "hatchet_stump",
-                name: "Hatchet Stump",
-                material: "tree",
-                health: 180,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 0.5
-                },
-                hitbox: new CircleHitbox(2.9),
-                rotationMode: RotationMode.None,
-                hasLoot: true,
-                frames: {
-                    particle: "stump_particle",
-                    residue: "stump_residue"
-                }
-            },
             {
                 idString: "rock",
                 name: "Rock",
@@ -1170,193 +1034,37 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 variations: 2,
                 particleVariations: 2
             },
+            //Suroimodes Savannah
             {
-                idString: "clearing_boulder",
-                name: "Clearing Boulder",
+                idString: "savannah_rock",
+                name: "Savannah Rock",
                 material: "stone",
-                health: 850,
+                health: 800,
                 scale: {
-                    spawnMin: 1,
-                    spawnMax: 1.2,
-                    destroy: 0.5
+                    spawnMin: 0.9,
+                    spawnMax: 1.1,
+                    destroy: 0.7
                 },
                 spawnMode: MapObjectSpawnMode.Grass,
-                hitbox: new CircleHitbox(8.2),
-                spawnHitbox: new CircleHitbox(12),
+                hitbox: new CircleHitbox(18),
+                spawnHitbox: new CircleHitbox(20),
                 rotationMode: RotationMode.Full,
-                variations: 2,
-                particleVariations: 2
             },
             {
-                idString: "pebble",
-                name: "Pebble",
-                material: "stone",
-                health: 200,
-                indestructible: true,
-                noCollisions: true,
-                noMeleeCollision: true,
-                noBulletCollision: true,
+                idString: "propane",
+                name: "Propane Tank",
+                material: "iron",
+                health: 50,
                 scale: {
-                    spawnMin: 0.8,
-                    spawnMax: 1.2,
-                    destroy: 0
-                },
-                spawnMode: MapObjectSpawnMode.Trail,
-                hitbox: new CircleHitbox(0.5),
-                spawnHitbox: new CircleHitbox(0.5),
-                rotationMode: RotationMode.Full,
-                variations: 2
-            },
-            {
-                idString: "pumpkin",
-                name: "Pumpkin",
-                material: "pumpkin",
-                health: 100,
-                scale: {
-                    spawnMin: 0.9,
-                    spawnMax: 1.1,
+                    spawnMin: 1,
+                    spawnMax: 1,
                     destroy: 0.5
                 },
-                hitbox: new CircleHitbox(2.55),
-                spawnHitbox: new CircleHitbox(3),
+                spawnMode: MapObjectSpawnMode.GrassAndSand,
+                hitbox: new CircleHitbox(3.85 / 1.5),
                 rotationMode: RotationMode.Full,
-                allowFlyover: FlyoverPref.Always,
-                hasLoot: true,
-                frames: {
-                    particle: "pumpkin_particle"
-                }
-            },
-            {
-                idString: "large_pumpkin",
-                name: "Large Pumpkin",
-                material: "pumpkin",
-                health: 160,
-                scale: {
-                    spawnMin: 0.9,
-                    spawnMax: 1.1,
-                    destroy: 0.5
-                },
-                hitbox: new CircleHitbox(4.69),
-                rotationMode: RotationMode.Full,
-                allowFlyover: FlyoverPref.Always,
-                hasLoot: true,
-                frames: {
-                    particle: "pumpkin_particle",
-                    residue: "pumpkin_residue"
-                }
-            },
-            {
-                idString: "jack_o_lantern",
-                name: "Jack O' Lantern",
-                material: "pumpkin",
-                health: 300,
-                scale: {
-                    spawnMin: 0.9,
-                    spawnMax: 1.1,
-                    destroy: 0.5
-                },
-                glow: {
-                    tint: 0xfca202,
-                    scale: 0.6,
-                    alpha: 0.8,
-                    scaleAnim: {
-                        to: 0.7,
-                        duration: 2e3
-                    },
-                    flicker: {
-                        chance: 0.5,
-                        strength: 0.9,
-                        interval: 7e2
-                    }
-                },
-                hitbox: new CircleHitbox(4.69),
-                rotationMode: RotationMode.Full,
-                allowFlyover: FlyoverPref.Always,
-                hasLoot: true,
-                frames: {
-                    particle: "pumpkin_particle",
-                    residue: "pumpkin_residue"
-                }
-            },
-            {
-                idString: "baby_plumpkin",
-                name: "Baby Plumpkin",
-                material: "pumpkin",
-                health: 100,
-                scale: {
-                    spawnMin: 0.9,
-                    spawnMax: 1.1,
-                    destroy: 0.5
-                },
-                hitbox: new CircleHitbox(1.83),
-                spawnHitbox: new CircleHitbox(2),
-                rotationMode: RotationMode.Full,
-                allowFlyover: FlyoverPref.Always,
-                frames: {
-                    particle: "plumpkin_particle"
-                },
-                weaponSwap: true
-            },
-            {
-                idString: "plumpkin",
-                name: "Plumpkin",
-                material: "pumpkin",
-                health: 300,
-                scale: {
-                    spawnMin: 0.9,
-                    spawnMax: 1.1,
-                    destroy: 0.5
-                },
-                hitbox: new CircleHitbox(4.69),
-                spawnHitbox: new CircleHitbox(5),
-                rotationMode: RotationMode.Full,
-                allowFlyover: FlyoverPref.Always,
-                frames: {
-                    particle: "plumpkin_particle"
-                },
-                hasLoot: true
-            },
-            {
-                idString: "diseased_plumpkin",
-                name: "Diseased Plumpkin",
-                material: "pumpkin",
-                health: 200,
-                hideOnMap: true,
-                scale: {
-                    spawnMin: 0.9,
-                    spawnMax: 1.1,
-                    destroy: 0.5
-                },
-                glow: {
-                    tint: 0x643554,
-                    scale: 0.6,
-                    alpha: 0.8,
-                    scaleAnim: {
-                        to: 0.7,
-                        duration: 3e3
-                    }
-                },
-                hitbox: new CircleHitbox(4.45),
-                spawnHitbox: new CircleHitbox(5),
-                rotationMode: RotationMode.Full,
-                allowFlyover: FlyoverPref.Always,
-                hasLoot: true
-            },
-            {
-                idString: "birthday_cake",
-                name: "Birthday Cake",
-                material: "pumpkin",
-                health: 70,
-                scale: {
-                    spawnMin: 0.9,
-                    spawnMax: 1.1,
-                    destroy: 0.75
-                },
-                hitbox: new CircleHitbox(1.9),
-                spawnHitbox: new CircleHitbox(2.9),
-                rotationMode: RotationMode.Full,
-                allowFlyover: FlyoverPref.Always,
-                hasLoot: true
+                explosion: "propane_explosion",
+                reflectBullets: true
             },
             {
                 idString: "apple",
@@ -1373,26 +1081,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 rotationMode: RotationMode.Full,
                 allowFlyover: FlyoverPref.Always,
                 hasLoot:true,
-            },
-            {
-                idString: "cobweb",
-                name: "Cobweb",
-                material: "stone",
-                health: 69420,
-                indestructible: true,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 0
-                },
-                hitbox: RectangleHitbox.fromRect(9, 9),
-                noCollisions: true,
-                noMeleeCollision: true,
-                noBulletCollision: true,
-                rotationMode: RotationMode.Limited,
-                allowFlyover: FlyoverPref.Always,
-                zIndex: ZIndexes.ObstaclesLayer4
-
             },
             ...withWinterVariation([
                 {
@@ -1453,25 +1141,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 zIndex: ZIndexes.ObstaclesLayer3
             },
             {
-                idString: "vibrant_bush",
-                name: "Vibrant Bush",
-                material: "bush",
-                health: 320,
-                scale: {
-                    spawnMin: 0.9,
-                    spawnMax: 1.15,
-                    destroy: 1
-                },
-                hitbox: new CircleHitbox(5.4),
-                noCollisions: true,
-                spawnWithLoot: true,
-                lootTable: "special_bush",
-                rotationMode: RotationMode.Full,
-                particleVariations: 2,
-                variations: 3,
-                zIndex: ZIndexes.ObstaclesLayer3
-            },
-            {
                 idString: "detector_walls",
                 name: "Detector Walls",
                 material: "iron",
@@ -1527,26 +1196,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 frames: {
                     particle: "bush_particle",
                     residue: "bush_residue"
-                }
-            },
-            {
-                idString: "oak_leaf_pile",
-                name: "Oak Leaf Pile",
-                material: "bush",
-                health: 50,
-                scale: {
-                    spawnMin: 0.9,
-                    spawnMax: 1.3,
-                    destroy: 0.8
-                },
-                hitbox: new CircleHitbox(5),
-                noCollisions: true,
-                noResidue: true,
-                rotationMode: RotationMode.Full,
-                zIndex: ZIndexes.ObstaclesLayer3,
-                // spawnWithLoot: true,
-                frames: {
-                    particle: "leaf_particle_3"
                 }
             },
             ...withWinterVariation(
@@ -1629,18 +1278,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     )
                 ]
             ),
-            crate(
-                {
-                    idString: "hazel_crate",
-                    name: "Hazel Crate",
-                    rotationMode: RotationMode.Binary,
-                    health: 1700,
-                    frames: {
-                        particle: "hazel_crate_particle",
-                        residue: "hazel_crate_residue"
-                    }
-                }
-            ),
             {
                 [inheritFrom]: "regular_crate",
                 idString: "frozen_crate",
@@ -1716,26 +1353,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 frames: {
                     particle: "headquarters_desk_particle"
                 }
-            },
-            {
-                idString: "square_desk",
-                name: "Square Desk",
-                material: "wood",
-                health: 120,
-                indestructible: true,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 0.8
-                },
-                hitbox: new GroupHitbox(
-                    RectangleHitbox.fromRect(18.55, 3.76, Vec.create(0, -7.39)),
-                    RectangleHitbox.fromRect(18.55, 3.76, Vec.create(0, 7.39)),
-                    RectangleHitbox.fromRect(6.02, 14.27, Vec.create(6.27, 0)),
-                    RectangleHitbox.fromRect(3.77, 3.37, Vec.create(-7.39, -4.57)),
-                    RectangleHitbox.fromRect(3.77, 3.37, Vec.create(-7.39, 4.57))
-                ),
-                rotationMode: RotationMode.Limited
             },
             {
                 idString: "piano",
@@ -2121,11 +1738,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     hasLoot: true
                 }, 3
             ]),
-            gift(["red"]),
-            gift(["green"]),
-            gift(["blue"]),
-            gift(["purple"]),
-            gift(["black", true]),
             {
                 idString: "hq_large_cart",
                 name: "Large Cart",
@@ -2239,26 +1851,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             lodgeWall(["6", 20.44]),
             lodgeWall(["7", 26.15]),
             lodgeWall(["8", 27.03]),
-            {
-                idString: "lodge_secret_room_wall",
-                name: "Lodge Secret Room Wall",
-                material: "wood",
-                hideOnMap: true,
-                noResidue: true,
-                health: 100,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 0.95
-                },
-                hitbox: RectangleHitbox.fromRect(17.62, 1.91),
-                rotationMode: RotationMode.Limited,
-                allowFlyover: FlyoverPref.Never,
-                frames: {
-                    particle: "lodge_wall_particle"
-                },
-                role: ObstacleSpecialRoles.Wall
-            },
 
             tentWall([1, "red"]),
             tentWall([2, "green"]),
@@ -2362,26 +1954,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hitbox: RectangleHitbox.fromRect(6.9, 6.64, Vec.create(0, -0.3)),
                 rotationMode: RotationMode.Limited,
                 explosion: "stove_explosion",
-                frames: {
-                    particle: "metal_particle",
-                    residue: "stove_residue"
-                },
-                reflectBullets: true
-            },
-            {
-                idString: "fireplace",
-                name: "Fireplace",
-                material: "metal_light",
-                health: 300,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 0.9
-                },
-                hideOnMap: true,
-                hitbox: RectangleHitbox.fromRect(15.05, 7.71, Vec.create(0, -0.3)),
-                rotationMode: RotationMode.Limited,
-                explosion: "fireplace_explosion",
                 frames: {
                     particle: "metal_particle",
                     residue: "stove_residue"
@@ -3363,23 +2935,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 role: ObstacleSpecialRoles.Window
             },
             {
-                idString: "bulletproof_window",
-                name: "Bulletproof Window",
-                material: "glass",
-                health: 1000,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 1
-                },
-                hitbox: RectangleHitbox.fromRect(18.57, 2.45),
-                allowFlyover: FlyoverPref.Never,
-                rotationMode: RotationMode.Limited,
-                frames: {
-                    particle: "window_particle"
-                }
-            },
-            {
                 idString: "bed",
                 name: "Bed",
                 material: "wood",
@@ -3526,28 +3081,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hingeOffset: Vec.create(-5.5, 0)
             },
             {
-                idString: "outhouse_door",
-                name: "Outhouse Door",
-                material: "wood",
-                health: 100,
-                noResidue: true,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 1
-                },
-                hideOnMap: true,
-                hitbox: RectangleHitbox.fromRect(9.91, 1.5),
-                rotationMode: RotationMode.Limited,
-                allowFlyover: FlyoverPref.Never,
-                role: ObstacleSpecialRoles.Door,
-                zIndex: ZIndexes.ObstaclesLayer3,
-                hingeOffset: Vec.create(-4.96, 0),
-                frames: {
-                    particle: "outhouse_wall_particle"
-                }
-            },
-            {
                 idString: "porta_potty_sink_wall",
                 name: "Porta Potty Sink Wall",
                 material: "wood",
@@ -3588,27 +3121,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 frames: {
                     base: "porta_potty_sink_wall",
                     particle: "porta_potty_particle_fall"
-                }
-            },
-            {
-                idString: "outhouse_toilet_paper_wall",
-                name: "Outhouse Toilet Paper Wall",
-                material: "wood",
-                health: 100,
-                noResidue: true,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 0.9
-                },
-                hideOnMap: true,
-                hitbox: RectangleHitbox.fromRect(1.81, 19.2, Vec.create(-1.16, 0.01)),
-                rotationMode: RotationMode.Limited,
-                allowFlyover: FlyoverPref.Never,
-                role: ObstacleSpecialRoles.Wall,
-                zIndex: ZIndexes.ObstaclesLayer2,
-                frames: {
-                    particle: "outhouse_wall_particle"
                 }
             },
             {
@@ -3657,26 +3169,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             innerConcreteWall([2, RectangleHitbox.fromRect(36.7, 1.9)]),
             innerConcreteWall([3, RectangleHitbox.fromRect(39.14, 1.9)]),
             innerConcreteWall([4, RectangleHitbox.fromRect(47.14, 1.9)]),
-            {
-                idString: "bombed_armory_vault_wall",
-                material: "stone",
-                hitbox: RectangleHitbox.fromRect(15, 2.04),
-                health: 500,
-                noResidue: true,
-                hideOnMap: true,
-                resistanceLevel: 2,
-                rotationMode: RotationMode.Limited,
-                role: ObstacleSpecialRoles.Wall,
-                allowFlyover: FlyoverPref.Never,
-                particleVariations: 2,
-                frames: {
-                    particle: "rock_particle"
-                }
-                /* wall: {
-                    color: 0x606060,
-                    borderColor: 0x262626
-                } */
-            },
             {
                 idString: "small_refinery_barrel",
                 name: "Small Refinery Barrel",
@@ -3791,16 +3283,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     RectangleHitbox.fromRect(0.8, 3, Vec.create(1.55, 0.35))
                 )
             }),
-            gunMount(["dual_rsh12", "gun", true], {
-                frames: {
-                    particle: "gun_mount_dual_rsh12_particle",
-                    residue: "gun_mount_dual_rsh12_residue"
-                },
-                hitbox: new GroupHitbox(
-                    RectangleHitbox.fromRect(6.5, 0.99, Vec.create(0, -1.36)),
-                    RectangleHitbox.fromRect(5.7, 2.5, Vec.create(0, 0.4))
-                )
-            }),
             {
                 idString: "truck",
                 name: "Truck",
@@ -3871,19 +3353,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 }
             }),
             controlPanel(["control_panel2", "Control Panel"]),
-            controlPanel(["recorder", "Recorder"], {
-                hitbox: RectangleHitbox.fromRect(8.7, 6.34),
-                indestructible: true,
-                role: ObstacleSpecialRoles.Activatable,
-                noInteractMessage: true,
-                requiredItem: "heap_sword", // womp womp
-                sound: {
-                    names: ["speaker_start", "speaker_start"]
-                },
-                frames: {
-                    activated: "recorder_used"
-                }
-            }),
             controlPanel(["control_panel_small", "Small Control Panel"], {
                 hitbox: RectangleHitbox.fromRect(7.5, 8)
             }),
@@ -3980,60 +3449,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
             // variations no work for some reason
             // (someone fix pls uwu)
             // --------------------------------------------
-            {
-                idString: "pipe_1",
-                name: "Pipe",
-                material: "metal_light",
-                health: 200,
-                indestructible: true,
-                hitbox: RectangleHitbox.fromRect(0, 0),
-                zIndex: ZIndexes.ObstaclesLayer4,
-                rotationMode: RotationMode.Limited,
-                allowFlyover: FlyoverPref.Always,
-                noBulletCollision: true,
-                noMeleeCollision: true,
-                noCollisions: true
-            },
-            {
-                idString: "pipe_2",
-                name: "Pipe",
-                material: "metal_light",
-                health: 200,
-                indestructible: true,
-                hitbox: RectangleHitbox.fromRect(0, 0),
-                zIndex: ZIndexes.ObstaclesLayer4,
-                rotationMode: RotationMode.Limited,
-                allowFlyover: FlyoverPref.Always,
-                noBulletCollision: true,
-                noMeleeCollision: true,
-                noCollisions: true
-            },
-            {
-                idString: "pipe_3",
-                name: "Pipe",
-                material: "metal_light",
-                health: 200,
-                indestructible: true,
-                hitbox: RectangleHitbox.fromRect(0, 0),
-                zIndex: ZIndexes.ObstaclesLayer4,
-                rotationMode: RotationMode.Limited,
-                allowFlyover: FlyoverPref.Always,
-                noBulletCollision: true,
-                noMeleeCollision: true,
-                noCollisions: true
-            },
-            {
-                idString: "pipe_4",
-                name: "Pipe",
-                material: "metal_light",
-                health: 200,
-                indestructible: true,
-                hitbox: RectangleHitbox.fromRect(0, 0),
-                zIndex: ZIndexes.ObstaclesLayer4,
-                rotationMode: RotationMode.Limited,
-                allowFlyover: FlyoverPref.Always,
-                noCollisions: true
-            },
             // --------------------------------------------
             ...withWinterVariation([
                 {
@@ -4146,26 +3561,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 rotationMode: RotationMode.Full,
                 allowFlyover: FlyoverPref.Always,
                 hasLoot: true
-            },
-            {
-                idString: "poinsettia",
-                name: "Poinsettia",
-                material: "porcelain",
-                health: 100,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 0.95
-                },
-                hitbox: new CircleHitbox(1.9),
-                rotationMode: RotationMode.Full,
-                allowFlyover: FlyoverPref.Always,
-                zIndex: ZIndexes.ObstaclesLayer3,
-                hasLoot: true,
-                lootTable: "potted_plant",
-                frames: {
-                    particle: "potted_plant_particle"
-                }
             },
             {
                 idString: "trash_can",
@@ -4338,28 +3733,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     reflectBullets: true
                 }
             ]),
-            {
-                idString: "ice_pick_case",
-                name: "Ice Pick Case",
-                material: "wood",
-                health: 180,
-                scale: {
-                    spawnMin: 1,
-                    spawnMax: 1,
-                    destroy: 0.8
-                },
-                hasLoot: true,
-                hitbox: new GroupHitbox(
-                    RectangleHitbox.fromRect(10.5, 4.5, Vec.create(-0.1, -0.1)),
-                    RectangleHitbox.fromRect(0.55, 5.95, Vec.create(-3.7, 0)),
-                    RectangleHitbox.fromRect(0.55, 5.95, Vec.create(3.7, 0))
-                ),
-                rotationMode: RotationMode.Limited,
-                allowFlyover: FlyoverPref.Never,
-                frames: {
-                    particle: "crate_particle"
-                }
-            },
             {
                 idString: "button",
                 name: "Button",
@@ -4751,24 +4124,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 zIndex: ZIndexes.BuildingsFloor
             },
             {
-                idString: "fire_exit_stair",
-                name: "Fire Exit Stair",
-                material: "metal_heavy",
-                health: 1000,
-                indestructible: true,
-                role: ObstacleSpecialRoles.Stair,
-                activeEdges: {
-                    high: 0,
-                    low: 2
-                },
-                hitbox: RectangleHitbox.fromRect(13.8, 27.8),
-                frames: {
-                    particle: "metal_particle"
-                },
-                rotationMode: RotationMode.Limited,
-                zIndex: ZIndexes.BuildingsFloor
-            },
-            {
                 idString: "lodge_stair",
                 name: "Lodge Stair",
                 material: "metal_heavy",
@@ -5151,25 +4506,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     borderColor: 0xff0000
                 }
             },
-            {
-                idString: "pole",
-                name: "Pole",
-                material: "fence",
-                health: 150,
-                scale: {
-                    spawnMin: 0.9,
-                    spawnMax: 1.1,
-                    destroy: 0.5
-                },
-                noResidue: true,
-                role: ObstacleSpecialRoles.Wall,
-                spawnMode: MapObjectSpawnMode.GrassAndSand,
-                hitbox: new CircleHitbox(1.1),
-                rotationMode: RotationMode.None,
-                frames: {
-                    particle: "metal_particle"
-                }
-            }
             /* {
                 idString: "humvee",
                 name: "Humvee",

@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="132.631"
-   height="126"
-   viewBox="0 0 35.09195 33.337501"
+   width="132.63089"
+   height="44.339455"
+   viewBox="0 0 35.091922 11.731481"
    version="1.1"
    id="svg1"
    xml:space="preserve"
@@ -31,7 +31,7 @@
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer4"
+     inkscape:current-layer="layer2"
      showguides="false" /><defs
      id="defs1"><inkscape:path-effect
        effect="powerclip"
@@ -60,7 +60,7 @@
      inkscape:label="Layer 2 - Magazine"
      style="display:inline;opacity:1"
      inkscape:highlight-color="#f3eb35"
-     transform="matrix(0.18973369,0,0,0.18973369,-2.1467185,-1.4320719)"><path
+     transform="matrix(0.18973369,0,0,0.18973369,-2.1467185,-13.391022)"><path
        style="display:inline;opacity:1;fill:#6a707a;fill-opacity:1;stroke:#2f3237;stroke-width:1.81592;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:29;stroke-dasharray:none;stroke-opacity:1"
        d="m 120.96772,100.4088 c 1.25699,10.33417 4.07918,21.73577 9.09062,30.85956 l 12.98616,-5.18279 c 0.60717,-0.45638 0.0637,-1.4672 -0.62619,-1.27985 0,0 -8.25677,-18.07403 -7.76281,-29.720763 z"
        id="path2"
@@ -93,7 +93,7 @@
      id="layer3"
      inkscape:label="Layer 3 - Platform"
      style="display:inline;opacity:1"
-     transform="translate(-11.314377,-7.5477678)"><path
+     transform="translate(-11.314377,-19.506718)"><path
        style="display:inline;opacity:1;fill:#50545c;fill-opacity:1;stroke:#2f3237;stroke-width:0.172242;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:29;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
        d="m 28.775943,25.160251 0.01521,0.867846 c 0.02477,0.104292 0.209642,0.316394 0.363521,0.441546 0.0958,0.08279 0.118314,-0.0021 0.104644,-0.02683 -0.201899,-0.393181 -0.401829,-0.791167 0.129447,-1.282766 z"
        id="path14"
@@ -182,7 +182,7 @@
      inkscape:label="Layer 4 - Body"
      style="display:inline;opacity:1"
      inkscape:highlight-color="#8a5ff1"
-     transform="matrix(0.18973369,0,0,0.18973369,-2.1221173,-1.4320719)"><path
+     transform="matrix(0.18973369,0,0,0.18973369,-2.1221173,-13.391022)"><path
        id="rect31"
        style="display:inline;opacity:1;fill:#424242;fill-opacity:1;stroke:#333333;stroke-width:2.11667;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:29;stroke-opacity:1"
        d="m 146.95814,23.5264 h 15.03725 c 0.53776,2.084523 0.52236,3.941272 0,5.589274 h -15.08402 z"

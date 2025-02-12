@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   width="128.02499"
-   height="110"
-   viewBox="0 0 128.02499 110"
+   width="128.02504"
+   height="29.928947"
+   viewBox="0 0 128.02504 29.928947"
    fill="none"
    version="1.1"
    id="svg63"
@@ -22,7 +22,7 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="5.1875925"
-     inkscape:cx="87.902047"
+     inkscape:cx="87.998431"
      inkscape:cy="64.095243"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
@@ -33,7 +33,7 @@
   <g
      clip-path="url(#clip0_619_1188)"
      id="g63"
-     transform="rotate(30,58.138008,70.159138)">
+     transform="rotate(30,131.16364,50.591979)">
     <path
        d="m 36.9316,56.7207 14.2026,-8.1998 4.7604,-2.4073 45.2974,-26.1523 1.169,2.0248 -53.5673,30.9268 c -0.1542,0.0891 -0.2071,0.2864 -0.118,0.4407 0.089,0.1543 0.0362,0.3516 -0.1181,0.4406 l -5.8852,3.3979 c -0.1543,0.0891 -0.3516,0.0362 -0.4407,-0.1181 -0.0891,-0.1543 -0.2863,-0.2071 -0.4406,-0.1181 l -3.5427,2.0454 z"
        fill="#434a3c"

@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="129.98801"
-   height="110"
-   viewBox="0 0 129.98801 110"
+   width="129.9882"
+   height="27.276827"
+   viewBox="0 0 129.98821 27.276827"
    version="1.1"
    id="SVGRoot"
    sodipodi:docname="bar.svg"
@@ -26,7 +26,7 @@
      showgrid="false"
      inkscape:zoom="2.8284271"
      inkscape:cx="44.194174"
-     inkscape:cy="94.929086"
+     inkscape:cy="94.575533"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
      inkscape:window-x="-8"
@@ -36,7 +36,8 @@
      id="defs220" /><g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1"><path
+     id="layer1"
+     transform="translate(1.8042231e-8,-43.372649)"><path
        style="fill:#333333;fill-opacity:1;stroke:#333333;stroke-width:1.06791;stroke-opacity:1"
        d="m 89.352595,52.083969 0.383258,2.577354 31.485327,-0.238433 -0.0197,-1.903194 z"
        id="path336" /><path

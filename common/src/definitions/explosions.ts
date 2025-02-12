@@ -178,6 +178,34 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             }
         },
         {
+            name:"Propane",
+            damage: 30,
+            obstacleMultiplier: 0,
+            radius: {
+                min: 0,
+                max: 0
+            },
+            cameraShake: {
+                duration: 100,
+                intensity: 1
+            },
+            animation: {
+                duration: 500,
+                tint: 0x8A7C7B,
+                scale: 0.5
+            },
+            shrapnelCount: 0,
+            ballistics: {
+                damage: 3,
+                obstacleMultiplier: 0,
+                speed: 0,
+                range: 0,
+                shrapnel: false
+            },
+            sound: "smoke_grenade",
+            decal: "smoke_explosion_decal"
+        },
+        {
             name: "Small Refinery Barrel",
             damage: 200,
             obstacleMultiplier: 2,

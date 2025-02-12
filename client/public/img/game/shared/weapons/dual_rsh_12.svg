@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="114.199"
-   height="110"
-   viewBox="0 0 30.215151 29.104168"
+   width="114.19927"
+   height="64.85569"
+   viewBox="0 0 30.215224 17.159735"
    version="1.1"
    id="svg5"
    inkscape:version="1.4 (86a8ad7, 2024-10-11)"
@@ -43,7 +43,8 @@
      id="defs2" /><g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1"><g
+     id="layer1"
+     transform="translate(0,-4.9522039)"><g
        id="g341"
        transform="matrix(0.30024267,-7.0243466e-4,-7.0240988e-4,0.30105375,-0.06146595,4.2517138)"><path
          style="fill:#363530;fill-opacity:1;stroke:#363530;stroke-width:2.11667;stroke-linecap:square;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"

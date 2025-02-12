@@ -97,7 +97,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
             if(definition.canInvertASpeed&&Math.random()<=.5){
                 this._angularVelocity*=-1
             }
-            this.halloweenSkin = this.source.owner.perks.hasPerk(PerkIds.PlumpkinBomb);
+            this.halloweenSkin = false;
 
             // Colored Teammate C4s
             this.tintIndex = this.source.owner.colorIndex;

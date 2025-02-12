@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="116.285"
-   height="97.836113"
-   viewBox="0 0 30.767068 25.885806"
+   width="116.2847"
+   height="39.602524"
+   viewBox="0 0 30.766987 10.478168"
    version="1.1"
    id="svg1"
    xml:space="preserve"
@@ -65,7 +65,7 @@
      id="layer1"
      transform="translate(-144.57394,92.578176)"><g
        id="g189-8"
-       transform="matrix(1.3015004,-0.00428615,0.00428615,1.3015004,-51.922027,7.2521048)"><rect
+       transform="matrix(1.3015004,-0.00428615,0.00428615,1.3015004,-51.922027,0.27736138)"><rect
          style="fill:#454545;fill-opacity:1;stroke:#252525;stroke-width:0.859997;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
          id="rect171-7-5-1-7"
          width="1.1301227"
@@ -296,14 +296,7 @@
            class="st3"
            width="5.4457865"
            height="3.4687815"
-           style="opacity:0.997;fill:none;fill-opacity:1;stroke:#202020;stroke-width:0.526891;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;stroke-dasharray:none;stroke-opacity:1;enable-background:new" /></g></g><rect
-       style="fill:none;stroke:none;stroke-width:0.433652;stroke-linecap:round;stroke-linejoin:round"
-       id="rect1"
-       width="1.8036469"
-       height="1.0020261"
-       x="88.295479"
-       y="-156.16844"
-       transform="rotate(29.262518)" /></g><style
+           style="opacity:0.997;fill:none;fill-opacity:1;stroke:#202020;stroke-width:0.526891;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:15.1181;stroke-dasharray:none;stroke-opacity:1;enable-background:new" /></g></g></g><style
      type="text/css"
      id="style1">
 	.st0{fill:#323232;stroke:#323232;stroke-width:24.5669;stroke-linecap:round;stroke-miterlimit:15.1181;}

@@ -626,104 +626,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         inventory.throwableItemMap.get(idString)!.count = inventory.items.getItem(idString);
     }
 
-    swapWeaponRandomly(itemOrSlot: InventoryItem | number = this.activeItem, force = false): void {
-        if (this.perks.hasPerk(PerkIds.Lycanthropy)) return; // womp womp
-        return
-
-        /*let slot = itemOrSlot === this.activeItem
-            ? this.activeItemIndex
-            : typeof itemOrSlot === "number"
-                ? itemOrSlot
-                : this.inventory.weapons.findIndex(i => i === itemOrSlot);
-
-        if (slot === -1) {
-            // this happens if the item to be swapped isn't currently in the inventory
-            // in that case, we just take the first slot matching that item's type
-            slot = GameConstants.player.inventorySlotTypings.filter(slot => slot === (itemOrSlot as InventoryItem).definition.itemType)?.[0] ?? 0;
-            // and if we somehow don't have any matching slots, then someone's probably messing with us… fallback to slot 0 lol
-        }
-
-        const spawnable = SpawnableLoots();
-
-        const { inventory } = this;
-        const { items, backpack: { maxCapacity }, throwableItemMap } = inventory;
-        const type = GameConstants.player.inventorySlotTypings[slot];
-
-        const chosenItem = pickRandomInArray<WeaponDefinition>(
-            type === ItemType.Throwable
-                ? spawnable.forType(ItemType.Throwable).filter(
-                    ({ idString: thr }) => (items.hasItem(thr) ? items.getItem(thr) : 0) < maxCapacity[thr]
-                )
-                : spawnable.forType(type)
-        );
-        if (chosenItem === undefined) return;
-
-        switch (chosenItem.itemType) { // chosenItem.itemType === type, but the former helps ts narrow chosenItem's type
-            case ItemType.Gun: {
-                this.action?.cancel();
-
-                const { capacity, ammoType, ammoSpawnAmount, summonAirdrop } = chosenItem;
-
-                // Give the player ammo for the new gun if they do not have any ammo for it.
-                if (!items.hasItem(ammoType) && !summonAirdrop) {
-                    items.setItem(ammoType, ammoSpawnAmount);
-                    this.dirty.items = true;
-                }
-
-                inventory.replaceWeapon(slot, chosenItem, force);
-                (this.activeItem as GunItem).ammo = capacity;
-                this.sendEmote(Guns.fromString(chosenItem.idString));
-                break;
-            }
-
-            case ItemType.Melee: {
-                inventory.replaceWeapon(slot, chosenItem, force);
-                this.sendEmote(Melees.fromString(chosenItem.idString));
-                break;
-            }
-
-            case ItemType.Throwable: {
-                const { idString } = chosenItem;
-
-                const count = items.hasItem(idString) ? items.getItem(idString) : 0;
-                const max = maxCapacity[idString];
-
-                const toAdd = Numeric.min(max - count, 3);
-                // toAdd is greater than 0
-
-                const newCount = Numeric.clamp(
-                    count + toAdd,
-                    0, max
-                );
-
-                items.setItem(
-                    idString,
-                    newCount
-                );
-
-                const item = throwableItemMap.getAndGetDefaultIfAbsent(
-                    idString,
-                    () => new ThrowableItem(chosenItem, this, undefined, newCount)
-                );
-
-                item.count = newCount;
-
-                const slot = inventory.slotsByItemType[ItemType.Throwable]?.[0];
-
-                if (slot !== undefined && !inventory.hasWeapon(slot)) {
-                    inventory.replaceWeapon(slot, item, force);
-                }
-
-                this.dirty.weapons = true;
-                this.dirty.items = true;
-                this.sendEmote(Throwables.fromString(chosenItem.idString));
-                break;
-            }
-        }
-
-        this.sendEmote(Emotes.fromStringSafe(chosenItem.idString));*/
-    }
-
     fillInventory(max = false): void {
         const { inventory } = this;
 
@@ -911,58 +813,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     this.perkUpdateMap.set(perk, this.game.now);
                     // ! evil starts here
                     switch (perk.idString) {
-                        case PerkIds.Bloodthirst: {
-                            this.piercingDamage({
-                                amount: perk.healthLoss
-                            });
-                            break;
-                        }
-                        case PerkIds.BabyPlumpkinPie: {
-                            this.swapWeaponRandomly(undefined, true);
-                            break;
-                        }
-                        case PerkIds.TornPockets: {
-                            const items = this.inventory.items;
-                            const candidates = new Set(Ammos.definitions.filter(({ ephemeral }) => !ephemeral).map(({ idString }) => idString));
-
-                            const counts = Object.entries(items.asRecord()).filter(
-                                ([str, count]) => Ammos.hasString(str) && candidates.has(str) && count !== 0
-                            );
-
-                            // no ammo at all
-                            if (counts.length === 0) break;
-
-                            const chosenAmmo = Ammos.fromString(
-                                weightedRandom(
-                                    counts.map(([str]) => str),
-                                    counts.map(([, cnt]) => cnt)
-                                )
-                            );
-
-                            const amountToDrop = Numeric.min(
-                                this.inventory.items.getItem(chosenAmmo.idString),
-                                perk.dropCount
-                            );
-
-                            this.game.addLoot(chosenAmmo, this.position, this.layer, { count: amountToDrop })
-                                ?.push(this.rotation + Math.PI, 0.025);
-                            items.decrementItem(chosenAmmo.idString, amountToDrop);
-                            this.dirty.items = true;
-                            break;
-                        }
-                        case PerkIds.RottenPlumpkin: {
-                            this.sendEmote(Emotes.fromStringSafe(perk.emote));
-                            this.piercingDamage({
-                                amount: perk.healthLoss
-                            });
-                            this.adrenaline -= this.adrenaline * (perk.adrenLoss / 100);
-                            break;
-                        }
-                        case PerkIds.Shrouded: {
-                            this.game.addSyncedParticle(SyncedParticles.fromString("shrouded_particle"), this.position, this.layer, this.id)
-                                .setTarget(randomPointInsideCircle(this.position, 5), 1000, EaseFunctions.circOut);
-                            break;
-                        }
+                        
                     }
                     // ! evil ends here
                 }
@@ -1007,11 +858,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 },
                 1
             )
-            * this.mapPerkOrDefault(
-                PerkIds.Claustrophobic,
-                ({ speedMod }) => isInsideBuilding ? speedMod : 1,
-                1
-            );
 
         // Calculate speed
         const speed = this.baseSpeed                                          // Base speed
@@ -1110,11 +956,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this.adrenaline -= this.game.gamemode.adrenalineLoss * this._modifiers.adrenDrain * dt;
 
             // Regenerate health
-            toRegen += (this.adrenaline / 40 + 0.35) * this.mapPerkOrDefault(
-                PerkIds.LacedStimulants,
-                ({ healDmgRate, lowerHpLimit }) => (this.health <= lowerHpLimit ? 1 : -healDmgRate),
-                1
-            );
+            toRegen += (this.adrenaline / 40 + 0.35)
         }
 
         this.health += dt / 900 * toRegen;
@@ -2028,37 +1870,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         // ! evil starts here
         for (const perk of this.perks) {
             switch (perk.idString) {
-                case PerkIds.PlumpkinGamble: { // AW DANG IT
-                    this.perks.removePerk(perk);
-
-                    const halloweenPerks = Perks.definitions.filter(perkDef => {
-                        return !perkDef.plumpkinGambleIgnore && perkDef.category === PerkCategories.Halloween;
-                    });
-                    this.perks.addPerk(pickRandomInArray(halloweenPerks));
-                    break;
-                }
-                case PerkIds.Lycanthropy: {
-                    newModifiers.baseSpeed *= perk.speedMod;
-                    newModifiers.maxHealth *= perk.healthMod;
-                    newModifiers.hpRegen += perk.regenRate;
-                    break;
-                }
                 case PerkIds.SecondWind: {
                     newModifiers.baseSpeed *= this._health / this._maxHealth < 0.5 ? perk.speedMod : 1;
-                    break;
-                }
-                case PerkIds.ExperimentalTreatment: {
-                    newModifiers.adrenDrain *= perk.adrenDecay;
-                    newModifiers.minAdrenaline += perk.adrenSet * newModifiers.maxAdrenaline * GameConstants.player.maxAdrenaline;
-                    newModifiers.maxHealth *= perk.healthMod;
-                    break;
-                }
-                case PerkIds.Engorged: {
-                    const base = newModifiers.maxHealth * GameConstants.player.defaultHealth;
-                    (eventMods.kill as ExtendedWearerAttributes[]).push({
-                        maxHealth: (base + perk.hpMod) / base,
-                        sizeMod: perk.sizeMod
-                    });
                     break;
                 }
                 case PerkIds.Berserker: {
@@ -2176,34 +1989,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
             for (const perk of source.perks) {
                 switch (perk.idString) {
-                    case PerkIds.BabyPlumpkinPie: {
-                        source.swapWeaponRandomly(undefined, true);
-                        break;
-                    }
-
-                    case PerkIds.Engorged: {
-                        if (source.kills <= perk.killsLimit) {
-                            source.sizeMod *= perk.sizeMod;
-                            source.maxHealth *= perk.hpMod;
-                            source.updateAndApplyModifiers();
-                        }
-                        break;
-                    }
-
-                    case PerkIds.Bloodthirst: {
-                        if (source.activeBloodthirstEffect) break;
-
-                        source.activeBloodthirstEffect = true;
-                        source.health += perk.healBonus;
-                        source.adrenaline += perk.adrenalineBonus;
-                        source.baseSpeed *= perk.speedMod;
-
-                        this.game.addTimeout(() => {
-                            source.baseSpeed /= perk.speedMod;
-                            source.activeBloodthirstEffect = false;
-                        }, perk.speedBoostDuration);
-                        break;
-                    }
                 }
             }
         }
@@ -2483,8 +2268,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 if(this.perks.fromRoles.includes(perk.idString))continue
                 if (!perk.noDrop) {
                     this.game.addLoot(perk, position, layer);
-                } else if (perk.noDrop && perk.category === PerkCategories.Halloween) {
-                    this.game.addLoot(PerkIds.PlumpkinGamble, position, layer);
                 }
             }
         }
@@ -2728,7 +2511,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     break;
                 }
                 case InputActions.UnlockSlot: {
-                    if (this.hasPerk(PerkIds.Lycanthropy)) break;
                     inventory.unlock(action.slot);
                     break;
                 }
@@ -2737,7 +2519,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
                     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                     inventory.isLocked(slot)
-                        ? (this.hasPerk(PerkIds.Lycanthropy) || inventory.unlock(slot))
+                        ? (inventory.unlock(slot))
                         : inventory.lock(slot);
                     break;
                 }
@@ -2767,7 +2549,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                             (isLoot || (type === InputActions.Interact && isInteractable))
                             && object.hitbox?.collidesWith(detectionHitbox)
                             && adjacentOrEqualLayer(this.layer, object.layer)
-                            && !(isLoot && [ItemType.Throwable, ItemType.Gun].includes(object.definition.itemType) && this.perks.hasPerk(PerkIds.Lycanthropy))
                         ) {
                             const dist = Geometry.distanceSquared(object.position, this.position);
                             if (isInteractable) {

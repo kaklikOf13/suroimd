@@ -2,14 +2,14 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="123.628"
-   height="110"
-   viewBox="0 0 32.709907 29.104167"
+   width="123.62844"
+   height="61.353191"
+   viewBox="0 0 32.710024 16.233032"
    version="1.1"
    id="svg1"
    xml:space="preserve"
    inkscape:version="1.4 (86a8ad7, 2024-10-11)"
-   sodipodi:docname="vector.svg"
+   sodipodi:docname="vector_acp.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -24,7 +24,7 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
      inkscape:zoom="3.7669401"
-     inkscape:cx="43.005728"
+     inkscape:cx="43.138461"
      inkscape:cy="69.154272"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
@@ -168,10 +168,10 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-119.81975,-78.137958)"><g
+     transform="translate(-119.81969,-78.137958)"><g
        style="fill:none"
        id="g1"
-       transform="matrix(0.05487594,0,0,0.05487594,123.32065,77.713716)"><path
+       transform="matrix(0.05487594,0,0,0.05487594,123.32065,71.278148)"><path
          d="m 405.86116,219.86496 -29.207,-11.6276 -77.297,194.1637 29.208,11.627 z"
          fill="#373c3e"
          id="path1-0" /><path

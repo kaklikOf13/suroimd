@@ -27,13 +27,7 @@ export const Config = {
         content_creatr: { password: "content_creatr" },
         donatr: { password: "donatr" },
 
-        beta_tester: { password: "beta_tester" },
-
-        /*hasanger: { password: "hasanger", isDev: true },
-        pap: { password: "pap", isDev: true },
-        error: { password: "error", isDev: true },
-        limenade: { password: "limenade", isDev: true },
-        solstice: { password: "solstice", isDev: true }*/
+        beta_tester: { password: "beta_tester" }
     },
 
     antiCrash:false,

@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="121.309"
-   height="110"
-   viewBox="0 0 32.096338 29.104167"
+   width="121.3094"
+   height="33.223816"
+   viewBox="0 0 32.096445 8.7904681"
    version="1.1"
    id="svg1"
    xml:space="preserve"
@@ -24,8 +24,8 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
      inkscape:zoom="6.5208776"
-     inkscape:cx="73.916431"
-     inkscape:cy="56.664152"
+     inkscape:cx="61.648144"
+     inkscape:cy="56.510798"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
      inkscape:window-x="-8"
@@ -51,10 +51,10 @@
        hide_clip="false"
        message="" /><inkscape:perspective
        sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : -119.39584 : 1"
+       inkscape:vp_x="0 : -139.70954 : 1"
        inkscape:vp_y="0 : 999.99999 : 0"
-       inkscape:vp_z="210 : -119.39584 : 1"
-       inkscape:persp3d-origin="105 : -168.89584 : 1"
+       inkscape:vp_z="210 : -139.70954 : 1"
+       inkscape:persp3d-origin="105 : -189.20954 : 1"
        id="perspective1" /><clipPath
        clipPathUnits="userSpaceOnUse"
        id="clipPath31"><path
@@ -81,7 +81,7 @@
      id="layer2"
      inkscape:label="Layer 2"
      style="display:inline;opacity:1;stroke-width:1.60484;stroke-dasharray:none"
-     transform="matrix(0.12360351,-0.07136524,0.06094141,0.10555765,-0.47790192,19.250281)"><path
+     transform="matrix(0.12360351,-0.07136524,0.06094141,0.10555765,-0.47790185,8.0993365)"><path
        style="display:inline;opacity:1;fill:#444446;fill-opacity:1;stroke:#323234;stroke-width:1.60484;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:29;stroke-dasharray:none;stroke-opacity:1"
        d="m 116.20048,25.878569 h 10.55521 l -0.59182,-9.452735 11.81016,-1.026254 0.92457,10.000247 h 1.97712 c 1.13032,0 -0.37217,-7.060015 2.92139,-7.060015 h 9.1699 c 2.5906,-1.298946 5.54051,-1.622993 10.4683,-1.622993 h 56.07438 c 2.55911,-2.559111 6.3436,-8.7641574 3.40828,-8.7641574 H 81.393057 c -2.620808,0 -4.057481,2.8217974 -4.057481,5.4370234 h 38.783754 z"
        id="path6"

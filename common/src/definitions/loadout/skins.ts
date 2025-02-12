@@ -110,13 +110,6 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
                 ["Peachy Breeze",         0xf2a263],
                 ["Deep Sea",              0x284553],
                 ["Basic Outfit",          0xdd9b0a],
-                ["Peppermint",            0xb40030],
-                ["Spearmint",             0x115724],
-                ["Coal",                  0x424242],
-                ["Henry's Little Helper", 0x059100],
-                ["Candy Cane",            0xf4f4f4],
-                ["Holiday Tree",          0x23883f],
-                ["Gingerbread",           0xb55c12],
                 ["Light Choco",           0xffd99e],
                 ["Frosty",                0xa2f3ff],
                 ["Verified",              0x4790ff],
@@ -124,15 +117,12 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
                 ["Stardust",              0x16448b],
                 ["Aurora",                0x1d2f58],
                 ["Nebula",                0x28a0b7],
-                ["1st Birthday",          0xed8080],
                 ["Lumberjack",            0x924a24],
                 ["Gold Tie Event",        0x2b2929],
                 ["Ship Carrier",          0x679bd9],
                 ["NSD Uniform",           0x593b26],
-                ["Pumpkified",            0x402000],
                 ["One at NSD",            0x27331a],
                 ["Sky",                   0x002121],
-                ["Diseased",              0x2d1f1f],
                 ["Deer Season",           0x9a3604],
                 //Originals
             ] satisfies ReadonlyArray<readonly [string, number]>).map(([name, tint]) => hidden([name, tint])),
@@ -168,13 +158,6 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
                 ["anonymous"],
                 ["leia"],
             ] satisfies ReadonlyArray<readonly [string]>).map(([name]) => shinySkin([name])),
-            hidden(
-                ["Werewolf", 0x323232],
-                {
-                    noSwap: true,
-                    noDrop: true
-                }
-            ),
             hidden(
                 ["Ghillie Suit", 0xffffff],
                 {

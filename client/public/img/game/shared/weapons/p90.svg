@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="121.239"
-   height="110"
-   viewBox="0 0 121.239 110"
+   width="121.23947"
+   height="57.910591"
+   viewBox="0 0 121.23947 57.910591"
    version="1.1"
    id="svg1"
    xml:space="preserve"
@@ -1032,7 +1032,8 @@
          y="0" /></clipPath></defs><g
      inkscape:label="Шар 1"
      inkscape:groupmode="layer"
-     id="layer1"><g
+     id="layer1"
+     transform="translate(4.2696809e-7,-24.190079)"><g
        id="g1"
        transform="rotate(30,340.6001,-51.052786)"><path
          id="rect1"
