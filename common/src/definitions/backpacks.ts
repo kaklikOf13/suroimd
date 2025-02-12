@@ -152,6 +152,39 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                     defaultTint: 0x3f3f3f,
                     capacity:41,
                 }
+            ),
+            backpack(
+                ["Ultra"],
+                {
+                    level: 4,
+                    maxCapacity: {
+                        "gauze": 50,
+                        "medikit": 6,
+                        "cola": 20,
+                        "tablets": 8,
+                        "12g": 120,
+                        "556mm": 400,
+                        "762mm": 400,
+                        "45acp":400,
+                        "9mm": 500,
+                        "medic_charge": 300,
+                        "22lr":600,
+                        "50cal": 160,
+                        "338lap": 60,
+                        "power_cell": Infinity,
+                        "curadell": 8,
+                        "firework_rocket": 80,
+                        "frag_grenade": 32,
+                        "smoke_grenade": 32,
+                        "c4": 16,
+                        "confetti_grenade": 32,
+                        "mirv_grenade":16,
+                        "ice_grenade":8,
+                        "airstrike":8,
+                    },
+                    defaultTint: 0x3f3f3f,
+                    capacity:70,
+                }
             )
         ];
     }

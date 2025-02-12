@@ -388,9 +388,9 @@ export const DefaultGamemode:Gamemode={
     nature:{
         daynightDelay:1/((5*60)*2),
         rain:{
-            chance:0.0005,
-            stopChance:.0001,
-            transition:0.0015,
+            chance:0.0001,
+            stopChance:0.00008,
+            transition:0.0005,
             storm:{
                 chance:[0.15,0.0005],
                 stopChance:0.000015,

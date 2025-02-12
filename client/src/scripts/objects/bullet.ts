@@ -43,7 +43,7 @@ export class Bullet extends BaseBullet {
         const mods = options.modifiers;
         const tracerMods = mods?.tracer;
 
-        this.tracerLength = tracerStats.length * (tracerMods?.length ?? 1);
+        this.tracerLength = (tracerStats.length * (tracerMods?.length ?? 1))*1.7;
         this.maxLength = this._image.width * this.tracerLength;
         this._image.scale.y = tracerStats.width * (tracerMods?.width ?? 1) * (this.thin ? 0.5 : 1);
         this._image.alpha = tracerStats.opacity * (tracerMods?.opacity ?? 1) / (this.reflectionCount + 1);

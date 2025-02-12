@@ -890,8 +890,9 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         ],
         backpacks: [
             { item: "basic_pack", weight: 1 },
-            { item: "regular_pack", weight: 0.2 },
-            { item: "tactical_pack", weight: 0.01 }
+            { item: "regular_pack", weight: 0.35 },
+            { item: "tactical_pack", weight: 0.08 },
+            { item: "ultra_pack", weight: 0.01 }
         ],
         ammo: [
             { item: "556mm", count: 60, weight: 1 },
@@ -944,8 +945,9 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "tactical_vest", weight: 0.05 },
 
             { item: "basic_pack", weight: 1},
-            { item: "regular_pack", weight: 0.37 },
-            { item: "tactical_pack", weight: 0.07 }
+            { item: "regular_pack", weight: 0.4 },
+            { item: "tactical_pack", weight: 0.1 },
+            { item: "ultra_pack", weight: 0.01 }
         ],
         melee: [
             { item: "baseball_bat", weight: 3 },
@@ -958,7 +960,8 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         airdrop_equipment: [
             { item: "tactical_helmet", weight: 1 },
             { item: "tactical_vest", weight: 1 },
-            { item: "tactical_pack", weight: 0.85 }
+            { item: "tactical_pack", weight: 0.85 },
+            { item: "ultra_pack", weight: 0.3 }
         ],
         airdrop_scopes: [
             { item: "4x_scope", weight: 1 },

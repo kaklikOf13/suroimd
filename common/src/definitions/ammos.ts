@@ -45,7 +45,7 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
                 lightness: 89
             },
             defaultCasingFrame: "casing_12ga_275in",
-            size:0.12
+            size:0.1
         },
         {
             idString: "556mm",
@@ -97,7 +97,7 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
                 lightness: 59
             },
             defaultCasingFrame: "casing_22lr",
-            size:0.0065
+            size:0.005
         },
         {
             idString: "50cal",
@@ -111,7 +111,7 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
             },
             defaultCasingFrame: "casing_50bmg",
             hideUnlessPresent: true,
-            size:0.045
+            size:0.03
         },
         {
             idString: "338lap",
@@ -125,7 +125,7 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
             },
             defaultCasingFrame: "casing_338lap",
             hideUnlessPresent: true,
-            size:0.19
+            size:0.13
         },
         {
             idString: "45acp",
@@ -153,7 +153,7 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
                 lightness: 50
             },
             defaultCasingFrame: "casing_556x45mm",
-            size:0.024
+            size:0.015
         },
         {
             idString: "curadell",
@@ -167,7 +167,7 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
             },
             defaultCasingFrame: "casing_curadell",
             hideUnlessPresent: true,
-            size:0.23
+            size:0.19
         },
         {
             idString: "firework_rocket",
@@ -181,7 +181,7 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
             },
             defaultCasingFrame: "casing_firework_rocket",
             hideUnlessPresent: true,
-            size:.4
+            size:.2
         },
 
         // Ephemeral ammo types below

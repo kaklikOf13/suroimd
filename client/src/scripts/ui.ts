@@ -829,8 +829,16 @@ export async function setUpUI(game: Game): Promise<void> {
     ];
     const special_youtubers=[
         {
+            name: "MP220_YT",
+            link:"https://www.youtube.com/@mp220yt"
+        },
+        {
             name: "NAMERIO",
             link: "https://www.youtube.com/@namerio1"
+        },
+        {
+            name: "PONOSjuraflaYT",
+            link:"https://www.youtube.com/@PONOSurafla"
         },
     ]
     const youtuber = pickRandomInArray(youtubers);
