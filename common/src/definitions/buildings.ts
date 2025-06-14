@@ -10,6 +10,7 @@ import { Vec, type Vector } from "../utils/vector";
 import { Badges } from "./loadout/badges";
 import { FlyoverPref, Materials, RotationMode, type ObstacleDefinition } from "./obstacles";
 import { Skins } from "./loadout/skins";
+import { ExtraLoadoutList } from "./loadout/extra_loadout";
 
 interface BuildingObstacle {
     readonly idString: ReferenceOrRandom<ObstacleDefinition>
@@ -205,6 +206,9 @@ const npcsGenerators={
                 isMobile:false,
                 protocolVersion:0,
                 skin:Skins.fromString("forest_camo"),
+                role:ExtraLoadoutList.indexOf("medic_role"),
+                gun1:"model_37",
+                gun2:"ak47"
             },
             position:position,
             layer:0,
