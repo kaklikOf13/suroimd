@@ -817,6 +817,10 @@ export class UIManager {
 
     skinID?: string;
 
+    has_infinity_ammo(ammo_type:string){
+        return this.perks.hasPerk(PerkIds.InfiniteAmmo)||this.perks.has_infinitys[ammo_type]
+    }
+
     updateWeapons(): void {
         const inventory = this.inventory;
         const activeIndex = inventory.activeWeaponIndex;
@@ -835,7 +839,7 @@ export class UIManager {
             let showReserve = false;
             if (activeWeapon.definition.itemType === ItemType.Gun) {
                 const ammoType = activeWeapon.definition.ammoType;
-                let totalAmmo: number | string = this.perks.hasPerk(PerkIds.InfiniteAmmo)
+                let totalAmmo: number | string = this.has_infinity_ammo(ammoType)
                     ? "∞"
                     : this.inventory.items[ammoType];
 

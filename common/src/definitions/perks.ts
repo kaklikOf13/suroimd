@@ -32,6 +32,8 @@ export interface BasicPerk extends ItemDefinition {
     readonly adrenDecay?:number
 
     readonly extends?:PerkIds[]
+
+    readonly to_infinity?:Record<string,boolean>
 }
 
 const defaultTemplate = {
@@ -73,15 +75,18 @@ export const enum PerkIds {
     LowProfile = "low_profile",
 
     Takedown = "takedown",    
-    NatureBreath="nature_Breath",
+    NatureBreath="nature_breath",
 
     Last_Knight = "last_knight",
 
 
     //Modes
     Captain="captain_perk",
+    WarMedic="war_medic_perk",
     SelfRevive="self_revive",
     HealingAura="healing_aura",
+
+    HealingCharges="healing_charges",
 
     GoldenApple="golden_apple"
 }
@@ -217,7 +222,7 @@ const perks = [
         healing:25,
         boost_won:{
             type:BoostsType.Takedown,
-            time:3
+            time:10000
         },
     },
     {
@@ -227,7 +232,7 @@ const perks = [
         category: PerkCategories.Normal,
         type: PerkQualities.Positive,
         boost_won:{
-            time:2,
+            time:3000,
             type:BoostsType.Nature
         }
     },
@@ -239,6 +244,24 @@ const perks = [
         type: PerkQualities.Positive,
         extends:[PerkIds.Takedown,PerkIds.Flechettes,PerkIds.InfiniteAmmo],
         sizeMod:1.4
+    },
+    {
+        idString: PerkIds.HealingCharges,
+        name: "Healing Charges",
+        description: "Infinity Medic Charges",
+        category: PerkCategories.Normal,
+        type: PerkQualities.Positive,
+        to_infinity:{
+            "medic_charge":true
+        }
+    },
+    {
+        idString: PerkIds.WarMedic,
+        name: "War Medic",
+        description: "Healing Aura. Self Revive. Nature Breath. Healing Charges",
+        category: PerkCategories.Normal,
+        type: PerkQualities.Positive,
+        extends:[PerkIds.HealingAura,PerkIds.SelfRevive,PerkIds.NatureBreath,PerkIds.HealingCharges],
     },
     //Modes
     {

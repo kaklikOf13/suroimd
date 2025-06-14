@@ -644,7 +644,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
         {
             idString: "battlesaw",
             name: "Battlesaw",
-            damage: 45,
+            damage: 30,
             stonePiercing: true,
             obstacleMultiplier: 1,
             piercingMultiplier: 1,

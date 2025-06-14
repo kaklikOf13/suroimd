@@ -1,4 +1,5 @@
 import { ItemRarity, ItemType, ObjectDefinitions, type ItemDefinition } from "../utils/objectDefinitions";
+import { BoostsType } from "./loadout/boosts";
 import { PerkIds } from "./perks";
 
 export type ArmorDefinition = ItemDefinition & {
@@ -7,6 +8,7 @@ export type ArmorDefinition = ItemDefinition & {
     readonly level: number
     readonly givePerks:PerkIds[]
     readonly damageReduction: number
+    readonly giveBoost?:{boost_type:BoostsType,time:number}
 } & ({
     readonly armorType: ArmorType.Vest
     readonly color: number
@@ -25,7 +27,7 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
     {
         itemType: ItemType.Armor,
         noDrop: false,
-        givePerks:[]
+        givePerks:[],
     },
     ([derive]) => {
         const vest = derive((name: string) => ({
@@ -92,9 +94,13 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
                 ["Medic"],
                 {
                     level: 4,
-                    givePerks:[PerkIds.SelfRevive,PerkIds.HealingAura],
+                    givePerks:[PerkIds.WarMedic],
                     damageReduction: 0.25,
-                    rarity:ItemRarity.Legendary
+                    rarity:ItemRarity.Legendary,
+                    giveBoost:{
+                        boost_type:BoostsType.Nature,
+                        time:15*1000,
+                    }
                 }
             ),
             helmet(
@@ -104,6 +110,10 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
                     damageReduction: 0.30,
                     rarity:ItemRarity.Legendary,
                     givePerks:[PerkIds.Last_Knight],
+                    giveBoost:{
+                        boost_type:BoostsType.Takedown,
+                        time:15*1000,
+                    }
                 }
             ),
             helmet(

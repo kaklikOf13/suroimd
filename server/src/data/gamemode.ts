@@ -169,7 +169,6 @@ const DefaultRoles:Record<string,Gamerole>={
             gun1:"medic_pistol",
         },
         items:{
-            "medic_charge":400,
             "gauze":7,
             "medikit":2,
             "cola":4,

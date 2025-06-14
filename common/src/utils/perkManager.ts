@@ -6,6 +6,8 @@ export class PerkManager implements PerkCollection {
     // change to bigint once perk count exceeds 30
     protected _perks = 0;
 
+    has_infinitys:Record<string,boolean>={}
+
     constructor(
         perks?: number | readonly PerkDefinition[]
     ) {
@@ -14,6 +16,18 @@ export class PerkManager implements PerkCollection {
             this._perks = (perks as readonly PerkDefinition[])
                 .map(({ idString }) => 1 << Perks.idStringToNumber[idString])
                 .reduce((acc, cur) => acc + cur, 0);
+        }
+    }
+
+    
+    update_has_infinity():void{
+        this.has_infinitys={}
+        for(const p of this.asListExtended()){
+            if(p.to_infinity){
+                for(const kk of Object.keys(p.to_infinity)){
+                    this.has_infinitys[kk]=p.to_infinity[kk]
+                }
+            }
         }
     }
 
@@ -30,6 +44,8 @@ export class PerkManager implements PerkCollection {
         const n = 1 << Perks.idStringToNumber[idString];
         const absent = (this._perks & n) === 0;
         this._perks |= n;
+
+        this.update_has_infinity()
 
         return absent;
     }
@@ -100,6 +116,23 @@ export class PerkManager implements PerkCollection {
 
     asList(): PerkDefinition[] {
         return Perks.definitions.filter((_, i) => (this._perks & (1 << i)) !== 0);
+    }
+    asListExtended(): PerkDefinition[] {
+        const l1=Perks.definitions.filter((_, i) => (this._perks & (1 << i)) !== 0)
+        const l2:PerkDefinition[]=[]
+        for(const pp of l1){
+            const adp=(def:PerkDefinition)=>{
+                if(l2.includes(def))return
+                if(def.extends){
+                    for(const pp2 of def.extends){
+                        adp(Perks.fromString(pp2))
+                    }
+                }
+                l2.push(def)
+            }
+            adp(pp)
+        }
+        return [...l1,...l2]
     }
 
     [Symbol.iterator](): Iterator<PerkDefinition> {

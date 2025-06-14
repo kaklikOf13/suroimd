@@ -10,5 +10,6 @@ export class ClientPerkManager extends PerkManager {
 
     overwrite(perks: PerkCollection): void {
         this._perks = perks.asBitfield();
+        this.update_has_infinity()
     }
 }

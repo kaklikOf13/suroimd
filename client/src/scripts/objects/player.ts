@@ -211,11 +211,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
         // this.images.blood.zIndex = getEffectiveZIndex(4, this.game.layer, this.game.layer);
 
-        if (game.teamMode) {
-            // teamMode guarantees these images' presence
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.images.leftLeg!.scale = this.images.rightLeg!.scale = Vec.create(1.5, 0.8);
-        }
+        this.images.leftLeg!.scale = this.images.rightLeg!.scale = Vec.create(1.5, 0.8);
 
         this.images.aimTrail.angle = 90;
         this.images.aimTrail.position = Vec.create(6000, -8);
@@ -267,27 +263,27 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         });
         this.boostParticlesEmitter=this.game.particleManager.addEmitter({
             active:false,
-            delay:200,
+            delay:190,
             spawnOptions:()=>{
+                const s=randomFloat(0.5,0.8)
                 return {
                             frames:this.boost_particle,
-                            lifetime:random(2000,3000),
-                            position:Vec.add(this.position,Vec.create(random(-2,2),random(-2,2))),
+                            lifetime:random(6000,10000),
+                            position:this.hitbox.randomPoint(),
                             zIndex:ZIndexes.TeammateName,
-                            speed:Vec.create(random(-20,20),random(-20,20)),
+                            speed:Vec.create(randomFloat(-1,1),randomFloat(-3,-5)),
                             rotation:{
-                                end:random(-5,5),
-                                start:random(-3.1415,3.1415)
-                            },
-                            scale:{
-                                end:1,
-                                start:0.3,
-                                ease:EaseFunctions.quadraticOut
+                                end:randomFloat(-8,8),
+                                start:randomFloat(-3.1415,3.1415)
                             },
                             alpha:{
                                 start:1,
                                 end:0,
                                 ease:EaseFunctions.sexticIn
+                            },
+                            scale:{
+                                start:s,
+                                end:s
                             }
                         }
             }
@@ -829,6 +825,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
             let actionSoundName = "";
             this.healingParticlesEmitter.active = false;
+            this.boostParticlesEmitter.active=false
 
             this.actionSound?.stop();
 
@@ -2092,7 +2089,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     hitEffect(position: Vector, angle: number, sound?: string): void {
         const randomVariation = randomBoolean() ? "1" : "2";
-        const hitSound = this.vestLevel>=4 ? `metal_light_hit_${random}` :this.activeDisguise ? `${this.activeDisguise.material === "crate" ? "wood" : this.activeDisguise.material}_hit_${randomVariation}` : `player_hit_${randomVariation}`;
+        const hitSound = this.vestLevel>=4 ? `metal_heavy_hit_${randomVariation}` :this.activeDisguise ? `${this.activeDisguise.material === "crate" ? "wood" : this.activeDisguise.material}_hit_${randomVariation}` : `player_hit_${randomVariation}`;
+
+        console.log(hitSound)
 
         this.game.soundManager.play(
             sound ?? hitSound,

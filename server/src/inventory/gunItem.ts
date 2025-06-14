@@ -398,12 +398,17 @@ export class GunItem extends InventoryItem<GunDefinition> {
         );
     }
 
+    infinity_ammo():boolean{
+        const { owner, definition } = this;
+        return (this.owner.hasPerk(PerkIds.InfiniteAmmo)||owner.perks.has_infinitys[definition.ammoType]||this.owner.infinityAmmo||definition.infiniteAmmo)&&!definition.no_infinity_ammo
+    }
+
     reload(skipFireDelayCheck = false): void {
         const { owner, definition } = this;
 
         if (
             this.ammo >= (this.owner.hasPerk(PerkIds.ExtendedMags) ? definition.extendedCapacity ?? definition.capacity : definition.capacity)
-            || (!owner.inventory.items.hasItem(definition.ammoType) && !((this.owner.hasPerk(PerkIds.InfiniteAmmo)&&!definition.no_infinity_ammo)||this.owner.infinityAmmo||definition.infiniteAmmo))
+            || !(owner.inventory.items.hasItem(definition.ammoType) || this.infinity_ammo())
             || owner.action !== undefined
             || owner.activeItem !== this
             || (!skipFireDelayCheck && owner.game.now - this._lastUse < definition.fireDelay)

@@ -6,7 +6,7 @@ import { Numeric } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
 import { type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type Player } from "../objects/player";
-import { type GunItem } from "./gunItem";
+import { GunItem } from "./gunItem";
 import { CircleHitbox } from "@common/utils/hitbox";
 
 export abstract class Action {
@@ -103,7 +103,7 @@ export class ReloadAction extends Action {
             ? definition.extendedCapacity ?? definition.capacity
             : definition.capacity;
 
-        const hasInfiniteAmmo = this.player.hasPerk(PerkIds.InfiniteAmmo)||this.player.infinityAmmo||definition.infiniteAmmo;
+        const hasInfiniteAmmo = (this.player.inventory.activeWeapon as GunItem).infinity_ammo();
 
         const desiredLoad = Numeric.min(
             definition.shotsPerReload !== undefined && !this.fullReload

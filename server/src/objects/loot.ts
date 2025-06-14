@@ -449,6 +449,9 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                     for(const p of definition.givePerks){
                         player.perks.addPerk(Perks.fromString(p),true)
                     }
+                    if(definition.giveBoost){
+                        player.give_boost(definition.giveBoost.boost_type,definition.giveBoost.time)
+                    }
                 }
 
                 player.setDirty();

@@ -789,7 +789,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         if(this.current_boost){
             if(this.boost_time>0){
-                this.boost_time-=dt/1000;
+                this.boost_time-=dt;
             }else{
                 this.current_boost=BoostsType.Null;
                 this.setDirty()
@@ -1895,7 +1895,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const canTrackStats = weaponUsed instanceof InventoryItem;
         const attributes = canTrackStats ? weaponUsed.definition.wearerAttributes?.on : undefined;
         const sourceIsPlayer = source instanceof Player;
-        if(this.hasPerk(PerkIds.NatureBreath)&&!(sourceIsPlayer&&this.id===source.id)){
+        if(this.hasPerk(PerkIds.NatureBreath)&&sourceIsPlayer&&!(this.id===source.id)){
             const def=Perks.fromString(PerkIds.NatureBreath)
             this.give_boost(def.boost_won!.type,def.boost_won!.time)
         }
