@@ -393,26 +393,21 @@ export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>
                     weaponUsed
                 */
                 stream.writeObjectId(data.victimId);
-
-                // eventType is 3 bits, make it take up the next 3 LSB
-                kfData += data.eventType << 2;
-                if (hasAttackerData(data)) {
+                stream.writeUint8(data.eventType);
+                stream.writeUint8(data.severity);
+                const hasA=hasAttackerData(data)
+                const weaponWasUsed = !noWeaponData(data) && data.weaponUsed !== undefined;
+                stream.writeBooleanGroup(hasA,weaponWasUsed)
+                if (hasA) {
                     const hasAttacker = data.attackerId !== undefined;
                     // next LSB is the 6th one (000e eemm, with 'e' for event type and 'm' for message type)
-                    kfData += hasAttacker ? 32 : 0;
                     if (hasAttacker) {
                         stream.writeObjectId(data.attackerId);
                         stream.writeUint8(data.attackerKills);
                     }
                 }
-                // the 6th LSB is off-limits (used by thing above)
-                // use the 7th LSB for this (severity is effectively a boolean)
-                kfData += data.severity ? 64 : 0;
-
-                const weaponWasUsed = !noWeaponData(data) && data.weaponUsed !== undefined;
 
                 // and our last bit is for this
-                kfData += weaponWasUsed ? 128 : 0;
                 if (weaponWasUsed) {
                     GlobalRegistrar.writeToStream(stream, data.weaponUsed);
                     if ("killstreak" in data.weaponUsed && data.weaponUsed.killstreak) {
@@ -450,8 +445,10 @@ export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>
                 stream.writeBooleanGroup(data.role.hasBadge)
                 stream.writeObjectId(data.playerId)
                 .writeUint32(data.role.color)
-                .writeString(20,data.role.name)
-                .writeString(26,data.role.sound)
+                .writeUint8(data.role.name.length)
+                .writeString(data.role.name.length,data.role.name)
+                .writeUint8(data.role.sound.length)
+                .writeString(data.role.sound.length,data.role.sound)
                 if(data.role.hasBadge){
                     stream.writeString(15,data.role.badge!)
                 }
@@ -471,7 +468,7 @@ export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>
 
     deserialize(stream) {
         const kfData = stream.readUint8();
-        const messageType = (kfData & 4) as KillfeedMessageType;
+        const messageType = (kfData & 7) as KillfeedMessageType; // agora usa 3 bits
 
         const data = {
             messageType
@@ -483,18 +480,18 @@ export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>
                 // see the comments in the serialization method to
                 // understand the format and what's going on
                 data.victimId = stream.readObjectId();
-                data.eventType = (kfData & 0b11100) >> 2;
-
+                data.eventType = stream.readUint8();
+                data.severity = stream.readUint8();
+                const bg=stream.readBooleanGroup()
                 if (
                     hasAttackerData(data)
-                    && ((kfData & 32) !== 0) // attacker present
+                    && bg[0]
                 ) {
                     data.attackerId = stream.readObjectId();
                     (data as KillFeedPacketData & { attackerKills: number }).attackerKills = stream.readUint8();
                 }
-                data.severity = (kfData >> 6) & 1;
 
-                if ((kfData & 128) !== 0) { // used a weapon
+                if (bg[1]) {
                     type WithWeapon = KillFeedPacketData & {
                         weaponUsed: KillDamageSources
                         killstreak?: number
@@ -508,7 +505,6 @@ export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>
                 }
                 break;
             }
-
             case KillfeedMessageType.KillLeaderAssigned:
                 data.victimId = stream.readObjectId();
                 data.attackerKills = stream.readUint8();
@@ -529,8 +525,8 @@ export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>
                 data.playerId=stream.readObjectId()
                 data.role={
                     color:stream.readUint32(),
-                    name:stream.readString(20),
-                    sound:stream.readString(26),
+                    name:stream.readString(stream.readUint8()),
+                    sound:stream.readString(stream.readUint8()),
                     hasBadge:b[0],
                     badge:b[0]?stream.readString(15): undefined
                 }

@@ -6,11 +6,11 @@ export const Config = {
     port: 8000,
 
     map: "normal",
-    gamemode:"factions",
+    gamemode:"normal",
 
     maxTeamSize: TeamSize.Solo,
 
-    maxGames: 5,
+    maxGames: 4,
 
     tps: 60,
 

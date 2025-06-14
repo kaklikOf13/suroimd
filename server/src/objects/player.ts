@@ -888,7 +888,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         switch(this.current_boost){
             case BoostsType.Nature:
             case BoostsType.Takedown:
-                speed*=1.7
+                speed*=1.6
                 break
             default:{
                 break
@@ -1948,7 +1948,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 if(sourceIsPlayer){
                     this.speedV=Vec.addComponent(this.speedV,Math.cos(source.rotation)*.001*amount,Math.sin(source.rotation)*.001*amount)
                 }
-                this.game.addTimeout(this.down.bind(this,source, weaponUsed),90);
+                this.down.bind(this,source, weaponUsed)()
             } else {
                 if (canTrackStats) {
                     const kills = ++weaponUsed.stats.kills;
@@ -2372,15 +2372,15 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 ) continue;
 
                 if (def.itemType === ItemType.Ammo && count !== Infinity) {
-                    const angle = randomFloat(0, Math.PI * 2);
-                    const pos=Vec.create(position.x+(Math.cos(angle)*this.hitbox.radius),position.y+(Math.sin(angle)*this.hitbox.radius))
+                    const pos=this.hitbox.randomPoint()
                     let left = count;
                     let subtractAmount = 0;
+                    const ang=Math.atan2(pos.y-position.y,position.x-pos.x)
 
                     do {
                         left -= subtractAmount = Numeric.min(left, def.maxStackSize);
                         const loot=this.game.addLoot(item, pos, layer, { count: subtractAmount,jitterSpawn:true });
-                        loot!.push(Math.atan2(pos.y-position.y,pos.x-position.x),0.09)
+                        loot!.push(ang,0.01)
                     } while (left > 0);
 
                     continue;

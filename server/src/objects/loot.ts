@@ -94,43 +94,45 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
             return
         }
         this.hasStair=false
-        for (const object of objects) {
-            if (
-                (object.isObstacle || object.isBuilding)
-                && object.collidable
-                && object.hitbox?.collidesWith(this.hitbox)
-            ) {
-                if (object.isObstacle && object.definition.isStair) {
-                    object.handleStairInteraction(this);
-                    this.hasStair=true
-                } else if (adjacentOrEqualLayer(object.layer, this.layer)) {
-                    this.hitbox.resolveCollision(object.hitbox);
-                }
-            }
-
-            if (
-                object.isLoot
-                && object !== this
-                && object.hitbox.collidesWith(this.hitbox)
-            ) {
-                const collision = Collision.circleCircleIntersection(this.position, this.hitbox.radius, object.position, object.hitbox.radius);
-                if (collision) {
-                    this.velocity = Vec.sub(this.velocity, Vec.scale(collision.dir, 0.001));
+        for(let step=0;step<2;step++){
+            for (const object of objects) {
+                if (
+                    (object.isObstacle || object.isBuilding)
+                    && object.collidable
+                    && object.hitbox?.collidesWith(this.hitbox)
+                ) {
+                    if (object.isObstacle && object.definition.isStair) {
+                        object.handleStairInteraction(this);
+                        this.hasStair=true
+                    } else if (adjacentOrEqualLayer(object.layer, this.layer)) {
+                        this.hitbox.resolveCollision(object.hitbox);
+                    }
                 }
 
-                const dist = Numeric.max(Geometry.distance(object.position, this.position), 1);
-                const vecCollision = Vec.create(object.position.x - this.position.x, object.position.y - this.position.y);
-                const vecCollisionNorm = Vec.create(vecCollision.x / dist, vecCollision.y / dist);
-                const vRelativeVelocity = Vec.create(this.velocity.x - object.velocity.x, this.velocity.y - object.velocity.y);
+                if (
+                    object.isLoot
+                    && object !== this
+                    && object.hitbox.collidesWith(this.hitbox)
+                ) {
+                    const collision = Collision.circleCircleIntersection(this.position, this.hitbox.radius, object.position, object.hitbox.radius);
+                    if (collision) {
+                        this.velocity = Vec.sub(this.velocity, Vec.scale(collision.dir, 0.00075));
+                    }
 
-                const speed = (vRelativeVelocity.x * vecCollisionNorm.x + vRelativeVelocity.y * vecCollisionNorm.y) * 0.65;
+                    const dist = Numeric.max(Geometry.distance(object.position, this.position), 1);
+                    const vecCollision = Vec.create(object.position.x - this.position.x, object.position.y - this.position.y);
+                    const vecCollisionNorm = Vec.create(vecCollision.x / dist, vecCollision.y / dist);
+                    const vRelativeVelocity = Vec.create(this.velocity.x - object.velocity.x, this.velocity.y - object.velocity.y);
 
-                if (speed < 0) continue;
+                    const speed = (vRelativeVelocity.x * vecCollisionNorm.x + vRelativeVelocity.y * vecCollisionNorm.y) * 0.65;
 
-                this.velocity.x -= speed * vecCollisionNorm.x;
-                this.velocity.y -= speed * vecCollisionNorm.y;
-                object.velocity.x += speed * vecCollisionNorm.x;
-                object.velocity.y += speed * vecCollisionNorm.y;
+                    if (speed < 0) continue;
+
+                    this.velocity.x -= speed * vecCollisionNorm.x;
+                    this.velocity.y -= speed * vecCollisionNorm.y;
+                    object.velocity.x += speed * vecCollisionNorm.x;
+                    object.velocity.y += speed * vecCollisionNorm.y;
+                }
             }
         }
         const moving = Math.abs(this.velocity.x) > 0.001
@@ -167,7 +169,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
         };
 
         this.position = Vec.add(this.position, calculateSafeDisplacement());
-        this.velocity = Vec.scale(this.velocity, 1 / (1 + this.game.dt * 0.008));
+        this.velocity = Vec.scale(this.velocity, 1 / (1 + this.game.dt * 0.006));
 
         this.position = Vec.add(this.position, calculateSafeDisplacement());
         this.position.x = Numeric.clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
