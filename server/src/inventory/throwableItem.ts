@@ -115,7 +115,7 @@ class GrenadeHandler {
                 this.parent.owner,
                 this._projectile?.layer ?? this.parent.owner.layer,
                 this.parent,
-                (this._projectile?.halloweenSkin ?? false) ? PerkData[PerkIds.PlumpkinBomb].damageMod : 1,
+                undefined,
                 this._projectile
             );
         }

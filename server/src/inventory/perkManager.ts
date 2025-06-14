@@ -40,42 +40,6 @@ export class ServerPerkManager extends PerkManager {
             // ! evil starts here
             // some perks need to perform setup when added
             switch (idString) {
-                case PerkIds.Costumed: {
-                    const { choices } = PerkData[PerkIds.Costumed];
-
-                    owner.activeDisguise = Obstacles.fromString(
-                        weightedRandom(
-                            Object.keys(choices),
-                            Object.values(choices)
-                        )
-                    );
-                    owner.setDirty();
-                    break;
-                }
-                case PerkIds.PlumpkinBomb: {
-                    owner.halloweenThrowableSkin = true;
-                    owner.setDirty();
-                    break;
-                }
-                case PerkIds.Lycanthropy: {
-                    [this._selfData["Lycanthropy::old_skin"], owner.loadout.skin] = [owner.loadout.skin, Skins.fromString("werewolf")];
-                    owner.setDirty();
-                    owner.action?.cancel();
-                    const inventory = owner.inventory;
-                    inventory.dropWeapon(0, true)?.destroy();
-                    inventory.dropWeapon(1, true)?.destroy();
-                    inventory.dropWeapon(2, true)?.destroy();
-
-                    // Drop all throwables
-                    while (inventory.getWeapon(3)) {
-                        inventory.dropWeapon(3, true)?.destroy();
-                    }
-
-                    inventory.lockAllSlots();
-
-                    /* TODO: continue crying */
-                    break;
-                }
                 case PerkIds.ExtendedMags: {
                     const weapons = owner.inventory.weapons;
                     const maxWeapons = GameConstants.player.maxWeapons;
@@ -129,12 +93,6 @@ export class ServerPerkManager extends PerkManager {
             // ! evil starts here
             // some perks need to perform cleanup on removal
             switch (idString) {
-                case PerkIds.Lycanthropy: {
-                    owner.loadout.skin = Skins.fromStringSafe(this._selfData["Lycanthropy::old_skin"] as string) ?? Skins.fromString("hazel_jumpsuit");
-                    owner.inventory.unlockAllSlots();
-                    owner.setDirty();
-                    break;
-                }
                 case PerkIds.ExtendedMags: {
                     const weapons = owner.inventory.weapons;
                     const maxWeapons = GameConstants.player.maxWeapons;
@@ -151,16 +109,6 @@ export class ServerPerkManager extends PerkManager {
                             owner.inventory.giveItem(def.ammoType, extra);
                         }
                     }
-                    break;
-                }
-                case PerkIds.PlumpkinBomb: {
-                    owner.halloweenThrowableSkin = false;
-                    owner.setDirty();
-                    break;
-                }
-                case PerkIds.Costumed: {
-                    owner.activeDisguise = undefined;
-                    owner.setDirty();
                     break;
                 }
             }

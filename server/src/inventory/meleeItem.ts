@@ -99,7 +99,6 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                     let multiplier = 1;
 
                     multiplier *= this.owner.mapPerkOrDefault(PerkIds.Berserker, ({ damageMod }) => damageMod, 1);
-                    multiplier *= this.owner.mapPerkOrDefault(PerkIds.Lycanthropy, ({ damageMod }) => damageMod, 1);
 
                     if (closestObject.isThrowableProjectile) {
                         multiplier *= definition.obstacleMultiplier;
