@@ -1,6 +1,7 @@
 import { KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType } from "../constants";
 import { type ExplosionDefinition } from "../definitions/explosions";
 import { type GunDefinition } from "../definitions/guns";
+import { BadgeDefinition, Badges } from "../definitions/loadout/badges";
 import { type MeleeDefinition } from "../definitions/melees";
 import { type ThrowableDefinition } from "../definitions/throwables";
 import { GlobalRegistrar } from "../utils/definitionRegistry";
@@ -72,6 +73,16 @@ export type KillFeedPacketData = ({
     readonly victimId: number
     readonly attackerId: number
     readonly disconnected?: boolean
+}|{
+    readonly messageType: KillfeedMessageType.Promotion
+    readonly playerId: number
+    readonly role: {
+        readonly color:number
+        readonly sound:string
+        readonly name:string
+        readonly hasBadge:boolean
+        readonly badge:string|undefined
+    }
 };
 
 const attackerFilter: readonly IncludeAttacker[] = [
@@ -314,6 +325,42 @@ const factories = Object.freeze({
         };
 
         return obj;
+    },
+    [KillfeedMessageType.Promotion](){
+        const msg:Partial<Mutable<KillFeedPacketData>> = {
+            messageType: KillfeedMessageType.Promotion,
+            playerId:0,
+            role:{
+                color:0,
+                name:"",
+                sound:"",
+                badge:undefined,
+                hasBadge:false
+            }
+        };
+
+        const obj = {
+            setPlayerId(id:number){
+                msg.playerId = id;
+                return obj;
+            },
+            setRole(color:number,name:string,sound?:string,badge?:string){
+                const b=badge?Badges.fromStringSafe(badge):undefined
+                msg.role={
+                    color:color,
+                    name:name,
+                    sound:sound??"",
+                    badge:b?.idString,
+                    hasBadge:b!==undefined
+                }
+                return obj
+            },
+            build() {
+                return msg as KillFeedPacketData;
+            }
+        };
+
+        return obj;
     }
 });
 
@@ -399,6 +446,16 @@ export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>
                 stream.writeObjectId(data.victimId);
                 stream.writeObjectId(data.attackerId);
                 break;
+            case KillfeedMessageType.Promotion:
+                stream.writeBooleanGroup(data.role.hasBadge)
+                stream.writeObjectId(data.playerId)
+                .writeUint32(data.role.color)
+                .writeString(20,data.role.name)
+                .writeString(26,data.role.sound)
+                if(data.role.hasBadge){
+                    stream.writeString(15,data.role.badge!)
+                }
+                break
         }
 
         // now we go back to our saved index
@@ -414,11 +471,12 @@ export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>
 
     deserialize(stream) {
         const kfData = stream.readUint8();
-        const messageType = (kfData & 3) as KillfeedMessageType;
+        const messageType = (kfData & 4) as KillfeedMessageType;
 
         const data = {
             messageType
         } as DeepMutable<KillFeedPacketData>;
+
 
         switch (data.messageType) {
             case KillfeedMessageType.DeathOrDown: {
@@ -465,6 +523,17 @@ export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>
                 data.victimId = stream.readObjectId();
                 data.attackerId = stream.readObjectId();
                 data.disconnected = (kfData & 128) !== 0;
+                break;
+            case KillfeedMessageType.Promotion:
+                const b=stream.readBooleanGroup()
+                data.playerId=stream.readObjectId()
+                data.role={
+                    color:stream.readUint32(),
+                    name:stream.readString(20),
+                    sound:stream.readString(26),
+                    hasBadge:b[0],
+                    badge:b[0]?stream.readString(15): undefined
+                }
                 break;
         }
 

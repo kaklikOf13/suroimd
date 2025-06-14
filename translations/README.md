@@ -1,8 +1,8 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Fri, 13 Jun 2025 23:40:09 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Sat, 14 Jun 2025 08:57:58 GMT
 
-## 🇦🇱 Shqip (85% Complete) - ab.hjson
+## 🇦🇱 Shqip (82% Complete) - ab.hjson
 
 ### (No Invalid Keys)
 
@@ -44,13 +44,22 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off` is not defined
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
+- Key `kf_role_promotion` is not defined
 - Key `go_score` is not defined
+- Key `gamerole_red_captain` is not defined
+- Key `gamerole_blue_captain` is not defined
+- Key `gamerole_red_medic` is not defined
+- Key `gamerole_blue_medic` is not defined
+- Key `gamerole_red_sergeant` is not defined
+- Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_lastman` is not defined
+- Key `gamerole_blue_lastman` is not defined
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇧🇷 Português (Brasil) (94% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (91% Complete) - br.hjson
 
 ### (No Invalid Keys)
 
@@ -69,12 +78,21 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `special_youtubr` is not defined
+- Key `kf_role_promotion` is not defined
 - Key `go_score` is not defined
+- Key `gamerole_red_captain` is not defined
+- Key `gamerole_blue_captain` is not defined
+- Key `gamerole_red_medic` is not defined
+- Key `gamerole_blue_medic` is not defined
+- Key `gamerole_red_sergeant` is not defined
+- Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_lastman` is not defined
+- Key `gamerole_blue_lastman` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇨🇿 Čeština (88% Complete) - cz.hjson
+## 🇨🇿 Čeština (86% Complete) - cz.hjson
 
 ### (No Invalid Keys)
 
@@ -106,13 +124,22 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_radio_overused` is not defined
 - Key `interact_speaker` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `kf_role_promotion` is not defined
 - Key `go_score` is not defined
+- Key `gamerole_red_captain` is not defined
+- Key `gamerole_blue_captain` is not defined
+- Key `gamerole_red_medic` is not defined
+- Key `gamerole_blue_medic` is not defined
+- Key `gamerole_red_sergeant` is not defined
+- Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_lastman` is not defined
+- Key `gamerole_blue_lastman` is not defined
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇩🇪 Deutsch (80% Complete) - de.hjson
+## 🇩🇪 Deutsch (78% Complete) - de.hjson
 
 ### (No Invalid Keys)
 
@@ -161,7 +188,16 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off` is not defined
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
+- Key `kf_role_promotion` is not defined
 - Key `go_score` is not defined
+- Key `gamerole_red_captain` is not defined
+- Key `gamerole_blue_captain` is not defined
+- Key `gamerole_red_medic` is not defined
+- Key `gamerole_blue_medic` is not defined
+- Key `gamerole_red_sergeant` is not defined
+- Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_lastman` is not defined
+- Key `gamerole_blue_lastman` is not defined
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
@@ -172,7 +208,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_as` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇪🇪 Eesti (93% Complete) - et.hjson
+## 🇪🇪 Eesti (90% Complete) - et.hjson
 
 ### (No Invalid Keys)
 
@@ -192,12 +228,21 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `special_youtubr` is not defined
+- Key `kf_role_promotion` is not defined
 - Key `go_score` is not defined
+- Key `gamerole_red_captain` is not defined
+- Key `gamerole_blue_captain` is not defined
+- Key `gamerole_red_medic` is not defined
+- Key `gamerole_blue_medic` is not defined
+- Key `gamerole_red_sergeant` is not defined
+- Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_lastman` is not defined
+- Key `gamerole_blue_lastman` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇫🇷 Français (93% Complete) - fr.hjson
+## 🇫🇷 Français (90% Complete) - fr.hjson
 
 ### (No Invalid Keys)
 
@@ -217,12 +262,21 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `special_youtubr` is not defined
+- Key `kf_role_promotion` is not defined
 - Key `go_score` is not defined
+- Key `gamerole_red_captain` is not defined
+- Key `gamerole_blue_captain` is not defined
+- Key `gamerole_red_medic` is not defined
+- Key `gamerole_blue_medic` is not defined
+- Key `gamerole_red_sergeant` is not defined
+- Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_lastman` is not defined
+- Key `gamerole_blue_lastman` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇬🇷 Ελληνικά (94% Complete) - gr.hjson
+## 🇬🇷 Ελληνικά (91% Complete) - gr.hjson
 
 ### (No Invalid Keys)
 
@@ -241,12 +295,21 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `special_youtubr` is not defined
+- Key `kf_role_promotion` is not defined
 - Key `go_score` is not defined
+- Key `gamerole_red_captain` is not defined
+- Key `gamerole_blue_captain` is not defined
+- Key `gamerole_red_medic` is not defined
+- Key `gamerole_blue_medic` is not defined
+- Key `gamerole_red_sergeant` is not defined
+- Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_lastman` is not defined
+- Key `gamerole_blue_lastman` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (87% Complete) - hk_mo.hjson
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (84% Complete) - hk_mo.hjson
 
 ### (No Invalid Keys)
 
@@ -282,13 +345,22 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `bindings_explode_c4` is not defined
 - Key `kf_finished_off_kill` is not defined
 - Key `kf_finished_off_down` is not defined
+- Key `kf_role_promotion` is not defined
 - Key `go_score` is not defined
+- Key `gamerole_red_captain` is not defined
+- Key `gamerole_blue_captain` is not defined
+- Key `gamerole_red_medic` is not defined
+- Key `gamerole_blue_medic` is not defined
+- Key `gamerole_red_sergeant` is not defined
+- Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_lastman` is not defined
+- Key `gamerole_blue_lastman` is not defined
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇭🇺 Magyar (94% Complete) - hu.hjson
+## 🇭🇺 Magyar (91% Complete) - hu.hjson
 
 ### (No Invalid Keys)
 
@@ -307,12 +379,21 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `special_youtubr` is not defined
+- Key `kf_role_promotion` is not defined
 - Key `go_score` is not defined
+- Key `gamerole_red_captain` is not defined
+- Key `gamerole_blue_captain` is not defined
+- Key `gamerole_red_medic` is not defined
+- Key `gamerole_blue_medic` is not defined
+- Key `gamerole_red_sergeant` is not defined
+- Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_lastman` is not defined
+- Key `gamerole_blue_lastman` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇯🇵 日本語 (88% Complete) - jp.hjson
+## 🇯🇵 日本語 (86% Complete) - jp.hjson
 
 ### (No Invalid Keys)
 
@@ -344,13 +425,22 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_radio_overused` is not defined
 - Key `interact_speaker` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `kf_role_promotion` is not defined
 - Key `go_score` is not defined
+- Key `gamerole_red_captain` is not defined
+- Key `gamerole_blue_captain` is not defined
+- Key `gamerole_red_medic` is not defined
+- Key `gamerole_blue_medic` is not defined
+- Key `gamerole_red_sergeant` is not defined
+- Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_lastman` is not defined
+- Key `gamerole_blue_lastman` is not defined
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇱🇹 Lietuvių (88% Complete) - lt.hjson
+## 🇱🇹 Lietuvių (86% Complete) - lt.hjson
 
 ### (No Invalid Keys)
 
@@ -382,13 +472,22 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_radio_overused` is not defined
 - Key `interact_speaker` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `kf_role_promotion` is not defined
 - Key `go_score` is not defined
+- Key `gamerole_red_captain` is not defined
+- Key `gamerole_blue_captain` is not defined
+- Key `gamerole_red_medic` is not defined
+- Key `gamerole_blue_medic` is not defined
+- Key `gamerole_red_sergeant` is not defined
+- Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_lastman` is not defined
+- Key `gamerole_blue_lastman` is not defined
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇱🇻 Latviešu (88% Complete) - lv.hjson
+## 🇱🇻 Latviešu (86% Complete) - lv.hjson
 
 ### (No Invalid Keys)
 
@@ -420,13 +519,22 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_radio_overused` is not defined
 - Key `interact_speaker` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `kf_role_promotion` is not defined
 - Key `go_score` is not defined
+- Key `gamerole_red_captain` is not defined
+- Key `gamerole_blue_captain` is not defined
+- Key `gamerole_red_medic` is not defined
+- Key `gamerole_blue_medic` is not defined
+- Key `gamerole_red_sergeant` is not defined
+- Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_lastman` is not defined
+- Key `gamerole_blue_lastman` is not defined
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇵🇱 Polski (93% Complete) - pl.hjson
+## 🇵🇱 Polski (90% Complete) - pl.hjson
 
 ### (No Invalid Keys)
 
@@ -446,12 +554,21 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `special_youtubr` is not defined
+- Key `kf_role_promotion` is not defined
 - Key `go_score` is not defined
+- Key `gamerole_red_captain` is not defined
+- Key `gamerole_blue_captain` is not defined
+- Key `gamerole_red_medic` is not defined
+- Key `gamerole_blue_medic` is not defined
+- Key `gamerole_red_sergeant` is not defined
+- Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_lastman` is not defined
+- Key `gamerole_blue_lastman` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🎀 Cute Engwish (87% Complete) - qen.hjson
+## 🎀 Cute Engwish (84% Complete) - qen.hjson
 
 ### Invalid Keys
 
@@ -490,13 +607,22 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `msg_radio_overused` is not defined
 - Key `interact_speaker` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `kf_role_promotion` is not defined
 - Key `go_score` is not defined
+- Key `gamerole_red_captain` is not defined
+- Key `gamerole_blue_captain` is not defined
+- Key `gamerole_red_medic` is not defined
+- Key `gamerole_blue_medic` is not defined
+- Key `gamerole_red_sergeant` is not defined
+- Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_lastman` is not defined
+- Key `gamerole_blue_lastman` is not defined
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇷🇴 Română (82% Complete) - ro.hjson
+## 🇷🇴 Română (80% Complete) - ro.hjson
 
 ### (No Invalid Keys)
 
@@ -544,13 +670,22 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off` is not defined
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
+- Key `kf_role_promotion` is not defined
 - Key `go_score` is not defined
+- Key `gamerole_red_captain` is not defined
+- Key `gamerole_blue_captain` is not defined
+- Key `gamerole_red_medic` is not defined
+- Key `gamerole_blue_medic` is not defined
+- Key `gamerole_red_sergeant` is not defined
+- Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_lastman` is not defined
+- Key `gamerole_blue_lastman` is not defined
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇷🇺 Русский (94% Complete) - ru.hjson
+## 🇷🇺 Русский (91% Complete) - ru.hjson
 
 ### (No Invalid Keys)
 
@@ -569,12 +704,21 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `special_youtubr` is not defined
+- Key `kf_role_promotion` is not defined
 - Key `go_score` is not defined
+- Key `gamerole_red_captain` is not defined
+- Key `gamerole_blue_captain` is not defined
+- Key `gamerole_red_medic` is not defined
+- Key `gamerole_blue_medic` is not defined
+- Key `gamerole_red_sergeant` is not defined
+- Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_lastman` is not defined
+- Key `gamerole_blue_lastman` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇮🇳 தமிழ் (88% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (85% Complete) - ta.hjson
 
 ### (No Invalid Keys)
 
@@ -608,13 +752,22 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `interact_headquarters_security_desk` is not defined
 - Key `interact_speaker` is not defined
 - Key `bindings_explode_c4` is not defined
+- Key `kf_role_promotion` is not defined
 - Key `go_score` is not defined
+- Key `gamerole_red_captain` is not defined
+- Key `gamerole_blue_captain` is not defined
+- Key `gamerole_red_medic` is not defined
+- Key `gamerole_blue_medic` is not defined
+- Key `gamerole_red_sergeant` is not defined
+- Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_lastman` is not defined
+- Key `gamerole_blue_lastman` is not defined
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇹🇷 Turkısh (94% Complete) - tr.hjson
+## 🇹🇷 Turkısh (91% Complete) - tr.hjson
 
 ### (No Invalid Keys)
 
@@ -633,12 +786,21 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `special_youtubr` is not defined
+- Key `kf_role_promotion` is not defined
 - Key `go_score` is not defined
+- Key `gamerole_red_captain` is not defined
+- Key `gamerole_blue_captain` is not defined
+- Key `gamerole_red_medic` is not defined
+- Key `gamerole_blue_medic` is not defined
+- Key `gamerole_red_sergeant` is not defined
+- Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_lastman` is not defined
+- Key `gamerole_blue_lastman` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇹🇼 中文（繁體） (81% Complete) - tw.hjson
+## 🇹🇼 中文（繁體） (79% Complete) - tw.hjson
 
 ### (No Invalid Keys)
 
@@ -689,13 +851,22 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `kf_finished_off` is not defined
 - Key `themselves` is not defined
 - Key `kf_message` is not defined
+- Key `kf_role_promotion` is not defined
 - Key `go_score` is not defined
+- Key `gamerole_red_captain` is not defined
+- Key `gamerole_blue_captain` is not defined
+- Key `gamerole_red_medic` is not defined
+- Key `gamerole_blue_medic` is not defined
+- Key `gamerole_red_sergeant` is not defined
+- Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_lastman` is not defined
+- Key `gamerole_blue_lastman` is not defined
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇻🇳 Tiếng Việt (93% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (90% Complete) - vi.hjson
 
 ### Invalid Keys
 
@@ -718,12 +889,21 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `special_youtubr` is not defined
+- Key `kf_role_promotion` is not defined
 - Key `go_score` is not defined
+- Key `gamerole_red_captain` is not defined
+- Key `gamerole_blue_captain` is not defined
+- Key `gamerole_red_medic` is not defined
+- Key `gamerole_blue_medic` is not defined
+- Key `gamerole_red_sergeant` is not defined
+- Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_lastman` is not defined
+- Key `gamerole_blue_lastman` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
 
-## 🇨🇳 中文（简体） (94% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (91% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -745,7 +925,16 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `weapon_category_0` is not defined
 - Key `weapon_category_1` is not defined
 - Key `special_youtubr` is not defined
+- Key `kf_role_promotion` is not defined
 - Key `go_score` is not defined
+- Key `gamerole_red_captain` is not defined
+- Key `gamerole_blue_captain` is not defined
+- Key `gamerole_red_medic` is not defined
+- Key `gamerole_blue_medic` is not defined
+- Key `gamerole_red_sergeant` is not defined
+- Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_lastman` is not defined
+- Key `gamerole_blue_lastman` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined

@@ -1,4 +1,4 @@
-import { ItemType, ObjectDefinitions, type ItemDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { ItemRarity, ItemType, ObjectDefinitions, type ItemDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { type AmmoDefinition } from "./ammos";
 import { type HealingItemDefinition } from "./healingItems";
 import { type ThrowableDefinition } from "./throwables";
@@ -54,7 +54,8 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                     "ice_grenade":1,
                 },
                 noDrop: true,
-                capacity:11,
+                capacity:12,
+                rarity:ItemRarity.Common
             },
             backpack(
                 ["Basic"],
@@ -85,7 +86,8 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                         "ice_grenade":2,
                     },
                     defaultTint: 0xeeeeee,
-                    capacity:15,
+                    capacity:16,
+                    rarity:ItemRarity.Uncommon
                 }
             ),
             backpack(
@@ -117,7 +119,8 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                         "ice_grenade":3,
                     },
                     defaultTint: 0x63754b,
-                    capacity:28,
+                    capacity:29,
+                    rarity:ItemRarity.Rare
                 }
             ),
             backpack(
@@ -150,7 +153,8 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                         "airstrike":4,
                     },
                     defaultTint: 0x3f3f3f,
-                    capacity:41,
+                    capacity:42,
+                    rarity:ItemRarity.Epic
                 }
             ),
             backpack(
@@ -183,7 +187,8 @@ export const Backpacks = ObjectDefinitions.withDefault<BackpackDefinition>()(
                         "airstrike":8,
                     },
                     defaultTint: 0x3f3f3f,
-                    capacity:70,
+                    capacity:71,
+                    rarity:ItemRarity.Legendary
                 }
             )
         ];

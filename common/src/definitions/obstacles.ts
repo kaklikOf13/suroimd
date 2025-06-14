@@ -1081,6 +1081,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 rotationMode: RotationMode.Full,
                 allowFlyover: FlyoverPref.Always,
                 hasLoot:true,
+                weaponSwap:true,
             },
             ...withWinterVariation([
                 {

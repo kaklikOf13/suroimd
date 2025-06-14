@@ -1,6 +1,6 @@
 import { DEFAULT_INVENTORY, GameConstants, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType } from "@common/constants";
 import { Ammos } from "@common/definitions/ammos";
-import { type BadgeDefinition } from "@common/definitions/loadout/badges";
+import { Badges, type BadgeDefinition } from "@common/definitions/loadout/badges";
 import { type EmoteDefinition } from "@common/definitions/loadout/emotes";
 import { type GunDefinition } from "@common/definitions/guns";
 import { Loots } from "@common/definitions/loots";
@@ -490,12 +490,21 @@ export class UIManager {
 
         this._teammateDataCache.clear();
     }
-    private readonly _groupDataCache = new Map<number, PlayerHealthUIGroup>();
+    readonly _groupDataCache = new Map<number, PlayerHealthUIGroup>();
+    _blockedGroupSignals:Record<number,boolean>={};
     clearGroupCache(): void {
         for (const [, entry] of this._groupDataCache) {
             entry.destroy();
         }
 
+        this._blockedGroupSignals={}
+        this._groupDataCache.clear();
+    }
+    private readonly _anotherIndicDataCache = new Map<number, AnotherMapIndicator>();
+    clearAnotherIndicCache(): void {
+        for (const [, entry] of this._anotherIndicDataCache) {
+            entry.destroy();
+        }
         this._groupDataCache.clear();
     }
 
@@ -511,6 +520,7 @@ export class UIManager {
             id,
             teammates,
             groupPlayers,
+            otherIndicators,
             inventory,
             lockedSlots,
             items,
@@ -607,6 +617,7 @@ export class UIManager {
                 ...teammates
             ].forEach((player, index) => {
                 const { id } = player;
+                if(this._blockedGroupSignals[id])return
                 notVisited.delete(id);
 
                 const cacheEntry = _teammateDataCache.get(id);
@@ -648,6 +659,35 @@ export class UIManager {
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 _teammateDataCache.get(outdated)!.destroy();
                 _teammateDataCache.delete(outdated);
+            }
+        }
+        
+        if(otherIndicators){
+            const _anotherIndicDataCache = this._anotherIndicDataCache;
+            const notVisited = new Set(_anotherIndicDataCache.keys());
+
+            otherIndicators.forEach((indc, index) => {
+                const { id } = indc;
+                notVisited.delete(id);
+                const ele = new AnotherMapIndicator(
+                    this.game,
+                    {
+                        id,
+                        frame:indc.sprite?.frame,
+                        position:indc.position,
+                        from_player:indc.sprite?.from_player,
+                        scale:indc.sprite?.scale,
+                        tint:indc.sprite?.tint
+                    }
+                );
+                _anotherIndicDataCache.set(id, ele);
+            });
+
+            for (const outdated of notVisited) {
+                // the `notVisited` set is exclusively populated with keys from this map
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                _anotherIndicDataCache.get(outdated)!.destroy();
+                _anotherIndicDataCache.delete(outdated);
             }
         }
         if (groupPlayers && this.game.groupMode) {
@@ -1566,6 +1606,24 @@ export class UIManager {
                 }
                 break;
             }
+            case KillfeedMessageType.Promotion:{
+                const pn=this.game.playerNames.get(message.playerId)
+                if(pn){
+                    //@ts-ignore
+                    pn.nameColor=new Color(message.role.color)
+                    //@ts-ignore
+                    pn.hasColor=true
+                    if(message.role.hasBadge){
+                        //@ts-ignore
+                        pn.badge=Badges.fromStringSafe(message.role.badge!)
+                    }
+
+                    const cpname=getNameAndBadge(message.playerId)
+                    messageText = html`${getTranslatedString("kf_role_promotion", { player: cpname.badgeText+pn.name,role:getTranslatedString(("gamerole_"+message.role.name) as TranslationKeys) })}`
+                }
+                if(message.role.sound!=="")this.game.soundManager.play(message.role.sound)
+                break
+            }
 
             case KillfeedMessageType.KillLeaderAssigned: {
                 const {
@@ -1723,6 +1781,14 @@ interface UpdateGroupDataType {
     readonly dead?: boolean | null
     readonly disconnected?: boolean | null
     readonly position?: Vector | null
+}
+interface UpdateOIdicDataType {
+    readonly id?: number | null
+    readonly position?: Vector | null
+    readonly frame?:string
+    readonly scale?:number
+    readonly tint?:number
+    readonly from_player?:boolean
 }
 
 class PlayerHealthUI {
@@ -1968,6 +2034,135 @@ class PlayerHealthUI {
         this.container.remove();
         const id = this._id.value;
         const teammateIndicators = this.game.map.teammateIndicators;
+        teammateIndicators.get(id)?.destroy();
+        teammateIndicators.delete(id);
+    }
+}
+class AnotherMapIndicator {
+    readonly game: Game;
+
+    /*
+      hierarchy:
+
+      container
+      |
+      |-> svgContainer
+      |   |-> healthAmount
+      |
+      |-> indicatorContainer
+      |   |-> teammateIndicator
+      |
+      |-> nameLabel
+      |-> badgeImage
+  */
+
+    private readonly _id = new Wrapper<number>(-1);
+    get id(): number { return this._id.value; }
+
+    private readonly _scale = new Wrapper<number>(1);
+    get scale(): number { return this._scale.value; }
+
+    private readonly _tint = new Wrapper<number>(0xffffff);
+    get tint(): number { return this._tint.value; }
+
+    private readonly _from_player = new Wrapper<boolean>(false);
+    get from_player(): boolean { return this._from_player.value; }
+
+    private readonly _frame = new Wrapper<string>("");
+    get frame(): string { return this._frame.value; }
+
+    private readonly _position = new Wrapper<Vector | undefined>(undefined);
+    get position(): Vector | undefined { return this._position.value; }
+
+    constructor(game: Game, data?: UpdateOIdicDataType) {
+        this.game = game;
+
+        if (typeof data?.id === "number") {
+            this._id.value = data.id;
+            this._id.markClean();
+        }
+
+        this.update(data);
+    }
+
+    update(data?: UpdateOIdicDataType): void {
+        const id = this._id.value;
+
+        if (data !== undefined) {
+            ([
+                "id",
+                "scale",
+                "frame",
+                "tint",
+                "from_player",
+                "position",
+            ] as const).forEach(<K extends keyof UpdateOIdicDataType>(prop: K) => {
+                const value = data[prop];
+                if (prop in data && value !== null) {
+                    type GoofyValueType = Exclude<Required<typeof data>[typeof prop], null>;
+
+                    (this[`_${prop}`] as Wrapper<GoofyValueType>).value = value as GoofyValueType;
+                }
+            });
+        }
+
+        if (this._id.dirty) {
+            // uh… no-op?
+            console.warn(`PlayerHealthUI id unexpectedly marked dirty (was ${id}, currently ${this._id.value}); ignoring change request.`);
+        }
+
+        
+
+        let indicator: SuroiSprite | undefined;
+
+        if(this.from_player){
+            this.game.uiManager._blockedGroupSignals[this._id.value]=true
+            if(this.game.uiManager._groupDataCache.has(this.id)){
+                const vv=this.game.uiManager._groupDataCache.get(this.id)
+                vv?.destroy()
+                this.game.uiManager._groupDataCache.delete(this.id)
+            }
+        }
+
+        if (id === this.game.activePlayerID&&this.from_player) {
+            indicator = this.game.map.indicator;
+        } else {
+            const { anotherIndicators } = this.game.map;
+
+            if (this._position.dirty && this._position.value) {
+                if ((indicator = anotherIndicators.get(id)) === undefined) {
+
+                    anotherIndicators.set(
+                        id,
+                        indicator = new SuroiSprite(this.frame)
+                            .setTint(this.tint)
+                    );
+                    this.game.map.anotherIndicatorContainer.addChild(indicator);
+                }
+
+                indicator
+                    .setVPos(this._position.value)
+                    .setScale(this.game.map.expanded ? 0.60 : 0.4);
+            }
+
+            indicator ??= anotherIndicators.get(id);
+        }
+
+        ([
+            "id",
+            "scale",
+            "frame",
+            "tint",
+            "from_player",
+            "position",
+        ] as const).forEach(<K extends keyof UpdateOIdicDataType>(prop: K) => {
+            (this[`_${prop}`] as Wrapper<unknown>).markClean();
+        });
+    }
+
+    destroy(): void {
+        const id = this._id.value;
+        const teammateIndicators = this.game.map.groupIndicators;
         teammateIndicators.get(id)?.destroy();
         teammateIndicators.delete(id);
     }

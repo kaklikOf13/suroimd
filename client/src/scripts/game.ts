@@ -810,6 +810,7 @@ export class Game {
                 this.particleManager.clear();
                 this.uiManager.clearTeammateCache();
                 this.uiManager.clearGroupCache();
+                this.uiManager.clearAnotherIndicCache();
 
                 const map = this.map;
                 map.safeZone.clear();

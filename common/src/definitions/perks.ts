@@ -1,5 +1,7 @@
+import { read } from "fs";
 import { type DeepPartial } from "../utils/misc";
 import { ItemType, ObjectDefinitions, type GetMissing, type ItemDefinition, type RawDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { BoostsType } from "./loadout/boosts";
 
 export const enum PerkQualities {
     Positive = "positive",
@@ -17,6 +19,13 @@ export interface BasicPerk extends ItemDefinition {
     readonly noSwap?: boolean
     readonly alwaysAllowSwap?: boolean
     readonly plumpkinGambleIgnore?: boolean
+
+    readonly boost_won?:{
+        readonly type:BoostsType
+        readonly time:number
+    }
+
+    readonly healing?:number
 
     readonly sizeMod?:number
     readonly adrenSet?:number
@@ -63,12 +72,18 @@ export const enum PerkIds {
     CloseQuartersCombat = "close_quarters_combat",
     LowProfile = "low_profile",
 
+    Takedown = "takedown",    
+    NatureBreath="nature_Breath",
+
+    Last_Knight = "last_knight",
+
+
     //Modes
     Captain="captain_perk",
     SelfRevive="self_revive",
     HealingAura="healing_aura",
 
-    FlorestQueen="florest_queen"
+    GoldenApple="golden_apple"
 }
 
 export const enum PerkCategories {
@@ -95,8 +110,8 @@ const perks = [
         category: PerkCategories.Normal,
 
         split: 3,
-        deviation: 0.7,
-        damageMod: 0.4
+        deviation: 0.8,
+        damageMod: 0.75
     },
     {
         idString: PerkIds.SabotRounds,
@@ -193,14 +208,46 @@ const perks = [
         sizeMod: 0.8, // multiplicative
         explosionMod: 0.5 // multiplicative
     },
+    {
+        idString: PerkIds.Takedown,
+        name: "Takedown",
+        description: "Heal After You Kill",
+        category: PerkCategories.Normal,
+        type: PerkQualities.Positive,
+        healing:25,
+        boost_won:{
+            type:BoostsType.Takedown,
+            time:3
+        },
+    },
+    {
+        idString: PerkIds.NatureBreath,
+        name: "Nature Breath",
+        description: "Add A Boost When You Got Hitted",
+        category: PerkCategories.Normal,
+        type: PerkQualities.Positive,
+        boost_won:{
+            time:2,
+            type:BoostsType.Nature
+        }
+    },
+    {
+        idString: PerkIds.Last_Knight,
+        name: "Last Knight",
+        description: "Fléchettes. Takedown. Infinity Ammo",
+        category: PerkCategories.Normal,
+        type: PerkQualities.Positive,
+        extends:[PerkIds.Takedown,PerkIds.Flechettes,PerkIds.InfiniteAmmo],
+        sizeMod:1.4
+    },
     //Modes
     {
         idString: PerkIds.Captain,
         name: "Captain",
-        description: "Permanent adrenaline. Biggest Size",
+        description: "Permanent adrenaline. Biggest Size. Infinity Ammo",
         category: PerkCategories.Normal,
         type: PerkQualities.Positive,
-
+        extends:[PerkIds.InfiniteAmmo],
         adrenSet: 1,
         adrenDecay: 0,
     },
@@ -221,13 +268,12 @@ const perks = [
         radius:15.5,
     },
     {
-        idString: PerkIds.FlorestQueen,
-        name: "Florest Queen",
-        description: "Biggest Size, Flechettes, Advanced Athletics, Infinite Ammo, Extend Mags.",
+        idString: PerkIds.GoldenApple,
+        name: "Golden Apple",
+        description: "Infinite Ammo. You Always Have Luck With Weapon Swap.",
         category: PerkCategories.Normal,
         type: PerkQualities.Positive,
-        sizeMod:1.2,
-        extends:[PerkIds.Flechettes, PerkIds.AdvancedAthletics, PerkIds.InfiniteAmmo, PerkIds.ExtendedMags]
+        extends:[PerkIds.InfiniteAmmo]
     },
 ] as const satisfies ReadonlyArray<
     GetMissing<

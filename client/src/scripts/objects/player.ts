@@ -35,6 +35,7 @@ import { Obstacle } from "./obstacle";
 import { type Particle, type ParticleEmitter } from "./particles";
 import type { AllowedEmoteSources } from "@common/packets/inputPacket";
 import { ExtraLoadout, ExtraLoadoutList, type AuraDefinition, type ExtraLoadoutDefinition } from "@common/definitions/loadout/extra_loadout";
+import { BoostsType } from "@common/definitions/loadout/boosts";
 
 export class Player extends GameObject.derive(ObjectCategory.Player) {
     teamID!: number;
@@ -91,6 +92,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     private _skin: ReferenceTo<SkinDefinition> = "";
     extra_loadout_fist?: ExtraLoadoutDefinition;
 
+    current_boost:BoostsType=BoostsType.Null
+    boost_particle:string|string[]="takedown_particle"
+
     readonly images: {
         readonly aimTrail: TilingSprite
         readonly vest: SuroiSprite
@@ -124,6 +128,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     };
 
     healingParticlesEmitter: ParticleEmitter;
+    boostParticlesEmitter: ParticleEmitter;
 
     readonly anims: {
         emote?: Tween<Container>
@@ -260,6 +265,33 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 };
             }
         });
+        this.boostParticlesEmitter=this.game.particleManager.addEmitter({
+            active:false,
+            delay:200,
+            spawnOptions:()=>{
+                return {
+                            frames:this.boost_particle,
+                            lifetime:random(2000,3000),
+                            position:Vec.add(this.position,Vec.create(random(-2,2),random(-2,2))),
+                            zIndex:ZIndexes.TeammateName,
+                            speed:Vec.create(random(-20,20),random(-20,20)),
+                            rotation:{
+                                end:random(-5,5),
+                                start:random(-3.1415,3.1415)
+                            },
+                            scale:{
+                                end:1,
+                                start:0.3,
+                                ease:EaseFunctions.quadraticOut
+                            },
+                            alpha:{
+                                start:1,
+                                end:0,
+                                ease:EaseFunctions.sexticIn
+                            }
+                        }
+            }
+        })
 
         this.images.body.eventMode = "static";
         this.images.body.on("pointerdown", (): void => {
@@ -769,6 +801,24 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             // Rate Limiting: Team Pings & Emotes
             this.blockEmoting = blockEmoting;
             this.game.uiManager.ui.emoteWheel.css("opacity", this.blockEmoting ? "0.5" : "");
+
+            if(this.current_boost!==data.full.boost){
+                this.current_boost=data.full.boost
+                this.boostParticlesEmitter.active=true
+                switch(this.current_boost){
+                    case BoostsType.Null:
+                        this.boostParticlesEmitter.active=false
+                        break
+                    case BoostsType.Takedown:
+                        this.playSound("boost_sfx_1")
+                        this.boost_particle="takedown_particle"
+                        break
+                    case BoostsType.Nature:
+                        this.playSound("boost_sfx_1")
+                        this.boost_particle=["leaf_particle_1","leaf_particle_2","leaf_particle_3","leaf_particle_4","leaf_particle_5","leaf_particle_6"]
+                        break
+                }
+            }
         }
 
         if (updateContainerZIndex) this.updateZIndex();
@@ -2042,7 +2092,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
 
     hitEffect(position: Vector, angle: number, sound?: string): void {
         const randomVariation = randomBoolean() ? "1" : "2";
-        const hitSound = this.activeDisguise ? `${this.activeDisguise.material === "crate" ? "wood" : this.activeDisguise.material}_hit_${randomVariation}` : `player_hit_${randomVariation}`;
+        const hitSound = this.vestLevel>=4 ? `metal_light_hit_${random}` :this.activeDisguise ? `${this.activeDisguise.material === "crate" ? "wood" : this.activeDisguise.material}_hit_${randomVariation}` : `player_hit_${randomVariation}`;
 
         this.game.soundManager.play(
             sound ?? hitSound,

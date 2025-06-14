@@ -1,6 +1,6 @@
 import { defaultBulletTemplate, FireMode } from "../constants";
 import { mergeDeep, type DeepPartial } from "../utils/misc";
-import { inheritFrom, ItemType, ObjectDefinitions, type BaseBulletDefinition, type InventoryItemDefinition, type RawDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { inheritFrom, ItemRarity, ItemType, ObjectDefinitions, type BaseBulletDefinition, type InventoryItemDefinition, type RawDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
 import { type AmmoDefinition } from "./ammos";
 export type Airstrike={
@@ -55,7 +55,8 @@ type BaseGunDefinition = InventoryItemDefinition & {
     readonly shootOnRelease: boolean
     readonly summonAirdrop: boolean
 
-    readonly airstrike?:Airstrike,
+    readonly airstrike?:Airstrike
+    readonly no_infinity_ammo:boolean
 
     readonly fists: {
         // no relation to the ZIndexes enum
@@ -304,7 +305,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     capacity: 30,
                     extendedCapacity: 48,
                     reloadTime: 2.9
-                }
+                },
+                rarity:ItemRarity.Common
             },
             {
                 idString: "cz75a",
@@ -358,7 +360,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     capacity: 32,
                     extendedCapacity: 52,
                     reloadTime: 3.7
-                }
+                },
+                rarity:ItemRarity.Common
             },
             {
                 idString: "m1895",
@@ -414,7 +417,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     moveSpread: 5,
                     capacity: 14,
                     reloadTime: 4
-                }
+                },
+                rarity:ItemRarity.Common
             },
             {
                 idString: "deagle",
@@ -473,7 +477,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     capacity: 14,
                     extendedCapacity: 18,
                     reloadTime: 3.8
-                }
+                },
+                rarity:ItemRarity.Epic
             },
             {
                 idString: "rsh12",
@@ -536,7 +541,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     moveSpread: 10,
                     capacity: 10,
                     reloadTime: 4.2
-                }
+                },
+                rarity:ItemRarity.Epic
             },
             // sub-machine guns
             {
@@ -575,7 +581,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     obstacleMultiplier: 1,
                     speed: 0.25,
                     range: 130,
-                }
+                },
+                rarity:ItemRarity.Uncommon
             },
             {
                 idString: "micro_uzi",
@@ -612,7 +619,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     headshot:{
                         chance:0.2
                     }
-                }
+                },
+                rarity:ItemRarity.Uncommon
             },
             {
                 idString: "mp40",
@@ -646,7 +654,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     obstacleMultiplier: 1,
                     speed: 0.25,
                     range: 130
-                }
+                },
+                rarity:ItemRarity.Uncommon
             },
             {
                 idString: "vector",
@@ -678,9 +687,10 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ballistics: {
                     damage: 9,
                     obstacleMultiplier: 1,
-                    speed: 0.17,
-                    range: 130
-                }
+                    speed: 0.185,
+                    range: 80
+                },
+                rarity:ItemRarity.Epic
             },
             {
                 idString: "pp19",
@@ -717,7 +727,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     tracer: {
                         opacity: 0.5
                     }
-                }
+                },
+                rarity:ItemRarity.Legendary
             },
             // assult rifles
             {
@@ -753,7 +764,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     obstacleMultiplier: 1.5,
                     speed: 0.26,
                     range: 160,
-                }
+                },
+                rarity:ItemRarity.Uncommon
             },
             {
                 idString: "mcx_spear",
@@ -790,7 +802,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     tracer: {
                         length: 1.6
                     },
-                }
+                },
+                rarity:ItemRarity.Epic
             },
             {
                 idString: "m16a4",
@@ -828,7 +841,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     obstacleMultiplier: 1.5,
                     speed: 0.3,
                     range: 180
-                }
+                },
+                rarity:ItemRarity.Rare
             },
             {
                 idString: "aug",
@@ -862,7 +876,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     obstacleMultiplier: 1.5,
                     speed: 0.28,
                     range: 160
-                }
+                },
+                rarity:ItemRarity.Uncommon
             },
             {
                 idString: "arx160",
@@ -897,7 +912,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     obstacleMultiplier: 1.5,
                     speed: 0.26,
                     range: 160
-                }
+                },
+                rarity:ItemRarity.Uncommon
             },
             {
                 idString: "acr",
@@ -938,7 +954,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     headshot:{
                         chance:0.2
                     }
-                }
+                },
+                rarity:ItemRarity.Uncommon
             },
             // light machine guns
             {
@@ -979,7 +996,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         width: 1.1,
                         length: 1.6
                     }
-                }
+                },
+                rarity:ItemRarity.Rare
             },
             {
                 idString: "stoner_63",
@@ -1040,7 +1058,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         width: 1.1,
                         length: 1.6
                     }
-                }
+                },
+                rarity:ItemRarity.Epic
             },
             {
                 idString: "mg5",
@@ -1095,7 +1114,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         width: 1.1,
                         length: 1.6
                     }
-                }
+                },
+                rarity:ItemRarity.Legendary
             },
             {
                 idString: "negev",
@@ -1150,7 +1170,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         width: 1.1,
                         length: 1.6
                     }
-                }
+                },
+                rarity:ItemRarity.Legendary
             },
             {
                 idString: "mg36",
@@ -1186,7 +1207,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     obstacleMultiplier: 2,
                     speed: 0.28,
                     range: 160
-                }
+                },
+                rarity:ItemRarity.Rare
             },
             // shotguns
             {
@@ -1224,7 +1246,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     obstacleMultiplier: 1,
                     speed: 0.22,
                     range: 114
-                }
+                },
+                rarity:ItemRarity.Rare
             },
             {
                 idString: "model_37",
@@ -1239,9 +1262,9 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 recoilMultiplier: 0.5,
                 recoilDuration: 550,
                 fireMode: FireMode.Single,
-                shotSpread: 8,
-                moveSpread: 9,
-                jitterRadius: 3.1,
+                shotSpread: 10,
+                moveSpread: 13,
+                jitterRadius: 3.4,
                 bulletCount: 12,
                 length: 7.85,
                 fists: {
@@ -1268,14 +1291,15 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     damage: 10,
                     obstacleMultiplier: 1,
                     speed: 0.17,
-                    range: 38,
+                    range: 60,
                     tracer: {
                         length: 0.7
                     },
                     headshot:{
                         chance:0.2
                     }
-                }
+                },
+                rarity:ItemRarity.Uncommon
             },
             {
                 idString: "hp18",
@@ -1292,9 +1316,9 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 recoilDuration: 600,
                 fireMode: FireMode.Auto,
                 bulletCount: 18,
-                shotSpread: 25,
-                moveSpread: 30,
-                jitterRadius: 3,
+                shotSpread: 17,
+                moveSpread: 20,
+                jitterRadius: 2.8,
                 length: 8,
                 fists: {
                     left: Vec.create(120, -1),
@@ -1308,14 +1332,15 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 }],
                 gasParticles: gasParticlePresets.shotgun,
                 ballistics: {
-                    damage: 4.5,
-                    obstacleMultiplier: 0.5,
+                    damage: 4.4,
+                    obstacleMultiplier: 1,
                     speed: 0.2,
-                    range: 50,
+                    range: 65,
                     tracer: {
                         length: 0.3
                     }
-                }
+                },
+                rarity:ItemRarity.Uncommon
             },
             {
                 [inheritFrom]: "model_37",
@@ -1353,6 +1378,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ballistics:{
                     damage:11,
                 },
+                rarity:ItemRarity.Uncommon
             },
             {
                 idString: "usas12",
@@ -1394,7 +1420,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         color: 0xFF0000,
                         saturatedColor: 0xF55C3D
                     }
-                }
+                },
+                rarity:ItemRarity.Legendary
             },
             {
                 [inheritFrom]: "model_37",
@@ -1417,6 +1444,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 casingParticles: [{
                     position: Vec.create(4.3, 0.6)
                 }],
+                rarity:ItemRarity.Epic
             },
             {
                 idString: "dt11",
@@ -1460,7 +1488,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     obstacleMultiplier: 1,
                     speed: 0.2,
                     range: 80
-                }
+                },
+                rarity:ItemRarity.Rare
             },
             {
                 idString: "m590m",
@@ -1504,7 +1533,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         color: 0xFF0000,
                         saturatedColor: 0xF55C3D
                     }
-                }
+                },
+                rarity:ItemRarity.Legendary
             },
             // sniper rifles
             {
@@ -1553,7 +1583,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         chance:0.02,
                         modify:1.05,
                     }
-                }
+                },
+                rarity:ItemRarity.Epic
             },
             {
                 idString: "tango_51",
@@ -1597,7 +1628,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         chance:0.02,
                         modify:1.05,
                     }
-                }
+                },
+                rarity:ItemRarity.Epic
             },
             {
                 idString: "cz600",
@@ -1641,7 +1673,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         chance:0.02,
                         modify:1.05,
                     }
-                }
+                },
+                rarity:ItemRarity.Epic
             },
             {
                 idString: "l115a1",
@@ -1685,7 +1718,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         chance:0.02,
                         modify:1.05,
                     }
-                }
+                },
+                rarity:ItemRarity.Legendary
             },
             {
                 idString: "rgs",
@@ -1729,7 +1763,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         chance:0.02,
                         modify:1.05,
                     }
-                }
+                },
+                rarity:ItemRarity.Legendary
             },
             {
                 idString: "vks",
@@ -1772,7 +1807,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         chance:0.02,
                         modify:1.05,
                     }
-                }
+                },
+                rarity:ItemRarity.Epic
             },
             // designated marksman rifles
             {
@@ -1812,7 +1848,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         opacity: 0.5,
                         length: 1.7
                     }
-                }
+                },
+                rarity:ItemRarity.Epic
             },
             {
                 idString: "sr25",
@@ -1849,7 +1886,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     tracer: {
                         length: 1.7
                     }
-                }
+                },
+                rarity:ItemRarity.Epic
             },
             {
                 idString: "mini14",
@@ -1892,7 +1930,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     tracer: {
                         length: 1.7
                     }
-                }
+                },
+                rarity:ItemRarity.Epic
             },
             {
                 idString: "m1_garand",
@@ -1901,7 +1940,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ammoSpawnAmount: 40,
                 capacity: 8,
                 reloadTime: 2.1,
-                fireDelay: 250,
+                fireDelay: 220,
                 switchDelay: 400,
                 recoilMultiplier: 0.75,
                 recoilDuration: 200,
@@ -1956,7 +1995,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         width: 1.5
                     },
                     lastShotFX: true
-                }
+                },
+                rarity:ItemRarity.Legendary
             },
             {
                 idString: "model_89",
@@ -1997,7 +2037,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         width: 1.8,
                         length: 1.7
                     }
-                }
+                },
+                rarity:ItemRarity.Epic
             },
             {
                 idString: "sks",
@@ -2038,7 +2079,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     tracer: {
                         length: 1.2
                     }
-                }
+                },
+                rarity:ItemRarity.Rare
             },
             {
                 idString: "blr",
@@ -2075,7 +2117,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         length: 1.3
                     },
                     lastShotFX: true
-                }
+                },
+                rarity:ItemRarity.Epic
             },
             {
                 idString: "mk18",
@@ -2114,13 +2157,15 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         length: 3
                     },
                     range: 250
-                }
+                },
+                rarity:ItemRarity.Legendary
             },
             // radio
             {
                 idString: "radio",
                 name: "Radio",
                 summonAirdrop: true,
+                no_infinity_ammo:true,
                 ammoType: "curadell",
                 ammoSpawnAmount: 1,
                 fireDelay: 500,
@@ -2159,7 +2204,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     speed: 0.01,
                     range: 50,
                     noCollision: true
-                }
+                },
+                rarity:ItemRarity.Legendary
             },
             //nuke radio
             {
@@ -2204,7 +2250,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     speed: 0.01,
                     range: 50,
                     noCollision: true
-                }
+                },
+                rarity:ItemRarity.Legendary
             },
             // only event exclusive weapons below this point
             {
@@ -2228,6 +2275,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 shotSpread: 5,
                 moveSpread: 13,
                 length: 5.5,
+                devItem:true,
                 fists: {
                     left: Vec.create(60, 40),
                     right: Vec.create(20, 55),
@@ -2272,7 +2320,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         spreadSpeed: { min: 1, max: 3 },
                         lifetime: { min: 2500, max: 5000 }
                     }
-                }
+                },
+                rarity:ItemRarity.Legendary
             },
             // only dev weapons below this point
             {
@@ -2516,7 +2565,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         width:1.4,
                         length:2.5
                     }
-                }
+                },
+                rarity:ItemRarity.Uncommon
             },
             {
                 idString: "peacemaker",
@@ -2576,6 +2626,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     extendedCapacity: 18,
                     reloadTime: 5.5
                 },
+                rarity:ItemRarity.Common
             },
             {
                 idString: "svd",
@@ -2617,7 +2668,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         width:1,
                         length:2.7
                     }
-                }
+                },
+                rarity:ItemRarity.Legendary
             },
             {
                 idString: "l86a2",
@@ -2628,7 +2680,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 capacity: 30,
                 extendedCapacity:40,
                 reloadTime: 3,
-                fireDelay: 150,
+                fireDelay: 110,
                 switchDelay: 400,
                 speedMultiplier: 0.92,
                 recoilMultiplier: 0.8,
@@ -2650,11 +2702,12 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     }
                 ] as NonNullable<SingleGunNarrowing["casingParticles"]>,
                 ballistics: {
-                    damage: 26,
+                    damage: 27,
                     obstacleMultiplier: 0.70,
                     speed: 0.27,
                     range: 230
-                }
+                },
+                rarity:ItemRarity.Legendary
             },
             {
                 idString: "an94",
@@ -2694,7 +2747,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     obstacleMultiplier: 1,
                     speed: 0.2475,
                     range: 300
-                }
+                },
+                rarity:ItemRarity.Legendary
             },
             {
                 idString: "fort_17",
@@ -2739,7 +2793,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     capacity: 20,
                     extendedCapacity:26,
                     reloadTime: 3
-                }
+                },
+                rarity:ItemRarity.Common
             },
             {
                 idString: "p90",
@@ -2777,7 +2832,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     obstacleMultiplier: 1,
                     speed: 0.20,
                     range: 80
-                }
+                },
+                rarity:ItemRarity.Epic
             },
             {
                 idString: "m134",
@@ -2823,6 +2879,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     }
                 }],
                 gasParticles:gasParticlePresets.automatic,
+                rarity:ItemRarity.Legendary
             },
             {
                 idString: "sv98",
@@ -2864,7 +2921,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         width: 2.4,
                         length: 2.45
                     }
-                }
+                },
+                rarity:ItemRarity.Epic
             },
             {
                 idString: "awms",
@@ -2911,7 +2969,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         chance:0.02,
                         modify:1.05,
                     }
-                }
+                },
+                rarity:ItemRarity.Legendary
             },
             {
                 idString: "super90",
@@ -2956,7 +3015,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         chance:0.1,
                         modify:1.09,
                     }
-                }
+                },
+                rarity:ItemRarity.Legendary
             },
             {
                 idString: "pkp",
@@ -2995,7 +3055,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 length: 9.5,
                 recoilDuration: 175,
                 recoilMultiplier: 0.7,
-                speedMultiplier: 0.9
+                speedMultiplier: 0.9,
+                rarity:ItemRarity.Legendary
             },
             {
                 idString: "bar",
@@ -3038,7 +3099,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 length: 8,
                 recoilDuration: 175,
                 recoilMultiplier: 0.7,
-                speedMultiplier: 0.9
+                speedMultiplier: 0.9,
+                rarity:ItemRarity.Epic
             },
             {
                 idString: "m249",
@@ -3077,7 +3139,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 length: 9,
                 recoilDuration: 175,
                 recoilMultiplier: 0.7,
-                speedMultiplier: 0.9
+                speedMultiplier: 0.9,
+                rarity:ItemRarity.Legendary
             },
             {
                 idString: "vickers",
@@ -3117,7 +3180,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         width: 1.1,
                         length: 1.6
                     }
-                }
+                },
+                rarity:ItemRarity.Epic
             },
             {
                 idString: "tommy",
@@ -3153,7 +3217,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     obstacleMultiplier: 1,
                     speed: 0.25,
                     range: 120
-                }
+                },
+                rarity:ItemRarity.Uncommon
             },
             {
                 idString: "delisle",
@@ -3200,7 +3265,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         modify:1.05,
                     }
                 },
-                noMuzzleFlash: true
+                noMuzzleFlash: true,
+                rarity:ItemRarity.Legendary
             },
             //Originals
             {
@@ -3233,9 +3299,10 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ballistics: {
                     damage: 11,
                     obstacleMultiplier: 1,
-                    speed: 0.17,
-                    range: 130
-                }
+                    speed: 0.19,
+                    range: 80
+                },
+                rarity:ItemRarity.Epic
             },
             {
                 idString: "mp5",
@@ -3272,7 +3339,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     tracer:{
                         opacity:0.3
                     }
-                }
+                },
+                rarity:ItemRarity.Uncommon
             },
             {
                 idString: "mp5e",
@@ -3309,7 +3377,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     tracer:{
                         opacity:0.3
                     }
-                }
+                },
+                rarity:ItemRarity.Uncommon
             },
             {
                 idString: "pfeifer_zeliska",
@@ -3373,6 +3442,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     extendedCapacity:14,
                     reloadTime: 6
                 },
+                rarity:ItemRarity.Legendary
             },
             {
                 idString: "apple_launcher",
@@ -3434,7 +3504,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         chance:0.02,
                         modify:1.05,
                     }
-                }
+                },
+                rarity:ItemRarity.Epic
             },
             {
                 idString: "ppsh41",
@@ -3476,7 +3547,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     headshot:{
                         chance:0.2
                     }
-                }
+                },
+                rarity:ItemRarity.Rare
             },
             {
                 idString: "taurus_tx22",
@@ -3533,7 +3605,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     capacity: 60,
                     extendedCapacity: 80,
                     reloadTime: 3.5
-                }
+                },
+                rarity:ItemRarity.Common
             },
             {
                 idString: "uzi_22lr",
@@ -3570,7 +3643,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     tracer:{
                         opacity:0.3
                     }
-                }
+                },
+                rarity:ItemRarity.Uncommon
             },
             {
                 idString: "rifle_cbc",
@@ -3619,7 +3693,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         length:4,
                         opacity:0.35
                     }
-                }
+                },
+                rarity:ItemRarity.Uncommon
             },
             {
                 idString: "m134_22lr",
@@ -3669,6 +3744,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     }
                 }],
                 gasParticles:gasParticlePresets.automatic,
+                rarity:ItemRarity.Legendary
             },
             {
                 idString: "medic_pistol",
@@ -3721,7 +3797,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     capacity: 14,
                     extendedCapacity: 20,
                     reloadTime: 3.7
-                }
+                },
+                rarity:ItemRarity.Legendary
             },
         ] satisfies ReadonlyArray<RawDefinition<RawGunDefinition>>).map(e => {
             if (e.dual === undefined) {

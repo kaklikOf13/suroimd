@@ -778,10 +778,18 @@ export interface EventModifiers {
     readonly damageDealt: readonly ExtendedWearerAttributes[]
 }
 
+export enum ItemRarity{
+    Common=0,
+    Uncommon,
+    Rare,
+    Epic,
+    Legendary
+}
 export interface ItemDefinition extends ObjectDefinition {
     readonly itemType: ItemType
     readonly noDrop: boolean
     readonly devItem?: boolean
+    readonly rarity?:ItemRarity
 }
 
 export interface InventoryItemDefinition extends ItemDefinition {

@@ -1,4 +1,4 @@
-import { ItemType, ObjectDefinitions, type ItemDefinition } from "../utils/objectDefinitions";
+import { ItemRarity, ItemType, ObjectDefinitions, type ItemDefinition } from "../utils/objectDefinitions";
 
 export interface AmmoDefinition extends ItemDefinition {
     readonly itemType: ItemType.Ammo
@@ -31,7 +31,8 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
         ephemeral: false,
         defaultCasingFrame: "",
         hideUnlessPresent: false,
-        size:0.1
+        size:0.1,
+        rarity:ItemRarity.Common
     },
     () => [
         {
@@ -45,7 +46,8 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
                 lightness: 89
             },
             defaultCasingFrame: "casing_12ga_275in",
-            size:0.1
+            size:0.1,
+            rarity:ItemRarity.Rare
         },
         {
             idString: "556mm",
@@ -58,7 +60,8 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
                 lightness: 75
             },
             defaultCasingFrame: "casing_556x45mm",
-            size:0.027
+            size:0.027,
+            rarity:ItemRarity.Uncommon
         },
         {
             idString: "762mm",
@@ -71,7 +74,8 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
                 lightness: 65
             },
             defaultCasingFrame: "casing_762x51mm",
-            size:0.027
+            size:0.027,
+            rarity:ItemRarity.Uncommon
         },
         {
             idString: "9mm",
@@ -111,7 +115,8 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
             },
             defaultCasingFrame: "casing_50bmg",
             hideUnlessPresent: true,
-            size:0.03
+            size:0.03,
+            rarity:ItemRarity.Epic
         },
         {
             idString: "338lap",
@@ -125,7 +130,8 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
             },
             defaultCasingFrame: "casing_338lap",
             hideUnlessPresent: true,
-            size:0.13
+            size:0.13,
+            rarity:ItemRarity.Legendary
         },
         {
             idString: "45acp",
@@ -139,7 +145,8 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
             hideUnlessPresent: true,
             maxStackSize: 60,
             dropAmmout:47,
-            size:0.027
+            size:0.027,
+            rarity:ItemRarity.Uncommon
         },
         {
             idString: "medic_charge",
@@ -153,7 +160,8 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
                 lightness: 50
             },
             defaultCasingFrame: "casing_556x45mm",
-            size:0.015
+            size:0.015,
+            rarity:ItemRarity.Legendary
         },
         {
             idString: "curadell",
@@ -167,7 +175,8 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
             },
             defaultCasingFrame: "casing_curadell",
             hideUnlessPresent: true,
-            size:0.19
+            size:0.19,
+            rarity:ItemRarity.Legendary
         },
         {
             idString: "firework_rocket",
@@ -181,7 +190,8 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
             },
             defaultCasingFrame: "casing_firework_rocket",
             hideUnlessPresent: true,
-            size:.2
+            size:.2,
+            rarity:ItemRarity.Legendary
         },
 
         // Ephemeral ammo types below
@@ -198,6 +208,7 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
             },
             defaultCasingFrame: "casing_power_cell",
             ephemeral: true,
+            rarity:ItemRarity.Legendary
         },
         {
             idString: "bb",
@@ -209,7 +220,8 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
                 saturation: 0,
                 lightness: 75
             },
-            ephemeral: true
+            ephemeral: true,
+            rarity:ItemRarity.Legendary
         }
     ]
 );

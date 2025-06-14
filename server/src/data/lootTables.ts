@@ -1120,7 +1120,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         ],
         //Originals
         apple:[
-            [{item:NullString,weight:6},{table:"fall_perks",weight:0.3},{item:"apple_helmet",weight:0.3},{item:"apple_launcher",weight:0.2}],
+            [{item:NullString,weight:7},{table:"fall_perks",weight:0.3},{item:"apple_helmet",weight:0.1},{item:"apple_launcher",weight:0.2}],
         ]
     },
 };

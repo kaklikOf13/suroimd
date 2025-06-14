@@ -99,7 +99,7 @@ export class BaseBullet {
             ? undefined
             : options.modifiers;
 
-        let range = (this.modifiers?.range ?? 1) * this.definition.range;
+        let range = ((this.modifiers?.range ?? 1) * this.definition.range);
 
         if (this.definition.allowRangeOverride && options.rangeOverride !== undefined) {
             range = Numeric.clamp(options.rangeOverride, 0, range);

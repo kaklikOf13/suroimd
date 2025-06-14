@@ -7,6 +7,8 @@ import { customTeams } from "./server";
 import { removeFrom } from "./utils/misc";
 import { GOAPGoal } from "./utils/goap";
 import { PerkIds } from "@common/definitions/perks";
+import { type MapIndicator } from "./map";
+import { type Vector } from "@common/utils/vector";
 
 export class Team {
     readonly id: number;
@@ -332,6 +334,22 @@ export class Group {
     }
     getNotDownedPlayers(): Player[] {
         return this.players.filter(player => !player.dead && !player.disconnected && (!player.downed||player.hasPerk(PerkIds.SelfRevive)));
+    }
+
+    map_indicators:Record<number,MapIndicator>={}
+    add_indicator(id:number,position:Vector,frame:string,tint:number=0xffffff,scale:number=1,from_player:boolean=false):MapIndicator{
+        this.map_indicators[id]={
+            sprite:{
+                frame:frame,
+                from_player:from_player,
+                scale:scale,
+                tint:tint
+            },
+            id:id,
+            position:position,
+            rewrite:true
+        }
+        return this.map_indicators[id]
     }
 }
 

@@ -2,7 +2,7 @@ import { AnimationType, GameConstants, InputActions, KillfeedEventSeverity, Kill
 import { Ammos } from "@common/definitions/ammos";
 import { Armors, ArmorType } from "@common/definitions/armors";
 import { Backpacks } from "@common/definitions/backpacks";
-import { type BadgeDefinition } from "@common/definitions/loadout/badges";
+import { Badges, type BadgeDefinition } from "@common/definitions/loadout/badges";
 import { Emotes, type EmoteDefinition } from "@common/definitions/loadout/emotes";
 import { Guns, type GunDefinition } from "@common/definitions/guns";
 import { HealingItems } from "@common/definitions/healingItems";
@@ -24,12 +24,12 @@ import { type InputPacket } from "@common/packets/packet";
 import { PacketStream } from "@common/packets/packetStream";
 import { ReportPacket } from "@common/packets/reportPacket";
 import { type SpectatePacketData } from "@common/packets/spectatePacket";
-import { UpdatePacket, type PlayerData, type UpdatePacketDataCommon, type UpdatePacketDataIn } from "@common/packets/updatePacket";
+import { ReadOnlyIndicator, UpdatePacket, type PlayerData, type UpdatePacketDataCommon, type UpdatePacketDataIn } from "@common/packets/updatePacket";
 import { CircleHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, isVisibleFromLayer } from "@common/utils/layer";
 import { Collision, EaseFunctions, Geometry, Numeric } from "@common/utils/math";
 import { ExtendedMap, Timeout, type SDeepMutable, type SMutable } from "@common/utils/misc";
-import { defaultModifiers, ItemType, type EventModifiers, type ExtendedWearerAttributes, type PlayerModifiers, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
+import { defaultModifiers, ItemRarity, ItemType, type EventModifiers, type ExtendedWearerAttributes, type PlayerModifiers, type ReferenceTo, type ReifiableDef, type WearerAttributes } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { pickRandomInArray, random, randomFloat, randomPointInsideCircle, weightedRandom } from "@common/utils/random";
 import { SuroiByteStream } from "@common/utils/suroiByteStream";
@@ -58,6 +58,8 @@ import { Explosion } from "./explosion";
 import { DeathMarker } from "./deathMarker";
 import { Loot } from "./loot";
 import { Gamerole } from "../data/gamemode";
+import { BoostsType } from "@common/definitions/loadout/boosts";
+import { type MapIndicator } from "../map";
 
 export interface PlayerContainer {
     readonly teamID?: string
@@ -75,7 +77,7 @@ export interface PlayerContainer {
 export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     private static readonly baseHitbox = new CircleHitbox(GameConstants.player.radius);
 
-    override readonly fullAllocBytes = 17;
+    override readonly fullAllocBytes = 18;
     override readonly partialAllocBytes = 16;
     override readonly damageable = true;
 
@@ -284,7 +286,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         layer: true,
         activeC4s: true,
         perks: true,
-        group: true
+        group: true,
+        other_ind:true
     };
     dirtyUI():void{
         for(const k of Object.keys(this.dirty)){
@@ -455,6 +458,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
     readonly perks = new ServerPerkManager(this, Perks.defaults);
     perkUpdateMap?: Map<UpdatablePerkDefinition, number>; // key = perk, value = last updated
+
+    current_boost:BoostsType=BoostsType.Null
+    boost_time:number=0
 
     constructor(game: Game, position: Vector, socket?: WebSocket<PlayerContainer>, layer?: Layer, team?: Team) {
         super(game, position);
@@ -781,6 +787,15 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         this.updateAndApplyModifiers();
 
+        if(this.current_boost){
+            if(this.boost_time>0){
+                this.boost_time-=dt/1000;
+            }else{
+                this.current_boost=BoostsType.Null;
+                this.setDirty()
+            }
+        }
+
         // Calculate movement
         let movement: Vector;
 
@@ -860,7 +875,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             )
 
         // Calculate speed
-        const speed = this.baseSpeed                                          // Base speed
+        let speed = this.baseSpeed                                          // Base speed
             * (FloorTypes[this.floor].speedMultiplier ?? 1)                   // Speed multiplier from floor player is standing in
             * recoilMultiplier                                                // Recoil from items
             * perkSpeedMod                                                    // See above
@@ -869,6 +884,16 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             * (this.downed ? 0.5 : this.activeItemDefinition.speedMultiplier) // Active item/knocked out speed modifier
             * (this.beingRevivedBy ? 0.5 : 1)                                 // Being revived speed multiplier
             * this._modifiers.baseSpeed;                                      // Current on-wearer modifier
+
+        switch(this.current_boost){
+            case BoostsType.Nature:
+            case BoostsType.Takedown:
+                speed*=1.7
+                break
+            default:{
+                break
+            }
+        }
 
         // Update position
         const oldPosition = Vec.clone(this.position);
@@ -1085,6 +1110,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         };
         this.game.addTimeout(closeDoors, 1000);
 
+        if(this.map_indicator){
+            this.map_indicator.position=this.position
+        }
+
         this.turning = false;
         this.game.pluginManager.emit("player_update", this);
     }
@@ -1094,6 +1123,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     private readonly _packetStream = new PacketStream(new SuroiByteStream(new ArrayBuffer(1 << 16)));
 
     gamerole?:string=undefined
+
+    map_indicator?:MapIndicator
+    map_indicator_global?:boolean=false
 
     giveGamerole(role:Gamerole,dropAll=true){
         if(this.gamerole){
@@ -1178,12 +1210,50 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
         this.health=this.maxHealth
         if(role.size)this.sizeChange=role.size
-        //@ts-ignore
-        if(role.nameColor)this.nameColor=role.nameColor
+        if(role.nameColor){
+            //@ts-ignore
+            this.nameColor=role.nameColor
+            //@ts-ignore
+            this.hasColor=true
+        }
+        if(role.role_badge){
+            this.loadout.badge=Badges.fromStringSafe(role.role_badge)
+        }
+
+        if(role.map_indicator){
+            const idic=this.dead?role.map_indicator.dead:role.map_indicator.normal
+            if(this.map_indicator&&(this.map_indicator&&this.map_indicator_global==role.map_indicator.global_visibility)){
+                this.map_indicator.sprite=this.map_indicator.sprite
+                this.map_indicator.rewrite=true
+                this.map_indicator.sprite.frame=idic.frame
+                this.map_indicator.sprite.scale=idic.scale??1
+                this.map_indicator.sprite.tint=idic.tint??0xffffff
+            }else{
+                if(this.map_indicator){
+                    if(this.map_indicator_global){
+                        delete this.game.map.map_indicators[this.map_indicator.id]
+                    }else if(this.group){
+                        delete this.group.map_indicators[this.map_indicator.id]
+                    }
+                }
+                this.map_indicator_global=role.map_indicator.global_visibility
+                if(this.map_indicator_global){
+                    this.map_indicator=this.game.map.add_indicator(this.id,this.position,idic.frame,idic.tint,idic.scale,true)
+                }else if(this.group){
+                    this.map_indicator=this.group.add_indicator(this.id,this.position,idic.frame,idic.tint,idic.scale,true)
+                }
+            }
+        }
 
         this.canDespawn=false
 
         this.fullDirty()
+
+        const m=createKillfeedMessage(KillfeedMessageType.Promotion).setPlayerId(this.id).setRole(this.nameColor,role.name,role.promotion_sound,role.role_badge).build()
+
+        this.game.packets.push(
+            KillFeedPacket.create(m)
+        );
     }
 
     /**
@@ -1194,6 +1264,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             const packet: SMutable<Partial<UpdatePacketDataIn>> = {};
 
             this.dirty.group=true
+            this.dirty.other_ind=true
 
             const player = this.spectating ?? this;
             if (this.spectating) {
@@ -1321,6 +1392,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                         ? { groupPlayers: player.group?.players ?? [] }
                         : {}
                 ),
+                ...(player.dirty.other_ind || forceInclude
+                    ? {
+                        otherIndicators: [
+                            ...(this.group ? Object.values(this.group.map_indicators) : []),
+                            ...Object.values(this.game.map.map_indicators),
+                        ] as ReadOnlyIndicator[]
+                    }
+                    : {}),
                 ...(
                     player.dirty.weapons || forceInclude
                         ? { inventory: {
@@ -1472,6 +1551,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this._packets.length = 0;
             this.sendData(this._packetStream.getBuffer());
         }
+    }
+
+    give_boost(boost_type:BoostsType,time:number){
+        this.boost_time=time
+        this.current_boost=boost_type
+        this.fullDirty()
     }
 
     targetCheck(){
@@ -1694,6 +1779,61 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         return amount;
     }
+    switchWeapon(source:DamageParams){
+        const blackList=this.game.gamemode.weaponSwap?.blacklist??[]
+        let index=0
+        if (source.weaponUsed instanceof GunItem) {
+            index = this.activeItem.definition.idString===source.weaponUsed.definition.idString?this.activeItemIndex:(this.activeItemIndex===0?1:0);
+        }else{
+            index = this.activeItemIndex;
+        }
+
+        let item: GunDefinition | MeleeDefinition | ThrowableDefinition;
+        const itemType = this.inventory.weapons[index]?.definition.itemType;
+        if(blackList.includes(this.inventory.weapons[index]?.definition.idString!)){
+            return
+        }
+        switch (itemType) {
+            case ItemType.Gun: {
+                let gun:GunDefinition|undefined
+                const hasGolden=this.hasPerk(PerkIds.GoldenApple)
+                while(!gun){
+                    gun=pickRandomInArray(Guns.definitions)
+                    if(gun.devItem||blackList.includes(gun.idString))gun=undefined
+                    if(hasGolden&&![ItemRarity.Legendary,ItemRarity.Epic].includes(gun?.rarity??ItemRarity.Common))gun=undefined
+                }
+                item = gun;
+                const { ammoType } = gun;
+                if (gun.ammoSpawnAmount) {
+                    this.inventory.giveItem(ammoType,gun.ammoSpawnAmount-gun.capacity)
+                }
+                this.sendEmote(gun)
+                break;
+            }
+            case ItemType.Melee: {
+                let melee:MeleeDefinition|undefined
+                while(!melee){
+                    melee=pickRandomInArray(Melees.definitions)
+                    if(melee.devItem||blackList.includes(melee.idString))melee=undefined
+                }
+                this.sendEmote(melee)
+                item=melee
+                break;
+            }
+            case ItemType.Throwable: {
+                return
+            }
+        }
+
+        this.inventory.replaceWeapon(index, item!);
+
+        if (item!.itemType===ItemType.Gun) {
+           (this.inventory.getWeapon(index)! as GunItem).ammo = item!.capacity;
+        }
+
+        this.dirtyUI()
+        this.setDirty()
+    }
 
     override damage(params: DamageParams,headshot=1): void {
         if (this.invulnerable) return;
@@ -1755,6 +1895,10 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const canTrackStats = weaponUsed instanceof InventoryItem;
         const attributes = canTrackStats ? weaponUsed.definition.wearerAttributes?.on : undefined;
         const sourceIsPlayer = source instanceof Player;
+        if(this.hasPerk(PerkIds.NatureBreath)&&!(sourceIsPlayer&&this.id===source.id)){
+            const def=Perks.fromString(PerkIds.NatureBreath)
+            this.give_boost(def.boost_won!.type,def.boost_won!.time)
+        }
         const applyPlayerFX = sourceIsPlayer
             ? (modifiers: ExtendedWearerAttributes): void => {
                 source.health += modifiers.healthRestored ?? 0;
@@ -1987,9 +2131,14 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this.killedBy = source;
             if (source !== this && (!this.game.teamMode || source.teamID !== this.teamID)) {source.kills++;source.score+=this.game.gamemode.score.kill};
 
-            for (const perk of source.perks) {
-                switch (perk.idString) {
-                }
+            if(this.game.gamemode.weaponSwap?.killswap){
+                this.switchWeapon(params as (DamageParams))
+            }
+            if(source.hasPerk(PerkIds.Takedown)){
+                const def=Perks.fromString(PerkIds.Takedown)
+                source.give_boost(def.boost_won!.type,def.boost_won!.time)
+                source.health+=def.healing??0
+                source.adrenaline+=def.healing??0
             }
         }
 
@@ -2647,7 +2796,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 blockEmoting: this.blockEmoting,
                 sizeMod:this._sizeMod,
                 healAura:this.hasPerk(PerkIds.HealingAura),
-                fist_loadout:this.fist_loadout
+                fist_loadout:this.fist_loadout,
+                boost:this.current_boost as number
             }
         };
 

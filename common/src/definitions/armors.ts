@@ -1,4 +1,4 @@
-import { ItemType, ObjectDefinitions, type ItemDefinition } from "../utils/objectDefinitions";
+import { ItemRarity, ItemType, ObjectDefinitions, type ItemDefinition } from "../utils/objectDefinitions";
 import { PerkIds } from "./perks";
 
 export type ArmorDefinition = ItemDefinition & {
@@ -49,21 +49,24 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
                 ["Basic"],
                 {
                     level: 1,
-                    damageReduction: 0.1
+                    damageReduction: 0.1,
+                    rarity:ItemRarity.Common
                 }
             ),
             helmet(
                 ["Regular"],
                 {
                     level: 2,
-                    damageReduction: 0.15
+                    damageReduction: 0.15,
+                    rarity:ItemRarity.Uncommon
                 }
             ),
             helmet(
                 ["Tactical"],
                 {
                     level: 3,
-                    damageReduction: 0.2
+                    damageReduction: 0.2,
+                    rarity:ItemRarity.Rare
                 }
             ),
             //Special
@@ -71,8 +74,9 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
                 ["Apple"],
                 {
                     level: 3,
-                    givePerks:[PerkIds.InfiniteAmmo],
-                    damageReduction: 0.2
+                    givePerks:[PerkIds.GoldenApple],
+                    damageReduction: 0.2,
+                    rarity:ItemRarity.Epic
                 }
             ),
             helmet(
@@ -80,7 +84,8 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
                 {
                     level: 4,
                     givePerks:[PerkIds.Captain],
-                    damageReduction: 0.25
+                    damageReduction: 0.25,
+                    rarity:ItemRarity.Legendary
                 }
             ),
             helmet(
@@ -88,14 +93,17 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
                 {
                     level: 4,
                     givePerks:[PerkIds.SelfRevive,PerkIds.HealingAura],
-                    damageReduction: 0.25
+                    damageReduction: 0.25,
+                    rarity:ItemRarity.Legendary
                 }
             ),
             helmet(
                 ["Last Man"],
                 {
                     level: 5,
-                    damageReduction: 0.30
+                    damageReduction: 0.30,
+                    rarity:ItemRarity.Legendary,
+                    givePerks:[PerkIds.Last_Knight],
                 }
             ),
             helmet(
@@ -103,7 +111,8 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
                 {
                     level: 3,
                     damageReduction: 0.2,
-                    givePerks:[PerkIds.FlorestQueen],
+                    givePerks:[PerkIds.Last_Knight],
+                    rarity:ItemRarity.Legendary
                 }
             ),
             helmet(
@@ -111,7 +120,8 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
                 {
                     level: 3,
                     givePerks:[PerkIds.ExtendedMags],
-                    damageReduction: 0.2
+                    damageReduction: 0.2,
+                    rarity:ItemRarity.Epic
                 }
             ),
 
@@ -123,7 +133,8 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
                 {
                     level: 1,
                     damageReduction: 0.1,
-                    color: 0xc8c8c6
+                    color: 0xc8c8c6,
+                    rarity:ItemRarity.Common
                 }
             ),
             vest(
@@ -131,7 +142,8 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
                 {
                     level: 2,
                     damageReduction: 0.15,
-                    color: 0x404d2e
+                    color: 0x404d2e,
+                    rarity:ItemRarity.Uncommon
                 }
             ),
             vest(
@@ -139,7 +151,8 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
                 {
                     level: 3,
                     damageReduction: 0.2,
-                    color: 0x0d0d0d
+                    color: 0x0d0d0d,
+                    rarity:ItemRarity.Rare
                 }
             ),
             vest(
@@ -147,7 +160,8 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
                 {
                     level: 4,
                     damageReduction: 0.25,
-                    color: 0x2f0000
+                    color: 0x2f0000,
+                    rarity:ItemRarity.Epic
                 }
             ),
             vest(
@@ -157,7 +171,8 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
                     devItem: true,
                     damageReduction: 0.72,
                     color: 0x2f0000,
-                    noDrop: true
+                    noDrop: true,
+                    rarity:ItemRarity.Legendary
                 }
             )
         ];

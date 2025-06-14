@@ -26,6 +26,18 @@ interface ObjectPartialData {
     readonly data: ObjectsNetData[ObjectCategory]
 }
 
+export interface ReadOnlyIndicator{
+    readonly id: number
+    readonly rewrite:boolean
+    readonly position:Vector
+    readonly sprite?:{
+        readonly frame:string
+        readonly scale:number
+        readonly tint:number
+        readonly from_player:boolean
+    }
+}
+
 function serializePlayerData(
     strm: SuroiByteStream,
     {
@@ -38,6 +50,7 @@ function serializePlayerData(
         id,
         teammates,
         groupPlayers,
+        otherIndicators,
         inventory,
         lockedSlots,
         items,
@@ -55,6 +68,7 @@ function serializePlayerData(
     const hasId          = id !== undefined;
     const hasTeammates   = teammates !== undefined;
     const hasGroupPlayers= groupPlayers !== undefined;
+    const hasAnotherIndicators= otherIndicators !== undefined&&otherIndicators.length>0;
     const hasInventory   = inventory !== undefined;
     const hasLockedSlots = lockedSlots !== undefined;
     const hasItems       = items !== undefined;
@@ -72,6 +86,7 @@ function serializePlayerData(
         hasId,
         hasTeammates,
         hasGroupPlayers,
+        hasAnotherIndicators,
         hasInventory,
         hasLockedSlots,
         hasItems,
@@ -151,6 +166,28 @@ function serializePlayerData(
                     .writeUint8(groupID)
                     .writeUint8(teamID??0)
                     .writeFullPosition(position ?? Vec.create(0, 0))
+            },
+            1
+        );
+    }
+    if (hasAnotherIndicators) {
+        strm.writeArray(
+            otherIndicators,
+            ({
+                id,
+                position,
+                rewrite,
+                sprite
+            }) => {
+                strm.writeBooleanGroup(rewrite,sprite!.from_player)
+                .writeFullPosition(position)
+                .writeObjectId(id)
+                if(rewrite){
+                    strm.writeUint8(sprite!.frame.length)
+                    strm.writeString(sprite!.frame.length,sprite!.frame)
+                    strm.writeUint32(sprite!.tint)
+                    strm.writeFloat(sprite!.scale,0.1,3,2)
+                }
             },
             1
         );
@@ -296,6 +333,7 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
         hasId,
         hasTeammates,
         hasGroupPlayer,
+        hasMapIndicators,
         hasInventory,
         hasLockedSlots,
         hasItems,
@@ -368,6 +406,25 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
                     downed: status[0],
                     disconnected: status[1],
                     dead: status[2],
+                };
+            },
+            1
+        )as [];
+    }
+    if (hasMapIndicators) {
+        data.otherIndicators = strm.readArray(
+            () => {
+                const status:boolean[] = strm.readBooleanGroup();
+                return {
+                    position: strm.readFullPosition(),
+                    id: strm.readObjectId(),
+                    rewrite:status[0],
+                    sprite:{
+                        frame:strm.readString(strm.readUint8()),
+                        tint:strm.readUint32(),
+                        scale:strm.readFloat(0.1,3,2),
+                        from_player:status[1],
+                    }
                 };
             },
             1
@@ -555,6 +612,7 @@ export type PlayerData = {
         readonly disconnected: boolean
         readonly dead: boolean
     }>
+    readonly otherIndicators?: ReadonlyArray<ReadOnlyIndicator>
     readonly inventory?: {
         readonly activeWeaponIndex: number
         readonly weapons?: ReadonlyArray<undefined | {

@@ -32,6 +32,18 @@ interface MapBuild{
     position:Vector
 }
 
+export interface MapIndicator{
+    position:Vector
+    id:number
+    sprite:{
+        from_player:boolean
+        frame:string
+        tint:number
+        scale:number
+    }
+    rewrite:boolean
+}
+
 export class GameMap {
     readonly game: Game;
 
@@ -69,6 +81,23 @@ export class GameMap {
     readonly buffer: ArrayBuffer;
 
     private readonly _beachPadding;
+
+    map_indicators:Record<number,MapIndicator>={}
+    add_indicator(id:number,position:Vector,frame:string,tint:number=0xffffff,scale:number=1,from_player:boolean=false):MapIndicator{
+        this.map_indicators[id]={
+            sprite:{
+                frame:frame,
+                from_player:from_player,
+                scale:scale,
+                tint:tint
+            },
+            id:id,
+            position:position,
+            rewrite:true
+        }
+        return this.map_indicators[id]
+    }
+
 
     static getRandomRotation<T extends RotationMode>(mode: T): RotationMapping[T] {
         switch (mode) {

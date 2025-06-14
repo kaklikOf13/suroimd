@@ -56,7 +56,7 @@ export const GameConstants = freezeDeep({
     },
     player: {
         radius: 2.25,
-        baseSpeed: 0.029,
+        baseSpeed: 0.031,
         defaultHealth: 100,
         maxAdrenaline: 100,
         inventorySlotTypings,
@@ -66,7 +66,7 @@ export const GameConstants = freezeDeep({
         defaultSkin: "hazel_jumpsuit",
         killLeaderMinKills: 3,
         maxMouseDist: 256,
-        reviveTime: 5,
+        reviveTime: 6,
         maxReviveDist: 7,
         bleedOutDPMs: 0.001, // === 1 dps
         maxPerkCount: 1,
@@ -188,7 +188,8 @@ export const enum KillfeedMessageType {
     DeathOrDown,
     KillLeaderAssigned,
     KillLeaderDeadOrDisconnected,
-    KillLeaderUpdated
+    KillLeaderUpdated,
+    Promotion
 }
 
 export const enum GasState {

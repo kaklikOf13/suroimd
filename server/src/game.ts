@@ -53,6 +53,7 @@ import { Melees } from "@common/definitions/melees";
 import { DefaultGamemode, Gamemode, Gamemodes, SpawnMode } from "./data/gamemode";
 import { ExtraLoadout, ExtraLoadoutList, ExtraLoadoutType } from "@common/definitions/loadout/extra_loadout";
 import { Perks } from "@common/definitions/perks";
+import { BoostsType } from "@common/definitions/loadout/boosts";
 /*
     eslint-disable
 

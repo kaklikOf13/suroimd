@@ -178,20 +178,6 @@ export interface BuildingDefinition extends ObjectDefinition {
     readonly rotationMode: RotationMode.Limited | RotationMode.Binary | RotationMode.None
 }
 
-const randomGift = {
-    red_gift: 1,
-    green_gift: 1,
-    blue_gift: 1,
-    black_gift: 0.25,
-    purple_gift: 0.1
-};
-
-const randomCelebrationWinterTree = {
-    oak_tree: 1,
-    birch_tree: 1,
-    pine_tree: 0.9
-};
-
 enum NPCSTeams{
     aegis=0
 }
@@ -225,8 +211,6 @@ const npcsGenerators={
             weapons:{
                 0:"model_37",
                 1:"ak47"
-
-                //0:"ak47"
             },
             team:NPCSTeams.aegis,
         }

@@ -24,7 +24,14 @@ export const Badges = ObjectDefinitions.create<BadgeDefinition>("Badges", [
     badge(["Administratr", ["administratr", "error"]]),
     badge(["Content Creatr", ["content_creatr"]]),
     badge(["Donatr", ["donatr"]]),
-    badge(["Ownr", ["hasanger"]]),
+    badge(["Red Captain", ["developr"]]),
+
+    //Gameroles
+    badge(["Captain", ["developr"]]),
+    badge(["Sergeant", ["developr"]]),
+    badge(["Medic", ["developr"]]),
+    badge(["Last Man", ["developr"]]),
+    badge(["Last Woman", ["developr"]]),
 
     // Player
     badge(["Bleh"]),
@@ -35,5 +42,5 @@ export const Badges = ObjectDefinitions.create<BadgeDefinition>("Badges", [
     badge(["Suroi Logo"]),
     badge(["Fire"]),
     badge(["Colon Three"]),
-    badge(["Suroi General Chat"])
+    badge(["Suroi General Chat"]),
 ]);

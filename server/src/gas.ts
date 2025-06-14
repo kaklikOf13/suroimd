@@ -238,15 +238,7 @@ export class Gas {
     }
     addAirstrike(airstrike:Airstrike){
         this.game.addAirstrike(
-            this.game.map.getRandomPosition(
-                new CircleHitbox(15),
-                {
-                    maxAttempts: 500,
-                    spawnMode: MapObjectSpawnMode.GrassAndSand,
-                    collides: position => Geometry.distanceSquared(position, this.currentPosition) >= this.newRadius ** 2,
-                    ir:pickRandomInArray(this.game.map.islands)
-                }
-            ) ?? this.newPosition,
+            Vec.clone(pickRandomInArray(Array.from(this.game.livingPlayers.values())).position),
             undefined,
             airstrike.planesCount,
             airstrike.radius,

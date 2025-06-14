@@ -1,4 +1,4 @@
-import { ItemType, ObjectDefinitions, type ItemDefinition } from "../utils/objectDefinitions";
+import { ItemRarity, ItemType, ObjectDefinitions, type ItemDefinition } from "../utils/objectDefinitions";
 
 export interface HealingItemDefinition extends ItemDefinition {
     readonly itemType: ItemType.Healing
@@ -39,7 +39,8 @@ export const HealingItems = ObjectDefinitions.withDefault<HealingItemDefinition>
                 {
                     restoreAmount: 15,
                     useTime: 3,
-                    size:0.25
+                    size:0.25,
+                    rarity:ItemRarity.Common
                 }
             ),
             healing(
@@ -47,7 +48,8 @@ export const HealingItems = ObjectDefinitions.withDefault<HealingItemDefinition>
                 {
                     restoreAmount: 100,
                     useTime: 6,
-                    size:0.9
+                    size:0.9,
+                    rarity:ItemRarity.Uncommon
                 }
             ),
             adren(
@@ -55,7 +57,8 @@ export const HealingItems = ObjectDefinitions.withDefault<HealingItemDefinition>
                 {
                     restoreAmount: 25,
                     useTime: 3,
-                    size:.4
+                    size:.4,
+                    rarity:ItemRarity.Uncommon
                 }
             ),
             adren(
@@ -63,7 +66,8 @@ export const HealingItems = ObjectDefinitions.withDefault<HealingItemDefinition>
                 {
                     restoreAmount: 50,
                     useTime: 5,
-                    size:.15
+                    size:.15,
+                    rarity:ItemRarity.Rare
                 }
             )
         ];

@@ -3,6 +3,7 @@ import { Gamerole } from "../data/gamemode";
 import { type Game } from "../game";
 import { GamePlugin } from "../pluginManager";
 import { type Player } from "../objects/player";
+import { PerkIds } from "@common/definitions/perks";
 
 /**
  * Plugin to toggle the player speed when sending an emote
@@ -77,7 +78,6 @@ export class GiveRoleAfterStartPlugin extends GamePlugin {
 export interface GiveRoleAfterDownsArgs{
     role:Gamerole|Gamerole[]
     group:number
-    preferenceRole?:string
     count?:number
 }
 export class GiveRoleAfterDownsPlugin extends GamePlugin {
@@ -88,7 +88,14 @@ export class GiveRoleAfterDownsPlugin extends GamePlugin {
                 return
             }
             this.alreadyGived=true
-            const chooses=ds.player.group.getNotDownedPlayers()
+            const chooses=ds.player.group.getLivingPlayers()
+            for(let i=0;i<chooses.length;i++){
+                const player=chooses[i]
+                if(player.disconnected||player.isNpc||player.dead||player.groupID!==params.group||(!player.hasPerk(PerkIds.SelfRevive)&&player.downed)){
+                    chooses.splice(i,1)
+                    i--
+                }
+            }
             if(chooses.length>(params.count??1)){
                 return
             }
@@ -102,7 +109,7 @@ export class GiveRoleAfterDownsPlugin extends GamePlugin {
             }
         });
     }
-    giveTo(params:GiveRoleAfterDownsArgs,attempts:number=20,chooses:Player[]=[]):boolean{
+    giveTo(params:GiveRoleAfterDownsArgs,attempts:number=100,chooses:Player[]=[]):boolean{
         let lastChoose=-1
         for(let i=0;i<attempts;i++){
             if(lastChoose!==-1){
@@ -112,20 +119,9 @@ export class GiveRoleAfterDownsPlugin extends GamePlugin {
                 break
             }
             lastChoose=random(0,chooses.length-1)
-            if(params.preferenceRole){
-                for(let ii=0;ii<chooses.length;ii++){
-                    if(chooses[ii].role===params.preferenceRole){
-                        lastChoose=ii
-                    }
-                }
-            }
+
             const player=chooses[lastChoose]
-            if(player.disconnected||player.isNpc){
-                continue
-            }
-            if(player.groupID!==params.group){
-                continue
-            }
+
             player.giveGamerole(Array.isArray(params.role)?pickRandomInArray(params.role):params.role,true)
             return true
         }

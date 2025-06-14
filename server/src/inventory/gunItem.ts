@@ -7,7 +7,7 @@ import { type BulletOptions } from "@common/utils/baseBullet";
 import { CircleHitbox, RectangleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, isStairLayer } from "@common/utils/layer";
 import { Angle, Geometry, HALF_PI, resolveStairInteraction } from "@common/utils/math";
-import { type DeepMutable, type DeepRequired, type Timeout } from "@common/utils/misc";
+import { cloneDeep, type DeepMutable, type DeepRequired, type Timeout } from "@common/utils/misc";
 import { ItemType, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { randomFloat, randomPointInsideCircle } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
@@ -189,6 +189,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
                 doSplinterGrouping = true;
                 //@ts-ignore
                 modifiers.damage *= perk.damageMod;
+                modifiers.tracer.width*=1.5;
                 //@ts-ignore
                 modifyForDamageMod(perk.damageMod);
                 modifiersModified = true;
@@ -258,7 +259,13 @@ export class GunItem extends InventoryItem<GunDefinition> {
             )
             : (_: Vector) => owner.layer;
 
-        const spawn = (position: Vector, spread: number): void => {
+        const spawn = (position: Vector, spread: number,weak?:boolean): void => {
+            const m=cloneDeep(modifiersModified) ? cloneDeep(modifiers) : undefined;
+            if(weak===true&&m!==undefined){
+                m.damage*=0.3
+                m.tracer.opacity*=0.35
+                m.tracer.width*=0.75
+            }
             owner.game.addBullet(
                 this,
                 owner,
@@ -267,7 +274,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
                     rotation: owner.rotation + HALF_PI + spread,
                     layer: getStartingLayer(position),
                     rangeOverride,
-                    modifiers: modifiersModified ? modifiers : undefined,
+                    modifiers: m,
                     saturate,
                     thin
                 }
@@ -309,7 +316,8 @@ export class GunItem extends InventoryItem<GunDefinition> {
             for (let j = 0; j < split; j++) {
                 spawn(
                     finalSpawnPosition,
-                    (8 * (j / sM1 - 0.5) ** 3) * dev + rotation
+                    (8 * (j / sM1 - 0.5) ** 3) * dev + rotation,
+                    j!=1
                 );
             }
         }
@@ -395,7 +403,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
 
         if (
             this.ammo >= (this.owner.hasPerk(PerkIds.ExtendedMags) ? definition.extendedCapacity ?? definition.capacity : definition.capacity)
-            || (!owner.inventory.items.hasItem(definition.ammoType) && !(this.owner.hasPerk(PerkIds.InfiniteAmmo)||this.owner.infinityAmmo||definition.infiniteAmmo))
+            || (!owner.inventory.items.hasItem(definition.ammoType) && !((this.owner.hasPerk(PerkIds.InfiniteAmmo)&&!definition.no_infinity_ammo)||this.owner.infinityAmmo||definition.infiniteAmmo))
             || owner.action !== undefined
             || owner.activeItem !== this
             || (!skipFireDelayCheck && owner.game.now - this._lastUse < definition.fireDelay)

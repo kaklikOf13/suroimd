@@ -15,7 +15,7 @@ import { getRandomIDString } from "../utils/misc";
 import { type Building } from "./building";
 import { type Bullet } from "./bullet";
 import { BaseGameObject, DamageParams, type GameObject } from "./gameObject";
-import { type Player } from "./player";
+import { Player } from "./player";
 
 export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     override readonly fullAllocBytes = 14;
@@ -284,6 +284,12 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
             });
             this.game.map.deadObstacles.push(this)
             this.clearConfig()
+
+            if(params.source&&params.source instanceof Player){
+                if(this.definition.weaponSwap){
+                    params.source.switchWeapon(params as (DamageParams))
+                }
+            }
         }
     }
     clearConfig(){

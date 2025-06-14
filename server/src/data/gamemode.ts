@@ -6,7 +6,6 @@ import { IslandDef, type MapDefinition, type Maps } from "./maps"
 import { mergeDeep,cloneDeep } from "@common/utils/misc"
 import { PerkIds } from "@common/definitions/perks"
 import { RemoveLootAfterTimePlugin } from "../defaultPlugins/removeLootAfterTime"
-import { weaponSwapArgsD, WeaponSwapPlugin } from "../defaultPlugins/weaponSwapPlugin"
 import { Airstrike, Airstrikes } from "@common/definitions/guns"
 import { type Player } from "../objects/player"
 import { GiveRoleAfterDownsArgs, GiveRoleAfterDownsPlugin, GiveRoleAfterStartArgs, GiveRoleAfterStartPlugin, StartWithRolePlugin } from "../defaultPlugins/rolesPlugins"
@@ -46,6 +45,23 @@ export interface Gamerole{
     nameColor?:number,
     dropable?:Partial<Player["dropable"]>,
     items:Record<string,number>
+
+    promotion_sound?:string
+    role_badge?:string
+
+    map_indicator?:{
+        dead:{
+            frame:string,
+            scale?:number,
+            tint?:number
+        },
+        normal:{
+            frame:string,
+            scale?:number,
+            tint?:number
+        }
+        global_visibility:boolean
+    }
 }
 const DefaultRoles:Record<string,Gamerole>={
     full:{
@@ -53,7 +69,7 @@ const DefaultRoles:Record<string,Gamerole>={
         equipments:{
             vest:"tactical_vest",
             helmet:"tactical_helmet",
-            backpack:"tactical_pack",
+            backpack:"ultra_pack",
             infinityAmmo:true,
         },
         adrenaline:100,
@@ -81,7 +97,7 @@ const DefaultRoles:Record<string,Gamerole>={
             skin:"shiny_hasanger",
             vest:"tactical_vest",
             melee:"fire_hatchet",
-            backpack:"tactical_pack",
+            backpack:"ultra_pack",
             helmet:"captain_helmet",
         },
         items:{
@@ -92,6 +108,19 @@ const DefaultRoles:Record<string,Gamerole>={
             "2x_scope":1,
             "4x_scope":1,
             "8x_scope":1,
+        },
+        promotion_sound:"kill_leader_assigned",
+        role_badge:"bdg_captain",
+        map_indicator:{
+            global_visibility:false,
+            dead:{
+                frame:"player_captain_indicator",
+                tint:0x880000
+            },
+            normal:{
+                frame:"player_captain_indicator",
+                tint:0x880000
+            },
         }
     },
     red_sergeant:{
@@ -119,7 +148,9 @@ const DefaultRoles:Record<string,Gamerole>={
             "tablets":1,
             "2x_scope":1,
             "4x_scope":1,
-        }
+        },
+        promotion_sound:"sergeant_promotion",
+        role_badge:"bdg_sergeant"
     },
     red_medic:{
         name:"red_medic",
@@ -133,7 +164,7 @@ const DefaultRoles:Record<string,Gamerole>={
             skin:"shiny_max_mcfly",
             vest:"tactical_vest",
             melee:"battlesaw",
-            backpack:"tactical_pack",
+            backpack:"ultra_pack",
             helmet:"medic_helmet",
             gun1:"medic_pistol",
         },
@@ -145,13 +176,25 @@ const DefaultRoles:Record<string,Gamerole>={
             "tablets":1,
             "2x_scope":1,
             "4x_scope":1,
+        },
+        promotion_sound:"medic_promotion",
+        role_badge:"bdg_medic",
+        map_indicator:{
+            global_visibility:false,
+            dead:{
+                frame:"player_medic_indicator",
+                tint:0x880000
+            },
+            normal:{
+                frame:"player_medic_indicator",
+                tint:0x880000
+            },
         }
     },
     red_lastman:{
         name:"red_lastman",
         maxHealth:2,
         adrenaline:100,
-        size:1.4,
         dropable:{
             vest:false,
             helmet:false,
@@ -166,6 +209,12 @@ const DefaultRoles:Record<string,Gamerole>={
             "2x_scope":1,
             "4x_scope":1,
             "8x_scope":1,
+            "15x_scope":1,
+            "20x_scope":1,
+            "30x_scope":1,
+            "mirv_grenade":5,
+            "frag_grenade":10,
+            "smoke_grenade":5,
         },
         equipments:{
             gun1:["vepr12","m3k","super90","usas12","m590m"],
@@ -173,12 +222,13 @@ const DefaultRoles:Record<string,Gamerole>={
             melee:"battlesaw",
             skin:"shiny_max_mcfly",
             vest:"ultra_vest",
-            backpack:"tactical_pack",
+            backpack:"ultra_pack",
             helmet:"last_man_helmet",
-            metalicBody:true,
             infinityAmmo:true,
-            perks:[[PerkIds.SabotRounds,PerkIds.CloseQuartersCombat,PerkIds.SecondWind,PerkIds.ExtendedMags,PerkIds.AdvancedAthletics],PerkIds.Flechettes,PerkIds.FieldMedic]
-        }
+            perks:[[PerkIds.ExtendedMags,PerkIds.Toploaded,PerkIds.SelfRevive,PerkIds.Berserker,PerkIds.NatureBreath]]
+        },
+        promotion_sound:"promotion_last_knight",
+        role_badge:"bdg_last_man"
     }
 }
 //Blue Team
@@ -192,6 +242,18 @@ DefaultRoles["blue_captain"]=mergeDeep(cloneDeep(DefaultRoles["red_captain"]),{
     items:{
         "762mm":300,
         "12g":0,
+    },
+    promotion_sound:"",
+    map_indicator:{
+        global_visibility:false,
+        dead:{
+            frame:"player_captain_indicator",
+            tint:0x00088
+        },
+        normal:{
+            frame:"player_captain_indicator",
+            tint:0x000088
+        },
     }
 } as Partial<Gamerole>)
 //Blue sergeant
@@ -200,7 +262,8 @@ DefaultRoles["blue_sergeant"]=mergeDeep(cloneDeep(DefaultRoles["red_sergeant"]),
     nameColor:0x000080,
     equipments:{
         skin:"shiny_pap",
-    }
+    },
+    promotion_sound:""
 } as Partial<Gamerole>)
 //Blue Medic
 DefaultRoles["blue_medic"]=mergeDeep(cloneDeep(DefaultRoles["red_medic"]),{
@@ -208,6 +271,17 @@ DefaultRoles["blue_medic"]=mergeDeep(cloneDeep(DefaultRoles["red_medic"]),{
     nameColor:0x000080,
     equipments:{
         skin:"shiny_amanda_corey",
+    },
+    map_indicator:{
+        global_visibility:false,
+        dead:{
+            frame:"player_medic_indicator",
+            tint:0x000088
+        },
+        normal:{
+            frame:"player_medic_indicator",
+            tint:0x000088
+        },
     }
 } as Partial<Gamerole>)
 //Blue Lastman
@@ -215,11 +289,9 @@ DefaultRoles["blue_lastman"]=mergeDeep(cloneDeep(DefaultRoles["red_lastman"]),{
     name:"blue_lastman",
     nameColor:0x000080,
     equipments:{
-        gun1:["vepr12","m3k","super90","usas12","m590m"],
-        gun2:["l115a1","awms","pfeifer_zeliska","dual_pfeifer_zeliska","mg5","pkp","m134","m134_22lr","negev","m249","vickers"],
-        melee:"battlesaw",
         skin:"shiny_amanda_corey",
-    }
+    },
+    role_badge:"bdg_last_woman"
 } as Partial<Gamerole>)
 
 /**
@@ -288,7 +360,6 @@ export type GamemodeMap=`${keyof typeof Maps}${string}`|({
 export interface Gamemode{
     readonly weaponsSelect:boolean
     readonly globalDamage:number
-    readonly globalRange:number
     readonly gas:GasConfig
     readonly spawn:Spawn
     readonly armorProtection:number
@@ -331,6 +402,10 @@ export interface Gamemode{
         readonly count:number
         readonly spawnIslands?:number[]
     }
+    readonly weaponSwap?:{
+        readonly blacklist:string[]
+        readonly killswap?:boolean
+    }
     readonly nature:{
         readonly daynightDelay:number,
         readonly rain:{
@@ -361,8 +436,7 @@ export const DefaultGamemode:Gamemode={
     weaponsSelect:false,
 
     adrenalineLoss:0.0004,
-    globalDamage:.75,
-    globalRange:2.25,
+    globalDamage:.76,
     armorProtection:1,
 
     data:Date.UTC(87,2,24,2,4,25),
@@ -775,8 +849,8 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
     manhunt:{
         group:true,
         defaultGroup:0,
-        start_after:2,
-        joinTime:10,
+        start_after:60,
+        joinTime:30,
         maxPlayersPerGame:36,
         button:{
             buttonCss:"btn-redmode",
@@ -796,9 +870,31 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                     group:{
                         group:1
                     },
-                    role:DefaultRoles["red_lastman"],
+                    role:mergeDeep(DefaultRoles["red_lastman"],{
+                        map_indicator:{
+                            dead:{
+                                frame:"player_danger_indicator",
+                            },
+                            normal:{
+                                frame:"player_danger_indicator",
+                            },
+                            global_visibility:true,
+                        }
+                    }),
                 }satisfies GiveRoleAfterStartArgs
             },
+            {
+                construct:GiveRoleAfterStartPlugin,
+                params:{
+                    afterTime:5,
+                    group:{
+                        group:0,
+                        needGroup:true,
+                    },
+                    role:DefaultRoles["blue_medic"],
+                }satisfies GiveRoleAfterStartArgs
+            },
+            //Blue Extra
             {
                 construct:GiveRoleAfterStartPlugin,
                 params:{
@@ -807,7 +903,10 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                         group:0,
                         needGroup:true,
                     },
-                    role:DefaultRoles["blue_medic"],
+                    count:1,
+                    role:mergeDeep(DefaultRoles["blue_sergeant"],{
+                        promotion_sound:"promotion_sergeant"
+                    }),
                 }satisfies GiveRoleAfterStartArgs
             },
             /*Not Cannon Just By Gameplay
@@ -893,7 +992,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                 island:[0,0],
                 def:{
                     obstacles:{
-                        apple:100,
+                        apple:210,
                     }
                 }
             }]
@@ -908,122 +1007,12 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
             buttonText:"apples-mode",
             icon:""
         },
-        plugins:[
-            {construct:WeaponSwapPlugin,params:mergeDeep(cloneDeep(weaponSwapArgsD),{
-                obstacles:[
-                    "apple"
-                ],
-                selectableGuns:[
-                    "taurus_tx22",
-                    "dual_taurus_tx22",
-                    "uzi_22lr",
-                    "rifle_cbc",
-                    "m134_22lr",
-
-                    "g19",
-                    "dual_g19",
-                    "cz75a",
-                    "dual_cz75a",
-                    "mp40",
-                    "saf200",
-                    "micro_uzi",
-                    "vector",
-                    "vss",
-                    "pp19",
-
-                    "m1895",
-                    "dual_m1895",
-                    "ak47",
-                    "mcx_spear",
-                    "arx160",
-                    "lewis_gun",
-                    "mosin_nagant",
-                    "sr25",
-                    "tango_51",
-                    "mg5",
-                    "blr",
-                    "svd",
-                    "an94",
-                    "m134",
-                    "sv98",
-                    "pkp",
-                    "bar",
-                    "vickers",
-                    "ppsh41",
-
-                    "aug",
-                    "m16a4",
-                    "stoner_63",
-                    "mg36",
-                    "cz600",
-                    "mini14",
-                    "acr",
-                    "negev",
-                    "l86a2",
-                    "m249",
-
-                    "model_94",
-                    "peacemaker",
-                    "dual_peacemaker",
-                    "p90",
-                    "tommy",
-                    "delisle",
-                    "vector_acp",
-
-                    "hp18",
-                    "flues",
-                    "model_37",
-                    "m3k",
-                    "vepr12",
-                    "usas12",
-                    "m590m",
-                    "super90",
-
-                    "l11a1",
-                    "mk18",
-                    "awms",
-                    "pfeifer_zeliska",
-                    "dual_pfeifer_zeliska",
-
-                    "deagle",
-                    "dual_deagle",
-                    "model_89",
-                    "rsh12",
-                    "dual_rsh12",
-
-                    "g17_scoped",
-                    "dual_g17_scoped",
-
-                    "medic_pistol",
-                    "dual_medic_pistol",
-                ],
-                selectableMelees:[
-                    "baseball_bat",
-                    "battlesaw",
-                    "maul",
-                    "steelfang",
-                    "seax",
-                    "falchion",
-                    "ice_pick",
-                    "feral_claws",
-                    "sickle",
-                    "kbar",
-                    "hatchet",
-                    "fire_hatchet",
-                    "crowbar",
-                    "gas_can"
-                ],
-                selectableThrowables:[
-                    "frag_grenade",
-                    "smoke_grenade",
-                    "mirv_grenade",
-                    "ice_grenade"
-                ],
-                blackList:[
-                    "apple_launcher"
-                ]
-            })}
-        ],
+        weaponSwap:{
+            blacklist:[
+                "apple_launcher"
+            ],
+            killswap:true
+        },
         emotes_replace:"apple_emote"
     },
     "1v1":{
@@ -1171,7 +1160,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
             {
                 construct:GiveRoleAfterStartPlugin,
                 params:{
-                    afterTime:50,
+                    afterTime:5,//50,
                     group:{
                         group:0,
                         needGroup:true,
@@ -1184,7 +1173,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
             {
                 construct:GiveRoleAfterStartPlugin,
                 params:{
-                    afterTime:55,
+                    afterTime:5,
                     group:{
                         group:0,
                         needGroup:true,
@@ -1197,7 +1186,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
             {
                 construct:GiveRoleAfterStartPlugin,
                 params:{
-                    afterTime:60,
+                    afterTime:5,
                     group:{
                         group:0,
                         needGroup:true,

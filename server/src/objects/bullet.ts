@@ -62,6 +62,7 @@ export class Bullet extends BaseBullet {
             : source.definition;
         const definition = Bullets.fromString(`${reference.idString}_bullet`);
         const variance = definition.rangeVariance;
+        
 
         super({
             ...options,
@@ -72,7 +73,7 @@ export class Bullet extends BaseBullet {
             headshot:definition.headshot?Math.random()<=definition.headshot!.chance:false
         });
 
-        this.clipDistance = options.rangeOverride ?? this.definition.range*game.gamemode.globalRange;
+        this.clipDistance = (options.rangeOverride ?? this.definition.range);
         this.game = game;
         this.sourceGun = source;
         this.shooter = shooter;
@@ -142,7 +143,7 @@ export class Bullet extends BaseBullet {
                 if (
                     ((isObstacle || isBuilding)
                     && object.definition.reflectBullets
-                    && this.reflectionCount < 3) || (isPlayer&&object.metalicBody)
+                    && this.reflectionCount < 3) || (isPlayer&&(object.metalicBody||(object.inventory.vest?.level??0)>=4))
                 ) {
                     /*
                         no matter what, nudge the bullet
@@ -166,6 +167,7 @@ export class Bullet extends BaseBullet {
                 if(object.isPlayer){
                     if(this.definition.heal){
                         object.health+=this.definition.damage
+                        object.adrenaline+=this.definition.damage/2
                     }else{
                         object.damage({amount:r.damage,source:r.source,weaponUsed:r.weapon},this.headshot?this.definition.headshot!.modify:undefined)
                     }

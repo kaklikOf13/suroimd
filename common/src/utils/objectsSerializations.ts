@@ -59,6 +59,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             readonly halloweenThrowableSkin: boolean
             readonly activeDisguise?: ObstacleDefinition
             readonly blockEmoting: boolean
+            readonly boost:number
         }
     }
     //
@@ -242,6 +243,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 activeDisguise,
                 blockEmoting,
                 fist_loadout,
+                boost
             } }
         ): void {
             stream.writeLayer(layer);
@@ -276,6 +278,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             Backpacks.writeToStream(stream, backpack);
 
             if (hasDisguise) Obstacles.writeToStream(stream, activeDisguise);
+
+            stream.writeUint8(boost)
         },
         deserializePartial(stream) {
             const data: Mutable<ObjectsNetData[ObjectCategory.Player]> = {
@@ -338,7 +342,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 backpack: Backpacks.readFromStream(stream),
                 activeDisguise: hasDisguise ? Obstacles.readFromStream(stream) : undefined,
                 blockEmoting,
-                healAura:healingAura
+                healAura:healingAura,
+                boost:stream.readUint8()
             };
         }
     },

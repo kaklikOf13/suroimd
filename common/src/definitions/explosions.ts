@@ -615,8 +615,8 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             damage: 300,
             obstacleMultiplier: 3,
             radius: {
-                min: 48,
-                max: 58
+                min: 35,
+                max: 80
             },
             cameraShake: {
                 duration: 2000,
