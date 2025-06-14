@@ -462,13 +462,13 @@ export const DefaultGamemode:Gamemode={
     nature:{
         daynightDelay:1/((5*60)*2),
         rain:{
-            chance:0.0001,
+            chance:0.00008,
             stopChance:0.00008,
-            transition:0.0005,
+            transition:0.005,
             storm:{
                 chance:[0.15,0.0005],
                 stopChance:0.000015,
-                boltChance:0.0035
+                boltChance:0.007
             }
         }
     },
@@ -1146,7 +1146,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
             spawnIslands:[0,1]
         },
         joinTime:100,
-        maxPlayersPerGame:60,
+        maxPlayersPerGame:70,
         airdrop:{
             particlesCount:15,
             crate:"big_airdrop_crate_locked",
@@ -1160,7 +1160,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
             {
                 construct:GiveRoleAfterStartPlugin,
                 params:{
-                    afterTime:5,//50,
+                    afterTime:50,
                     group:{
                         group:0,
                         needGroup:true,
@@ -1173,7 +1173,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
             {
                 construct:GiveRoleAfterStartPlugin,
                 params:{
-                    afterTime:5,
+                    afterTime:55,
                     group:{
                         group:0,
                         needGroup:true,
@@ -1186,7 +1186,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
             {
                 construct:GiveRoleAfterStartPlugin,
                 params:{
-                    afterTime:5,
+                    afterTime:60,
                     group:{
                         group:0,
                         needGroup:true,

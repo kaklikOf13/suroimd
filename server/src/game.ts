@@ -312,7 +312,7 @@ export class Game implements GameData {
         if((this.nature.daytime==1&&this.nature.day)||(this.nature.daytime==0&&!this.nature.day)){
             this.nature.day=!this.nature.day
         }
-        this.nature.rain=Numeric.round(Numeric.lerp(this.nature.rain,this.nature.rainDest,nature.rain.transition),3)
+        this.nature.rain=Numeric.round(Numeric.lerp(this.nature.rain,this.nature.rainDest,nature.rain.transition),5)
     }
 
     onMessage(stream: SuroiByteStream, player: Player): void {

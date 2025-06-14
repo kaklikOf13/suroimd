@@ -1028,6 +1028,9 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             max: 1,
             noDuplicates: true,
             loot: [
+                { item: PerkIds.NatureBreath, weight: 1 },
+                { item: PerkIds.Takedown, weight: 1 },
+                { item: PerkIds.SelfRevive, weight: 1 },
                 { item: PerkIds.InfiniteAmmo, weight: 1 },
                 { item: PerkIds.ExtendedMags, weight: 1 },
                 { item: PerkIds.Flechettes, weight: 1 },
@@ -1047,6 +1050,9 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             max: 1,
             noDuplicates: true,
             loot: [
+                { item: PerkIds.NatureBreath, weight: 1 },
+                { item: PerkIds.Takedown, weight: 1 },
+                { item: PerkIds.SelfRevive, weight: 1 },
                 { item: PerkIds.InfiniteAmmo, weight: 1 },
                 { item: PerkIds.ExtendedMags, weight: 1 },
                 { item: PerkIds.Flechettes, weight: 1 },
