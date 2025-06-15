@@ -1210,11 +1210,17 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }
         this.health=this.maxHealth
         if(role.size)this.sizeChange=role.size
-        if(role.nameColor){
+        if(role.nameColor!==undefined){
             //@ts-ignore
             this.nameColor=role.nameColor
             //@ts-ignore
             this.hasColor=true
+
+            const m=createKillfeedMessage(KillfeedMessageType.Promotion).setPlayerId(this.id).setRole(this.nameColor,role.name,role.promotion_sound,role.role_badge).build()
+
+            this.game.packets.push(
+                KillFeedPacket.create(m)
+            );
         }
         if(role.role_badge){
             this.loadout.badge=Badges.fromStringSafe(role.role_badge)
@@ -1248,12 +1254,6 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.canDespawn=false
 
         this.fullDirty()
-
-        const m=createKillfeedMessage(KillfeedMessageType.Promotion).setPlayerId(this.id).setRole(this.nameColor,role.name,role.promotion_sound,role.role_badge).build()
-
-        this.game.packets.push(
-            KillFeedPacket.create(m)
-        );
     }
 
     /**
