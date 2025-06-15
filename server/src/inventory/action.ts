@@ -103,7 +103,7 @@ export class ReloadAction extends Action {
             ? definition.extendedCapacity ?? definition.capacity
             : definition.capacity;
 
-        const hasInfiniteAmmo = (this.player.inventory.activeWeapon as GunItem).infinity_ammo();
+        const hasInfiniteAmmo = this.item.infinity_ammo();
 
         const desiredLoad = Numeric.min(
             definition.shotsPerReload !== undefined && !this.fullReload

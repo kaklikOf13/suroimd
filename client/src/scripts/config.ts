@@ -2,11 +2,11 @@ import { type TeamSize } from "@common/constants";
 
 export const Config = {
     regions: {
-        dev: {
+        /*dev: {
             name: "Local Server",
             mainAddress: "http://localhost:8000",
             gameAddress: "ws://localhost:800<ID>"
-        },
+        },*/
         na: {
             name: "North America",
             mainAddress: "https://na.suroimd.io",
