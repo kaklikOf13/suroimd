@@ -61,7 +61,7 @@ export const ExtraLoadout:Record<string,ExtraLoadoutDefinition>={
         type:ExtraLoadoutType.Role,
         frame:"amanda_corey",
         helmet:"lastwoman",
-        perks:[PerkIds.FlorestQueen]
+        perks:[PerkIds.InfiniteAmmo]
     }
 
 }as const

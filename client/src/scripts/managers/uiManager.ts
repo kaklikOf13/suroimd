@@ -1623,7 +1623,7 @@ export class UIManager {
                     }
 
                     const cpname=getNameAndBadge(message.playerId)
-                    messageText = html`${getTranslatedString("kf_role_promotion", { player: cpname.badgeText+pn.name,role:getTranslatedString(("gamerole_"+message.role.name) as TranslationKeys) })}`
+                    messageText = html`${getTranslatedString("kf_role_promotion", { player: cpname.badgeText+pn.name,role:(getTranslatedString(("gamerole_"+message.role.name) as TranslationKeys)+cpname.badgeText)})}`
                 }
                 if(message.role.sound!=="")this.game.soundManager.play(message.role.sound)
                 break
