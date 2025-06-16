@@ -505,7 +505,7 @@ export class UIManager {
         for (const [, entry] of this._anotherIndicDataCache) {
             entry.destroy();
         }
-        this._groupDataCache.clear();
+        this._anotherIndicDataCache.clear();
     }
 
     private _oldHealthPercent = 100;

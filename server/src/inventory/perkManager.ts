@@ -26,6 +26,11 @@ export class ServerPerkManager extends PerkManager {
      * @returns Whether the perk was already present (and thus nothing has changed)
      */
     override addPerk(perk: PerkDefinition,fromRole=false): boolean {
+        if(!fromRole){
+            for(const p of this.asList()){
+                if(!this.fromRoles.includes(p.idString))this.removePerk(p)
+            }
+        }
         const idString = perk.idString;
         const owner = this.owner;
         const absent = super.addPerk(perk);
