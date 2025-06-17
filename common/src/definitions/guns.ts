@@ -2323,19 +2323,17 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 },
                 rarity:ItemRarity.Legendary
             },
-            // only dev weapons below this point
             {
                 idString: "g17_scoped",
-                name: "G17 (scoped)",
-                devItem: true,
+                name: "Water Gun",
                 ammoType: "bb",
-                fireDelay: 35,
+                fireDelay: 45,
                 switchDelay: 250,
-                speedMultiplier: 1.5,
-                recoilMultiplier: 0.99,
-                recoilDuration: 10,
+                speedMultiplier: 1.15,
+                recoilMultiplier: 0.97,
+                recoilDuration: 150,
                 fireMode: FireMode.Auto,
-                shotSpread: 0.5,
+                shotSpread: 1.5,
                 moveSpread: 4,
                 length: 6.2,
                 fists: {
@@ -2347,32 +2345,33 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 },
                 noMuzzleFlash: true,
                 image: { position: Vec.create(65, 0) },
-                capacity: 100,
-                extendedCapacity: 250,
+                capacity: 65,
+                extendedCapacity: 100,
                 reloadTime: 1.5,
                 ballistics: {
-                    damage: 2,
-                    obstacleMultiplier: 0.5,
-                    speed: 0.1,
-                    range: 70,
+                    damage: 2.8,
+                    obstacleMultiplier: 0.9,
+                    speed: 0.15,
+                    range: 75,
                     tracer: {
                         width: 0.7,
                         opacity: 0.85,
-                        color: 0xFF8000,
-                        saturatedColor: 0xF5B83D
+                        color: 0x0080aa,
+                        saturatedColor: 0x0380ff
                     }
-                } /* ,
+                },
                 dual: {
                     leftRightOffset: 1.3,
-                    capacity: 200,
-                    extendedCapacity: 500,
-                    fireDelay: 20,
-                    shotSpread: 1,
-                    moveSpread: 7,
+                    capacity: 130,
+                    extendedCapacity: 200,
+                    speedMultiplier: 1.3,
+                    fireDelay: 30,
+                    shotSpread: 2.3,
+                    moveSpread: 6,
                     reloadTime: 2.8
-                } */
-                // justice for dual s_g17 when™
+                }
             },
+            // only dev weapons below this point
             {
                 idString: "death_ray",
                 name: "Death Ray",

@@ -7,7 +7,7 @@
    viewBox="0 0 35.718749 35.718753"
    version="1.1"
    id="svg5"
-   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
    sodipodi:docname="loot_background_gun_45acp.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -25,9 +25,9 @@
      inkscape:document-units="px"
      showgrid="false"
      units="px"
-     inkscape:zoom="5.6568546"
-     inkscape:cx="42.426404"
-     inkscape:cy="58.601471"
+     inkscape:zoom="2.0000001"
+     inkscape:cx="23.749999"
+     inkscape:cy="149.24999"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
      inkscape:window-x="-8"
@@ -42,13 +42,17 @@
        inkscape:collect="always"
        id="linearGradient2556">
       <stop
-         style="stop-color:#ffffff;stop-opacity:0.8509804"
+         style="stop-color:#7d0591;stop-opacity:1;"
          offset="0"
-         id="stop2552" />
-      <stop
-         style="stop-color:#7d0591;stop-opacity:0.74509805;"
-         offset="1"
          id="stop2554" />
+      <stop
+         style="stop-color:#7d0591;stop-opacity:0.64779872;"
+         offset="0.55804044"
+         id="stop1" />
+      <stop
+         style="stop-color:#7d0591;stop-opacity:0;"
+         offset="0.99893504"
+         id="stop2552" />
     </linearGradient>
     <radialGradient
        inkscape:collect="always"

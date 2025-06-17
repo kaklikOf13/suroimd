@@ -791,9 +791,10 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { item: "arx160", weight:1 },
             { item: "lewis_gun", weight: 0.85 },
             { item: "rifle_cbc", weight: 0.85 },
-            { item: "cz600", weight: 0.85 },
             { item: "m3k", weight: 0.8 },
+            { item: "g17_scoped", weight: 0.7 },
             { item: "mg36", weight: 0.6 },
+            { item: "cz600", weight: 0.5 },
         ],
         epic_guns:[
             { item: "vss", weight: 1.1 },

@@ -7,7 +7,7 @@
    viewBox="0 0 35.718749 35.718753"
    version="1.1"
    id="svg5"
-   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
    sodipodi:docname="loot_background_gun_medic_charge.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -26,8 +26,8 @@
      showgrid="false"
      units="px"
      inkscape:zoom="2.8284273"
-     inkscape:cx="91.21677"
-     inkscape:cy="93.514867"
+     inkscape:cx="91.393546"
+     inkscape:cy="65.230597"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
      inkscape:window-x="-8"
@@ -42,13 +42,17 @@
        inkscape:collect="always"
        id="linearGradient2556">
       <stop
-         style="stop-color:#ffffff;stop-opacity:0.8509804"
+         style="stop-color:#28bd3f;stop-opacity:1;"
          offset="0"
-         id="stop2552" />
-      <stop
-         style="stop-color:#28bd3f;stop-opacity:0.77293581;"
-         offset="1"
          id="stop2554" />
+      <stop
+         style="stop-color:#28bd3f;stop-opacity:0.46666667;"
+         offset="0.57024789"
+         id="stop1" />
+      <stop
+         style="stop-color:#28bd3f;stop-opacity:0;"
+         offset="1"
+         id="stop2552" />
     </linearGradient>
     <radialGradient
        inkscape:collect="always"
