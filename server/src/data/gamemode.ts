@@ -149,7 +149,7 @@ const DefaultRoles:Record<string,Gamerole>={
             "2x_scope":1,
             "4x_scope":1,
         },
-        promotion_sound:"sergeant_promotion",
+        promotion_sound:"promotion_sergeant",
         role_badge:"bdg_sergeant"
     },
     red_pigmin:{
@@ -178,7 +178,7 @@ const DefaultRoles:Record<string,Gamerole>={
             "2x_scope":1,
             "4x_scope":1,
         },
-        promotion_sound:"pigmin_promotion",
+        promotion_sound:"promotion_pigmin",
         role_badge:"bdg_pigmin"
     },
     red_sniper:{
@@ -207,7 +207,7 @@ const DefaultRoles:Record<string,Gamerole>={
             "2x_scope":1,
             "4x_scope":1,
         },
-        promotion_sound:"sniper_promotion",
+        promotion_sound:"promotion_sniper",
         role_badge:"bdg_sniper"
     },
     red_medic:{
@@ -234,7 +234,7 @@ const DefaultRoles:Record<string,Gamerole>={
             "2x_scope":1,
             "4x_scope":1,
         },
-        promotion_sound:"medic_promotion",
+        promotion_sound:"promotion_medic",
         role_badge:"bdg_medic",
         map_indicator:{
             global_visibility:false,
@@ -323,7 +323,7 @@ DefaultRoles["blue_sergeant"]=mergeDeep(cloneDeep(DefaultRoles["red_sergeant"]),
     promotion_sound:""
 } as Partial<Gamerole>)
 //Blue Pigmin
-DefaultRoles["blue_pigmin"]=mergeDeep(cloneDeep(DefaultRoles["red_sergeant"]),{
+DefaultRoles["blue_pigmin"]=mergeDeep(cloneDeep(DefaultRoles["red_pigmin"]),{
     name:"blue_pigmin",
     nameColor:0x000080,
     equipments:{
@@ -332,8 +332,8 @@ DefaultRoles["blue_pigmin"]=mergeDeep(cloneDeep(DefaultRoles["red_sergeant"]),{
     promotion_sound:""
 } as Partial<Gamerole>)
 //Blue Sniper
-DefaultRoles["blue_pigmin"]=mergeDeep(cloneDeep(DefaultRoles["red_sergeant"]),{
-    name:"blue_pigmin",
+DefaultRoles["blue_sniper"]=mergeDeep(cloneDeep(DefaultRoles["red_sniper"]),{
+    name:"blue_sniper",
     nameColor:0x000080,
     equipments:{
         skin:"shiny_nebula",
@@ -1257,7 +1257,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                     role:DefaultRoles["red_medic"],
                 }satisfies GiveRoleAfterStartArgs
             },
-            //Red Extra
+            //Red Sergeant
             {
                 construct:GiveRoleAfterStartPlugin,
                 params:{
@@ -1269,6 +1269,34 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                     },
                     count:1,
                     role:DefaultRoles["red_sergeant"],
+                }satisfies GiveRoleAfterStartArgs
+            },
+            //Red Pigmin
+            {
+                construct:GiveRoleAfterStartPlugin,
+                params:{
+                    afterTime:65,
+                    group:{
+                        group:0,
+                        needGroup:true,
+                        canDowned:true,
+                    },
+                    count:1,
+                    role:DefaultRoles["red_pigmin"],
+                }satisfies GiveRoleAfterStartArgs
+            },
+            //Red Sniper
+            {
+                construct:GiveRoleAfterStartPlugin,
+                params:{
+                    afterTime:70,
+                    group:{
+                        group:0,
+                        needGroup:true,
+                        canDowned:true,
+                    },
+                    count:1,
+                    role:DefaultRoles["red_sniper"],
                 }satisfies GiveRoleAfterStartArgs
             },
             //Red Lastman
@@ -1309,7 +1337,7 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                     role:DefaultRoles["blue_medic"],
                 }satisfies GiveRoleAfterStartArgs
             },
-            //Blue Extra
+            //Blue Sergeant
             {
                 construct:GiveRoleAfterStartPlugin,
                 params:{
@@ -1321,6 +1349,34 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                     },
                     count:1,
                     role:DefaultRoles["blue_sergeant"],
+                }satisfies GiveRoleAfterStartArgs
+            },
+            //Blue Pigmin
+            {
+                construct:GiveRoleAfterStartPlugin,
+                params:{
+                    afterTime:65,
+                    group:{
+                        group:1,
+                        needGroup:true,
+                        canDowned:true,
+                    },
+                    count:1,
+                    role:DefaultRoles["blue_pigmin"],
+                }satisfies GiveRoleAfterStartArgs
+            },
+            //Blue Sniper
+            {
+                construct:GiveRoleAfterStartPlugin,
+                params:{
+                    afterTime:70,
+                    group:{
+                        group:1,
+                        needGroup:true,
+                        canDowned:true,
+                    },
+                    count:1,
+                    role:DefaultRoles["blue_sniper"],
                 }satisfies GiveRoleAfterStartArgs
             },
             //Blue Lastman

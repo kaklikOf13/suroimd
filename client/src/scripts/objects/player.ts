@@ -1217,8 +1217,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             }
             this.images.weapon.setFrame(frame);
             this.images.altWeapon.setFrame(frame);
-            this.images.weapon.setAngle(angle);
-            this.images.altWeapon.setAngle(angle); // there's an ambiguity here as to whether the angle should be inverted or the same
 
             if (this.activeItem !== this._oldItem) {
                 this.anims.muzzleFlashFade?.kill();
@@ -1234,6 +1232,9 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             if(weaponDef.itemType===ItemType.Melee&&weaponDef["keyframes"]!==undefined&&weaponDef["keyframes"].length>0){
                 this.currentKeyframe=-1
                 this.PlayKeyframe(weaponDef,false)
+            }else{
+                this.images.weapon.setAngle(angle);
+                this.images.altWeapon.setAngle(angle); // there's an ambiguity here as to whether the angle should be inverted or the same
             }
         }
 
@@ -1241,7 +1242,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         this.images.muzzleFlash.setVisible(imagePresent);
 
         this.images.altWeapon.setVisible(weaponDef.itemType === ItemType.Gun && (weaponDef.isDual ?? false));
-        this.images.weapon.setAngle(0)
         switch (weaponDef.itemType) {
             case ItemType.Gun: {
                 this.images.rightFist.setZIndex((fists as SingleGunNarrowing["fists"]).rightZIndex);

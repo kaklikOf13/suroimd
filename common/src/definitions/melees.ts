@@ -323,25 +323,26 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             idString: "crowbar",
             name: "Crowbar",
             swingSound: "heavy_swing",
-            damage: 40,
+            damage: 30,
             resistanceDamage:1,
             obstacleMultiplier: 2.2,
             piercingMultiplier: 2,
-            radius: 2.58,
-            offset: Vec.create(5.9, 1.7),
-            cooldown: 560,
+            radius: 3.1,
+            offset: Vec.create(4.5, -1),
+            cooldown: 230,
             fists: {
-                animationDuration: 200,
+                animationDuration: 100,
                 left: Vec.create(38, -35),
                 right: Vec.create(38, 35),
                 useLeft: Vec.create(38, -35),
-                useRight: Vec.create(100, 35)
+                useRight: Vec.create(90, -25)
             },
             image: {
-                position: Vec.create(31, 41),
-                usePosition: Vec.create(110, 33),
-                angle: 135,
-                useAngle: -5,
+                position: Vec.create(38, 35),
+                usePosition: Vec.create(90, -25),
+                center:Vec.create(0,0),
+                angle: -30,
+                useAngle: -80,
                 lootScale: 0.65
             },
             reskins: ["winter"]
@@ -551,7 +552,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             piercingMultiplier: 0.95,
             cooldown: 450,
             fists: {
-                left: Vec.create(-10, -50),
+                left: Vec.create(-10, -45),
                 right: Vec.create(10, -45)
             },
             image: {
@@ -559,14 +560,14 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                 lootScale: 0.6,
                 angle: -180,
                 zIndex:3,
-                center:Vec.create(-63,-24.2)
+                center:Vec.create(-63,-17)
             },
             damageDelay: 350,
             keyframes:[
                 {
                     animationDuration: 50, //50
                     fist:{
-                        left: Vec.create(-10, -50),
+                        left: Vec.create(-10, -45),
                         right: Vec.create(10, -45)
                     },
                     image:{
@@ -599,14 +600,25 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
                 {
                     animationDuration: 120, //50
                     fist:{
-                        left: Vec.create(-10, -50),
+                        left: Vec.create(-10, -45),
                         right: Vec.create(10, -45)
                     },
                     image:{
                         position: Vec.create(10, -45),
                         angle: -150
                     }
-                }
+                },
+                {
+                    animationDuration: 50, //50
+                    fist:{
+                        left: Vec.create(-10, -45),
+                        right: Vec.create(10, -45)
+                    },
+                    image:{
+                        position: Vec.create(10, -45),
+                        angle: -180
+                    }
+                },
             ],
             keyframesSpeed:1,
         },
