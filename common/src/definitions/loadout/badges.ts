@@ -29,6 +29,8 @@ export const Badges = ObjectDefinitions.create<BadgeDefinition>("Badges", [
     //Gameroles
     badge(["Captain", ["developr"]]),
     badge(["Sergeant", ["developr"]]),
+    badge(["Pigmin", ["developr"]]),
+    badge(["Sniper", ["developr"]]),
     badge(["Medic", ["developr"]]),
     badge(["Last Man", ["developr"]]),
     badge(["Last Woman", ["developr"]]),

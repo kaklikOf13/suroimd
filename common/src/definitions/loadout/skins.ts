@@ -157,6 +157,10 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
                 ["max_mcfly"],
                 ["anonymous"],
                 ["leia"],
+                ["radians"],
+
+                ["aurora"],
+                ["nebula"],
             ] satisfies ReadonlyArray<readonly [string]>).map(([name]) => shinySkin([name])),
             hidden(
                 ["Ghillie Suit", 0xffffff],

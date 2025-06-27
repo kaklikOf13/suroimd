@@ -82,6 +82,24 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
                 }
             ),
             helmet(
+                ["Pigmin"],
+                {
+                    level: 3,
+                    givePerks:[PerkIds.LowProfile],
+                    damageReduction: 0.2,
+                    rarity:ItemRarity.Legendary
+                }
+            ),
+            helmet(
+                ["Sniper"],
+                {
+                    level: 3,
+                    givePerks:[PerkIds.Takedown,PerkIds.Toploaded],
+                    damageReduction: 0.2,
+                    rarity:ItemRarity.Legendary
+                }
+            ),
+            helmet(
                 ["Captain"],
                 {
                     level: 4,

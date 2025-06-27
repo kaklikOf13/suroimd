@@ -2917,7 +2917,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     speed: 0.4,
                     range: 360,
                     tracer: {
-                        width: 2.4,
+                        width: 2.3,
                         length: 2.45
                     }
                 },
@@ -3007,7 +3007,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     speed: 0.26,
                     range: 140,
                     tracer: {
-                        width: 3,
+                        width: 2.3,
                         length: 0.7,
                     },
                     headshot:{
@@ -3590,8 +3590,8 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 ballistics: {
                     damage: 9.5,
                     obstacleMultiplier: 1,
-                    speed: 0.18,
-                    range: 120,
+                    speed: 0.24,
+                    range: 140,
                     tracer:{
                         length:2.5,
                         opacity:0.3
@@ -3603,7 +3603,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     moveSpread: 4,
                     capacity: 60,
                     extendedCapacity: 80,
-                    reloadTime: 3.5
+                    reloadTime: 3.1
                 },
                 rarity:ItemRarity.Common
             },
@@ -3650,13 +3650,11 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 name: "RIFLE CBC",
                 ammoType: "22lr",
                 ammoSpawnAmount: 80,
-                capacity: 20,
-                extendedCapacity: 40,
-                reloadTime: 0.2,
-                fullReloadTime:3,
-                reloadFullOnEmpty:true,
+                capacity: 12,
+                extendedCapacity: 20,
+                reloadTime: 0.5,
                 shotsPerReload: 1,
-                fireDelay: 250,
+                fireDelay: 370,
                 switchDelay: 300,
                 recoilMultiplier: 0.75,
                 recoilDuration: 270,
@@ -3684,10 +3682,10 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     }
                 }],
                 ballistics: {
-                    damage: 22,
+                    damage: 29.3,
                     obstacleMultiplier: 1.2,
-                    speed: 0.2,
-                    range: 120,
+                    speed: 0.37,
+                    range: 190,
                     tracer:{
                         length:4,
                         opacity:0.35

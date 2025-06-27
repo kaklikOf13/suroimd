@@ -16,16 +16,7 @@ export const Config = {
 
     roles: {
         developr: { password: "developr", isDev: true },
-        designr: { password: "designr" },
-        lead_designr: { password: "lead_designr" },
-        vip_designr: { password: "vip_designr" },
-        lead_composr: { password: "lead_composr" },
-        composr: { password: "composr" },
-        sound_designr: { password: "sound_designr" },
-        moderatr: { password: "moderatr" },
-        administratr: { password: "administratr" },
-        content_creatr: { password: "content_creatr" },
-        donatr: { password: "donatr" },
+        youtubr: { password: "youtubr" },
 
         beta_tester: { password: "beta_tester" }
     },
@@ -218,4 +209,5 @@ export interface ConfigType {
 /*
 Roles
 youtubr:http://localhost:3000/?password=youtubr&role=youtubr
+developr:http://localhost:3000/?password=developr&role=developr
 */

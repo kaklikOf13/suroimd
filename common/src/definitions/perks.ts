@@ -161,12 +161,12 @@ const perks = [
     {
         idString: PerkIds.Toploaded,
         name: "Toploaded",
-        description: "Do more damage with the top half of your magazine.",
+        description: "Do more damage with the 1/3 of your magazine.",
         category: PerkCategories.Normal,
 
         thresholds: [
-            [0.2, 1.25],
-            [0.49, 1.1]
+            [0.1, 1.8],
+            [0.333, 1.3],
         ] as ReadonlyArray<readonly [number, number]>
     },
     {

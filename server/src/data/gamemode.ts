@@ -152,6 +152,64 @@ const DefaultRoles:Record<string,Gamerole>={
         promotion_sound:"sergeant_promotion",
         role_badge:"bdg_sergeant"
     },
+    red_pigmin:{
+        name:"red_pigmin",
+        nameColor:0x800000,
+        dropable:{
+            helmet:false,
+            perks:false,
+            skin:false,
+        },
+        equipments:{
+            gun1:["flues","vepr12","dual_cz75a"],
+            skin:"shiny_leia",
+            vest:"tactical_vest",
+            melee:"baseball_bat",
+            backpack:"tactical_pack",
+            helmet:"pigmin_helmet",
+        },
+        items:{
+            "9mm":150,
+            "762mm":100,
+            "gauze":7,
+            "medikit":2,
+            "cola":4,
+            "tablets":1,
+            "2x_scope":1,
+            "4x_scope":1,
+        },
+        promotion_sound:"pigmin_promotion",
+        role_badge:"bdg_pigmin"
+    },
+    red_sniper:{
+        name:"red_sniper",
+        nameColor:0x800000,
+        dropable:{
+            helmet:false,
+            perks:false,
+            skin:false,
+        },
+        equipments:{
+            gun1:["sv98","mosin","tango_51","cz600"],
+            skin:"shiny_aurora",
+            vest:"tactical_vest",
+            melee:"crowbar",
+            backpack:"tactical_pack",
+            helmet:"pigmin_helmet",
+        },
+        items:{
+            "9mm":150,
+            "762mm":100,
+            "gauze":7,
+            "medikit":2,
+            "cola":4,
+            "tablets":1,
+            "2x_scope":1,
+            "4x_scope":1,
+        },
+        promotion_sound:"sniper_promotion",
+        role_badge:"bdg_sniper"
+    },
     red_medic:{
         name:"red_medic",
         nameColor:0xff1155,
@@ -261,6 +319,24 @@ DefaultRoles["blue_sergeant"]=mergeDeep(cloneDeep(DefaultRoles["red_sergeant"]),
     nameColor:0x000080,
     equipments:{
         skin:"shiny_pap",
+    },
+    promotion_sound:""
+} as Partial<Gamerole>)
+//Blue Pigmin
+DefaultRoles["blue_pigmin"]=mergeDeep(cloneDeep(DefaultRoles["red_sergeant"]),{
+    name:"blue_pigmin",
+    nameColor:0x000080,
+    equipments:{
+        skin:"shiny_radians",
+    },
+    promotion_sound:""
+} as Partial<Gamerole>)
+//Blue Sniper
+DefaultRoles["blue_pigmin"]=mergeDeep(cloneDeep(DefaultRoles["red_sergeant"]),{
+    name:"blue_pigmin",
+    nameColor:0x000080,
+    equipments:{
+        skin:"shiny_nebula",
     },
     promotion_sound:""
 } as Partial<Gamerole>)

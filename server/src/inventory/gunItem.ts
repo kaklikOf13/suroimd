@@ -238,7 +238,9 @@ export class GunItem extends InventoryItem<GunDefinition> {
                     for (const [cutoff, mod] of perk.thresholds) {
                         if (ratio <= cutoff) {
                             modifiers.damage *= mod;
+                            modifiers.tracer.width*=Math.max(mod*1.2,1.2)
                             modifyForDamageMod(mod);
+                            modifiersModified=true
                             break;
                         }
                     }
