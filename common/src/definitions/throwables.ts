@@ -203,7 +203,7 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
             canInvertASpeed:true,
             initialAngularSpeed:0.004,
             obstacleMultiplier: 20,
-            speedMultiplier:0,
+            speedMultiplier:1,
             speedCap:0,
             cookable: true,
             image: {
@@ -286,7 +286,7 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
             },
             zDecay:0.0005,
             zScaleA:1,
-            speedMultiplier:0,
+            speedMultiplier:1,
             speedCap:0,
             size:2,
         },

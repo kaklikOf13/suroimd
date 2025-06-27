@@ -154,15 +154,15 @@ export class Explosion {
         }
 
         if (this.definition.decal) {
-            this.game.grid.addObject(
-                new Decal(
+            const d=new Decal(
                     this.game,
                     this.definition.decal,
                     this.position,
                     randomRotation(),
                     this.layer
                 )
-            );
+            this.game.grid.addObject(d);
+            this.game.newDecals.push(d)
 
             this.game.updateObjects = true;
         }

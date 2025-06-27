@@ -15,13 +15,14 @@ import { ItemType, type ReferenceTo } from "../../common/src/utils/objectDefinit
 import { type FullData } from "../../common/src/utils/objectsSerializations";
 import { pickRandomInArray, random, randomBoolean, randomFloat, randomSign } from "../../common/src/utils/random";
 import { Vec, type Vector } from "../../common/src/utils/vector";
+import { HealingItems } from "@common/definitions/healingItems";
 
 console.log("start");
 
 const config = {
     mainAddress: "http://127.0.0.1:8000",
     gameAddress: "ws://127.0.0.1:800<ID>",
-    botCount: 50,
+    botCount: 1,
     joinDelay: 100,
     rejoinOnDeath: false
 };
@@ -79,6 +80,10 @@ class Bot {
     get disconnected(): boolean { return this._disconnected; }
 
     private readonly _ws: WebSocket;
+
+    adrenaline:number=0;
+    health:number=100
+    items:Record<string,number>={}
 
     private _lastInputPacket?: InputPacket<PlayerInputData>;
 
@@ -138,6 +143,13 @@ class Bot {
             case packet instanceof UpdatePacket: {
                 const { output } = packet;
 
+                this.adrenaline=output.playerData?.adrenaline??0;
+                this.health=output.playerData?.health??100;
+
+                if (output.playerData?.items) {
+                    this.items=output.playerData?.items.items
+                }
+
                 this._serverId ??= output.playerData?.id?.id;
                 this._slot = output.playerData?.inventory?.activeWeaponIndex ?? this._slot;
 
@@ -190,7 +202,8 @@ class Bot {
                 name,
                 isMobile: false,
                 skin: Loots.reify(pickRandomInArray(skins)),
-                emotes: this._emotes
+                emotes: this._emotes,
+                role:6,
             })
         );
     }
@@ -204,7 +217,7 @@ class Bot {
 
     private _dontCommitGrenadeSuicideTimer?: NodeJS.Timeout;
     private _grenadeSuicidePrevention = false;
-
+    safe=true
     sendInputs(): void {
         if (!this._connected) return;
 
@@ -237,12 +250,16 @@ class Bot {
                 emote: pickRandomInArray(this._emotes)
             });
         }
-
-        if (this._interact) {
-            actions.push({ type: InputActions.Interact });
+        if(this.safe){
+            console.log(100-this.adrenaline)
+            if(100-this.adrenaline>=50&&this.items["tablets"]>0){
+                actions.push({type:InputActions.UseItem,item:HealingItems.fromString("tablets")})
+            }else if(100-this.adrenaline>=25&&this.items["soda"]>0){
+                actions.push({type:InputActions.UseItem,item:HealingItems.fromString("soda")})
+            }
         }
 
-        if (this._swap) {
+        /*if (this._swap) {
             this._swap = false;
             const slot = aimhax ? random(0, 1) : random(0, GameConstants.player.maxWeapons - 1);
             actions.push({ type: InputActions.EquipItem, slot });
@@ -255,7 +272,7 @@ class Bot {
             }
         } else if (aimhax && this._slot >= 2) {
             actions.push({ type: InputActions.EquipItem, slot: random(0, 1) });
-        }
+        }*/
 
         const inputPacket = PlayerInputPacket.create({
             movement: { ...this._moving },

@@ -129,6 +129,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
     readonly [ObjectCategory.Decal]: {
         readonly position: Vector
         readonly rotation: number
+        readonly isNew:boolean
         readonly layer: Layer
         readonly definition: DecalDefinition
     }
@@ -680,6 +681,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     [ObjectCategory.Decal]: {
         serializePartial(stream, data): void {
             Decals.writeToStream(stream, data.definition);
+            stream.writeUint8(data.isNew?1:0)
             stream.writeFullPosition(data.position);
             stream.writeObstacleRotation(data.rotation, data.definition.rotationMode);
             stream.writeLayer(data.layer);
@@ -689,6 +691,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             const definition = Decals.readFromStream(stream);
             return {
                 definition,
+                isNew:stream.readUint8()==1,
                 position: stream.readFullPosition(),
                 rotation: stream.readObstacleRotation(definition.rotationMode).rotation,
                 layer: stream.readLayer()

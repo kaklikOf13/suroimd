@@ -9,7 +9,7 @@
    id="svg1"
    xml:space="preserve"
    inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
-   sodipodi:docname="40mm_outline.svg"
+   sodipodi:docname="loot_background_gun_firework_rocket.svg"
    inkscape:export-filename="40mm_outline.png"
    inkscape:export-xdpi="209.75484"
    inkscape:export-ydpi="209.75484"
@@ -28,7 +28,7 @@
      inkscape:deskcolor="#505050"
      inkscape:document-units="mm"
      inkscape:zoom="1.3972862"
-     inkscape:cx="36.499323"
+     inkscape:cx="36.857159"
      inkscape:cy="229.37319"
      inkscape:window-width="1920"
      inkscape:window-height="1009"
@@ -39,10 +39,10 @@
      id="defs1"><linearGradient
        id="linearGradient1"
        inkscape:collect="always"><stop
-         style="stop-color:#10c6ef;stop-opacity:1;"
+         style="stop-color:#10c6ef;stop-opacity:0.40000001;"
          offset="0"
          id="stop1" /><stop
-         style="stop-color:#10beff;stop-opacity:0;"
+         style="stop-color:#0d65c1;stop-opacity:0.50196081;"
          offset="1"
          id="stop2" /></linearGradient><radialGradient
        inkscape:collect="always"

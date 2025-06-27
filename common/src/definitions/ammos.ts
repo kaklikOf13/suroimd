@@ -96,9 +96,10 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
             maxStackSize: 90,
             dropAmmout:47,
             characteristicColor: {
-                hue: 229,
-                saturation: 10,
-                lightness: 59
+                hue: 195,
+                saturation: 100,
+                lightness: 70,
+                a:0.5
             },
             defaultCasingFrame: "casing_22lr",
             size:0.005

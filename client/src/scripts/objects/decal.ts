@@ -30,7 +30,17 @@ export class Decal extends GameObject.derive(ObjectCategory.Decal) {
 
         this.image.setFrame(definition.image);
         this.container.addChild(this.image);
-        this.container.scale.set(definition.scale);
+        console.log(data.isNew)
+        if(data.isNew){
+            this.container.scale.set(1);
+            this.game.addTween({
+                target:this.image.scale,
+                duration:1000,
+                to:{x:definition.scale,y:definition.scale}
+            })
+        }else{
+            this.container.scale.set(definition.scale);
+        }
 
         this.container.position.copyFrom(toPixiCoords(this.position));
         this.container.rotation = data.rotation;

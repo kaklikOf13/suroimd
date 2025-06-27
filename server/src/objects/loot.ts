@@ -505,9 +505,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 }
                 // If a perk to remove has been identified, remove it
                 if (perkToRemove) {
-                    if (!perkToRemove.noDrop) {
-                        createNewItem({ type: perkToRemove, count: 1 });
-                    }
+                    createNewItem({ type: perkToRemove, count: 1 });
                     player.perks.removePerk(perkToRemove);
                 }
 

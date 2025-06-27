@@ -1773,7 +1773,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     yoyo: true
                 });
 
-                if (weaponDef.gasParticles && this.game.console.getBuiltInCVar("cv_cooler_graphics")) {
+                if (weaponDef.gasParticles) {
                     const gas = weaponDef.gasParticles;
                     const halfSpread = 0.5 * gas.spread;
 

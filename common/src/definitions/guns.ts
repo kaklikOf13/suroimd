@@ -3335,9 +3335,6 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     obstacleMultiplier: 1,
                     speed: 0.27,
                     range: 160,
-                    tracer:{
-                        opacity:0.3
-                    }
                 },
                 rarity:ItemRarity.Uncommon
             },
@@ -3373,9 +3370,6 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     obstacleMultiplier: 1,
                     speed: 0.27,
                     range: 160,
-                    tracer:{
-                        opacity:0.3
-                    }
                 },
                 rarity:ItemRarity.Uncommon
             },
@@ -3594,7 +3588,6 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     range: 140,
                     tracer:{
                         length:2.5,
-                        opacity:0.3
                     }
                 },
                 dual: {
@@ -3639,9 +3632,6 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     obstacleMultiplier: 1,
                     speed: 0.156,
                     range: 70,
-                    tracer:{
-                        opacity:0.3
-                    }
                 },
                 rarity:ItemRarity.Uncommon
             },
@@ -3688,7 +3678,6 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     range: 190,
                     tracer:{
                         length:4,
-                        opacity:0.35
                     }
                 },
                 rarity:ItemRarity.Uncommon
@@ -3796,6 +3785,87 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     reloadTime: 3.7
                 },
                 rarity:ItemRarity.Legendary
+            },
+            {
+                idString: "px4",
+                name: "PX4",
+                ammoType: "556mm",
+                ammoSpawnAmount: 28,
+                fireDelay: 270, 
+                switchDelay: 250,
+                recoilMultiplier: 0.8,
+                recoilDuration: 90,
+                fireMode: FireMode.Single,
+                shotSpread: 3,
+                moveSpread: 4,
+                length: 4.5,
+                fists: {
+                    left: Vec.create(40, 0),
+                    right: Vec.create(40, 0),
+                    leftZIndex: 4,
+                    rightZIndex: 4,
+                    animationDuration: 100
+                },
+                image: { position: Vec.create(55, 0) },
+                casingParticles: [{
+                    position: Vec.create(3.5, 0.5),
+                    velocity: {
+                        y: {
+                            min: 2,
+                            max: 18
+                        }
+                    }
+                }],
+                gasParticles: gasParticlePresets.pistol,
+                capacity: 7,
+                extendedCapacity: 10,
+                reloadTime: 1.5,
+                ballistics: {
+                    damage: 25,
+                    obstacleMultiplier: 1,
+                    speed: 0.3,
+                    range: 170,
+                    tracer:{
+                        width:1.5,
+                    },
+                    headshot:{
+                        chance:0.15,
+                        modify:1.4,
+                    }
+                },
+                dual: {
+                    leftRightOffset: 1.3,
+                    fireDelay: 140,
+                    shotSpread: 4,
+                    moveSpread: 5,
+                    capacity: 14,
+                    extendedCapacity: 20,
+                    reloadTime: 2.9
+                },
+                rarity:ItemRarity.Common
+            },
+            {
+                [inheritFrom]:"px4",
+                idString: "px4s",
+                name: "PX4-S",
+                length:8,
+                ballistics: {
+                    damage: 30,
+                    tracer:{
+                        opacity:0.5
+                    }
+                },
+                image: { position: Vec.create(90, 0) },
+                dual: {
+                    leftRightOffset: 1.3,
+                    fireDelay: 150,
+                    shotSpread: 4,
+                    moveSpread: 5,
+                    capacity: 14,
+                    extendedCapacity: 20,
+                    reloadTime: 2.9
+                },
+                rarity:ItemRarity.Epic
             },
         ] satisfies ReadonlyArray<RawDefinition<RawGunDefinition>>).map(e => {
             if (e.dual === undefined) {

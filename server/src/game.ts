@@ -53,7 +53,7 @@ import { Melees } from "@common/definitions/melees";
 import { DefaultGamemode, Gamemode, Gamemodes, SpawnMode } from "./data/gamemode";
 import { ExtraLoadout, ExtraLoadoutList, ExtraLoadoutType } from "@common/definitions/loadout/extra_loadout";
 import { Perks } from "@common/definitions/perks";
-import { BoostsType } from "@common/definitions/loadout/boosts";
+import { Decal } from "./objects/decal";
 /*
     eslint-disable
 
@@ -102,6 +102,8 @@ export class Game implements GameData {
      * Packets created this tick that will be sent to all players
      */
     readonly packets: InputPacket[] = [];
+
+    readonly newDecals:Decal[]=[]
 
     readonly maxTeamSize: TeamSize;
 
@@ -485,6 +487,10 @@ export class Game implements GameData {
             player.postPacket();
         }
 
+        for(const d of this.newDecals){
+            d.isNew=false
+        }
+
         if(this.tslru===0){
             this.updateNature()
             this.tslru=2
@@ -497,6 +503,7 @@ export class Game implements GameData {
         this.partialDirtyObjects.clear();
         this.newBullets.length = 0;
         this.explosions.length = 0;
+        this.newDecals.length=0
         this.emotes.length = 0;
         this.newPlayers.length = 0;
         this.deletedPlayers.length = 0;

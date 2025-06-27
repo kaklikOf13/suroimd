@@ -72,7 +72,7 @@ const DefaultRoles:Record<string,Gamerole>={
             backpack:"ultra_pack",
             infinityAmmo:true,
         },
-        adrenaline:100,
+        adrenaline:75,
         items:{
             "cola":8,
             "tablets":4,
