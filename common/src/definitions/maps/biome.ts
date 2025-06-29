@@ -1,6 +1,6 @@
-import { ReferenceTo } from "../utils/objectDefinitions";
-import { FloorNames } from "../utils/terrain";
-import { ScopeDefinition } from "./scopes";
+import { ReferenceTo } from "../../utils/objectDefinitions";
+import { FloorNames } from "../../utils/terrain";
+import { ScopeDefinition } from "../scopes";
 
 export enum OtherColorKeys{
     border="border",
@@ -52,6 +52,19 @@ export const Biomes: Record<string, BiomeDefinition> = {
             [FloorNames.Grass]:"hsl(82, 36.20%, 44.90%)",
             [FloorNames.Water]:"hsl(190, 87%, 49%)",
             [FloorNames.Sand]: "#C9843A",
+            [OtherColorKeys.border]: "hsl(211, 63%, 30%)",
+        },
+        ambience: "wind_ambience",
+        particleEffects: {
+            frames: ["leaf_particle_1", "leaf_particle_2", "leaf_particle_3", "leaf_particle_4", "leaf_particle_5", "leaf_particle_6"],
+            delay:1000,
+        }
+    },
+    strange_lands:{
+        idString: "normal",
+        colors: {
+            [FloorNames.Grass]:"#490996",
+            [FloorNames.Sand]: "#330a63",
             [OtherColorKeys.border]: "hsl(211, 63%, 30%)",
         },
         ambience: "wind_ambience",

@@ -1,7 +1,7 @@
 import { NullString, ReferenceTo } from "../../utils/objectDefinitions"
 import { FloorNames } from "../../utils/terrain"
 import { Vec, Vector } from "../../utils/vector"
-import { Biomes } from "../biome"
+import { Biomes } from "./biome"
 import { BuildingDefinition } from "../buildings"
 import { ObstacleDefinition } from "../obstacles"
 import { LootTables } from "./lootTables"
@@ -27,7 +27,8 @@ export enum Atlases{
     normal="normal",
     shared="shared",
     desert="desert",
-    savannah="savannah"
+    savannah="savannah",
+    strange_lands="strange_lands"
 }
 export type WeightedMapOBJ =
     (
@@ -330,7 +331,159 @@ export const maps={
             { name: "Deepwood", position: Vec.create(0.5, 0.65) }
         ]
     },
-    
+    strange_island: {
+        width: 1900,
+        height: 1900,
+        oceanSize: 128,
+        beachSize: 32,
+        biome:"strange_lands",
+        atlas:[Atlases.strange_lands,Atlases.shared,Atlases.normal],
+        islands:[
+            {
+                spawn:IslandSpawns.Center,
+                chooses:[
+                    //Vanilla
+                    {
+                        rivers: {
+                            minAmount: 1,
+                            maxAmount: 3,
+                            maxWideAmount: 1,
+                            wideChance: 0.25,
+                            minWidth: 11,
+                            maxWidth: 27,
+                            minWideWidth: 26,
+                            maxWideWidth: 33,
+                        },
+                        loots: {
+                            ground_loot: 100
+                        },
+                        beachSize:32,
+                        interiorSize:1650,
+                        beach:FloorNames.Sand,
+                        grass:FloorNames.Grass,
+                        buildings:{
+                            large_bridge: 3,
+                            small_bridge: Infinity,
+                            port_complex: 1,
+                            sea_traffic_control: 1,
+                            armory: 1,
+                            headquarters: 1,
+                            small_bunker: 2,
+                            refinery: 1,
+                            warehouse: 7,
+                            green_house: 4,
+                            blue_house: 4,
+                            red_house: 4,
+                            red_house_v2: 4,
+                            construction_site: 1,
+                            mobile_home: 16,
+                            porta_potty: 23,
+                            container_3: 3,
+                            container_4: 3,
+                            container_5: 3,
+                            container_6: 3,
+                            container_7: 3,
+                            container_8: 3,
+                            container_9: 3,
+                            container_10: 3
+                            /*
+                            tugboat_red: 2,
+                            tugboat_white: 7,
+                            // firework_warehouse: 1, // birthday mode
+
+                            */
+                        },
+                        majorBuildings: ["armory", "refinery", "port_complex", "headquarters"],
+                        quadBuildingLimit: {
+                            red_house: 1,
+                            red_house_v2: 1,
+                            warehouse: 2,
+                            green_house: 1,
+                            blue_house: 1,
+                            mobile_home: 3,
+                            porta_potty: 3,
+                            construction_site: 1
+                        },
+                        obstacles:{
+                            oil_tank: 25,
+                            // christmas_tree: 1, // winter mode
+                            oak_tree: 40,
+                            regular_crate: 150,
+                            flint_crate: 12,
+                            aegis_crate: 12,
+                            survival_crate:3,
+                            grenade_crate: 55,
+                            rock: 430,
+                            river_chest: 2,
+                            river_rock: 30,
+                            // birthday_cake: 100, // birthday mode
+                            lily_pad: 30,
+                            barrel:70,
+                            viking_chest: 2,
+                            super_barrel: 20,
+                            melee_crate: 2,
+                            gold_rock: 1,
+                            loot_barrel: 3,
+                            flint_stone: 1
+                        },
+                        chooses:[
+                            {
+                                objects:DefaultChooses.Bushs,
+                                min:210,
+                                max:250,
+                            },
+                            {
+                                objects:DefaultChooses.Trees,
+                                min:150,
+                                max:190,
+                            }
+                        ],
+                        obstacleClumps: [
+                            {
+                                clumpAmount: 140,
+                                clump: {
+                                    minAmount: 2,
+                                    maxAmount: 4,
+                                    jitter: 5,
+                                    obstacles: ["small_oak_tree"],
+                                    radius: 12
+                                }
+                            },
+                            {
+                                clumpAmount: 50,
+                                clump: {
+                                    minAmount: 2,
+                                    maxAmount: 4,
+                                    jitter: 5,
+                                    obstacles: ["birch_tree"],
+                                    radius: 12
+                                }
+                            },
+                            {
+                                clumpAmount: 8,
+                                clump: {
+                                    minAmount: 2,
+                                    maxAmount: 4,
+                                    jitter: 5,
+                                    obstacles: ["pine_tree","birch_tree"],
+                                    radius: 12
+                                }
+                            }
+                        ],
+                    },
+                ],
+                major:true
+            },
+        ],
+        places: [
+            { name: "Banana", position: Vec.create(0.23, 0.2) },
+            { name: "Takedown", position: Vec.create(0.23, 0.8) },
+            { name: "Lavlandet", position: Vec.create(0.75, 0.2) },
+            { name: "Noskin Narrows", position: Vec.create(0.72, 0.8) },
+            { name: "Mt. Sanger", position: Vec.create(0.5, 0.35) },
+            { name: "Deepwood", position: Vec.create(0.5, 0.65) }
+        ]
+    },
     savannah: {
         width: 1900,
         height: 1900,

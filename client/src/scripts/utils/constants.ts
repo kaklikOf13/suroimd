@@ -1,5 +1,5 @@
 import { GameConstants, Layer } from "@common/constants";
-import { Biomes, type ColorKeys } from "@common/definitions/biome";
+import { Biomes, type ColorKeys } from "@common/definitions/maps/biome";
 import { FloorTypes } from "@common/utils/terrain";
 import { Color } from "pixi.js";
 
