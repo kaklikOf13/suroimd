@@ -54,13 +54,14 @@ import { autoPickup, resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, u
 import { setUpCommands } from "./utils/console/commands";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 import { GameConsole } from "./utils/console/gameConsole";
-import { COLORS, EMOTE_SLOTS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
-import { loadTextures, SuroiSprite } from "./utils/pixi";
+import { COLORS, EMOTE_SLOTS, LAYER_TRANSITION_DELAY, Biome, PIXI_SCALE, UI_DEBUG_MODE, Set_Biome } from "./utils/constants";
+import { loadTextures, SuroiSprite, unloadTextures } from "./utils/pixi";
 import { Tween } from "./utils/tween";
 import { randomVector, randomFloat, pickRandomInArray, random } from "../../../common/src/utils/random";
 import { Vec, type Vector } from "../../../common/src/utils/vector";
 import { FloorNames } from "@common/utils/terrain";
 import { PerkIds } from "@common/definitions/perks";
+import { Maps, type MapDefinition, type MapName } from "@common/definitions/maps/maps";
 export { showStatus } from "./status"
 
 /* eslint-disable @stylistic/indent */
@@ -301,12 +302,6 @@ export class Game {
             });
 
             const pixi = game.pixi;
-            await loadTextures(
-                pixi.renderer,
-                game.inputManager.isMobile
-                    ? game.console.getBuiltInCVar("mb_high_res_textures")
-                    : game.console.getBuiltInCVar("cv_high_res_textures")
-            );
 
             // HACK: the game ui covers the canvas
             // so send pointer events manually to make clicking to spectate players work
@@ -354,7 +349,7 @@ export class Game {
         game.inputManager.generateBindsConfigScreen();
 
         game.menu_music = sound.add("menu_music", {
-            url: `./audio/music/menu_music${game.console.getBuiltInCVar("cv_use_old_menu_music") ? "_old" : MODE.specialMenuMusic ? `_${GameConstants.modeName}` : ""}.mp3`,
+            url: `./audio/music/menu_music${game.console.getBuiltInCVar("cv_use_old_menu_music") ? "_old" : ""}.mp3`,
             singleInstance: true,
             preload: true,
             autoPlay: false,
@@ -466,9 +461,9 @@ export class Game {
                     }
                 }
             }else{
-                if(MODE.ambience&&this.ambience?.name!==MODE.ambience){
+                if(Biome.ambience&&this.ambience?.name!==Biome.ambience){
                     this.ambience?.stop()
-                    this.ambience = this.soundManager.play(MODE.ambience, { loop: true, ambient: true });
+                    this.ambience = this.soundManager.play(Biome.ambience, { loop: true, ambient: true });
                 }
             }
         }
@@ -536,50 +531,11 @@ export class Game {
 
             this.camera.addObject(this.gasRender.graphics);
             this.map.indicator.setFrame("player_indicator");
-
-            const particleEffects = MODE.particleEffects;
-
-            if (particleEffects !== undefined) {
-                const This = this;
-                const gravityOn = particleEffects.gravity;
-                this.particleManager.addEmitter(
-                    {
-                        delay: particleEffects.delay,
-                        active: this.console.getBuiltInCVar("cv_ambient_particles"),
-                        spawnOptions: () => ({
-                            frames: particleEffects.frames,
-                            get position(): Vector {
-                                const width = This.camera.width / PIXI_SCALE;
-                                const height = This.camera.height / PIXI_SCALE;
-                                const player = This.activePlayer;
-                                if (!player) return Vec.create(0, 0);
-                                const { x, y } = player.position;
-                                return randomVector(x - width, x + width, y - height, y + height);
-                            },
-                            speed: randomVector(-10, 10, gravityOn ? 10 : -10, 10),
-                            lifetime: randomFloat(12000, 50000),
-                            zIndex: Number.MAX_SAFE_INTEGER - 5,
-                            alpha: {
-                                start: this.layer === Layer.Ground ? 0.7 : 0,
-                                end: 0
-                            },
-                            rotation: {
-                                start: randomFloat(0, 36),
-                                end: randomFloat(40, 80)
-                            },
-                            scale: {
-                                start: randomFloat(0.8, 1.1),
-                                end: randomFloat(0.7, 0.8)
-                            }
-                        })
-                    }
-                );
-            }
             this.stop_music()
         };
 
         // Handle incoming messages
-        this._socket.onmessage = (message: MessageEvent<ArrayBuffer>): void => {
+        this._socket.onmessage = async(message: MessageEvent<ArrayBuffer>): Promise<void> => {
             const stream = new PacketStream(message.data);
             let iterationCount = 0;
             while (true) {
@@ -588,7 +544,7 @@ export class Game {
                 }
                 const packet = stream.deserializeServerPacket();
                 if (packet === undefined) break;
-                this.onPacket(packet);
+                await this.onPacket(packet);
             }
         };
 
@@ -630,11 +586,72 @@ export class Game {
     }
 
     inventoryMsgTimeout: number | undefined;
+    map_id:MapName="normal"
 
-    onPacket(packet: OutputPacket): void {
+    loadingProm:Promise<void>|undefined
+
+    async handleMapSet(mapDef:MapDefinition){
+        Set_Biome(mapDef.biome)
+        const particleEffects = Biome.particleEffects;
+
+        if (particleEffects !== undefined) {
+            const This = this;
+            const gravityOn = particleEffects.gravity;
+            this.particleManager.addEmitter(
+                {
+                    delay: particleEffects.delay,
+                    active: this.console.getBuiltInCVar("cv_ambient_particles"),
+                    spawnOptions: () => ({
+                        frames: particleEffects.frames,
+                        get position(): Vector {
+                            const width = This.camera.width / PIXI_SCALE;
+                            const height = This.camera.height / PIXI_SCALE;
+                            const player = This.activePlayer;
+                            if (!player) return Vec.create(0, 0);
+                            const { x, y } = player.position;
+                            return randomVector(x - width, x + width, y - height, y + height);
+                        },
+                        speed: randomVector(-10, 10, gravityOn ? 10 : -10, 10),
+                        lifetime: randomFloat(12000, 50000),
+                        zIndex: Number.MAX_SAFE_INTEGER - 5,
+                        alpha: {
+                            start: this.layer === Layer.Ground ? 0.7 : 0,
+                            end: 0
+                        },
+                        rotation: {
+                            start: randomFloat(0, 36),
+                            end: randomFloat(40, 80)
+                        },
+                        scale: {
+                            start: randomFloat(0.8, 1.1),
+                            end: randomFloat(0.7, 0.8)
+                        }
+                    })
+                }
+            );
+        }
+
+        this.loadingProm=loadTextures(
+            this.pixi.renderer,
+            this.inputManager.isMobile
+                ? this.console.getBuiltInCVar("mb_high_res_textures")
+                : this.console.getBuiltInCVar("cv_high_res_textures"),
+            mapDef.atlas
+        );
+        await this.loadingProm;
+        this.loadingProm=undefined
+    }
+
+    async onPacket(packet: OutputPacket): Promise<void> {
+        if(this.loadingProm){
+            await this.loadingProm
+        }
         switch (true) {
             case packet instanceof JoinedPacket:
-                this.startGame(packet.output);
+                if(this.loadingProm){
+                    await this.loadingProm
+                }
+                await this.startGame(packet.output);
                 if(packet.output.date>0){
                     const inventoryMsg = this.uiManager.ui.inventoryMsg;
                     const date=new Date(Number(packet.output.date))
@@ -645,6 +662,8 @@ export class Game {
                 }
                 break;
             case packet instanceof MapPacket:
+                this.map_id=packet.output.map as MapName
+                await this.handleMapSet(Maps[this.map_id])
                 this.map.updateFromPacket(packet.output);
                 break;
             case packet instanceof UpdatePacket:
@@ -743,15 +762,15 @@ export class Game {
         [InventoryMessages.RadioOverused]: "msg_radio_overused"
     };
 
-    startGame(packet: JoinedPacketData): void {
+    async startGame(packet: JoinedPacketData): Promise<void> {
         this.stop_music()
         this.playing=true
         // Sound which notifies the player that the
         // game started if page is out of focus.
         if (!document.hasFocus()) this.soundManager.play("join_notification");
 
-        if (MODE.ambience) {
-            this.ambience = this.soundManager.play(MODE.ambience, { loop: true, ambient: true });
+        if (Biome.ambience) {
+            this.ambience = this.soundManager.play(Biome.ambience, { loop: true, ambient: true });
         }
 
         this.uiManager.emotes = packet.emotes;
@@ -777,11 +796,13 @@ export class Game {
         this.ilumination=1
 
         this.updateVisualEvents()
+        //for(const at of Maps[this.map_id].atlas)
     }
 
     async endGame(): Promise<void> {
         const ui = this.uiManager.ui;
         this.ambience?.stop()
+        unloadTextures(this.pixi.renderer)
 
         return await new Promise(resolve => {
             ui.splashOptions.addClass("loading");

@@ -1233,6 +1233,10 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 this.currentKeyframe=-1
                 this.PlayKeyframe(weaponDef,false)
             }else{
+                if(weaponDef.fists){
+                    this.images.leftFist.setPos(weaponDef.fists.left.x,weaponDef.fists.left.y)
+                    this.images.rightFist.setPos(weaponDef.fists.right.x,weaponDef.fists.right.y)
+                }
                 this.images.weapon.setAngle(angle);
                 this.images.altWeapon.setAngle(angle); // there's an ambiguity here as to whether the angle should be inverted or the same
             }
@@ -2090,8 +2094,6 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     hitEffect(position: Vector, angle: number, sound?: string): void {
         const randomVariation = randomBoolean() ? "1" : "2";
         const hitSound = this.vestLevel>=4 ? `metal_heavy_hit_${randomVariation}` :this.activeDisguise ? `${this.activeDisguise.material === "crate" ? "wood" : this.activeDisguise.material}_hit_${randomVariation}` : `player_hit_${randomVariation}`;
-
-        console.log(hitSound)
 
         this.game.soundManager.play(
             sound ?? hitSound,

@@ -8,7 +8,6 @@ import { Angle, calculateDoorHitboxes, resolveStairInteraction } from "@common/u
 import { ItemType, NullString, ObstacleSpecialRoles, type ReferenceTo, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { Vec, type Vector } from "@common/utils/vector";
-import { getLootFromTable, LootItem } from "../data/lootTables";
 import { type Game } from "../game";
 import { InventoryItem } from "../inventory/inventoryItem";
 import { getRandomIDString } from "../utils/misc";
@@ -16,6 +15,7 @@ import { type Building } from "./building";
 import { type Bullet } from "./bullet";
 import { BaseGameObject, DamageParams, type GameObject } from "./gameObject";
 import { Player } from "./player";
+import { getLootFromTable, LootItem } from "@common/definitions/maps/lootTables";
 
 export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     override readonly fullAllocBytes = 14;

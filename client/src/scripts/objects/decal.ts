@@ -30,7 +30,6 @@ export class Decal extends GameObject.derive(ObjectCategory.Decal) {
 
         this.image.setFrame(definition.image);
         this.container.addChild(this.image);
-        console.log(data.isNew)
         if(data.isNew){
             this.container.scale.set(1);
             this.game.addTween({

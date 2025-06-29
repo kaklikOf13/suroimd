@@ -24,7 +24,6 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { type WebSocket } from "uWebSockets.js";
 import { parentPort } from "worker_threads";
 import { Config } from "./config";
-import { MapName, Maps } from "./data/maps";
 import { WorkerMessages, type GameData, type WorkerMessage } from "./gameManager";
 import { Gas } from "./gas";
 import { GunItem } from "./inventory/gunItem";
@@ -54,6 +53,7 @@ import { DefaultGamemode, Gamemode, Gamemodes, SpawnMode } from "./data/gamemode
 import { ExtraLoadout, ExtraLoadoutList, ExtraLoadoutType } from "@common/definitions/loadout/extra_loadout";
 import { Perks } from "@common/definitions/perks";
 import { Decal } from "./objects/decal";
+import { MapName, Maps } from "@common/definitions/maps/maps";
 /*
     eslint-disable
 

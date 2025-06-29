@@ -1,7 +1,7 @@
 import { GameConstants, Layer, LayersList, ObjectCategory } from "@common/constants";
 import { Buildings, type BuildingDefinition } from "@common/definitions/buildings";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "@common/definitions/obstacles";
-import { ObstacleModeVariations } from "@common/definitions/modes";
+import { ObstacleModeVariations } from "@common/definitions/biome";
 import { MapPacket, type MapPacketData } from "@common/packets/mapPacket";
 import { PacketStream } from "@common/packets/packetStream";
 import { type Orientation, type Variation } from "@common/typings";
@@ -14,8 +14,6 @@ import { SeededRandom, pickRandomInArray, random, randomFloat, randomPointInside
 import { FloorNames, IslandReturn, River, Terrain } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Config } from "./config";
-import { getLootFromTable } from "./data/lootTables";
-import { IslandDef, IslandSpawns, MapDefinition, MapName, MapPlace, Maps, ObstacleClump, RiverDefinition } from "./data/maps";
 import { type Game } from "./game";
 import { Building } from "./objects/building";
 import { Obstacle } from "./objects/obstacle";
@@ -23,6 +21,9 @@ import { CARDINAL_DIRECTIONS, Logger, getRandomIDString } from "./utils/misc";
 import { GunItem } from "./inventory/gunItem";
 import { Armors } from "@common/definitions/armors";
 import { Backpacks } from "@common/definitions/backpacks";
+import { IslandDef, IslandSpawns, MapDefinition, MapName, MapPlace, maps, Maps, ObstacleClump, RiverDefinition } from "@common/definitions/maps/maps";
+import { getLootFromTable } from "@common/definitions/maps/lootTables";
+import { map_gen_ret } from "./data/maps_extra";
 
 interface MapBuild{
     defs:BuildingDefinition
@@ -166,7 +167,7 @@ export class GameMap {
         }
         Object.entries(def.loots ?? {}).forEach(([loot, count]) => this._generateLoots(loot, count,ir));
         Object.entries(def.obstacles ?? {}).forEach(([obstacle, count]) => this._generateObstacles(obstacle,def, count,undefined,ir));
-        def.onGenerate?.(this,ir);
+        //def.onGenerate?.(this,ir);
     }
     places:MapPlace[]=[]
     addPlace(place:MapPlace,porcent:boolean=true){
@@ -177,7 +178,7 @@ export class GameMap {
 
         this.places.push({ name:place.name, position: absPosition });
     }
-
+    name:string=""
     constructor(game: Game, mapData: typeof Config["map"], seed=random(0, 2 ** 31)) {
         this.game = game;
 
@@ -185,8 +186,10 @@ export class GameMap {
         let mapDef:MapDefinition
         if(typeof mapData === "string"){
             mapDef = Maps[name]
+            this.name=name
         }else if(mapData!==undefined){
-            mapDef=cloneDeep(Maps[mapData.extends])
+            mapDef=cloneDeep(Maps[mapData.extends as MapName])
+            this.name=mapData.extends[0]??"normal"
             for(const i of mapData.change_island){
                 const islandD=(mapDef.islands??[])[i.island[0]].chooses[i.island[1]]
                 if(!islandD){
@@ -312,13 +315,16 @@ export class GameMap {
         }
         packet.rivers = this.terrain.rivers;
 
-        mapDef.onGenerate?.(this, params);
+        if(name in map_gen_ret){
+            map_gen_ret[name!]!(this, params);
+        }
 
         if (mapDef.places) {
             for(const p of mapDef.places){
                 this.addPlace(p)
             }
         }
+        packet.map=this.name
         packet.places = this.places
         //@ts-ignore
         for(const l of LayersList){

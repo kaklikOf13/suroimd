@@ -5,12 +5,24 @@ import $ from "jquery";
 import { Assets, Container, Graphics, RendererType, RenderTexture, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type SpritesheetData, type WebGLRenderer } from "pixi.js";
 import { getTranslatedString } from "../../translations";
 import { PIXI_SCALE, WALL_STROKE_WIDTH } from "./constants";
+import { Atlases } from "@common/definitions/maps/maps";
 
 const textures: Record<string, Texture> = {};
 
 const loadingText = $("#loading-text");
+export async function unloadTextures(renderer: Renderer){
+    for(const key in textures){
+        const tex = textures[key];
 
-export async function loadTextures(renderer: Renderer, highResolution: boolean): Promise<void> {
+        if (tex.source?.resource?.url) {
+            await Assets.unload(tex.source.resource.url);
+        }
+
+        tex.destroy(false);
+        delete textures[key];
+    }
+}
+export async function loadTextures(renderer: Renderer, highResolution: boolean,used:Atlases[]=[Atlases.normal,Atlases.shared]): Promise<void> {
     // If device doesn't support 4096x4096 textures, force low resolution textures since they are 2048x2048
     if (renderer.type as RendererType === RendererType.WEBGL) {
         const gl = (renderer as WebGLRenderer).gl;
@@ -21,11 +33,17 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
 
     // we pray
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const spritesheets: SpritesheetData[] = highResolution
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        ? (await import("virtual:spritesheets-jsons-high-res")).atlases
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        : (await import("virtual:spritesheets-jsons-low-res")).atlases;
+    //const spritesheetsDir: string=(await import("virtual:spritesheets-dir")).atlases
+    
+    const spritesheets:SpritesheetData[]=[]
+    for(const s of used){
+        const j=await(await fetch(`atlases/atlas-${s}-data.json`)).json()
+        if(highResolution){
+            spritesheets.push(...j.high)
+        }else{
+            spritesheets.push(...j.low)
+        }
+    }
 
     let resolved = 0;
     const count = spritesheets.length;
@@ -38,6 +56,7 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
              */
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const image = spritesheet.meta.image!;
+            
 
             console.log(`Loading spritesheet ${location.origin}/${image}`);
 
@@ -45,6 +64,7 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
                 const texture = await Assets.load<Texture>(image);
                 await renderer.prepare.upload(texture);
                 Object.assign(textures, await new Spritesheet(texture, spritesheet).parse());
+                console.log(image)
 
                 const resolvedCount = ++resolved;
                 const progress = `(${resolvedCount} / ${count})`;

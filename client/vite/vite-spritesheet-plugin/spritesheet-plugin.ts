@@ -4,23 +4,12 @@ import path, { resolve } from "path";
 import { type SpritesheetData } from "pixi.js";
 import { type FSWatcher, type Plugin, type ResolvedConfig } from "vite";
 import readDirectory from "./utils/readDirectory.js";
-import { type CompilerOptions, createSpritesheets, type MultiResAtlasList } from "./utils/spritesheet.js";
-import { GameConstants } from "../../../common/src/constants";
-import { Mode, Modes } from "../../../common/src/definitions/modes";
+import { CacheData, cacheDir, type CompilerOptions, createSpritesheets, type MultiResAtlasList } from "./utils/spritesheet.js";
+import { Atlases } from "../../../common/src/definitions/maps/maps.js";
 import { mkdir, readFile, stat } from "fs/promises";
-import { existsSync } from "fs";
+import { existsSync, readFileSync } from "fs";
 
 const PLUGIN_NAME = "vite-spritesheet-plugin";
-
-export const cacheDir = ".spritesheet-cache";
-export type CacheData = {
-    lastModified: number
-    fileMap: Record<string, string>
-    atlasFiles: {
-        low: string[]
-        high: string[]
-    }
-};
 
 const defaultGlob = "**/*.{png,gif,jpg,bmp,tiff,svg}";
 const imagesMatcher = new Minimatch(defaultGlob);
@@ -35,28 +24,38 @@ const compilerOpts = {
     packerOptions: {}
 } satisfies CompilerOptions as CompilerOptions;
 
-const getImageDirs = (modeName: Mode | "shared", imageDirs: string[] = []): string[] => {
-    imageDirs.push(`public/img/game/${modeName}`);
-    return modeName === "shared"
-        ? imageDirs
-        : getImageDirs(Modes[modeName].inheritTexturesFrom ?? "shared", imageDirs);
+const getImageDirs = (imageDirs: string[] = []): string[] => {
+    for(const a in Atlases){
+        const value = Atlases[a as keyof typeof Atlases];
+        imageDirs.push(`public/img/game/${value}`);
+    }
+    return imageDirs
 };
 
-const imageDirs = getImageDirs(GameConstants.modeName).reverse();
+const imageDirs = getImageDirs().reverse();
 
 async function buildSpritesheets(): Promise<MultiResAtlasList> {
-    const fileMap = new Map<string, { lastModified: number, path: string }>();
+    const fileMap: Record<string,Map<string, { lastModified: number, path: string }>>={};
+    const ff=new Map<string, { lastModified: number, path: string }>()
 
     // Maps have unique keys.
     // Since the filename is used as the key, and mode sprites are added to the map after the common sprites,
     // this method allows mode sprites to override common sprites with the same filename.
-    for (const imagePath of imageDirs.map(dir => readDirectory(dir).filter(x => imagesMatcher.match(x))).flat()) {
-        const imageFileInfo = await stat(imagePath);
-        const { mtime, ctime } = imageFileInfo;
-        fileMap.set(imagePath.slice(imagePath.lastIndexOf(path.sep)), {
-            path: imagePath,
-            lastModified: Math.max(mtime.getTime(), ctime.getTime())
-        });
+    for(const id of imageDirs){
+        const m=new Map<string, { lastModified: number, path: string }>()
+        for (const imagePath of readDirectory(id).filter(x => imagesMatcher.match(x))) {
+            const imageFileInfo = await stat(imagePath);
+            const { mtime, ctime } = imageFileInfo;
+            
+            const n=imagePath.slice(imagePath.lastIndexOf(path.sep))
+            const s={
+                path: imagePath,
+                lastModified: Math.max(mtime.getTime(), ctime.getTime())
+            }
+            m.set(n,s)
+            ff.set(n,s)
+        }
+        fileMap[path.basename(id)]=m
     }
 
     let isCached = true;
@@ -78,23 +77,34 @@ async function buildSpritesheets(): Promise<MultiResAtlasList> {
             }
         };
 
-    if (Array.from(fileMap.values()).find(f => f.lastModified > cacheData.lastModified)) isCached = false;
+    if (Array.from(ff.values()).find(f => f.lastModified > cacheData.lastModified)) isCached = false;
 
-    if (Object.entries(cacheData.fileMap).find(([name, path]) => fileMap.get(name)?.path === path)) isCached = false;
-    if (Array.from(fileMap.entries()).find(([name, data]) => data.path === cacheData.fileMap[name])) isCached = false;
+    if (Object.entries(cacheData.fileMap).find(([name, path]) => ff.get(name)?.path === path)) isCached = false;
+    if (Array.from(ff.entries()).find(([name, data]) => data.path === cacheData.fileMap[name])) isCached = false;
 
     if (isCached) {
         console.log("Spritesheets are cached! Skipping build.");
-        return {
-            low: await Promise.all(cacheData.atlasFiles.low.map(async file => ({
-                json: JSON.parse(await readFile(path.join(cacheDir, `${file}.json`), "utf8")) as SpritesheetData,
-                image: await readFile(path.join(cacheDir, `${file}.png`))
-            }))),
-            high: await Promise.all(cacheData.atlasFiles.high.map(async file => ({
-                json: JSON.parse(await readFile(path.join(cacheDir, `${file}.json`), "utf8")) as SpritesheetData,
-                image: await readFile(path.join(cacheDir, `${file}.png`))
-            })))
-        };
+        const ret:MultiResAtlasList={
+            high:{},
+            low:{}
+        }
+        for(const kk of Object.keys(cacheData.atlasFiles.low)){
+            ret.low[kk]=[]
+            ret.high[kk]=[]
+            for(const ii in cacheData.atlasFiles.low[kk]){
+                ret.low[kk].push({
+                    json: JSON.parse(await readFile(path.join(cacheDir, `${cacheData.atlasFiles.low[kk][ii]}.json`), "utf8")) as SpritesheetData,
+                    image: await readFile(path.join(cacheDir, `${cacheData.atlasFiles.low[kk][ii]}.png`)),
+                })
+            }
+            for(const ii in cacheData.atlasFiles.high[kk]){
+                ret.high[kk].push({
+                    json: JSON.parse(await readFile(path.join(cacheDir, `${cacheData.atlasFiles.high[kk][ii]}.json`), "utf8")) as SpritesheetData,
+                    image: await readFile(path.join(cacheDir, `${cacheData.atlasFiles.high[kk][ii]}.png`)),
+                })
+            }
+        }
+        return ret
     }
 
     console.log("Building spritesheets...");
@@ -102,16 +112,12 @@ async function buildSpritesheets(): Promise<MultiResAtlasList> {
     return await createSpritesheets(fileMap, compilerOpts);
 }
 
-const highResVirtualModuleId = "virtual:spritesheets-jsons-high-res";
-const highResResolvedVirtualModuleId = `\0${highResVirtualModuleId}`;
-
-const lowResVirtualModuleId = "virtual:spritesheets-jsons-low-res";
-const lowResResolvedVirtualModuleId = `\0${lowResVirtualModuleId}`;
+const SpriteSheetDirId = "virtual:spritesheets-dir";
+const SpriteSheetDirIdVirtualMod = `\0${SpriteSheetDirId}`;
 
 const resolveId = (id: string): string | undefined => {
     switch (id) {
-        case highResVirtualModuleId: return highResResolvedVirtualModuleId;
-        case lowResVirtualModuleId: return lowResResolvedVirtualModuleId;
+        case SpriteSheetDirIdVirtualMod: return SpriteSheetDirId;
     }
 };
 
@@ -120,16 +126,11 @@ export function spritesheet(): Plugin[] {
     let config: ResolvedConfig;
 
     let atlases: MultiResAtlasList;
-
-    const exportedAtlases: {
-        low: SpritesheetData[]
-        high: SpritesheetData[]
-    } = { low: [], high: [] };
+    let spriteSheetDir=cacheDir
 
     const load = (id: string): string | undefined => {
         switch (id) {
-            case highResResolvedVirtualModuleId: return `export const atlases = JSON.parse('${JSON.stringify(exportedAtlases.high)}')`;
-            case lowResResolvedVirtualModuleId: return `export const atlases = JSON.parse('${JSON.stringify(exportedAtlases.low)}')`;
+            case SpriteSheetDirId: return `export const atlases = ${spriteSheetDir}`;
         }
     };
 
@@ -141,18 +142,37 @@ export function spritesheet(): Plugin[] {
             apply: "build",
             async buildStart() {
                 atlases = await buildSpritesheets();
-
-                exportedAtlases.high = atlases.high.map(sheet => sheet.json);
-                exportedAtlases.low = atlases.low.map(sheet => sheet.json);
+                spriteSheetDir="atlas/"
             },
             generateBundle() {
-                for (const sheet of [...atlases.low, ...atlases.high]) {
+                for(const k of Object.keys(atlases.high)){
+                    const nn={
+                        low:[] as SpritesheetData[],
+                        high:[] as SpritesheetData[]
+                    }
+                    for (const sheet of atlases.high[k]) {
+                        this.emitFile({
+                            type: "asset",
+                            fileName: sheet.json.meta.image,
+                            source: sheet.image
+                        });
+                        this.info("Built spritesheets");
+                        nn.high.push(sheet.json)
+                    }
+                    for (const sheet of atlases.low[k]) {
+                        this.emitFile({
+                            type: "asset",
+                            fileName: sheet.json.meta.image,
+                            source: sheet.image
+                        });
+                        this.info("Built spritesheets");
+                        nn.low.push(sheet.json)
+                    }
                     this.emitFile({
                         type: "asset",
-                        fileName: sheet.json.meta.image,
-                        source: sheet.image
+                        fileName: `atlases/atlas-${k}-data.json`,
+                        source: JSON.stringify(nn)
                     });
-                    this.info("Built spritesheets");
                 }
             },
             resolveId,
@@ -170,10 +190,8 @@ export function spritesheet(): Plugin[] {
 
                     buildTimeout = setTimeout(() => {
                         buildSheets().then(() => {
-                            const module = server.moduleGraph.getModuleById(highResResolvedVirtualModuleId);
+                            const module = server.moduleGraph.getModuleById(SpriteSheetDirIdVirtualMod);
                             if (module !== undefined) void server.reloadModule(module);
-                            const module2 = server.moduleGraph.getModuleById(lowResResolvedVirtualModuleId);
-                            if (module2 !== undefined) void server.reloadModule(module2);
                         }).catch(e => console.error(e));
                     }, 500);
                 }
@@ -191,14 +209,22 @@ export function spritesheet(): Plugin[] {
                 async function buildSheets(): Promise<void> {
                     atlases = await buildSpritesheets();
 
-                    exportedAtlases.high = atlases.high.map(sheet => sheet.json);
-                    exportedAtlases.low = atlases.low.map(sheet => sheet.json);
-
                     files.clear();
-                    for (const sheet of [...atlases.low, ...atlases.high]) {
-                        // consistently assigned in ./spritesheet.ts in function `createSheet` (in function `createSpritesheets`)
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        files.set(sheet.json.meta.image!, sheet.image);
+                    for(const k of Object.keys(atlases.low)){
+                        const nn={
+                            low:[] as SpritesheetData[],
+                            high:[] as SpritesheetData[]
+                        }
+                        
+                        for (const sheet of atlases.high[k]) {
+                            files.set(sheet.json.meta.image!, sheet.image);
+                            nn.high.push(sheet.json)
+                        }
+                        for (const sheet of atlases.low[k]) {
+                            files.set(sheet.json.meta.image!, sheet.image);
+                            nn.low.push(sheet.json)
+                        }
+                        files.set(`atlases/atlas-${k}-data.json`,JSON.stringify(nn))
                     }
                 }
                 await buildSheets();
@@ -209,10 +235,15 @@ export function spritesheet(): Plugin[] {
 
                         const file = files.get(req.originalUrl.slice(1));
                         if (file === undefined) return next();
-
-                        res.writeHead(200, {
-                            "Content-Type": `image/${compilerOpts.outputFormat}`
-                        });
+                        if(req.originalUrl.lastIndexOf(".json")!==-1){
+                            res.writeHead(200, {
+                                "Content-Type": `text/json`
+                            });
+                        }else{
+                            res.writeHead(200, {
+                                "Content-Type": `image/${compilerOpts.outputFormat}`
+                            });
+                        }
 
                         res.end(file);
                     });

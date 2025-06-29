@@ -29,6 +29,8 @@ export type MapPacketData = {
     readonly floors: MapFloor[]
     readonly objects: readonly MapObject[]
     readonly places: ReadonlyArray<{ readonly position: Vector, readonly name: string }>
+    
+    readonly map:string
 };
 
 export const MapPacket = createPacket("MapPacket")<MapPacketData>({
@@ -36,6 +38,7 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
         strm.writeUint32(data.seed)
             .writeUint32(data.width)
             .writeUint32(data.height)
+            .writeString(25,data.map)
             .writeArray(data.rivers, river => {
                 strm.writeUint8(river.width)
                     .writeArray(
@@ -118,6 +121,7 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
             seed: stream.readUint32(),
             width: stream.readUint32(),
             height: stream.readUint32(),
+            map:stream.readString(25),
             rivers: stream.readArray(() => 
             {
                 const ret={

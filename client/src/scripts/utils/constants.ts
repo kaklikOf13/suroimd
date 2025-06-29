@@ -1,5 +1,6 @@
 import { GameConstants, Layer } from "@common/constants";
-import { Modes, type ColorKeys } from "@common/definitions/modes";
+import { Biomes, type ColorKeys } from "@common/definitions/biome";
+import { FloorTypes } from "@common/utils/terrain";
 import { Color } from "pixi.js";
 
 export const FORCE_MOBILE = false;
@@ -24,20 +25,30 @@ export const HITBOX_COLORS = {
     player: new Color("blue"),
     playerWeapon: new Color("lime")
 };
-
-export const MODE = Modes[GameConstants.modeName];
+export function Set_Biome(b:string="normal"){
+    Biome=Biomes[b]
+    COLORS = (Object.keys(Biome.colors) as ColorKeys[])
+        .reduce(
+            (result, key) => {
+                result[key] = new Color(Biome.colors[key as ColorKeys]??Biomes["normal"].colors[key]!);
+                return result;
+            },
+            {} as Record<ColorKeys, Color>
+        );
+    GHILLIE_TINT = (COLORS["grass"]??new Color(FloorTypes["grass"].color)).multiply(new Color("hsl(0, 0%, 99%)"));
+}
+export let Biome = Biomes["normal"];
 
 // Converts the strings in the mode definition to Color objects
-export const COLORS = (Object.keys(MODE.colors) as ColorKeys[])
+export let COLORS = (Object.keys(Biome.colors) as ColorKeys[])
     .reduce(
         (result, key) => {
-            result[key] = new Color(MODE.colors[key]);
+            result[key] = new Color(Biome.colors[key as ColorKeys]??Biomes["normal"].colors[key]!);
             return result;
         },
         {} as Record<ColorKeys, Color>
     );
-
-export const GHILLIE_TINT = COLORS.grass.multiply(new Color("hsl(0, 0%, 99%)"));
+export let GHILLIE_TINT = (COLORS["grass"]??new Color(FloorTypes["grass"].color)).multiply(new Color("hsl(0, 0%, 99%)"));
 
 export const TEAMMATE_COLORS = [
     new Color("#00ffff"),

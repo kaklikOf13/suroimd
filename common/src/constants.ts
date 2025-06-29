@@ -1,6 +1,5 @@
 import { Ammos } from "./definitions/ammos";
 import { HealingItems } from "./definitions/healingItems";
-import { Mode } from "./definitions/modes";
 import { Scopes } from "./definitions/scopes";
 import { Throwables } from "./definitions/throwables";
 import { freezeDeep } from "./utils/misc";
@@ -46,7 +45,6 @@ export const GameConstants = freezeDeep({
     protocolVersion: 42,
     gridSize: 32,
     maxPosition: Constants.MAX_POSITION,
-    modeName: "normal" satisfies Mode as Mode,
     music_chance:0.00005,
     rain:{
         raindropsCount:80,
@@ -56,7 +54,7 @@ export const GameConstants = freezeDeep({
     },
     player: {
         radius: 2.25,
-        baseSpeed: 0.031,
+        baseSpeed: 0.034,
         defaultHealth: 100,
         maxAdrenaline: 100,
         inventorySlotTypings,
@@ -70,9 +68,9 @@ export const GameConstants = freezeDeep({
         maxReviveDist: 7,
         bleedOutDPMs: 0.001, // === 1 dps
         maxPerkCount: 1,
-        rateLimitPunishmentTrigger: 10,
-        emotePunishmentTime: 5000, // ms
-        rateLimitInterval: 1000
+        rateLimitPunishmentTrigger: 20,
+        emotePunishmentTime: 7000, // ms
+        rateLimitInterval: 5000
     },
     gas: {
         damageScaleFactor: 0.005, // Extra damage, linear per distance unit into the gas

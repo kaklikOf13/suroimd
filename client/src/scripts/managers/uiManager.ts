@@ -22,7 +22,7 @@ import { type TranslationKeys } from "../../typings/translations";
 import { type Game } from "../game";
 import { type GameObject } from "../objects/gameObject";
 import { Player } from "../objects/player";
-import { GHILLIE_TINT, MODE, TEAMMATE_COLORS,GROUPS_COLORS, UI_DEBUG_MODE } from "../utils/constants";
+import { GHILLIE_TINT, Biome, TEAMMATE_COLORS,GROUPS_COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate, html } from "../utils/misc";
 import { SuroiSprite } from "../utils/pixi";
 import { ClientPerkManager } from "./perkManager";
@@ -418,7 +418,7 @@ export class UIManager {
             this.ui.btnSpectate.removeClass("btn-disabled").show();
             game.map.indicator.setFrame("player_indicator_dead");
         } else {
-            this.ui.btnSpectate.hide();
+            //this.ui.btnSpectate.hide();
         }
 
         chickenDinner.toggle(packet.won);
@@ -510,7 +510,8 @@ export class UIManager {
 
     private _oldHealthPercent = 100;
 
-    updateUI(data: PlayerData): void {
+    async updateUI(data: PlayerData): Promise<void> {
+        if(this.game.loadingProm)await this.game.loadingProm
         const {
             minMax,
             health,
@@ -545,6 +546,8 @@ export class UIManager {
             this.ui.spectatingContainer.toggle(spectating && this.ui.spectatingOptions.hasClass("fa-eye-slash"));
             this.ui.spectatingMsg.toggle(spectating);
             this.clearTeammateCache();
+            this.clearAnotherIndicCache()
+            this.clearGroupCache()
 
             if (this.game.inputManager.isMobile) {
                 this.ui.emoteButton.toggle(!spectating);
@@ -958,7 +961,7 @@ export class UIManager {
 
                 let frame = definition.idString;
 
-                const location = definition.itemType === ItemType.Melee && definition.reskins?.includes(MODE.idString) ? MODE.idString : "shared";
+                const location = "shared";
                 const newSrc = `./img/game/${location}/weapons/${frame}.svg`;
                 if (oldSrc !== newSrc) {
                     this._playSlotAnimation(container);
@@ -1881,7 +1884,7 @@ class PlayerHealthUI {
         this.update(data);
     }
 
-    update(data?: UpdateDataType): void {
+    update(data?: UpdateDataType): void{
         const id = this._id.value;
         const hadNoHealth = this._normalizedHealth.value <= 0;
 
@@ -2221,7 +2224,7 @@ class PlayerHealthUIGroup {
         this.update(data);
     }
 
-    update(data?: UpdateGroupDataType): void {
+    async update(data?: UpdateGroupDataType): Promise<void> {
         const id = this._id.value;
 
         if (data !== undefined) {
@@ -2309,8 +2312,8 @@ class PlayerHealthUIGroup {
 
     destroy(): void {
         const id = this._id.value;
-        const teammateIndicators = this.game.map.groupIndicators;
-        teammateIndicators.get(id)?.destroy();
-        teammateIndicators.delete(id);
+        const indicators = this.game.map.anotherIndicators;
+        indicators.get(id)?.destroy();
+        indicators.delete(id);
     }
 }
