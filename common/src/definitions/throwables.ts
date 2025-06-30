@@ -52,6 +52,10 @@ export type ThrowableDefinition = InventoryItemDefinition & {
         readonly explosion?: ReferenceTo<ExplosionDefinition>
         readonly particles?: SyncedParticleSpawnerDefinition
         readonly spookyParticles?: SyncedParticleSpawnerDefinition
+        readonly explode_on?:{
+            readonly touch_ground:boolean
+            readonly collide:boolean
+        }
     }
     readonly animation: {
         readonly pinImage?: string
@@ -121,6 +125,40 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
             detonation: {
                 explosion: "frag_grenade_explosion",
                 subthrowable:undefined
+            },
+            animation: {
+                pinImage: "proj_frag_pin",
+                liveImage: "proj_frag",
+                leverImage: "proj_frag_lever",
+                cook: {
+                    cookingImage: "proj_frag_nopin",
+                    leftFist: Vec.create(2.5, 0),
+                    rightFist: Vec.create(-0.5, 2.15)
+                },
+                throw: {
+                    leftFist: Vec.create(1.9, -1.75),
+                    rightFist: Vec.create(4, 2.15)
+                }
+            }
+        },
+        {
+            idString: "m79_projectile",
+            name: "m79_projectile",
+            fuseTime: 3000,
+            impactDamage: 1,
+            obstacleMultiplier: 20,
+            cookable: true,
+            image: {
+                position: Vec.create(60, 43),
+                angle: 60
+            },
+            detonation: {
+                explosion: "frag_grenade_explosion",
+                subthrowable:undefined,
+                explode_on:{
+                    touch_ground:true,
+                    collide:true
+                }
             },
             animation: {
                 pinImage: "proj_frag_pin",

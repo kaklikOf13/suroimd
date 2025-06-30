@@ -355,7 +355,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             { table: "special_guns", weight: 0.25 },
             { table: "special_equipment", weight: 0.25 },
             { item: "1st_birthday", weight: 0.25 },
-            { item: "firework_rocket", weight: 0.2 },
+            { item: "40mm", weight: 0.2 },
             { item: "firework_launcher", weight: 0.01 }
         ],
         special_bush: [
@@ -634,7 +634,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
             ]
         ],
         rocket_box: [
-            { item: "firework_rocket", count: 10, weight: 2 },
+            { item: "40mm", count: 10, weight: 2 },
             { table: "ammo", weight: 1 },
             { item: "curadell", weight: 0.02 }
         ],

@@ -78,6 +78,8 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
     private _damagedLastTick = new Set<GameObject>();
 
     z:number=1
+    detonating:boolean=false
+    fuseDelay:number=0
 
     constructor(
         game: Game,
@@ -132,7 +134,43 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
 
         return displacement;
     }
+    explode(){
+        if (this.dead) return;
 
+        this.game.removeProjectile(this);
+        this.setDirty()
+
+        const { explosion } = this.definition.detonation;
+
+        if(this.source){
+            const referencePosition = Vec.clone(this.position ?? this.source.owner.position);
+            const game = this.game;
+
+            if (explosion !== undefined) {
+                game.addExplosion(
+                    explosion,
+                    referencePosition,
+                    this.source.owner,
+                    this.layer,
+                    this.source,
+                    undefined,
+                    this
+                );
+            }
+        }else{
+            if (explosion !== undefined) {
+                this.game.addExplosion(
+                    explosion,
+                    this.position,
+                    this,
+                    this.layer,
+                    this.source,
+                    undefined,
+                    this
+                );
+            }
+        }
+    }
     detonate(delay: number): void {
         this._activated = true;
         this.setDirty();
@@ -147,50 +185,18 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
                 }
             }
         }
-        setTimeout(() => {
-            if (this.dead) return;
-
-            this.game.removeProjectile(this);
-
-            const { explosion } = this.definition.detonation;
-
-            if(this.source){
-                const referencePosition = Vec.clone(this.position ?? this.source.owner.position);
-                const game = this.game;
-
-                if (explosion !== undefined) {
-                    game.addExplosion(
-                        explosion,
-                        referencePosition,
-                        this.source.owner,
-                        this.layer,
-                        this.source,
-                        undefined,
-                        this
-                    );
-                }
-            }else{
-                if (explosion !== undefined) {
-                    this.game.addExplosion(
-                        explosion,
-                        this.position,
-                        this,
-                        this.layer,
-                        this.source,
-                        undefined,
-                        this
-                    );
-                }
-            }
-        }, delay);
+        this.detonating=true
+        this.fuseDelay=delay
     }
 
     update(): void {
-
         if(this.z==0){
             this.velocity.x=this.velocity.x*0.85
             this.velocity.y=this.velocity.y*0.85
             this._angularVelocity=Numeric.lerp(this._angularVelocity,0,0.1)
+            if(this.definition.detonation.explode_on?.touch_ground){
+                this.fuseDelay=0
+            }
         }else{
             this.z=Numeric.clamp(this.z-(this.definition.zDecay*this.game.dt),0,1)
         }
@@ -330,6 +336,9 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
             // else console.log(object.data);
 
             if (shouldDealImpactDamage && !this._damagedLastTick.has(object)) {
+                if(this.definition.detonation.explode_on?.collide){
+                    this.fuseDelay=0
+                }
                 object.damage({
                     amount: impactDamage * ((isObstacle ? this.definition.obstacleMultiplier : undefined) ?? 1),
                     source: this.source?this.source.owner:undefined,
@@ -389,6 +398,14 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         this._damagedLastTick = damagedThisTick;
         this.game.grid.updateObject(this);
         this.setPartialDirty();
+
+        if(this.detonating){
+            if(this.fuseDelay>0){
+                this.fuseDelay-=this.game.dt
+            }else{
+                this.explode()
+            }
+        }
     }
 
     /**

@@ -106,6 +106,11 @@ type BaseGunDefinition = InventoryItemDefinition & {
 
     readonly noMuzzleFlash: boolean
     readonly ballistics: BaseBulletDefinition
+    readonly projectile?: {
+        readonly def:string
+        readonly speedCap:number
+        readonly chooseSpeed:boolean
+    }
 } & ReloadOnEmptyMixin & BurstFireMixin & DualDefMixin;
 
 type BurstFireMixin = ({
@@ -2257,7 +2262,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
             {
                 idString: "firework_launcher",
                 name: "Firework Launcher",
-                ammoType: "firework_rocket",
+                ammoType: "40mm",
                 ammoSpawnAmount: 9,
                 capacity: 3,
                 extendedCapacity: 5,
@@ -3440,7 +3445,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
             {
                 idString: "apple_launcher",
                 name: "apple Launcher",
-                ammoType: "firework_rocket",
+                ammoType: "40mm",
                 infiniteAmmo:true,
                 capacity: 3,
                 extendedCapacity: 5,
@@ -3866,6 +3871,65 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                     reloadTime: 2.9
                 },
                 rarity:ItemRarity.Epic
+            },
+            {
+                idString: "m79",
+                name: "M79",
+                ammoType: "40mm",
+                ammoSpawnAmount: 10,
+                fireDelay: 800, 
+                switchDelay: 400,
+                recoilMultiplier: 0.5,
+                recoilDuration: 90,
+                fireMode: FireMode.Single,
+                shotSpread: 3,
+                moveSpread: 4,
+                length: 4.5,
+                projectile:{
+                    speedCap:0.15,
+                    chooseSpeed:true,
+                    def:"m79_projectile"
+                },
+                fists: {
+                    left: Vec.create(60, 40),
+                    right: Vec.create(20, 55),
+                    animationDuration: 100
+                },
+                image: {
+                    position: Vec.create(30, 50.5),
+                    zIndex: 4
+                },
+                casingParticles: [{
+                    position: Vec.create(0.5, 3),
+                    ejectionDelay: 800
+                }],
+                gasParticles: {
+                    spread: 360,
+                    amount: 50,
+                    minLife: 5000,
+                    maxLife: 10000,
+                    minSpeed: 2,
+                    maxSpeed: 5,
+                    minSize: 0.3,
+                    maxSize: 0.5
+                },
+                capacity: 1,
+                extendedCapacity: 2,
+                reloadTime: 2,
+                ballistics: {
+                    damage: 25,
+                    obstacleMultiplier: 1,
+                    speed: 0.3,
+                    range: 0,
+                    tracer:{
+                        width:1.5,
+                    },
+                    headshot:{
+                        chance:0.15,
+                        modify:1.4,
+                    }
+                },
+                rarity:ItemRarity.Common
             },
         ] satisfies ReadonlyArray<RawDefinition<RawGunDefinition>>).map(e => {
             if (e.dual === undefined) {

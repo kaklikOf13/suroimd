@@ -180,8 +180,8 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
             rarity:ItemRarity.Legendary
         },
         {
-            idString: "firework_rocket",
-            name: "Firework Rocket",
+            idString: "40mm",
+            name: "40mm",
             maxStackSize: 5,
             dropAmmout:3,
             characteristicColor: {
@@ -189,7 +189,7 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
                 saturation: 55,
                 lightness: 85
             },
-            defaultCasingFrame: "casing_firework_rocket",
+            defaultCasingFrame: "casing_40mm",
             hideUnlessPresent: true,
             size:.2,
             rarity:ItemRarity.Legendary

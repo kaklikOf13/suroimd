@@ -16,6 +16,7 @@ import { type Player } from "../objects/player";
 import { getPatterningShape } from "../utils/misc";
 import { ReloadAction } from "./action";
 import { InventoryItem } from "./inventoryItem";
+import { Throwables } from "@common/definitions/throwables";
 
 /**
  * A class representing a firearm
@@ -257,13 +258,24 @@ export class GunItem extends InventoryItem<GunDefinition> {
             )
             : (_: Vector) => owner.layer;
 
+        const pp=Throwables.fromStringSafe(definition.projectile?.def??"")
         const spawn = (position: Vector, spread: number,weak?:boolean): void => {
             const m=cloneDeep(modifiersModified) ? cloneDeep(modifiers) : undefined;
+            if(pp&&definition.projectile){
+                const proj=owner.game.addProjectile(pp,position,getStartingLayer(position))
+                let spd=definition.projectile.speedCap
+                if(definition.projectile.chooseSpeed){
+                    spd=Math.min(rangeOverride>0?(rangeOverride/80)*definition.projectile.speedCap:definition.projectile.speedCap*0.05,definition.projectile.speedCap)
+                }
+                proj.push(owner.rotation+ spread,spd)
+                proj.detonate(pp.fuseTime)
+            }
             if(weak===true&&m!==undefined){
                 m.damage*=0.3
                 m.tracer.opacity*=0.35
                 m.tracer.width*=0.75
             }
+
             owner.game.addBullet(
                 this,
                 owner,

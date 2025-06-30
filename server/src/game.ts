@@ -49,7 +49,7 @@ import { GoapAgent } from "./utils/goap";
 import { Building } from "./objects/building";
 import { Guns } from "@common/definitions/guns";
 import { Melees } from "@common/definitions/melees";
-import { DefaultGamemode, Gamemode, Gamemodes, SpawnMode } from "./data/gamemode";
+import { DefaultGamemode, Gamemode, GamemodeMap, Gamemodes, SpawnMode } from "./data/gamemode";
 import { ExtraLoadout, ExtraLoadoutList, ExtraLoadoutType } from "@common/definitions/loadout/extra_loadout";
 import { Perks } from "@common/definitions/perks";
 import { Decal } from "./objects/decal";
@@ -250,7 +250,8 @@ export class Game implements GameData {
 
         this.currentFaction=this.gamemode.factions?0:this.gamemode.defaultGroup
 
-        this.map = new GameMap(this, this.gamemode.map||Config.map);
+        //@ts-ignore
+        this.map = new GameMap(this, (this.gamemode.map||Config.map) as GamemodeMap|string);
 
         this.gas = new Gas(this);
 
