@@ -1353,6 +1353,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                 name: "Flues",
                 ammoSpawnAmount: 10,
                 capacity: 2,
+                extendedCapacity:2,
                 reloadTime: 2.6,
                 fireDelay: 250,
                 switchDelay: 250,

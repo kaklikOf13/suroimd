@@ -196,7 +196,9 @@ type ActivatableMixin = {
         readonly particles?: string
         readonly middleFrame?: string
         readonly particlesAmmount?:number
-        readonly idString: ReferenceOrRandom<RawObstacleDefinition>
+        readonly idString?: ReferenceOrRandom<RawObstacleDefinition>
+        readonly classReplace?: Record<string,string>
+        readonly classUnlock?:boolean
         readonly delay: number
     }
 };
@@ -317,6 +319,7 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     aegis_crate_particle:          { base: "wood_particle",    tint: 0x2687d9 },
     survival_crate_particle:       { base: "wood_particle",    tint: 0x12d443 },
     airdrop_crate_particle:        { base: "wood_particle",    tint: aidrTint },
+    pod_crate_particle:            { base: "wood_particle",    tint: 0x9f24c9 },
     chest_particle:                { base: "wood_particle",    tint: 0xa87e5a },
     cooler_particle:               { base: "wood_particle",    tint: 0x406c65 },
     crate_particle:                { base: "wood_particle",    tint: 0x9e7437 },
@@ -1736,6 +1739,85 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hideOnMap: true,
                 rotationMode: RotationMode.None,
                 hasLoot: true
+            },
+            {
+                idString: "pod_locked",
+                name: "Pod Locked",
+                material: "metal_light",
+                health: 10000,
+                indestructible: true,
+                reflectBullets: true,
+                hitbox: RectangleHitbox.fromRect(8.7, 8.7),
+                spawnHitbox: RectangleHitbox.fromRect(10, 10),
+                rotationMode: RotationMode.None,
+                hideOnMap: true,
+                role: ObstacleSpecialRoles.Activatable,
+                zIndex: ZIndexes.ObstaclesLayer2,
+                sound: {
+                    name: "airdrop_unlock",
+                    maxRange: 64,
+                    falloff: 0.3
+                },
+                replaceWith: {
+                    delay: 800,
+                    middleFrame:"pod_unlocking",
+                    classUnlock:true,
+                    particles:"airdrop_particle",
+                    particlesAmmount:3,
+                    classReplace:{medic_role:"pod_medic",scout_role:"pod_scout",apple_master_role:"pod_apple_master",sniper_role:"pod_sniper",assault_role:"pod_assault",demo_role:"pod_demo"},
+                },
+                noResidue: true,
+                frames: {
+                    particle: "metal_particle"
+                }
+            },
+            {
+                idString: "pod_medic",
+                name: "Pod Medic",
+                material: "crate",
+                health: 200,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.8
+                },
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(8.7, 8.7)
+                ),
+                spawnHitbox: RectangleHitbox.fromRect(10, 10),
+                hideOnMap: true,
+                rotationMode: RotationMode.None,
+                hasLoot: true,
+                frames: {
+                    particle: "pod_crate_particle",
+                    residue: "pod_crate_residue"
+                }
+            },
+            {
+                [inheritFrom]:"pod_medic",
+                idString: "pod_scout",
+                name: "Pod Scout",
+            },
+            {
+                [inheritFrom]:"pod_medic",
+                idString: "pod_apple_master",
+                name: "Pod Apple Master",
+                weaponSwap:true
+            },
+            {
+                [inheritFrom]:"pod_medic",
+                idString: "pod_sniper",
+                name: "Pod Sniper",
+            },
+            {
+                [inheritFrom]:"pod_medic",
+                idString: "pod_assault",
+                name: "Pod Assault",
+            },
+            {
+                [inheritFrom]:"pod_medic",
+                idString: "pod_demo",
+                name: "Pod Demo",
             },
             {
                 idString: "gold_big_airdrop_crate",

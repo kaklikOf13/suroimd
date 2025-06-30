@@ -18,6 +18,7 @@ import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { type Particle, type ParticleEmitter, type ParticleOptions } from "./particles";
 import { type Player } from "./player";
+import { ExtraLoadoutList } from "@common/definitions/loadout/extra_loadout";
 
 export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     override readonly damageable = true;
@@ -64,6 +65,8 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
     notOnCoolDown = true;
 
+    interactorClass=0
+
     doorMask?: Graphics;
 
     private _glowTween?: Tween<Particle>;
@@ -83,7 +86,6 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         let texture: string | undefined;
 
         if (data.full) {
-
             const full = data.full;
             const definition = this.definition = full.definition;
             this.position = full.position;
@@ -91,6 +93,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             this.orientation = full.rotation.orientation;
             this.layer = full.layer;
             this.variation = full.variation;
+            if(full.interactorClass)this.interactorClass=full.interactorClass
 
             if (definition.gunMount && !this.mountSpriteInitalized) {
                 this.mountSprite = new SuroiSprite()
@@ -187,7 +190,11 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                             rotation: { start: 0, end: randomFloat(Math.PI / 2, Math.PI * 2) }
                         } as ParticleOptions);
 
-                        texture = definition.replaceWith!.middleFrame;
+                        if(definition.replaceWith!.classUnlock){
+                            texture = definition.replaceWith!.middleFrame+"_"+ExtraLoadoutList[this.interactorClass];
+                        }else{
+                            texture = definition.replaceWith!.middleFrame;
+                        }
 
                         /*if (GameConstants.modeName === "winter") {
                             this.game.particleManager.spawnParticles(1, () => ({

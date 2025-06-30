@@ -1233,7 +1233,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                 this.currentKeyframe=-1
                 this.PlayKeyframe(weaponDef,false)
             }else{
-                if(weaponDef.fists){
+                if(weaponDef.fists&&weaponDef.fists.left&&weaponDef.fists.right){
                     this.images.leftFist.setPos(weaponDef.fists.left.x,weaponDef.fists.left.y)
                     this.images.rightFist.setPos(weaponDef.fists.right.x,weaponDef.fists.right.y)
                 }

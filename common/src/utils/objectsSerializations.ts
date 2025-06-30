@@ -80,6 +80,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             readonly variation?: Variation
             readonly activated?: boolean
             readonly detectedMetal?: boolean
+            readonly interactorClass: number
             readonly door?: {
                 readonly offset: number
                 readonly locked: boolean
@@ -370,7 +371,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                     activated,
                     detectedMetal,
                     variation,
-                    layer
+                    layer,
+                    interactorClass
                 }
             }
         ): void {
@@ -470,6 +472,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                     break;
                 }
             }
+            stream.writeUint16(interactorClass)
         },
         deserializePartial(stream) {
             const [
@@ -493,7 +496,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 rotation: {
                     orientation: 0,
                     rotation: 0
-                }
+                },
+                interactorClass:0
             };
 
             // see the comments in serializeFull to understand what's going on
@@ -570,6 +574,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 //     break;
                 // }
             }
+            data.interactorClass=stream.readUint16()
             return data;
         }
     },

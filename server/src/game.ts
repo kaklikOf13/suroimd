@@ -879,6 +879,7 @@ export class Game implements GameData {
         if(this.gamemode.roles&&this.gamemode.roles.enabled){
             setTimeout(()=>{
                 try{
+                    player.gamerole=ExtraLoadoutList[packet.role]!
                     const role=ExtraLoadout[ExtraLoadoutList[packet.role]]
                     if(!role||role.type!==ExtraLoadoutType.Role){
                         player.disconnect("invalid_role")

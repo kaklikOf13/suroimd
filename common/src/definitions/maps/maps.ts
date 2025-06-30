@@ -420,6 +420,7 @@ export const maps={
                             grenade_crate: 55,
                             rock: 430,
                             river_chest: 2,
+                            pod_locked:100,
                             river_rock: 30,
                             lily_pad: 30,
                             barrel:70,

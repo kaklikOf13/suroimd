@@ -16,9 +16,10 @@ import { type Bullet } from "./bullet";
 import { BaseGameObject, DamageParams, type GameObject } from "./gameObject";
 import { Player } from "./player";
 import { getLootFromTable, LootItem } from "@common/definitions/maps/lootTables";
+import { ExtraLoadoutList } from "@common/definitions/loadout/extra_loadout";
 
 export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
-    override readonly fullAllocBytes = 14;
+    override readonly fullAllocBytes = 16;
     override readonly partialAllocBytes = 6;
     override readonly damageable = true;
 
@@ -334,6 +335,8 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
         );
     }
 
+    interactorClass:number=0
+
     interact(player?: Player): void {
         if (
             (player && !this.canInteract(player))
@@ -363,15 +366,23 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
 
                 const replaceWith = definition.replaceWith;
                 if (replaceWith !== undefined) {
+                    if(replaceWith.classReplace){
+                        this.interactorClass=ExtraLoadoutList.indexOf(player?.gamerole!)
+                    }
                     this.game.addTimeout(() => {
                         this.dead = true;
                         this.collidable = false;
                         this.setDirty();
 
-                        const idString = getRandomIDString<
-                            ObstacleDefinition,
-                            ReferenceTo<ObstacleDefinition> | typeof NullString
-                        >(replaceWith.idString);
+                        let idString:string|typeof NullString=NullString
+                        if(replaceWith.idString){
+                            idString = getRandomIDString<
+                                ObstacleDefinition,
+                                ReferenceTo<ObstacleDefinition> | typeof NullString
+                            >(replaceWith.idString);
+                        }else if(replaceWith.classReplace){
+                            idString=replaceWith.classReplace[player?.gamerole!]??NullString
+                        }
                         if (idString === NullString) {
                             return;
                         }
@@ -482,6 +493,7 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                 definition: this.definition,
                 door: this.door,
                 position: this.position,
+                interactorClass:this.interactorClass,
                 layer: this.layer,
                 variation: this.variation,
                 rotation: {
