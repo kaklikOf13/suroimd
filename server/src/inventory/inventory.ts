@@ -590,6 +590,11 @@ export class Inventory {
 
         this.owner.dirty.capacity=true
         this.owner.dirty.weapons=true
+
+        if(itemDef?.itemType===ItemType.Throwable){
+            this.useItem(itemString);
+            this.throwableItemMap.get(itemString)!.count = this.items.getItem(itemString);
+        }
         return overAmount
     }
 

@@ -21,6 +21,7 @@ export interface RoleDefinition{
     readonly frame:string
     readonly perks:PerkIds[]
     readonly helmet:string
+    readonly skin?:string[]
     readonly type:ExtraLoadoutType.Role
 }
 export type ExtraLoadoutDefinition=AuraDefinition|RoleDefinition|FistDefinition
@@ -55,14 +56,44 @@ export const ExtraLoadout:Record<string,ExtraLoadoutDefinition>={
         type:ExtraLoadoutType.Role,
         frame:"max_mcfly",
         helmet:"medic",
-        perks:[PerkIds.HealingAura,PerkIds.SelfRevive]
+        skin:["shiny_amanda_corey","shiny_max_mcfly"],
+        perks:[PerkIds.FieldMedic,PerkIds.NatureBreath]
     },
-    forest_queen_role:{
+    scout_role:{
         type:ExtraLoadoutType.Role,
-        frame:"amanda_corey",
-        helmet:"lastwoman",
-        perks:[PerkIds.InfiniteAmmo]
-    }
+        frame:"leia",
+        helmet:"pigmin",
+        skin:["shiny_radians","shiny_leia"],
+        perks:[PerkIds.LowProfile,PerkIds.SecondWind]
+    },
+    apple_master_role:{
+        type:ExtraLoadoutType.Role,
+        frame:"anonymous",
+        helmet:"apple",
+        skin:["shiny_sky","shiny_anonymous"],
+        perks:[PerkIds.AppleArt,PerkIds.InfiniteAmmo]
+    },
+    sniper_role:{
+        type:ExtraLoadoutType.Role,
+        frame:"aurora",
+        helmet:"sniper",
+        skin:["shiny_aurora","shiny_nebula"],
+        perks:[PerkIds.Takedown,PerkIds.Toploaded]
+    },
+    assault_role:{
+        type:ExtraLoadoutType.Role,
+        frame:"error",
+        skin:["shiny_error","shiny_pap"],
+        helmet:"sergeant",
+        perks:[PerkIds.GreatAmmoBox,PerkIds.ExtendedMags]
+    },
+    demo_role:{
+        type:ExtraLoadoutType.Role,
+        frame:"anonymous",
+        skin:["shiny_anonymous"],
+        helmet:"demo_man",
+        perks:[PerkIds.DemoExpert,PerkIds.NadeFabricator]
+    },
 
 }as const
 export const ExtraLoadoutList=Object.keys(ExtraLoadout)

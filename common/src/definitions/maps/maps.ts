@@ -178,6 +178,18 @@ const DefaultChooses:Record<string,WeightedMapOBJ[]>={
         {obstacle:"berry_bush", weight:0.8},
     ],
 }
+const StrangeLandsChooses:Record<string,WeightedMapOBJ[]>={
+    Trees:[
+        {obstacle:"small_oak_tree_sl", weight:20},
+        {obstacle:"oak_tree_sl", weight:17},
+        {obstacle:"birch_tree_sl", weight:10},
+        {obstacle:"pine_tree_sl", weight:4},
+    ],
+    Bushs:[
+        {obstacle:"bush_sl", weight:1.2},
+        {obstacle:"berry_bush_sl", weight:0.8},
+    ],
+}
 export const maps={
     normal: {
         width: 1900,
@@ -378,20 +390,14 @@ export const maps={
                             construction_site: 1,
                             mobile_home: 16,
                             porta_potty: 23,
-                            container_3: 3,
+                            /*container_3: 3,
                             container_4: 3,
                             container_5: 3,
                             container_6: 3,
                             container_7: 3,
                             container_8: 3,
                             container_9: 3,
-                            container_10: 3
-                            /*
-                            tugboat_red: 2,
-                            tugboat_white: 7,
-                            // firework_warehouse: 1, // birthday mode
-
-                            */
+                            container_10: 3*/
                         },
                         majorBuildings: ["armory", "refinery", "port_complex", "headquarters"],
                         quadBuildingLimit: {
@@ -406,8 +412,7 @@ export const maps={
                         },
                         obstacles:{
                             oil_tank: 25,
-                            // christmas_tree: 1, // winter mode
-                            oak_tree: 40,
+                            oak_tree_sl: 40,
                             regular_crate: 150,
                             flint_crate: 12,
                             aegis_crate: 12,
@@ -416,7 +421,6 @@ export const maps={
                             rock: 430,
                             river_chest: 2,
                             river_rock: 30,
-                            // birthday_cake: 100, // birthday mode
                             lily_pad: 30,
                             barrel:70,
                             viking_chest: 2,
@@ -428,12 +432,12 @@ export const maps={
                         },
                         chooses:[
                             {
-                                objects:DefaultChooses.Bushs,
+                                objects:StrangeLandsChooses.Bushs,
                                 min:210,
                                 max:250,
                             },
                             {
-                                objects:DefaultChooses.Trees,
+                                objects:StrangeLandsChooses.Trees,
                                 min:150,
                                 max:190,
                             }
@@ -445,7 +449,7 @@ export const maps={
                                     minAmount: 2,
                                     maxAmount: 4,
                                     jitter: 5,
-                                    obstacles: ["small_oak_tree"],
+                                    obstacles: ["small_oak_tree_sl"],
                                     radius: 12
                                 }
                             },
@@ -455,7 +459,7 @@ export const maps={
                                     minAmount: 2,
                                     maxAmount: 4,
                                     jitter: 5,
-                                    obstacles: ["birch_tree"],
+                                    obstacles: ["birch_tree_sl"],
                                     radius: 12
                                 }
                             },
@@ -465,7 +469,7 @@ export const maps={
                                     minAmount: 2,
                                     maxAmount: 4,
                                     jitter: 5,
-                                    obstacles: ["pine_tree","birch_tree"],
+                                    obstacles: ["pine_tree_sl","birch_tree_sl"],
                                     radius: 12
                                 }
                             }

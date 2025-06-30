@@ -54,6 +54,7 @@ import { ExtraLoadout, ExtraLoadoutList, ExtraLoadoutType } from "@common/defini
 import { Perks } from "@common/definitions/perks";
 import { Decal } from "./objects/decal";
 import { MapName, Maps } from "@common/definitions/maps/maps";
+import { Skins } from "@common/definitions/loadout/skins";
 /*
     eslint-disable
 
@@ -878,13 +879,17 @@ export class Game implements GameData {
             setTimeout(()=>{
                 try{
                     const role=ExtraLoadout[ExtraLoadoutList[packet.role]]
-                    if(role.type!==ExtraLoadoutType.Role){
+                    if(!role||role.type!==ExtraLoadoutType.Role){
                         player.disconnect("invalid_role")
                         return
                     }
                     for(const r of role.perks){
                         player.perks.addPerk(Perks.fromString(r),true)
                         player.fullDirty()
+                    }
+                    if(role.skin){
+                        player.loadout.skin=Skins.fromString(pickRandomInArray(role.skin))
+                        player.dropable.skin=false
                     }
                 }catch{
                     player.disconnect("invalid_role");

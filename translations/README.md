@@ -1,8 +1,8 @@
 # Translation File Reports
 
-This file is a report of all errors and missing keys in the translation files of this game. Last generated Sun, 29 Jun 2025 18:44:59 GMT
+This file is a report of all errors and missing keys in the translation files of this game. Last generated Mon, 30 Jun 2025 03:29:10 GMT
 
-## 🇦🇱 Shqip (82% Complete) - ab.hjson
+## 🇦🇱 Shqip (79% Complete) - ab.hjson
 
 ### (No Invalid Keys)
 
@@ -52,14 +52,25 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `gamerole_blue_medic` is not defined
 - Key `gamerole_red_sergeant` is not defined
 - Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_pigmin` is not defined
+- Key `gamerole_blue_pigmin` is not defined
+- Key `gamerole_red_sniper` is not defined
+- Key `gamerole_red_apple_master` is not defined
+- Key `gamerole_red_demo_man` is not defined
+- Key `gamerole_blue_demo_man` is not defined
 - Key `gamerole_red_lastman` is not defined
 - Key `gamerole_blue_lastman` is not defined
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
+- Key `role_scout_role` is not defined
+- Key `role_apple_master_role` is not defined
+- Key `role_sniper_role` is not defined
+- Key `role_assault_role` is not defined
+- Key `role_demo_role` is not defined
 
-## 🇧🇷 Português (Brasil) (91% Complete) - br.hjson
+## 🇧🇷 Português (Brasil) (87% Complete) - br.hjson
 
 ### (No Invalid Keys)
 
@@ -86,13 +97,24 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `gamerole_blue_medic` is not defined
 - Key `gamerole_red_sergeant` is not defined
 - Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_pigmin` is not defined
+- Key `gamerole_blue_pigmin` is not defined
+- Key `gamerole_red_sniper` is not defined
+- Key `gamerole_red_apple_master` is not defined
+- Key `gamerole_red_demo_man` is not defined
+- Key `gamerole_blue_demo_man` is not defined
 - Key `gamerole_red_lastman` is not defined
 - Key `gamerole_blue_lastman` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
+- Key `role_scout_role` is not defined
+- Key `role_apple_master_role` is not defined
+- Key `role_sniper_role` is not defined
+- Key `role_assault_role` is not defined
+- Key `role_demo_role` is not defined
 
-## 🇨🇿 Čeština (86% Complete) - cz.hjson
+## 🇨🇿 Čeština (82% Complete) - cz.hjson
 
 ### (No Invalid Keys)
 
@@ -132,14 +154,25 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `gamerole_blue_medic` is not defined
 - Key `gamerole_red_sergeant` is not defined
 - Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_pigmin` is not defined
+- Key `gamerole_blue_pigmin` is not defined
+- Key `gamerole_red_sniper` is not defined
+- Key `gamerole_red_apple_master` is not defined
+- Key `gamerole_red_demo_man` is not defined
+- Key `gamerole_blue_demo_man` is not defined
 - Key `gamerole_red_lastman` is not defined
 - Key `gamerole_blue_lastman` is not defined
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
+- Key `role_scout_role` is not defined
+- Key `role_apple_master_role` is not defined
+- Key `role_sniper_role` is not defined
+- Key `role_assault_role` is not defined
+- Key `role_demo_role` is not defined
 
-## 🇩🇪 Deutsch (78% Complete) - de.hjson
+## 🇩🇪 Deutsch (75% Complete) - de.hjson
 
 ### (No Invalid Keys)
 
@@ -196,6 +229,12 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `gamerole_blue_medic` is not defined
 - Key `gamerole_red_sergeant` is not defined
 - Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_pigmin` is not defined
+- Key `gamerole_blue_pigmin` is not defined
+- Key `gamerole_red_sniper` is not defined
+- Key `gamerole_red_apple_master` is not defined
+- Key `gamerole_red_demo_man` is not defined
+- Key `gamerole_blue_demo_man` is not defined
 - Key `gamerole_red_lastman` is not defined
 - Key `gamerole_blue_lastman` is not defined
 - Key `create_team_ready` is not defined
@@ -207,42 +246,13 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `region_sa` is not defined
 - Key `region_as` is not defined
 - Key `role_medic_role` is not defined
+- Key `role_scout_role` is not defined
+- Key `role_apple_master_role` is not defined
+- Key `role_sniper_role` is not defined
+- Key `role_assault_role` is not defined
+- Key `role_demo_role` is not defined
 
-## 🇪🇪 Eesti (90% Complete) - et.hjson
-
-### (No Invalid Keys)
-
-### Undefined Keys
-
-- Key `msg_punishment_warn_agreement` is not defined
-- Key `settings_debug` is not defined
-- Key `settings_vinhetting` is not defined
-- Key `settings_bright_effects` is not defined
-- Key `settings_hitbox_debug` is not defined
-- Key `fist_ld` is not defined
-- Key `roles_ld` is not defined
-- Key `loadout_weapons` is not defined
-- Key `weapon_melee_tp` is not defined
-- Key `weapon_gun_tp` is not defined
-- Key `status_needs` is not defined
-- Key `weapon_category_0` is not defined
-- Key `weapon_category_1` is not defined
-- Key `special_youtubr` is not defined
-- Key `kf_role_promotion` is not defined
-- Key `go_score` is not defined
-- Key `gamerole_red_captain` is not defined
-- Key `gamerole_blue_captain` is not defined
-- Key `gamerole_red_medic` is not defined
-- Key `gamerole_blue_medic` is not defined
-- Key `gamerole_red_sergeant` is not defined
-- Key `gamerole_blue_sergeant` is not defined
-- Key `gamerole_red_lastman` is not defined
-- Key `gamerole_blue_lastman` is not defined
-- Key `20x_scope` is not defined
-- Key `BLR` is not defined
-- Key `role_medic_role` is not defined
-
-## 🇫🇷 Français (90% Complete) - fr.hjson
+## 🇪🇪 Eesti (87% Complete) - et.hjson
 
 ### (No Invalid Keys)
 
@@ -270,13 +280,69 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `gamerole_blue_medic` is not defined
 - Key `gamerole_red_sergeant` is not defined
 - Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_pigmin` is not defined
+- Key `gamerole_blue_pigmin` is not defined
+- Key `gamerole_red_sniper` is not defined
+- Key `gamerole_red_apple_master` is not defined
+- Key `gamerole_red_demo_man` is not defined
+- Key `gamerole_blue_demo_man` is not defined
 - Key `gamerole_red_lastman` is not defined
 - Key `gamerole_blue_lastman` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
+- Key `role_scout_role` is not defined
+- Key `role_apple_master_role` is not defined
+- Key `role_sniper_role` is not defined
+- Key `role_assault_role` is not defined
+- Key `role_demo_role` is not defined
 
-## 🇬🇷 Ελληνικά (91% Complete) - gr.hjson
+## 🇫🇷 Français (87% Complete) - fr.hjson
+
+### (No Invalid Keys)
+
+### Undefined Keys
+
+- Key `msg_punishment_warn_agreement` is not defined
+- Key `settings_debug` is not defined
+- Key `settings_vinhetting` is not defined
+- Key `settings_bright_effects` is not defined
+- Key `settings_hitbox_debug` is not defined
+- Key `fist_ld` is not defined
+- Key `roles_ld` is not defined
+- Key `loadout_weapons` is not defined
+- Key `weapon_melee_tp` is not defined
+- Key `weapon_gun_tp` is not defined
+- Key `status_needs` is not defined
+- Key `weapon_category_0` is not defined
+- Key `weapon_category_1` is not defined
+- Key `special_youtubr` is not defined
+- Key `kf_role_promotion` is not defined
+- Key `go_score` is not defined
+- Key `gamerole_red_captain` is not defined
+- Key `gamerole_blue_captain` is not defined
+- Key `gamerole_red_medic` is not defined
+- Key `gamerole_blue_medic` is not defined
+- Key `gamerole_red_sergeant` is not defined
+- Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_pigmin` is not defined
+- Key `gamerole_blue_pigmin` is not defined
+- Key `gamerole_red_sniper` is not defined
+- Key `gamerole_red_apple_master` is not defined
+- Key `gamerole_red_demo_man` is not defined
+- Key `gamerole_blue_demo_man` is not defined
+- Key `gamerole_red_lastman` is not defined
+- Key `gamerole_blue_lastman` is not defined
+- Key `20x_scope` is not defined
+- Key `BLR` is not defined
+- Key `role_medic_role` is not defined
+- Key `role_scout_role` is not defined
+- Key `role_apple_master_role` is not defined
+- Key `role_sniper_role` is not defined
+- Key `role_assault_role` is not defined
+- Key `role_demo_role` is not defined
+
+## 🇬🇷 Ελληνικά (87% Complete) - gr.hjson
 
 ### (No Invalid Keys)
 
@@ -303,13 +369,24 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `gamerole_blue_medic` is not defined
 - Key `gamerole_red_sergeant` is not defined
 - Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_pigmin` is not defined
+- Key `gamerole_blue_pigmin` is not defined
+- Key `gamerole_red_sniper` is not defined
+- Key `gamerole_red_apple_master` is not defined
+- Key `gamerole_red_demo_man` is not defined
+- Key `gamerole_blue_demo_man` is not defined
 - Key `gamerole_red_lastman` is not defined
 - Key `gamerole_blue_lastman` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
+- Key `role_scout_role` is not defined
+- Key `role_apple_master_role` is not defined
+- Key `role_sniper_role` is not defined
+- Key `role_assault_role` is not defined
+- Key `role_demo_role` is not defined
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (84% Complete) - hk_mo.hjson
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (81% Complete) - hk_mo.hjson
 
 ### (No Invalid Keys)
 
@@ -353,14 +430,25 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `gamerole_blue_medic` is not defined
 - Key `gamerole_red_sergeant` is not defined
 - Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_pigmin` is not defined
+- Key `gamerole_blue_pigmin` is not defined
+- Key `gamerole_red_sniper` is not defined
+- Key `gamerole_red_apple_master` is not defined
+- Key `gamerole_red_demo_man` is not defined
+- Key `gamerole_blue_demo_man` is not defined
 - Key `gamerole_red_lastman` is not defined
 - Key `gamerole_blue_lastman` is not defined
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
+- Key `role_scout_role` is not defined
+- Key `role_apple_master_role` is not defined
+- Key `role_sniper_role` is not defined
+- Key `role_assault_role` is not defined
+- Key `role_demo_role` is not defined
 
-## 🇭🇺 Magyar (91% Complete) - hu.hjson
+## 🇭🇺 Magyar (87% Complete) - hu.hjson
 
 ### (No Invalid Keys)
 
@@ -387,13 +475,24 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `gamerole_blue_medic` is not defined
 - Key `gamerole_red_sergeant` is not defined
 - Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_pigmin` is not defined
+- Key `gamerole_blue_pigmin` is not defined
+- Key `gamerole_red_sniper` is not defined
+- Key `gamerole_red_apple_master` is not defined
+- Key `gamerole_red_demo_man` is not defined
+- Key `gamerole_blue_demo_man` is not defined
 - Key `gamerole_red_lastman` is not defined
 - Key `gamerole_blue_lastman` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
+- Key `role_scout_role` is not defined
+- Key `role_apple_master_role` is not defined
+- Key `role_sniper_role` is not defined
+- Key `role_assault_role` is not defined
+- Key `role_demo_role` is not defined
 
-## 🇯🇵 日本語 (86% Complete) - jp.hjson
+## 🇯🇵 日本語 (82% Complete) - jp.hjson
 
 ### (No Invalid Keys)
 
@@ -433,14 +532,25 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `gamerole_blue_medic` is not defined
 - Key `gamerole_red_sergeant` is not defined
 - Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_pigmin` is not defined
+- Key `gamerole_blue_pigmin` is not defined
+- Key `gamerole_red_sniper` is not defined
+- Key `gamerole_red_apple_master` is not defined
+- Key `gamerole_red_demo_man` is not defined
+- Key `gamerole_blue_demo_man` is not defined
 - Key `gamerole_red_lastman` is not defined
 - Key `gamerole_blue_lastman` is not defined
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
+- Key `role_scout_role` is not defined
+- Key `role_apple_master_role` is not defined
+- Key `role_sniper_role` is not defined
+- Key `role_assault_role` is not defined
+- Key `role_demo_role` is not defined
 
-## 🇱🇹 Lietuvių (86% Complete) - lt.hjson
+## 🇱🇹 Lietuvių (82% Complete) - lt.hjson
 
 ### (No Invalid Keys)
 
@@ -480,14 +590,25 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `gamerole_blue_medic` is not defined
 - Key `gamerole_red_sergeant` is not defined
 - Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_pigmin` is not defined
+- Key `gamerole_blue_pigmin` is not defined
+- Key `gamerole_red_sniper` is not defined
+- Key `gamerole_red_apple_master` is not defined
+- Key `gamerole_red_demo_man` is not defined
+- Key `gamerole_blue_demo_man` is not defined
 - Key `gamerole_red_lastman` is not defined
 - Key `gamerole_blue_lastman` is not defined
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
+- Key `role_scout_role` is not defined
+- Key `role_apple_master_role` is not defined
+- Key `role_sniper_role` is not defined
+- Key `role_assault_role` is not defined
+- Key `role_demo_role` is not defined
 
-## 🇱🇻 Latviešu (86% Complete) - lv.hjson
+## 🇱🇻 Latviešu (82% Complete) - lv.hjson
 
 ### (No Invalid Keys)
 
@@ -527,14 +648,25 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `gamerole_blue_medic` is not defined
 - Key `gamerole_red_sergeant` is not defined
 - Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_pigmin` is not defined
+- Key `gamerole_blue_pigmin` is not defined
+- Key `gamerole_red_sniper` is not defined
+- Key `gamerole_red_apple_master` is not defined
+- Key `gamerole_red_demo_man` is not defined
+- Key `gamerole_blue_demo_man` is not defined
 - Key `gamerole_red_lastman` is not defined
 - Key `gamerole_blue_lastman` is not defined
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
+- Key `role_scout_role` is not defined
+- Key `role_apple_master_role` is not defined
+- Key `role_sniper_role` is not defined
+- Key `role_assault_role` is not defined
+- Key `role_demo_role` is not defined
 
-## 🇵🇱 Polski (90% Complete) - pl.hjson
+## 🇵🇱 Polski (87% Complete) - pl.hjson
 
 ### (No Invalid Keys)
 
@@ -562,13 +694,24 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `gamerole_blue_medic` is not defined
 - Key `gamerole_red_sergeant` is not defined
 - Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_pigmin` is not defined
+- Key `gamerole_blue_pigmin` is not defined
+- Key `gamerole_red_sniper` is not defined
+- Key `gamerole_red_apple_master` is not defined
+- Key `gamerole_red_demo_man` is not defined
+- Key `gamerole_blue_demo_man` is not defined
 - Key `gamerole_red_lastman` is not defined
 - Key `gamerole_blue_lastman` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
+- Key `role_scout_role` is not defined
+- Key `role_apple_master_role` is not defined
+- Key `role_sniper_role` is not defined
+- Key `role_assault_role` is not defined
+- Key `role_demo_role` is not defined
 
-## 🎀 Cute Engwish (84% Complete) - qen.hjson
+## 🎀 Cute Engwish (81% Complete) - qen.hjson
 
 ### Invalid Keys
 
@@ -615,14 +758,25 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `gamerole_blue_medic` is not defined
 - Key `gamerole_red_sergeant` is not defined
 - Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_pigmin` is not defined
+- Key `gamerole_blue_pigmin` is not defined
+- Key `gamerole_red_sniper` is not defined
+- Key `gamerole_red_apple_master` is not defined
+- Key `gamerole_red_demo_man` is not defined
+- Key `gamerole_blue_demo_man` is not defined
 - Key `gamerole_red_lastman` is not defined
 - Key `gamerole_blue_lastman` is not defined
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
+- Key `role_scout_role` is not defined
+- Key `role_apple_master_role` is not defined
+- Key `role_sniper_role` is not defined
+- Key `role_assault_role` is not defined
+- Key `role_demo_role` is not defined
 
-## 🇷🇴 Română (80% Complete) - ro.hjson
+## 🇷🇴 Română (77% Complete) - ro.hjson
 
 ### (No Invalid Keys)
 
@@ -678,14 +832,25 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `gamerole_blue_medic` is not defined
 - Key `gamerole_red_sergeant` is not defined
 - Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_pigmin` is not defined
+- Key `gamerole_blue_pigmin` is not defined
+- Key `gamerole_red_sniper` is not defined
+- Key `gamerole_red_apple_master` is not defined
+- Key `gamerole_red_demo_man` is not defined
+- Key `gamerole_blue_demo_man` is not defined
 - Key `gamerole_red_lastman` is not defined
 - Key `gamerole_blue_lastman` is not defined
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
+- Key `role_scout_role` is not defined
+- Key `role_apple_master_role` is not defined
+- Key `role_sniper_role` is not defined
+- Key `role_assault_role` is not defined
+- Key `role_demo_role` is not defined
 
-## 🇷🇺 Русский (91% Complete) - ru.hjson
+## 🇷🇺 Русский (87% Complete) - ru.hjson
 
 ### (No Invalid Keys)
 
@@ -712,13 +877,24 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `gamerole_blue_medic` is not defined
 - Key `gamerole_red_sergeant` is not defined
 - Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_pigmin` is not defined
+- Key `gamerole_blue_pigmin` is not defined
+- Key `gamerole_red_sniper` is not defined
+- Key `gamerole_red_apple_master` is not defined
+- Key `gamerole_red_demo_man` is not defined
+- Key `gamerole_blue_demo_man` is not defined
 - Key `gamerole_red_lastman` is not defined
 - Key `gamerole_blue_lastman` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
+- Key `role_scout_role` is not defined
+- Key `role_apple_master_role` is not defined
+- Key `role_sniper_role` is not defined
+- Key `role_assault_role` is not defined
+- Key `role_demo_role` is not defined
 
-## 🇮🇳 தமிழ் (85% Complete) - ta.hjson
+## 🇮🇳 தமிழ் (82% Complete) - ta.hjson
 
 ### (No Invalid Keys)
 
@@ -760,14 +936,25 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `gamerole_blue_medic` is not defined
 - Key `gamerole_red_sergeant` is not defined
 - Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_pigmin` is not defined
+- Key `gamerole_blue_pigmin` is not defined
+- Key `gamerole_red_sniper` is not defined
+- Key `gamerole_red_apple_master` is not defined
+- Key `gamerole_red_demo_man` is not defined
+- Key `gamerole_blue_demo_man` is not defined
 - Key `gamerole_red_lastman` is not defined
 - Key `gamerole_blue_lastman` is not defined
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
+- Key `role_scout_role` is not defined
+- Key `role_apple_master_role` is not defined
+- Key `role_sniper_role` is not defined
+- Key `role_assault_role` is not defined
+- Key `role_demo_role` is not defined
 
-## 🇹🇷 Turkısh (91% Complete) - tr.hjson
+## 🇹🇷 Turkısh (87% Complete) - tr.hjson
 
 ### (No Invalid Keys)
 
@@ -794,13 +981,24 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `gamerole_blue_medic` is not defined
 - Key `gamerole_red_sergeant` is not defined
 - Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_pigmin` is not defined
+- Key `gamerole_blue_pigmin` is not defined
+- Key `gamerole_red_sniper` is not defined
+- Key `gamerole_red_apple_master` is not defined
+- Key `gamerole_red_demo_man` is not defined
+- Key `gamerole_blue_demo_man` is not defined
 - Key `gamerole_red_lastman` is not defined
 - Key `gamerole_blue_lastman` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
+- Key `role_scout_role` is not defined
+- Key `role_apple_master_role` is not defined
+- Key `role_sniper_role` is not defined
+- Key `role_assault_role` is not defined
+- Key `role_demo_role` is not defined
 
-## 🇹🇼 中文（繁體） (79% Complete) - tw.hjson
+## 🇹🇼 中文（繁體） (76% Complete) - tw.hjson
 
 ### (No Invalid Keys)
 
@@ -859,14 +1057,25 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `gamerole_blue_medic` is not defined
 - Key `gamerole_red_sergeant` is not defined
 - Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_pigmin` is not defined
+- Key `gamerole_blue_pigmin` is not defined
+- Key `gamerole_red_sniper` is not defined
+- Key `gamerole_red_apple_master` is not defined
+- Key `gamerole_red_demo_man` is not defined
+- Key `gamerole_blue_demo_man` is not defined
 - Key `gamerole_red_lastman` is not defined
 - Key `gamerole_blue_lastman` is not defined
 - Key `create_team_ready` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
+- Key `role_scout_role` is not defined
+- Key `role_apple_master_role` is not defined
+- Key `role_sniper_role` is not defined
+- Key `role_assault_role` is not defined
+- Key `role_demo_role` is not defined
 
-## 🇻🇳 Tiếng Việt (90% Complete) - vi.hjson
+## 🇻🇳 Tiếng Việt (87% Complete) - vi.hjson
 
 ### Invalid Keys
 
@@ -897,13 +1106,24 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `gamerole_blue_medic` is not defined
 - Key `gamerole_red_sergeant` is not defined
 - Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_pigmin` is not defined
+- Key `gamerole_blue_pigmin` is not defined
+- Key `gamerole_red_sniper` is not defined
+- Key `gamerole_red_apple_master` is not defined
+- Key `gamerole_red_demo_man` is not defined
+- Key `gamerole_blue_demo_man` is not defined
 - Key `gamerole_red_lastman` is not defined
 - Key `gamerole_blue_lastman` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
+- Key `role_scout_role` is not defined
+- Key `role_apple_master_role` is not defined
+- Key `role_sniper_role` is not defined
+- Key `role_assault_role` is not defined
+- Key `role_demo_role` is not defined
 
-## 🇨🇳 中文（简体） (91% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (87% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -933,9 +1153,20 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `gamerole_blue_medic` is not defined
 - Key `gamerole_red_sergeant` is not defined
 - Key `gamerole_blue_sergeant` is not defined
+- Key `gamerole_red_pigmin` is not defined
+- Key `gamerole_blue_pigmin` is not defined
+- Key `gamerole_red_sniper` is not defined
+- Key `gamerole_red_apple_master` is not defined
+- Key `gamerole_red_demo_man` is not defined
+- Key `gamerole_blue_demo_man` is not defined
 - Key `gamerole_red_lastman` is not defined
 - Key `gamerole_blue_lastman` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
 - Key `role_medic_role` is not defined
+- Key `role_scout_role` is not defined
+- Key `role_apple_master_role` is not defined
+- Key `role_sniper_role` is not defined
+- Key `role_assault_role` is not defined
+- Key `role_demo_role` is not defined
 

@@ -91,7 +91,7 @@ export class GiveRoleAfterDownsPlugin extends GamePlugin {
             const chooses=ds.player.group.getLivingPlayers()
             for(let i=0;i<chooses.length;i++){
                 const player=chooses[i]
-                if(player.disconnected||player.isNpc||player.dead||player.groupID!==params.group||(!player.hasPerk(PerkIds.SelfRevive)&&player.downed)){
+                if(player.disconnected||player.isNpc||player.dead||player.groupID!==params.group||player.downed){
                     chooses.splice(i,1)
                     i--
                 }

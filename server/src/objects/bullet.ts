@@ -12,7 +12,8 @@ import { Building } from "./building";
 import { type Explosion } from "./explosion";
 import { type GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
-import { type Player } from "./player";
+import { Player } from "./player";
+import { PerkIds, Perks } from "@common/definitions/perks";
 
 type Weapon = GunItem | Explosion;
 
@@ -169,7 +170,8 @@ export class Bullet extends BaseBullet {
                         object.health+=this.definition.damage
                         object.adrenaline+=this.definition.damage/2
                     }else{
-                        object.damage({amount:r.damage,source:r.source,weaponUsed:r.weapon},this.headshot?this.definition.headshot!.modify:undefined)
+                        const explosionMod=(this.definition.shrapnel&&object.hasPerk(PerkIds.DemoExpert))?(Perks.fromString(PerkIds.DemoExpert).explosionsMod??0.1):1
+                        object.damage({amount:r.damage*explosionMod,source:r.source,weaponUsed:r.weapon},this.headshot?this.definition.headshot!.modify:undefined)
                     }
                 }else{
                     object.damage({amount:r.damage,source:r.source,weaponUsed:r.weapon,position:r.position})

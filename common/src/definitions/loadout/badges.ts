@@ -32,6 +32,8 @@ export const Badges = ObjectDefinitions.create<BadgeDefinition>("Badges", [
     badge(["Pigmin", ["developr"]]),
     badge(["Sniper", ["developr"]]),
     badge(["Medic", ["developr"]]),
+    badge(["Apple Master", ["developr"]]),
+    badge(["Demo Man", ["developr"]]),
     badge(["Last Man", ["developr"]]),
     badge(["Last Woman", ["developr"]]),
 

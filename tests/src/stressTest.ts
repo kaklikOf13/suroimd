@@ -13,16 +13,17 @@ import { type GetGameResponse } from "../../common/src/typings";
 import { Geometry, π, τ } from "../../common/src/utils/math";
 import { ItemType, type ReferenceTo } from "../../common/src/utils/objectDefinitions";
 import { type FullData } from "../../common/src/utils/objectsSerializations";
-import { pickRandomInArray, random, randomBoolean, randomFloat, randomSign } from "../../common/src/utils/random";
+import { pickRandomInArray, random, randomBoolean, randomSign } from "../../common/src/utils/random";
 import { Vec, type Vector } from "../../common/src/utils/vector";
 import { HealingItems } from "@common/definitions/healingItems";
+import { ExtraLoadout, ExtraLoadoutList, ExtraLoadoutType } from "@common/definitions/loadout/extra_loadout";
 
 console.log("start");
 
 const config = {
     mainAddress: "http://127.0.0.1:8000",
     gameAddress: "ws://127.0.0.1:800<ID>",
-    botCount: 1,
+    botCount: 50,
     joinDelay: 100,
     rejoinOnDeath: false
 };
@@ -196,14 +197,17 @@ class Bot {
 
         const name = `BOT_${this.id}`;
         console.log(`${name} connected to game ${this.gameID}`);
-
+        let role=pickRandomInArray(ExtraLoadoutList)
+        while(ExtraLoadout[role].type!==ExtraLoadoutType.Role){
+            role=pickRandomInArray(ExtraLoadoutList)
+        }
         this.sendPacket(
             JoinPacket.create({
                 name,
                 isMobile: false,
                 skin: Loots.reify(pickRandomInArray(skins)),
                 emotes: this._emotes,
-                role:6,
+                role:ExtraLoadoutList.indexOf(role),
             })
         );
     }
@@ -251,7 +255,6 @@ class Bot {
             });
         }
         if(this.safe){
-            console.log(100-this.adrenaline)
             if(100-this.adrenaline>=50&&this.items["tablets"]>0){
                 actions.push({type:InputActions.UseItem,item:HealingItems.fromString("tablets")})
             }else if(100-this.adrenaline>=25&&this.items["soda"]>0){

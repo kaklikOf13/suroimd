@@ -1014,7 +1014,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         plumpkin: {
             min: 3,
             max: 3,
-            loot: [{ table: "fall_perks", weight: 1 }]
+            loot: [{ table: "perks", weight: 1 }]
         },
         perks: {
             min: 1,
@@ -1030,7 +1030,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
                 { item: PerkIds.DemoExpert, weight: 1 },
                 { item: PerkIds.SecondWind, weight: 1 },
                 { item: PerkIds.FieldMedic, weight: 1 },
-                { item: PerkIds.SabotRounds, weight: 1 },
+                { item: PerkIds.GreatAmmoBox, weight: 1 },
                 { item: PerkIds.AdvancedAthletics, weight: 1 },
                 { item: PerkIds.Toploaded, weight: 1 },
                 { item: PerkIds.CloseQuartersCombat, weight: 1 },
@@ -1097,7 +1097,7 @@ export const LootTables: Record<string, Record<string, LootTable>> = {
         ],
         //Originals
         apple:[
-            [{item:NullString,weight:7},{table:"fall_perks",weight:0.3},{item:"apple_helmet",weight:0.1},{item:"apple_launcher",weight:0.2}],
+            [{item:NullString,weight:7},{table:"perks",weight:0.3},{item:"apple_helmet",weight:0.1},{item:"apple_launcher",weight:0.2}],
         ]
     },
 };

@@ -7,7 +7,7 @@ export class PerkManager implements PerkCollection {
     protected _perks = 0;
 
     has_infinitys:Record<string,boolean>={}
-
+    fabrication:Record<string,{count:number,time:number}>={}
     constructor(
         perks?: number | readonly PerkDefinition[]
     ) {
@@ -22,11 +22,15 @@ export class PerkManager implements PerkCollection {
     
     update_has_infinity():void{
         this.has_infinitys={}
+        this.fabrication={}
         for(const p of this.asListExtended()){
             if(p.to_infinity){
                 for(const kk of Object.keys(p.to_infinity)){
                     this.has_infinitys[kk]=p.to_infinity[kk]
                 }
+            }
+            if(p.generate){
+                this.fabrication={...this.fabrication,...p.generate}
             }
         }
     }

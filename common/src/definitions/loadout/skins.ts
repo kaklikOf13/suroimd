@@ -161,6 +161,7 @@ export const Skins = ObjectDefinitions.withDefault<SkinDefinition>()(
 
                 ["aurora"],
                 ["nebula"],
+                ["sky"],
             ] satisfies ReadonlyArray<readonly [string]>).map(([name]) => shinySkin([name])),
             hidden(
                 ["Ghillie Suit", 0xffffff],

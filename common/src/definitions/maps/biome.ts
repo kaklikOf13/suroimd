@@ -63,8 +63,8 @@ export const Biomes: Record<string, BiomeDefinition> = {
     strange_lands:{
         idString: "normal",
         colors: {
-            [FloorNames.Grass]:"#490996",
-            [FloorNames.Sand]: "#330a63",
+            [FloorNames.Grass]:"#330a63",
+            [FloorNames.Sand]:"#490996",
             [OtherColorKeys.border]: "hsl(211, 63%, 30%)",
         },
         ambience: "wind_ambience",

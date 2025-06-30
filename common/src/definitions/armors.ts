@@ -135,19 +135,30 @@ export const Armors = ObjectDefinitions.withDefault<ArmorDefinition>()(
                 }
             ),
             helmet(
-                ["LastWoman"],
-                {
-                    level: 3,
-                    damageReduction: 0.2,
-                    givePerks:[PerkIds.Last_Knight],
-                    rarity:ItemRarity.Legendary
-                }
-            ),
-            helmet(
                 ["Sergeant"],
                 {
                     level: 3,
                     givePerks:[PerkIds.ExtendedMags],
+                    damageReduction: 0.2,
+                    rarity:ItemRarity.Epic
+                }
+            ),
+            //Special
+            helmet(
+                ["Apple Master"],
+                {
+                    level: 3,
+                    givePerks:[PerkIds.AppleArt,PerkIds.GoldenApple],
+                    damageReduction: 0.2,
+                    rarity:ItemRarity.Epic
+                }
+            ),
+            //Special
+            helmet(
+                ["Demo Man"],
+                {
+                    level: 3,
+                    givePerks:[PerkIds.DemoExpert],
                     damageReduction: 0.2,
                     rarity:ItemRarity.Epic
                 }

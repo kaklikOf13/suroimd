@@ -286,7 +286,7 @@ export const MaterialSounds: Record<string, { hit?: string, destroyed?: string }
     trash_bag: { hit: "sand" }
 };
 
-const aidrTint = GameConstants.modeName as string === "winter" ? 0xb94646 : 0x4059bf;
+const aidrTint = 0x4059bf;
 
 /* eslint-disable @stylistic/key-spacing, @stylistic/no-multi-spaces */
 export const TintedParticles: Record<string, { readonly base: string, readonly tint: number, readonly variants?: number }> = {
@@ -855,6 +855,19 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 variations: 7,
             }]),
             tree([{
+                name: "Oak Tree SL",
+                health: 180,
+                scaleProps: {
+                    spawnMin: 0.75,
+                    spawnMax: 1.2,
+                    destroy: 0.9
+                },
+                spawnHitbox: new CircleHitbox(7.8),
+                rotationMode: RotationMode.Full,
+                hitbox: new CircleHitbox(3.5),
+                variations: 7,
+            }]),
+            tree([{
                 name: "Oak Tree Desert",
                 health: 180,
                 scaleProps: {
@@ -908,6 +921,24 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     residue: "oak_tree_residue"
                 }
             }]),
+            tree([{
+                name: "Small Oak Tree SL",
+                health: 180,
+                scaleProps: {
+                    spawnMin: 0.9,
+                    spawnMax: 1.2,
+                    destroy: 0.75
+                },
+                spawnHitbox: new CircleHitbox(7.8),
+                rotationMode: RotationMode.Full,
+                hitbox: new CircleHitbox(3.5),
+                variations: 3,
+                zIndex: ZIndexes.ObstaclesLayer4,
+                frames: {
+                    particle: "oak_tree_sl_particle",
+                    residue: "oak_tree_sl_residue"
+                }
+            }]),
 
             tree([{
                 name: "Trumpet Tree",
@@ -935,9 +966,36 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 rotationMode: RotationMode.Full,
                 allowFlyOver: FlyoverPref.Never
             }]),
+            tree([{
+                name: "Pine Tree SL",
+                health: 180,
+                scaleProps: {
+                    spawnMin: 0.75,
+                    spawnMax: 1.2,
+                    destroy: 0.9
+                },
+                hitbox: new CircleHitbox(2.5),
+                spawnHitbox: new CircleHitbox(7.9),
+                rotationMode: RotationMode.Full,
+                allowFlyOver: FlyoverPref.Never
+            }]),
 
             tree([{
                 name: "Birch Tree",
+                health: 240,
+                scaleProps: {
+                    spawnMin: 0.75,
+                    spawnMax: 1.2,
+                    destroy: 0.9
+                },
+                hitbox: new CircleHitbox(3.5),
+                spawnHitbox: new CircleHitbox(7.9),
+                rotationMode: RotationMode.Full,
+                variations: 2,
+                allowFlyOver: FlyoverPref.Never
+            }]),
+            tree([{
+                name: "Birch Tree SL",
                 health: 240,
                 scaleProps: {
                     spawnMin: 0.75,
@@ -1142,6 +1200,11 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 zIndex: ZIndexes.ObstaclesLayer3
             },
             {
+                [inheritFrom]:"bush",
+                idString: "bush_sl",
+                name: "Bush SL",
+            },
+            {
                 idString: "detector_walls",
                 name: "Detector Walls",
                 material: "iron",
@@ -1197,6 +1260,15 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 frames: {
                     particle: "bush_particle",
                     residue: "bush_residue"
+                }
+            },
+            {
+                [inheritFrom]:"berry_bush",
+                idString: "berry_bush_sl",
+                name: "berry Bush SL",
+                frames: {
+                    particle: "bush_sl_particle",
+                    residue: "bush_sl_residue"
                 }
             },
             ...withWinterVariation(

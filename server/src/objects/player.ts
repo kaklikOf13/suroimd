@@ -425,6 +425,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     isInsideBuilding = false;
 
     floor = FloorNames.Water;
+    
 
     screenHitbox = RectangleHitbox.fromRect(1, 1);
 
@@ -456,6 +457,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
     c4s: ThrowableProjectile[] = [];
 
     readonly perks = new ServerPerkManager(this, Perks.defaults);
+    fabrication:Record<string,number>={}
     perkUpdateMap?: Map<UpdatablePerkDefinition, number>; // key = perk, value = last updated
 
     current_boost:BoostsType=BoostsType.Null
@@ -597,6 +599,27 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.keepInventory=!!this.game.gamemode.keepInventory
 
         this.dirty.weapons = true;
+    }
+    update_fabrication(dt:number){
+        const f_list:string[]=Object.keys(this.fabrication)
+        for(const f of Object.keys(this.perks.fabrication)){
+            if(this.fabrication[f]!==undefined){
+                f_list.splice(f_list.indexOf(f))
+                if(this.fabrication[f]<0){
+                    this.fabrication[f]=this.perks.fabrication[f].time
+                    this.inventory.giveItem(f,this.perks.fabrication[f].count,true)
+                    this.dirty.weapons=true
+                    this.dirty.items=true
+                }else{
+                    this.fabrication[f]-=dt
+                }
+            }else{
+                this.fabrication[f]=this.perks.fabrication[f].time
+            }
+        }
+        for(const vv of f_list){
+            delete this.fabrication[vv]
+        }
     }
 
     fullDirty(){
@@ -785,6 +808,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         const dt = this.game.dt;
 
         this.updateAndApplyModifiers();
+        this.update_fabrication(dt)
 
         if(this.current_boost){
             if(this.boost_time>0){
@@ -1786,8 +1810,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         }else{
             index = this.activeItemIndex;
         }
-
-        let item: GunDefinition | MeleeDefinition | ThrowableDefinition;
+        let item: GunDefinition | MeleeDefinition | ThrowableDefinition|undefined=undefined;
         const itemType = this.inventory.weapons[index]?.definition.itemType;
         if(blackList.includes(this.inventory.weapons[index]?.definition.idString!)){
             return
@@ -1806,6 +1829,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 if (gun.ammoSpawnAmount) {
                     this.inventory.giveItem(ammoType,gun.ammoSpawnAmount-gun.capacity)
                 }
+                console.log(gun)
                 this.sendEmote(gun)
                 break;
             }
@@ -1823,15 +1847,16 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 return
             }
         }
+        if(item){
+            if (item!.itemType===ItemType.Gun) {
+            (this.inventory.getWeapon(index)! as GunItem).ammo = item!.capacity;
+            }
 
-        this.inventory.replaceWeapon(index, item!);
-
-        if (item!.itemType===ItemType.Gun) {
-           (this.inventory.getWeapon(index)! as GunItem).ammo = item!.capacity;
+            this.dirtyUI()
+            this.setDirty()
+            this.inventory.replaceWeapon(index, item);
         }
 
-        this.dirtyUI()
-        this.setDirty()
     }
 
     override damage(params: DamageParams,headshot=1): void {
@@ -2130,8 +2155,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             this.killedBy = source;
             if (source !== this && (!this.game.teamMode || source.teamID !== this.teamID)) {source.kills++;source.score+=this.game.gamemode.score.kill};
 
-            if(this.game.gamemode.weaponSwap?.killswap){
-                this.switchWeapon(params as (DamageParams))
+            if(this.game.gamemode.weaponSwap?.killswap||source.hasPerk(PerkIds.AppleArt)){
+                source.switchWeapon(params as (DamageParams))
             }
             if(source.hasPerk(PerkIds.Takedown)){
                 const def=Perks.fromString(PerkIds.Takedown)

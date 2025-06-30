@@ -2,7 +2,6 @@ import { GasState, Layer } from "@common/constants"
 import { Vector } from "@common/utils/vector"
 import { DefaultGasStages, GasStage } from "./gasStages"
 import { type PluginDefinition } from "../pluginManager"
-import { IslandDef, type MapDefinition, type Maps } from "./maps"
 import { mergeDeep,cloneDeep } from "@common/utils/misc"
 import { PerkIds } from "@common/definitions/perks"
 import { RemoveLootAfterTimePlugin } from "../defaultPlugins/removeLootAfterTime"
@@ -10,8 +9,9 @@ import { Airstrike, Airstrikes } from "@common/definitions/guns"
 import { type Player } from "../objects/player"
 import { GiveRoleAfterDownsArgs, GiveRoleAfterDownsPlugin, GiveRoleAfterStartArgs, GiveRoleAfterStartPlugin, StartWithRolePlugin } from "../defaultPlugins/rolesPlugins"
 import { ReloadGamemodePlugin } from "../defaultPlugins/reloadGamemodePlugin"
-import { LootTable } from "./lootTables"
 import { NullString } from "@common/utils/objectDefinitions"
+import { IslandDef, Maps } from "@common/definitions/maps/maps"
+import { LootTable } from "@common/definitions/maps/lootTables"
 export const enum GasMode {
     Staged,
     Debug,
@@ -206,9 +206,66 @@ const DefaultRoles:Record<string,Gamerole>={
             "tablets":1,
             "2x_scope":1,
             "4x_scope":1,
+            "8x_scope":1,
+            "15x_scope":1,
+            "20x_scope":1,
         },
         promotion_sound:"promotion_sniper",
         role_badge:"bdg_sniper"
+    },
+    red_apple_master:{
+        name:"red_apple_master",
+        nameColor:0x800000,
+        dropable:{
+            helmet:false,
+            perks:false,
+            skin:false,
+        },
+        equipments:{
+            skin:"shiny_sky",
+            vest:"tactical_vest",
+            backpack:"tactical_pack",
+            helmet:"apple_master_helmet",
+        },
+        items:{
+            "9mm":150,
+            "762mm":100,
+            "gauze":7,
+            "medikit":2,
+            "cola":4,
+            "tablets":1,
+            "2x_scope":1,
+            "4x_scope":1,
+        },
+        promotion_sound:"promotion_apple_master",
+        role_badge:"bdg_apple_master"
+    },
+    red_demo_man:{
+        name:"red_demo_man",
+        nameColor:0x800000,
+        dropable:{
+            helmet:false,
+            perks:false,
+            skin:false,
+        },
+        equipments:{
+            skin:"shiny_anonymous",
+            vest:"tactical_vest",
+            backpack:"tactical_pack",
+            helmet:"demo_man_helmet",
+        },
+        items:{
+            "9mm":150,
+            "762mm":100,
+            "gauze":7,
+            "medikit":2,
+            "cola":4,
+            "tablets":1,
+            "2x_scope":1,
+            "4x_scope":1,
+        },
+        promotion_sound:"promotion_demo_man",
+        role_badge:"bdg_demo_man"
     },
     red_medic:{
         name:"red_medic",
@@ -340,6 +397,24 @@ DefaultRoles["blue_sniper"]=mergeDeep(cloneDeep(DefaultRoles["red_sniper"]),{
     },
     promotion_sound:""
 } as Partial<Gamerole>)
+//Blue Apple Guy
+DefaultRoles["blue_apple_master"]=mergeDeep(cloneDeep(DefaultRoles["red_apple_master"]),{
+    name:"blue_apple_master",
+    nameColor:0x000080,
+    equipments:{
+        skin:"shiny_nebula",
+    },
+    promotion_sound:""
+} as Partial<Gamerole>)
+//Blue Demo Guy
+DefaultRoles["blue_demo_man"]=mergeDeep(cloneDeep(DefaultRoles["red_demo_man"]),{
+    name:"blue_demo_man",
+    nameColor:0x000080,
+    equipments:{
+        skin:"shiny_nebula",
+    },
+    promotion_sound:""
+} as Partial<Gamerole>)
 //Blue Medic
 DefaultRoles["blue_medic"]=mergeDeep(cloneDeep(DefaultRoles["red_medic"]),{
     name:"blue_medic",
@@ -441,7 +516,7 @@ export interface Gamemode{
     readonly plugins:Array<PluginDefinition>
     readonly joinTime:number
     readonly maxPlayersPerGame:number
-    readonly map?:GamemodeMap
+    readonly map?:GamemodeMap|string
     readonly group:boolean
     readonly start_after:number
     readonly defaultGroup:number
@@ -552,7 +627,8 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
     memorys:{
         roles:{
             enabled:true,
-        }
+        },
+        map:"strange_island"
     },
     deathmatch:{
         adrenalineLoss:0.0001,
@@ -786,7 +862,6 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                     { item: PerkIds.Flechettes, weight: 1 },
                     { item: PerkIds.SecondWind, weight: 1 },
                     { item: PerkIds.FieldMedic, weight: 1 },
-                    { item: PerkIds.SabotRounds, weight: 1 },
                     { item: PerkIds.AdvancedAthletics, weight: 1 },
                 ]
             },
@@ -984,6 +1059,35 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                     }),
                 }satisfies GiveRoleAfterStartArgs
             },
+            {
+                construct:GiveRoleAfterStartPlugin,
+                params:{
+                    afterTime:20,
+                    group:{
+                        group:0,
+                        needGroup:true,
+                    },
+                    count:1,
+                    role:mergeDeep(DefaultRoles["blue_apple_master"],{
+                        promotion_sound:"promotion_apple_master"
+                    }),
+                }satisfies GiveRoleAfterStartArgs
+            },
+            {
+                construct:GiveRoleAfterStartPlugin,
+                params:{
+                    afterTime:20,
+                    group:{
+                        group:0,
+                        needGroup:true,
+                    },
+                    count:1,
+                    role:mergeDeep(DefaultRoles["blue_demo_man"],{
+                        promotion_sound:"promotion_demo_man"
+                    }),
+                }satisfies GiveRoleAfterStartArgs
+            },
+
             /*Not Cannon Just By Gameplay
             {
                 construct:GiveRoleAfterDownsPlugin,
@@ -1299,6 +1403,34 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                     role:DefaultRoles["red_sniper"],
                 }satisfies GiveRoleAfterStartArgs
             },
+            //Red Apple Master
+            {
+                construct:GiveRoleAfterStartPlugin,
+                params:{
+                    afterTime:75,
+                    group:{
+                        group:0,
+                        needGroup:true,
+                        canDowned:true,
+                    },
+                    count:1,
+                    role:DefaultRoles["red_apple_master"],
+                }satisfies GiveRoleAfterStartArgs
+            },
+            //Red Demo Man
+            {
+                construct:GiveRoleAfterStartPlugin,
+                params:{
+                    afterTime:80,
+                    group:{
+                        group:0,
+                        needGroup:true,
+                        canDowned:true,
+                    },
+                    count:1,
+                    role:DefaultRoles["red_demo_man"],
+                }satisfies GiveRoleAfterStartArgs
+            },
             //Red Lastman
             {
                 construct:GiveRoleAfterDownsPlugin,
@@ -1377,6 +1509,34 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
                     },
                     count:1,
                     role:DefaultRoles["blue_sniper"],
+                }satisfies GiveRoleAfterStartArgs
+            },
+            //Blue Apple Master
+            {
+                construct:GiveRoleAfterStartPlugin,
+                params:{
+                    afterTime:75,
+                    group:{
+                        group:1,
+                        needGroup:true,
+                        canDowned:true,
+                    },
+                    count:1,
+                    role:DefaultRoles["blue_apple_master"],
+                }satisfies GiveRoleAfterStartArgs
+            },
+            //Blue Demo Man
+            {
+                construct:GiveRoleAfterStartPlugin,
+                params:{
+                    afterTime:80,
+                    group:{
+                        group:1,
+                        needGroup:true,
+                        canDowned:true,
+                    },
+                    count:1,
+                    role:DefaultRoles["blue_demo_man"],
                 }satisfies GiveRoleAfterStartArgs
             },
             //Blue Lastman

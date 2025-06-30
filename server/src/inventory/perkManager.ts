@@ -25,6 +25,7 @@ export class ServerPerkManager extends PerkManager {
      * @param perk The perk to add
      * @returns Whether the perk was already present (and thus nothing has changed)
      */
+    
     override addPerk(perk: PerkDefinition,fromRole=false): boolean {
         if(!fromRole){
             for(const p of this.asList()){

@@ -32,6 +32,10 @@ export interface BasicPerk extends ItemDefinition {
     readonly adrenDecay?:number
 
     readonly extends?:PerkIds[]
+    readonly damageMod?:number
+    readonly explosionsMod?:number
+
+    readonly generate?:Record<string,{count:number,time:number}>
 
     readonly to_infinity?:Record<string,boolean>
 }
@@ -63,9 +67,10 @@ export const enum PerkIds {
     //
     SecondWind = "second_wind",
     Flechettes = "flechettes",
-    SabotRounds = "sabot_rounds",
+    GreatAmmoBox = "great_ammo_box",
     ExtendedMags = "extended_mags",
     DemoExpert = "demo_expert",
+    NadeFabricator = "nade_fabricator",
     AdvancedAthletics = "advanced_athletics",
     Toploaded = "toploaded",
     InfiniteAmmo = "infinite_ammo",
@@ -88,7 +93,8 @@ export const enum PerkIds {
 
     HealingCharges="healing_charges",
 
-    GoldenApple="golden_apple"
+    GoldenApple="golden_apple",
+    AppleArt="apple_art"
 }
 
 export const enum PerkCategories {
@@ -119,16 +125,12 @@ const perks = [
         damageMod: 0.75
     },
     {
-        idString: PerkIds.SabotRounds,
-        name: "Sabot Rounds",
-        description: "Large increase to range, velocity, and accuracy, but at the cost of lower damage.",
+        idString: PerkIds.GreatAmmoBox,
+        name: "Great Ammo Box",
+        description: "Increse Bullet Damage By 10%",
         category: PerkCategories.Normal,
 
-        rangeMod: 1.5,
-        speedMod: 1.5,
-        spreadMod: 0.6,
-        damageMod: 0.9,
-        tracerLengthMod: 1.2
+        damageMod: 1.1
     },
     {
         idString: PerkIds.ExtendedMags,
@@ -136,17 +138,38 @@ const perks = [
         description: "Most weapons have increased bullet capacity.",
         category: PerkCategories.Normal
 
-        // define for each weapon individually
     },
     {
         idString: PerkIds.DemoExpert,
         name: "Demo Expert",
-        description: "Grenades have a greater throwing range and visible detonation point.",
+        description: "Grenades have a greater throwing range and visible detonation point. More Defence With Explosions And Frags.",
         category: PerkCategories.Normal,
 
-        updateInterval: 10e3, // milliseconds
+        updateInterval: 10e3,
         rangeMod: 2,
-        restoreAmount: 0.25 // times max capacity
+        restoreAmount: 0.25, // times max capacity
+        explosionMod: 0.1
+    },
+    {
+        idString: PerkIds.NadeFabricator,
+        name: "Nade Fabricado",
+        description: "Fabricate Grenades",
+        category: PerkCategories.Normal,
+
+        generate:{
+            "frag_grenade":{
+                count:1,
+                time:7000,
+            },
+            "mirv_grenade":{
+                count:1,
+                time:25000,
+            },
+            "smoke_grenade":{
+                count:1,
+                time:25000,
+            }
+        }
     },
     {
         idString: PerkIds.AdvancedAthletics,
@@ -200,7 +223,7 @@ const perks = [
         description: "Weapons do more damage and reload faster at close range.",
         category: PerkCategories.Normal,
 
-        cutoff: 50,
+        cutoff:0.5,
         reloadMod: 1.3, // divide
         damageMod: 1.2 // multiplicative
     },
@@ -297,6 +320,13 @@ const perks = [
         category: PerkCategories.Normal,
         type: PerkQualities.Positive,
         extends:[PerkIds.InfiniteAmmo]
+    },
+    {
+        idString: PerkIds.AppleArt,
+        name: "Apple Art",
+        description: "You Have Apple Power",
+        category: PerkCategories.Normal,
+        type: PerkQualities.Positive,
     },
 ] as const satisfies ReadonlyArray<
     GetMissing<

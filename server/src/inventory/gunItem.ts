@@ -197,16 +197,6 @@ export class GunItem extends InventoryItem<GunDefinition> {
         }
         for (const perk of owner.perks) {
             switch (perk.idString) {
-                case PerkIds.SabotRounds: {
-                    modifiers.range *= perk.rangeMod;
-                    modifiers.speed *= perk.speedMod;
-                    modifiers.damage *= perk.damageMod;
-                    modifyForDamageMod(perk.damageMod);
-                    modifiers.tracer.length *= perk.tracerLengthMod;
-                    spread *= perk.spreadMod;
-                    modifiersModified = true;
-                    break;
-                }
                 case PerkIds.CloseQuartersCombat: {
                     const sqCutoff = perk.cutoff ** 2;
                     if (
@@ -244,6 +234,12 @@ export class GunItem extends InventoryItem<GunDefinition> {
                             break;
                         }
                     }
+                    break;
+                }
+                
+                case PerkIds.GreatAmmoBox: {
+                    modifyForDamageMod(perk.damageMod!);
+                    modifiersModified=true
                     break;
                 }
             }
