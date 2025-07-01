@@ -5295,7 +5295,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     new RectangleHitbox(Vec.create(4.2,2),Vec.create(47.5,5.3)),
                     new RectangleHitbox(Vec.create(-47.5,2),Vec.create(-5.1,5.3)),
                     new RectangleHitbox(Vec.create(17,-46.45),Vec.create(47.5,-43)),
-                    new RectangleHitbox(Vec.create(-47.5,-46.45),Vec.create(7.7,-43)),
+                    new RectangleHitbox(Vec.create(-47.5,-46.45),Vec.create(7.8,-43)),
                     new RectangleHitbox(Vec.create(-47.5,-24),Vec.create(-29.7,-21.4)),
                     new RectangleHitbox(Vec.create(-20,-24),Vec.create(-17.5,-21.4)),
                     new RectangleHitbox(Vec.create(43.55,-46.45),Vec.create(47.5,-10.8)),
@@ -5316,15 +5316,11 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 floorImages: [
                     {
                         key: "murders_house_floor1",
-                        position: Vec.create(0, 0),
+                        position: Vec.create(0.2, 2.25),
                         scale:Vec.create(1,1),
                     },
                 ],
-                ceilingImages: [/*{
-                    key: "red_house_ceiling",
-                    position: Vec.create(0, -0.25),
-                    scale: Vec.create(2, 2)
-                }*/],
+                ceilingImages: [],
                 floors: [
                     {
                         type: FloorNames.Wood,
@@ -5341,19 +5337,17 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     {idString:"door",rotation:3,position:Vec.create(-16,37.5)},
                     {idString:"door",rotation:2,position:Vec.create(-0.9,3.6)},
                     {idString:"door",rotation:3,position:Vec.create(-16,-8)},
-                    {idString:"door",rotation:0,position:Vec.create(-24.3,-23)},
+                    {idString:"door",rotation:0,position:Vec.create(-24.3,-23),locked:true},
                     //Windows
                     {idString:"window",rotation:0,position:Vec.create(45.5,29.3)},
                     {idString:"window",rotation:0,position:Vec.create(-45.7,14.5)},
                     {idString:"window",rotation:0,position:Vec.create(45.5,-6)},
-                    {idString:"window",rotation:1,position:Vec.create(12,-44.8)},
+                    {idString:"window",rotation:1,position:Vec.create(12.3,-44.8)},
                     //Bathroom
                     {idString:"sink2",rotation:1,position:Vec.create(-41,-16)},
                     {idString:randomToilet,rotation:1,position:Vec.create(-40,-8)},
                     {idString:"trash_can",position:Vec.create(-40.5,-2)},
                     {idString:"bookshelf",rotation:0,position:Vec.create(-25,-19.5)},
-                    //Bathroom Secret Room
-                    { idString: "barn_stair", position: Vec.create(-22,-37.5), rotation: 3, layer: 1 },
                     //Bedroom
                     { idString: "bed", position: Vec.create(37.7,-34.8), rotation: 0 },
                     { idString: "small_drawer", position: Vec.create(28.5,-38.5), rotation: 0 },
@@ -5381,6 +5375,74 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                     { idString: "potted_plant", position: Vec.create(-21.5,9.7) },
                     { idString: "water_cooler", position: Vec.create(-20.8,25), rotation: 3 },
                 ],
+                subBuildings:[
+                    { idString: "murders_bunker", position: Vec.create(0,0),orientation:0, layer: 1 },
+                    { idString: "iron_stair", position: Vec.create(-36.5,22),orientation:3, layer: 0 },
+                ],
+                lootSpawners: [
+
+                ]
+            },
+            {
+                idString: "murders_house_floor2",
+                name: "Murders House Floor 2",
+                material: "stone",
+                particle: "wall_particle",
+                hitbox: new GroupHitbox(
+                    new RectangleHitbox(Vec.create(-47.5,-46.45),Vec.create(47.5,-43)),
+                    new RectangleHitbox(Vec.create(-47.5,-46.45),Vec.create(-44,46.45)),
+                    new RectangleHitbox(Vec.create(-47.5,42.5),Vec.create(47.5,46.45)),
+                    new RectangleHitbox(Vec.create(43.5,-46.45),Vec.create(47.5,46.45)),
+
+                    new RectangleHitbox(Vec.create(16.5,-46.45),Vec.create(20.5,12)),
+                    new RectangleHitbox(Vec.create(-16.5,8),Vec.create(20.5,12)),
+                    new RectangleHitbox(Vec.create(-47.5,8),Vec.create(-26,12)),
+                    new RectangleHitbox(Vec.create(-13.2,8),Vec.create(-9,18)),
+                    new RectangleHitbox(Vec.create(-13.2,28),Vec.create(-9,46.45)),
+                ),
+                spawnHitbox: RectangleHitbox.fromRect(130, 130),
+                ceilingHitbox: RectangleHitbox.fromRect(90, 90),
+                ceilingHiddenAlpha:0.45,
+                floorImages: [
+                    {
+                        key: "murders_house_floor2",
+                        position: Vec.create(0, 0),
+                        scale:Vec.create(1,1),
+                    },
+                ],
+                ceilingImages: [{
+                    key:"secret_room_ceiling_1",
+                    position:Vec.create(0,0),
+                    scale:Vec.create(16,31)
+                }],
+                floors: [
+                    {
+                        type: FloorNames.Stone,
+                        hitbox: new RectangleHitbox(Vec.create(-43.55,-44), Vec.create(43.55, 44))
+                    },
+                ],
+                puzzle:{
+                    triggerOnSolve: "metal_door",
+                    delay: 1000,
+                    unlockOnly: true
+                },
+                obstacles: [
+                    { idString: "headquarters_security_desk", position: Vec.create(-28.6, 40), rotation: 0, puzzlePiece: true },
+                    { idString: "metal_door", position: Vec.create(-11, 23), rotation: 1, locked: true },
+                    { idString: "door", rotation: 0, position: Vec.create(-21.5, 10), locked:true },
+
+                    { idString: "acid_barrel", position: Vec.create(5, 3) },
+                    { idString: "acid_barrel", position: Vec.create(0, -3) },
+                    { idString: "acid_barrel", position: Vec.create(10, -3) },
+
+                    { idString: "briefcase", position: Vec.create(10, -37),rotation:2 },
+                    { idString: "gun_case", position: Vec.create(10, -30),rotation:2 },
+                    { idString: "gun_case", position: Vec.create(10, -24),rotation:2 },
+
+                    { idString: "bonesaw_small_table", position: Vec.create(39, -7),rotation:0 },
+                    { idString: "plastic_bathtub", position: Vec.create(32, -37),rotation:0 },
+                    
+                ],
                 lootSpawners: [
 
                 ]
@@ -5392,12 +5454,17 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 particle: "wall_particle",
                 noCollisions:true,
                 spawnHitbox: RectangleHitbox.fromRect(80, 80),
-                ceilingHitbox: RectangleHitbox.fromRect(60, 56),
+                ceilingHitbox: RectangleHitbox.fromRect(75, 70),
                 floorImages: [
                 ],
-                ceilingImages: [],
+                ceilingImages: [{
+                    key: "murders_house_ceiling",
+                    position: Vec.create(0, 0),
+                    scale: Vec.create(1.72, 1.69),
+                }],
                 subBuildings:[
-                    {idString:"murders_house_floor1",layer:0,position:Vec.create(0,0),orientation:0}
+                    {idString:"murders_house_floor1",layer:0,position:Vec.create(0,0),orientation:0},
+                    {idString:"murders_house_floor2",layer:2,position:Vec.create(0,0),orientation:0}
                 ],
                 floors: [
                 ],
@@ -5408,6 +5475,37 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
 
                 ]
             },
+            {
+                idString:"iron_stair",
+                name:"Iron Stair",
+                noCollisions:true,
+                spawnHitbox:RectangleHitbox.fromRect(30,30,Vec.create(0,0)),
+                obstacles:[
+                    { idString: "barn_stair", position: Vec.create(0,0), rotation: 0,layer:1 },
+                    { idString: "barn_stair_walls", position: Vec.create(0, 0), rotation: 0 },
+                    { idString: "barn_stair_walls_top", position: Vec.create(0, 0), rotation: 0,layer:2 },
+                ]
+            },
+            {
+                idString:"murders_bunker",
+                name:"murders_Bunker",
+                noCollisions:true,
+                spawnHitbox:RectangleHitbox.fromRect(30,30,Vec.create(0,0)),
+                obstacles:[
+                ],
+                ceilingHitbox:RectangleHitbox.fromRect(20,20,Vec.create(-31, -33.9)),
+                ceilingHiddenAlpha:0.45,
+                subBuildings:[
+                ],
+                visibleFromLayers:Layers.Adjacent,
+                ceilingImages: [{
+                    key: "secret_room_ceiling_1",
+                    position: Vec.create(-31, -33.9),
+                    scale: Vec.create(4.2, 9),
+                    
+                    rotation:Math.PI/2
+                }],
+            }
         ] satisfies Missing[];
     }
 );

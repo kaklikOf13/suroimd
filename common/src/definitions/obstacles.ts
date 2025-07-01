@@ -297,6 +297,8 @@ export const TintedParticles: Record<string, { readonly base: string, readonly t
     metal_particle:                { base: "metal_particle_1", tint: 0x5f5f5f },
     metal_column_particle:         { base: "metal_particle_1", tint: 0x8f8f8f },
     super_barrel_particle:         { base: "metal_particle_1", tint: 0xce2b29 },
+    acid_barrel_particle:          { base: "metal_particle_1", tint: 0x407639 },
+    blue_toilet_particle:          { base: "toilet_particle",  tint: 0x4f6cac },
     propane_tank_particle:         { base: "metal_particle_1", tint: 0xb08b3f },
     dumpster_particle:             { base: "metal_particle_1", tint: 0x3c7033 },
     washing_machine_particle:      { base: "metal_particle_1", tint: 0xcccccc },
@@ -1547,7 +1549,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     scale: {
                         spawnMin: 1,
                         spawnMax: 1,
-                        destroy: 0.8
+                        destroy: 0.7
                     },
                     spawnMode: MapObjectSpawnMode.GrassAndSand,
 
@@ -1569,7 +1571,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     scale: {
                         spawnMin: 1,
                         spawnMax: 1,
-                        destroy: 0.8
+                        destroy: 0.7
                     },
                     spawnMode: MapObjectSpawnMode.GrassAndSand,
                     hitbox: new CircleHitbox(3.75),
@@ -1578,6 +1580,22 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     reflectBullets: true
                 }, 3
             ]),
+            {
+                idString: "acid_barrel",
+                name: "Acid Barrel",
+                material: "metal_light",
+                health: 240,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.7
+                },
+                spawnMode: MapObjectSpawnMode.GrassAndSand,
+                hitbox: new CircleHitbox(3.75),
+                rotationMode: RotationMode.Full,
+                explosion: "acid_barrel_explosion",
+                reflectBullets: true
+            },
             {
                 idString: "propane_tank",
                 name: "Propane Tank",
@@ -2648,6 +2666,24 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hideOnMap: true
             },
             {
+                idString: "plastic_bathtub",
+                name: "Plastic Bathtub",
+                material: "appliance",
+                health: 130,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.8
+                },
+                hitbox: RectangleHitbox.fromRect(17.72, 9.29),
+                allowFlyover: FlyoverPref.Sometimes,
+                rotationMode: RotationMode.Limited,
+                frames: {
+                    particle: "blue_toilet_particle"
+                },
+                hideOnMap: true
+            },
+            {
                 idString: "small_drawer",
                 name: "Small Drawer",
                 material: "wood",
@@ -2942,6 +2978,27 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 zIndex: ZIndexes.ObstaclesLayer3,
                 noCollisions: true,
                 noResidue: true
+            },
+            {
+                idString: "bonesaw_small_table",
+                name: "Bonesaw Small Table",
+                material: "wood",
+                health: 100,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.9
+                },
+                hideOnMap: true,
+                hitbox: RectangleHitbox.fromRect(8.3, 12.3),
+                rotationMode: RotationMode.Limited,
+                frames: {
+                    particle: "furniture_particle",
+                },
+                zIndex: ZIndexes.ObstaclesLayer3,
+                noCollisions: true,
+                noResidue: true,
+                hasLoot:true,
             },
             {
                 idString: "large_table",
@@ -4246,14 +4303,17 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 material: "metal_heavy",
                 health: 1000,
                 indestructible: true,
+                invisible:true,
                 role: ObstacleSpecialRoles.Stair,
+                visibleFromLayers:Layers.Adjacent,
                 activeEdges: {
                     high: 0,
                     low: 2
                 },
                 hitbox: RectangleHitbox.fromRect(6.5, 4),
                 frames: {
-                    particle: "metal_particle"
+                    particle: "metal_particle",
+                    base:"barn_stair_walls"
                 },
                 rotationMode: RotationMode.Limited,
                 zIndex: ZIndexes.BuildingsFloor
@@ -4427,12 +4487,32 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 hideOnMap: true,
                 indestructible: true,
                 collideWithLayers: Layers.Adjacent,
+                visibleFromLayers:Layers.All,
                 reflectBullets: true,
                 hitbox: new GroupHitbox(
-                    RectangleHitbox.fromRect(1, 9, Vec.create(-45, 0.5)),
-                    RectangleHitbox.fromRect(1, 9, Vec.create(-52.8, 0.5)),
-                    RectangleHitbox.fromRect(9, 1, Vec.create(9.1, -31.1)),
-                    RectangleHitbox.fromRect(9, 1, Vec.create(9.1, -39))
+                    RectangleHitbox.fromRect(1, 9, Vec.create(-4, 0)),
+                    RectangleHitbox.fromRect(1, 9, Vec.create(4, 0))
+                ),
+                rotationMode: RotationMode.Limited,
+                allowFlyover: FlyoverPref.Always,
+                frames: {
+                    particle: "metal_particle",
+                    base:"barn_stair_walls"
+                }
+            },
+            {
+                idString: "barn_stair_walls_top",
+                name: "Barn Stair Walls",
+                material: "metal_heavy",
+                health: 1000,
+                hideOnMap: true,
+                indestructible: true,
+                collideWithLayers: Layers.Adjacent,
+                reflectBullets: true,
+                hitbox: new GroupHitbox(
+                    RectangleHitbox.fromRect(9, 1, Vec.create(0, 5)),
+                    RectangleHitbox.fromRect(1, 9, Vec.create(-4, 0)),
+                    RectangleHitbox.fromRect(1, 9, Vec.create(4, 0))
                 ),
                 rotationMode: RotationMode.Limited,
                 allowFlyover: FlyoverPref.Always,

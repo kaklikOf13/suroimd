@@ -68,6 +68,32 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
                 rangeVariance: 1,
                 shrapnel: true
             }
+        },{
+            name: "Acid Barrel",
+            damage: 90,
+            obstacleMultiplier: 1,
+            radius: {
+                min: 8,
+                max: 25
+            },
+            cameraShake: {
+                duration: 250,
+                intensity: 50
+            },
+            animation: {
+                duration: 5000,
+                tint: 0x407639,
+                scale: 3
+            },
+            shrapnelCount: 10,
+            ballistics: {
+                damage: 2,
+                obstacleMultiplier: 1,
+                speed: 0.08,
+                range: 20,
+                rangeVariance: 1,
+                shrapnel: true
+            }
         },
         {
             name: "Stove",

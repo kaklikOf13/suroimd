@@ -62,6 +62,6 @@ export const map_gen_ret:Partial<Record<MapName,map_gen_callback>>={
     },
     
     "singleObstacle":(map, [obstacle])=>{
-        map.generateObstacle(obstacle, Vec.create(1024 / 2, 1024 / 2), { layer: 0, rotation: 0 });
+        map.generateObstacle(obstacle, Vec.create(512 / 2, 512 / 2), { layer: 0, rotation: 0 });
     }
 }

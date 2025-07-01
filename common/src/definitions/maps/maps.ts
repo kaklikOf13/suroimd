@@ -390,16 +390,17 @@ export const maps={
                             construction_site: 1,
                             mobile_home: 16,
                             porta_potty: 23,
-                            /*container_3: 3,
+                            murders_house:1,
+                            container_3: 3,
                             container_4: 3,
                             container_5: 3,
                             container_6: 3,
                             container_7: 3,
                             container_8: 3,
                             container_9: 3,
-                            container_10: 3*/
+                            container_10: 3
                         },
-                        majorBuildings: ["armory", "refinery", "port_complex", "headquarters"],
+                        majorBuildings: ["armory", "refinery", "port_complex", "headquarters","murders_house"],
                         quadBuildingLimit: {
                             red_house: 1,
                             red_house_v2: 1,
@@ -1489,8 +1490,8 @@ export const maps={
         ]
     },
     singleObstacle: {
-        width: 256,
-        height: 256,
+        width: 512,
+        height: 512,
         beachSize: 8,
         oceanSize: 8,
         atlas:[Atlases.shared,Atlases.desert,Atlases.normal,Atlases.strange_lands],
