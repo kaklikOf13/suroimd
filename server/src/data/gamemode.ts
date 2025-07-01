@@ -1556,7 +1556,6 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
         }
     },
     debug:{
-        map:"debug",
         gas:{mode:GasMode.Disabled},
         weaponsSelect:true,
         adrenalineLoss:0,

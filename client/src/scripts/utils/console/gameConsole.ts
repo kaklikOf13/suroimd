@@ -406,6 +406,7 @@ export class GameConsole {
         return varCollection;
     })();
 
+    
     /**
      * Returns the value of a built-in console variable. Sugar method
      * @param name The name of the console variable whose value is to be retrieved

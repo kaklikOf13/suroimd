@@ -8,7 +8,7 @@ import { FloorNames, FloorTypes, River, Terrain, type FloorBase } from "@common/
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
 import { Color, Container, Graphics, RenderTexture, Sprite, Text, isMobile, type ColorSource, type Texture } from "pixi.js";
-import { getTranslatedString } from "../../translations";
+import { getTranslatedString } from "../utils/translations/translations";
 import { type Game } from "../game";
 import { COLORS, DIFF_LAYER_HITBOX_OPACITY, FOOTSTEP_HITBOX_LAYER, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
 import { SuroiSprite, drawGroundGraphics, drawHitbox, toPixiCoords } from "../utils/pixi";

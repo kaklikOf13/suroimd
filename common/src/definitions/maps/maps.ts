@@ -1458,6 +1458,58 @@ export const maps={
             { name: "Can read props of null", position: Vec.create(0.4, 0.5) }
         ]
     },
+    singleBuilding: {
+        width: 1024,
+        height: 1024,
+        beachSize: 32,
+        oceanSize: 64,
+        atlas:[Atlases.shared,Atlases.desert,Atlases.normal,Atlases.strange_lands],
+        islands:[
+            {
+                spawn:IslandSpawns.Center,
+                major:true,
+                chooses:[
+                    {
+                        beach:FloorNames.Sand,
+                        beachSize:20,
+                        grass:FloorNames.Grass,
+                        interiorSize:800,
+
+                    }
+                ]
+            },
+        ],
+        places: [
+            { name: "[object Objecto]", position: Vec.create(0.8, 0.7) },
+            { name: "Kevin Panic", position: Vec.create(0.6, 0.8) },
+            { name: "UnullPointerException", position: Vec.create(0.7, 0.3) },
+            { name: "defined Forest", position: Vec.create(0.3, 0.2) },
+            { name: "seg. have\n(core dumped)", position: Vec.create(0.3, 0.7) },
+            { name: "Can read props of null", position: Vec.create(0.4, 0.5) }
+        ]
+    },
+    singleObstacle: {
+        width: 256,
+        height: 256,
+        beachSize: 8,
+        oceanSize: 8,
+        atlas:[Atlases.shared,Atlases.desert,Atlases.normal,Atlases.strange_lands],
+        islands:[
+            {
+                spawn:IslandSpawns.Center,
+                major:true,
+                chooses:[
+                    {
+                        beach:FloorNames.Sand,
+                        beachSize:20,
+                        grass:FloorNames.Grass,
+                        interiorSize:800,
+
+                    }
+                ]
+            },
+        ]
+    },
 } satisfies Record<string,MapDefinition>;
 
 export type MapName = keyof typeof maps;

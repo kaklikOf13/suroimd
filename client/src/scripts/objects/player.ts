@@ -23,7 +23,7 @@ import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
 import { DashLine } from "pixi-dashed-line";
 import { Container, Graphics, Text, TilingSprite } from "pixi.js";
-import { getTranslatedString } from "../../translations";
+import { getTranslatedString } from "../utils/translations/translations";
 import { type TranslationKeys } from "../../typings/translations";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";

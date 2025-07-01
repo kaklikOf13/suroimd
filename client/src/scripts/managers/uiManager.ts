@@ -17,7 +17,7 @@ import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
 import { Color } from "pixi.js";
-import { getTranslatedString, NO_SPACE_LANGUAGES } from "../../translations";
+import { getTranslatedString, NO_SPACE_LANGUAGES } from "../utils/translations/translations";
 import { type TranslationKeys } from "../../typings/translations";
 import { type Game } from "../game";
 import { type GameObject } from "../objects/gameObject";

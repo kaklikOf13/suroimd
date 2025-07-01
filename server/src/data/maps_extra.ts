@@ -53,4 +53,15 @@ export const map_gen_ret:Partial<Record<MapName,map_gen_callback>>={
             }
         }
     },
+    "singleBuilding":(map, [building])=>{
+        // map.game.grid.addObject(new Decal(map.game, "lodge_decal", Vec.create(this.width / 2, this.height / 2), 0));
+        /* for (let i = 0; i < 10; i++) {
+            map.generateBuilding(`container_${i + 1}`, Vec.create((this.width / 2) + 15 * i, this.height / 2 - 15), 0);
+        } */
+        map.generateBuilding(building, Vec.create(1024 / 2, 1024 / 2), 0);
+    },
+    
+    "singleObstacle":(map, [obstacle])=>{
+        map.generateObstacle(obstacle, Vec.create(1024 / 2, 1024 / 2), { layer: 0, rotation: 0 });
+    }
 }

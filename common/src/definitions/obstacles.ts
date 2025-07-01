@@ -4246,7 +4246,6 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 material: "metal_heavy",
                 health: 1000,
                 indestructible: true,
-                invisible: true,
                 role: ObstacleSpecialRoles.Stair,
                 activeEdges: {
                     high: 0,

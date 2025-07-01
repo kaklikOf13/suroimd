@@ -9,7 +9,7 @@ import { Vec } from "@common/utils/vector";
 import $ from "jquery";
 import nipplejs, { type JoystickOutputData } from "nipplejs";
 import { isMobile } from "pixi.js";
-import { getTranslatedString } from "../../translations";
+import { getTranslatedString } from "../utils/translations/translations";
 import { type TranslationKeys } from "../../typings/translations";
 import { type Game } from "../game";
 import { defaultBinds } from "../utils/console/defaultClientCVars";

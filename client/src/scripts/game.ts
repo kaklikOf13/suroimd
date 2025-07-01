@@ -28,7 +28,7 @@ import { sound, type Sound } from "@pixi/sound";
 import $ from "jquery";
 import { Application, Color } from "pixi.js";
 import "pixi.js/prepare";
-import { getTranslatedString, initTranslation } from "../translations";
+import { getTranslatedString, initTranslation } from "./utils/translations/translations";
 import { type TranslationKeys } from "../typings/translations";
 import { InputManager } from "./managers/inputManager";
 import { GameSound, SoundManager } from "./managers/soundManager";

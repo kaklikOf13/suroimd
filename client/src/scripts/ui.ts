@@ -16,7 +16,7 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { sound } from "@pixi/sound";
 import $ from "jquery";
 import { Color, isMobile, isWebGPUSupported } from "pixi.js";
-import { TRANSLATIONS, getTranslatedString } from "../translations";
+import { TRANSLATIONS, getTranslatedString } from "./utils/translations/translations";
 import { Config, type ServerInfo } from "./config";
 import { type Game } from "./game";
 import { news } from "./news/newsPosts";
