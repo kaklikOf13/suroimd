@@ -223,6 +223,19 @@ export const Ammos = ObjectDefinitions.withDefault<AmmoDefinition>()(
             },
             ephemeral: true,
             rarity:ItemRarity.Legendary
-        }
+        },
+        {
+            idString: "coin",
+            name: "Coin",
+            maxStackSize: 90,
+            dropAmmout:80,
+            characteristicColor: {
+                hue: 48,
+                saturation: 100,
+                lightness: 75
+            },
+            defaultCasingFrame: "casing_9x19mm",
+            size:0.005
+        },
     ]
 );

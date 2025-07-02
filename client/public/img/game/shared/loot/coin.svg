@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="26.428558mm"
+   height="26.428558mm"
+   viewBox="0 0 26.428558 26.428558"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   sodipodi:docname="coin.svg"
+   inkscape:export-filename="inomeado.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.71891835"
+     inkscape:cx="106.40986"
+     inkscape:cy="458.32743"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Camada 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="matrix(0.2486434,0,0,0.2486434,-14.695699,-6.7347395)">
+    <g
+       id="g4">
+      <path
+         style="baseline-shift:baseline;display:inline;overflow:visible;opacity:1;vector-effect:none;fill:#ba9400;enable-background:accumulate;stop-color:#000000;stop-opacity:1"
+         d="M 112.249,31.305969 161.174,80.230691 112.249,129.15541 63.324556,80.230688 Z"
+         id="path2"
+         sodipodi:nodetypes="ccccc" />
+      <path
+         style="fill:#ddbd00;fill-opacity:1;stroke:none;stroke-width:5.969;stroke-dasharray:none;stroke-opacity:1"
+         d="m 112.249,35.527 v 93.28998 l 45.45421,-47.883485 z"
+         id="path1"
+         sodipodi:nodetypes="cccc" />
+      <path
+         style="baseline-shift:baseline;display:inline;overflow:visible;opacity:1;vector-effect:none;fill:#754c00;enable-background:accumulate;stop-color:#000000;stop-opacity:1"
+         d="M 112.25,27.085937 59.103516,80.230469 112.25,133.37695 165.39453,80.230469 Z m 0,8.441063 44.70312,44.703469 L 112.25,124.93555 67.544922,80.230469 Z"
+         id="path3"
+         sodipodi:nodetypes="cccccccccc" />
+    </g>
+    <path
+       style="baseline-shift:baseline;display:inline;overflow:visible;opacity:1;vector-effect:none;fill:#e6d600;fill-opacity:1;stroke-width:0.584389;enable-background:accumulate;stop-color:#000000;stop-opacity:1"
+       d="M 112.24886,51.64037 140.8401,80.231449 112.24886,108.82253 83.657951,80.231447 Z"
+       id="path4"
+       sodipodi:nodetypes="ccccc" />
+    <path
+       d="m 104.48536,85.867503 c 4.35855,0.281806 7.45838,0.422709 9.2995,0.422709 0.43209,0 0.77026,-0.122115 1.01449,-0.366346 0.26301,-0.263019 0.39451,-0.610575 0.39451,-1.04267 v -2.818027 h -5.32606 c -1.97263,0 -3.40983,-0.441492 -4.31158,-1.324476 -0.88299,-0.901768 -1.32448,-2.338961 -1.32448,-4.31158 v -0.563606 c 0,-1.97262 0.44149,-3.400421 1.32448,-4.283402 0.90175,-0.901771 2.33895,-1.352656 4.31158,-1.352656 h 0.5636 l -0.2818,-2.536225 h 4.22703 l -0.2818,2.536225 h 4.50885 v 3.945239 h -7.60866 c -1.12723,0 -1.69084,0.563606 -1.69084,1.690819 v 0.563606 c 0,1.127211 0.56361,1.690816 1.69084,1.690816 h 3.91703 c 1.84111,0 3.19377,0.432098 4.05797,1.296293 0.86419,0.864194 1.29629,2.216847 1.29629,4.05796 v 1.409014 c 0,1.841113 -0.4321,3.193767 -1.29629,4.057962 -0.84541,0.864195 -2.18867,1.296292 -4.02978,1.296292 h -0.78905 l 0.22542,2.536223 h -4.22704 l 0.28181,-2.677128 c -2.17929,-0.112715 -4.1613,-0.253615 -5.94605,-0.422701 z"
+       id="text5"
+       style="font-size:11.2889px;font-family:'Russo One';-inkscape-font-specification:'Russo One, Normal';fill:#ba9400;fill-opacity:1;stroke-width:0.660474"
+       aria-label="$"
+       sodipodi:nodetypes="cssscscsscsccccccsssssssscscccccc" />
+  </g>
+</svg>

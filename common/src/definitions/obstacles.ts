@@ -6,7 +6,7 @@ import { MapObjectSpawnMode, ObjectDefinitions, ObstacleSpecialRoles, type Objec
 import { Vec, type Vector } from "../utils/vector";
 import { type GunDefinition } from "./guns";
 import { type LootDefinition } from "./loots";
-import { type SyncedParticleSpawnerDefinition } from "./syncedParticles";
+import { MinMax, type SyncedParticleSpawnerDefinition } from "./syncedParticles";
 
 /*
 
@@ -148,6 +148,11 @@ type RawObstacleDefinition = ObjectDefinition & {
     readonly sound?: ({ readonly name: string } | { readonly names: string[] }) & {
         readonly maxRange?: number
         readonly falloff?: number
+    }
+    readonly sell?:{
+        readonly cost:number
+        readonly loot_table?:string
+        readonly item?:{readonly id:string,readonly count:number|MinMax<number>}
     }
 } & ObstacleRoleMixin & VariationMixin;
 
@@ -2180,19 +2185,28 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 idString: "vending_machine",
                 name: "Vending Machine",
                 material: "appliance",
-                health: 165,
+                health: 1000,
                 scale: {
                     spawnMin: 1,
                     spawnMax: 1,
                     destroy: 0.8
                 },
-                hasLoot: true,
+                indestructible:true,
                 hitbox: RectangleHitbox.fromRect(9.25, 6.45, Vec.create(0, -0.2)),
                 rotationMode: RotationMode.Limited,
                 allowFlyover: FlyoverPref.Never,
+                role:ObstacleSpecialRoles.Activatable,
                 frames: {
                     particle: "super_barrel_particle"
                 },
+                sell:{
+                    cost:80,
+                    item:{
+                        id:"cola",
+                        count:{min:1,max:2}
+                    }
+                },
+                variations:2,
                 reflectBullets: true
             },
             {
@@ -4761,7 +4775,24 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 frames: {
                     particle: "metal_particle"
                 }
-            }, */
+            }, */{
+                idString: "cola_machine",
+                name: "Cola Machine",
+                material: "metal_light",
+                health: 10000,
+                indestructible: true,
+                reflectBullets: true,
+                hitbox: RectangleHitbox.fromRect(9.1, 6.45, Vec.create(0, -0.5)),
+                spawnHitbox: RectangleHitbox.fromRect(10, 10),
+                rotationMode: RotationMode.None,
+                hideOnMap: true,
+                role: ObstacleSpecialRoles.Activatable,
+                zIndex: ZIndexes.ObstaclesLayer2,
+                noResidue: true,
+                frames: {
+                    particle: "metal_particle"
+                }
+            },
         ] satisfies readonly Missing[]).map(
             o => {
                 const obj = o as Mutable<ObstacleDefinition>;

@@ -375,5 +375,7 @@
   "role_apple_master_role":"Apple"
   "role_sniper_role":"Sniper"
   "role_assault_role":"Assault"
-  "role_demo_role":"Demo" 
+  "role_demo_role":"Demo"
+
+  "interact_vending_machine":"Buy A Cola"
 }

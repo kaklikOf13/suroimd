@@ -2316,6 +2316,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.teamWipe();
 
         this.dropAll()
+        this.game.addLoot(Ammos.fromString("coin" as never),this.position,this.layer,{count:30})
 
         // Disguise funnies
         if (this.activeDisguise !== undefined) {

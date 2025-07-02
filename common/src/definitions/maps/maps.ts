@@ -270,6 +270,7 @@ export const maps={
                             regular_crate: 150,
                             flint_crate: 12,
                             aegis_crate: 12,
+                            vending_machine:12,
                             survival_crate:3,
                             grenade_crate: 55,
                             rock: 430,

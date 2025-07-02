@@ -17,6 +17,9 @@ import { BaseGameObject, DamageParams, type GameObject } from "./gameObject";
 import { Player } from "./player";
 import { getLootFromTable, LootItem } from "@common/definitions/maps/lootTables";
 import { ExtraLoadoutList } from "@common/definitions/loadout/extra_loadout";
+import { Loots } from "@common/definitions/loots";
+import { random } from "@common/utils/random";
+import { MinMax } from "@common/definitions/syncedParticles";
 
 export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
     override readonly fullAllocBytes = 16;
@@ -393,6 +396,17 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                             { rotation: this.rotation, layer: this.layer }
                         );
                     }, replaceWith.delay);
+                }
+                if(definition.sell&&player){
+                    this.activated=false
+                    if(player.inventory.items.getItem("coin")>=definition.sell.cost){
+                        player.inventory.items.decrementItem("coin",definition.sell.cost)
+                        player.dirty.items=true
+                        if(definition.sell.item){
+                            //@ts-ignore
+                            this.game.addLoot(Loots.fromString(definition.sell.item.id as never),this.position,this.layer,{count:(definition.sell.item.count["min"]===undefined?definition.sell.item.count:random((definition.sell.item.count as MinMax<number>).min,(definition.sell.item.count as MinMax<number>).max))as number})
+                        }
+                    }
                 }
                 break;
             }
