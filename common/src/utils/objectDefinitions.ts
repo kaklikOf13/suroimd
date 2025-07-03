@@ -613,7 +613,7 @@ export enum MapObjectSpawnMode {
 
 export const LootRadius: Record<ItemType, number> = {
     [ItemType.Gun]: 3.4,
-    [ItemType.Ammo]: 2.7,
+    [ItemType.Ammo]: 2.5,
     [ItemType.Melee]: 3,
     [ItemType.Throwable]: 3,
     [ItemType.Healing]: 2.5,

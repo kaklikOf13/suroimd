@@ -271,6 +271,8 @@ export const maps={
                             flint_crate: 12,
                             aegis_crate: 12,
                             vending_machine:12,
+                            armor_shed:2,
+                            melee_shed:2,
                             survival_crate:3,
                             grenade_crate: 55,
                             rock: 430,
@@ -431,7 +433,10 @@ export const maps={
                             melee_crate: 2,
                             gold_rock: 1,
                             loot_barrel: 3,
-                            flint_stone: 1
+                            flint_stone: 1,
+                            vending_machine:5,
+                            armor_shed:2,
+                            melee_shed:2,
                         },
                         chooses:[
                             {

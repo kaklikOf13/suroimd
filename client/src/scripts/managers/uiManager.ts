@@ -1884,7 +1884,7 @@ class PlayerHealthUI {
         this.update(data);
     }
 
-    update(data?: UpdateDataType): void{
+    async update(data?: UpdateDataType): Promise<void>{
         const id = this._id.value;
         const hadNoHealth = this._normalizedHealth.value <= 0;
 
@@ -1944,11 +1944,14 @@ class PlayerHealthUI {
 
         let indicator: SuroiSprite | undefined;
 
+        if(this.game.loadingProm){
+            recalcIndicatorFrame=true
+            await this.game.loadingProm
+        }
         if (id === this.game.activePlayerID) {
             indicator = this.game.map.indicator;
         } else {
             const { teammateIndicators } = this.game.map;
-
             if (this._position.dirty && this._position.value) {
                 if ((indicator = teammateIndicators.get(id)) === undefined) {
                     const color = TEAMMATE_COLORS[this.game.uiManager.getTeammateColorIndex(id) ?? this._colorIndex.value];

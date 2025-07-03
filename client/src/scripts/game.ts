@@ -796,6 +796,7 @@ export class Game {
         this.ilumination=1
 
         this.updateVisualEvents()
+        this.map.indicator.setFrame("player_indicator")
         //for(const at of Maps[this.map_id].atlas)
     }
 
