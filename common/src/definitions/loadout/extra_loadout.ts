@@ -94,6 +94,12 @@ export const ExtraLoadout:Record<string,ExtraLoadoutDefinition>={
         helmet:"demo_man",
         perks:[PerkIds.DemoExpert,PerkIds.NadeFabricator]
     },
-
+    tank_role:{
+        type:ExtraLoadoutType.Role,
+        frame:"amanda_corey",
+        skin:["shiny_amanda_corey","shiny_max_mcfly"],
+        helmet:"last_man",
+        perks:[PerkIds.IronSkin,PerkIds.SelfRevive]
+    },
 }as const
 export const ExtraLoadoutList=Object.keys(ExtraLoadout)

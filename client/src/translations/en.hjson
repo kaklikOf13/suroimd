@@ -376,6 +376,7 @@
   "role_sniper_role":"Sniper"
   "role_assault_role":"Assault"
   "role_demo_role":"Demo"
+  "role_tank_role":"Tank"
 
   "interact_vending_machine":"Buy A Cola"
 }

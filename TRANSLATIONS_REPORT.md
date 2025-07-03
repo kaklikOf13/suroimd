@@ -2,7 +2,7 @@
 
 This file is a report of all errors and missing keys in the translation files of this game.
 
-## 🇦🇱 Shqip (79% Complete) - ab.hjson
+## 🇦🇱 Shqip (78% Complete) - ab.hjson
 
 ### (No Invalid Keys)
 
@@ -69,6 +69,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `role_sniper_role` is not defined
 - Key `role_assault_role` is not defined
 - Key `role_demo_role` is not defined
+- Key `role_tank_role` is not defined
 - Key `interact_vending_machine` is not defined
 
 ## 🇧🇷 Português (Brasil) (89% Complete) - br.hjson
@@ -108,6 +109,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `gamerole_blue_lastman` is not defined
 - Key `20x_scope` is not defined
 - Key `BLR` is not defined
+- Key `role_tank_role` is not defined
 - Key `interact_vending_machine` is not defined
 
 ## 🇨🇿 Čeština (82% Complete) - cz.hjson
@@ -167,6 +169,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `role_sniper_role` is not defined
 - Key `role_assault_role` is not defined
 - Key `role_demo_role` is not defined
+- Key `role_tank_role` is not defined
 - Key `interact_vending_machine` is not defined
 
 ## 🇩🇪 Deutsch (74% Complete) - de.hjson
@@ -248,6 +251,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `role_sniper_role` is not defined
 - Key `role_assault_role` is not defined
 - Key `role_demo_role` is not defined
+- Key `role_tank_role` is not defined
 - Key `interact_vending_machine` is not defined
 
 ## 🇬🇧 English (100% Complete) - en.hjson
@@ -256,7 +260,7 @@ This file is a report of all errors and missing keys in the translation files of
 
 ### (No Undefined Keys)
 
-## 🇪🇪 Eesti (87% Complete) - et.hjson
+## 🇪🇪 Eesti (86% Complete) - et.hjson
 
 ### (No Invalid Keys)
 
@@ -300,9 +304,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `role_sniper_role` is not defined
 - Key `role_assault_role` is not defined
 - Key `role_demo_role` is not defined
+- Key `role_tank_role` is not defined
 - Key `interact_vending_machine` is not defined
 
-## 🇫🇷 Français (87% Complete) - fr.hjson
+## 🇫🇷 Français (86% Complete) - fr.hjson
 
 ### (No Invalid Keys)
 
@@ -346,6 +351,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `role_sniper_role` is not defined
 - Key `role_assault_role` is not defined
 - Key `role_demo_role` is not defined
+- Key `role_tank_role` is not defined
 - Key `interact_vending_machine` is not defined
 
 ## 🇬🇷 Ελληνικά (87% Complete) - gr.hjson
@@ -391,9 +397,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `role_sniper_role` is not defined
 - Key `role_assault_role` is not defined
 - Key `role_demo_role` is not defined
+- Key `role_tank_role` is not defined
 - Key `interact_vending_machine` is not defined
 
-## 🇭🇰 🇲🇴 廣東話(香港/澳門) (81% Complete) - hk_mo.hjson
+## 🇭🇰 🇲🇴 廣東話(香港/澳門) (80% Complete) - hk_mo.hjson
 
 ### (No Invalid Keys)
 
@@ -454,6 +461,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `role_sniper_role` is not defined
 - Key `role_assault_role` is not defined
 - Key `role_demo_role` is not defined
+- Key `role_tank_role` is not defined
 - Key `interact_vending_machine` is not defined
 
 ## 🇭🇺 Magyar (87% Complete) - hu.hjson
@@ -499,6 +507,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `role_sniper_role` is not defined
 - Key `role_assault_role` is not defined
 - Key `role_demo_role` is not defined
+- Key `role_tank_role` is not defined
 - Key `interact_vending_machine` is not defined
 
 ## 🇯🇵 日本語 (82% Complete) - jp.hjson
@@ -558,6 +567,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `role_sniper_role` is not defined
 - Key `role_assault_role` is not defined
 - Key `role_demo_role` is not defined
+- Key `role_tank_role` is not defined
 - Key `interact_vending_machine` is not defined
 
 ## 🇱🇹 Lietuvių (82% Complete) - lt.hjson
@@ -617,6 +627,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `role_sniper_role` is not defined
 - Key `role_assault_role` is not defined
 - Key `role_demo_role` is not defined
+- Key `role_tank_role` is not defined
 - Key `interact_vending_machine` is not defined
 
 ## 🇱🇻 Latviešu (82% Complete) - lv.hjson
@@ -676,9 +687,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `role_sniper_role` is not defined
 - Key `role_assault_role` is not defined
 - Key `role_demo_role` is not defined
+- Key `role_tank_role` is not defined
 - Key `interact_vending_machine` is not defined
 
-## 🇵🇱 Polski (87% Complete) - pl.hjson
+## 🇵🇱 Polski (86% Complete) - pl.hjson
 
 ### (No Invalid Keys)
 
@@ -722,6 +734,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `role_sniper_role` is not defined
 - Key `role_assault_role` is not defined
 - Key `role_demo_role` is not defined
+- Key `role_tank_role` is not defined
 - Key `interact_vending_machine` is not defined
 
 ## 🎀 Cute Engwish (80% Complete) - qen.hjson
@@ -786,6 +799,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `role_sniper_role` is not defined
 - Key `role_assault_role` is not defined
 - Key `role_demo_role` is not defined
+- Key `role_tank_role` is not defined
 - Key `interact_vending_machine` is not defined
 
 ## 🇷🇴 Română (76% Complete) - ro.hjson
@@ -861,6 +875,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `role_sniper_role` is not defined
 - Key `role_assault_role` is not defined
 - Key `role_demo_role` is not defined
+- Key `role_tank_role` is not defined
 - Key `interact_vending_machine` is not defined
 
 ## 🇷🇺 Русский (87% Complete) - ru.hjson
@@ -906,6 +921,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `role_sniper_role` is not defined
 - Key `role_assault_role` is not defined
 - Key `role_demo_role` is not defined
+- Key `role_tank_role` is not defined
 - Key `interact_vending_machine` is not defined
 
 ## 🇮🇳 தமிழ் (81% Complete) - ta.hjson
@@ -967,6 +983,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `role_sniper_role` is not defined
 - Key `role_assault_role` is not defined
 - Key `role_demo_role` is not defined
+- Key `role_tank_role` is not defined
 - Key `interact_vending_machine` is not defined
 
 ## 🇹🇷 Turkısh (87% Complete) - tr.hjson
@@ -1012,6 +1029,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `role_sniper_role` is not defined
 - Key `role_assault_role` is not defined
 - Key `role_demo_role` is not defined
+- Key `role_tank_role` is not defined
 - Key `interact_vending_machine` is not defined
 
 ## 🇹🇼 中文（繁體） (75% Complete) - tw.hjson
@@ -1090,6 +1108,7 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `role_sniper_role` is not defined
 - Key `role_assault_role` is not defined
 - Key `role_demo_role` is not defined
+- Key `role_tank_role` is not defined
 - Key `interact_vending_machine` is not defined
 
 ## 🇻🇳 Tiếng Việt (86% Complete) - vi.hjson
@@ -1139,9 +1158,10 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `role_sniper_role` is not defined
 - Key `role_assault_role` is not defined
 - Key `role_demo_role` is not defined
+- Key `role_tank_role` is not defined
 - Key `interact_vending_machine` is not defined
 
-## 🇨🇳 中文（简体） (87% Complete) - zh.hjson
+## 🇨🇳 中文（简体） (86% Complete) - zh.hjson
 
 ### Invalid Keys
 
@@ -1187,5 +1207,6 @@ This file is a report of all errors and missing keys in the translation files of
 - Key `role_sniper_role` is not defined
 - Key `role_assault_role` is not defined
 - Key `role_demo_role` is not defined
+- Key `role_tank_role` is not defined
 - Key `interact_vending_machine` is not defined
 

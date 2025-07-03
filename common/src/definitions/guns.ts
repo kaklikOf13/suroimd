@@ -1,4 +1,4 @@
-import { defaultBulletTemplate, FireMode } from "../constants";
+import { defaultBulletTemplate, defaultUnlockGuns, FireMode } from "../constants";
 import { mergeDeep, type DeepPartial } from "../utils/misc";
 import { inheritFrom, ItemRarity, ItemType, ObjectDefinitions, type BaseBulletDefinition, type InventoryItemDefinition, type RawDefinition, type ReferenceTo } from "../utils/objectDefinitions";
 import { Vec, type Vector } from "../utils/vector";
@@ -3930,7 +3930,7 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
                         modify:1.4,
                     }
                 },
-                rarity:ItemRarity.Common
+                rarity:ItemRarity.Legendary
             },
         ] satisfies ReadonlyArray<RawDefinition<RawGunDefinition>>).map(e => {
             if (e.dual === undefined) {
@@ -3966,3 +3966,9 @@ export const Guns = ObjectDefinitions.withDefault<GunDefinition>()(
         }).flat() as readonly GunDefinition[];
     }
 );
+
+for(const gg of Guns.definitions){
+    if(!gg.devItem&&gg.rarity!==ItemRarity.Legendary){
+        defaultUnlockGuns.push(gg.idString)
+    }
+}

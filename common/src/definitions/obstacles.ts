@@ -1790,7 +1790,15 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                     classUnlock:true,
                     particles:"airdrop_particle",
                     particlesAmmount:3,
-                    classReplace:{medic_role:"pod_medic",scout_role:"pod_scout",apple_master_role:"pod_apple_master",sniper_role:"pod_sniper",assault_role:"pod_assault",demo_role:"pod_demo"},
+                    classReplace:{
+                        medic_role:"pod_medic",
+                        scout_role:"pod_scout",
+                        apple_master_role:"pod_apple_master",
+                        sniper_role:"pod_sniper",
+                        assault_role:"pod_assault",
+                        demo_role:"pod_demo",
+                        tank_role:"pod_tank",
+                    },
                 },
                 noResidue: true,
                 frames: {
@@ -1844,6 +1852,11 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 [inheritFrom]:"pod_medic",
                 idString: "pod_demo",
                 name: "Pod Demo",
+            },
+            {
+                [inheritFrom]:"pod_medic",
+                idString: "pod_tank",
+                name: "Pod Tank",
             },
             {
                 idString: "gold_big_airdrop_crate",
@@ -4815,6 +4828,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 frames: {
                     particle: "flint_stone_particle"
                 },
+                particleVariations:2,
                 sell:{
                     cost:200,
                     loot_table:{
@@ -4842,6 +4856,7 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 frames: {
                     particle: "flint_stone_particle"
                 },
+                particleVariations:2,
                 sell:{
                     cost:200,
                     loot_table:{

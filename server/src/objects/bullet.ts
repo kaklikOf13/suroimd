@@ -144,7 +144,7 @@ export class Bullet extends BaseBullet {
                 if (
                     ((isObstacle || isBuilding)
                     && object.definition.reflectBullets
-                    && this.reflectionCount < 3) || (isPlayer&&(object.metalicBody||(object.inventory.vest?.level??0)>=4))
+                    && this.reflectionCount < 3) || (isPlayer&&(object.metalicBody||object.hasPerk(PerkIds.IronSkin)||(object.inventory.vest?.level??0)>=4))
                 ) {
                     /*
                         no matter what, nudge the bullet
@@ -170,8 +170,10 @@ export class Bullet extends BaseBullet {
                         object.health+=this.definition.damage
                         object.adrenaline+=this.definition.damage/2
                     }else{
-                        const explosionMod=(this.definition.shrapnel&&object.hasPerk(PerkIds.DemoExpert))?(Perks.fromString(PerkIds.DemoExpert).explosionsMod??0.1):1
-                        object.damage({amount:r.damage*explosionMod,source:r.source,weaponUsed:r.weapon},this.headshot?this.definition.headshot!.modify:undefined)
+                        const Mod=
+                        ((this.definition.shrapnel&&object.hasPerk(PerkIds.DemoExpert))?(Perks.fromString(PerkIds.DemoExpert).explosionsMod??0.1):1)*
+                        (object.hasPerk(PerkIds.IronSkin)?0.5:1)
+                        object.damage({amount:r.damage*Mod,source:r.source,weaponUsed:r.weapon},this.headshot?this.definition.headshot!.modify:undefined)
                     }
                 }else{
                     object.damage({amount:r.damage,source:r.source,weaponUsed:r.weapon,position:r.position})

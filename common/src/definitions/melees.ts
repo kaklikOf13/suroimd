@@ -506,6 +506,7 @@ export const Melees = ObjectDefinitions.withDefault<MeleeDefinition>()(
             image: {
                 position: Vec.create(47, 25),
                 angle: 90,
+                center:Vec.create(-3,0),
                 useAngle: 65,
                 lootScale: 0.6
             },

@@ -169,7 +169,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
         };
 
         this.position = Vec.add(this.position, calculateSafeDisplacement());
-        this.velocity = Vec.scale(this.velocity, 1 / (1 + this.game.dt * 0.0029));
+        this.velocity = Vec.scale(this.velocity, 1 / (1 + this.game.dt * 0.0032));
 
         this.position = Vec.add(this.position, calculateSafeDisplacement());
         this.position.x = Numeric.clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);

@@ -559,10 +559,12 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
                     backpack,
                     halloweenThrowableSkin,
                     activeDisguise,
-                    blockEmoting
+                    blockEmoting,
+                    iron_skin
                 }
             } = data;
             this.healAura=healAura
+            this.iron_skin=iron_skin
 
             const layerChange = this.isActivePlayer && (this.layer !== layer || isNew);
             this.layer = layer;
@@ -798,7 +800,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
             this.blockEmoting = blockEmoting;
             this.game.uiManager.ui.emoteWheel.css("opacity", this.blockEmoting ? "0.5" : "");
 
-            if(this.current_boost!==data.full.boost){
+            if(this.current_boost!==data.full.boost&&!this.dead){
                 this.current_boost=data.full.boost
                 this.boostParticlesEmitter.active=true
                 switch(this.current_boost){
@@ -2091,9 +2093,11 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
     private readonly _bloodDecals = new Set<Particle>();
     get bloodDecals(): Set<Particle> { return this._bloodDecals; }
 
+    iron_skin=false
+
     hitEffect(position: Vector, angle: number, sound?: string): void {
         const randomVariation = randomBoolean() ? "1" : "2";
-        const hitSound = this.vestLevel>=4 ? `metal_heavy_hit_${randomVariation}` :this.activeDisguise ? `${this.activeDisguise.material === "crate" ? "wood" : this.activeDisguise.material}_hit_${randomVariation}` : `player_hit_${randomVariation}`;
+        const hitSound = (this.vestLevel>=4||this.iron_skin) ? `metal_heavy_hit_${randomVariation}` :this.activeDisguise ? `${this.activeDisguise.material === "crate" ? "wood" : this.activeDisguise.material}_hit_${randomVariation}` : `player_hit_${randomVariation}`;
 
         this.game.soundManager.play(
             sound ?? hitSound,
@@ -2230,6 +2234,7 @@ export class Player extends GameObject.derive(ObjectCategory.Player) {
         this.disguiseContainer.destroy();
 
         this.healingParticlesEmitter.destroy();
+        this.boostParticlesEmitter.destroy();
         this.actionSound?.stop();
         clearInterval(this.bleedEffectInterval);
         if (this.isActivePlayer) $("#action-container").hide();

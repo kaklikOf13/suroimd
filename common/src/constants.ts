@@ -3,7 +3,7 @@ import { HealingItems } from "./definitions/healingItems";
 import { Scopes } from "./definitions/scopes";
 import { Throwables } from "./definitions/throwables";
 import { freezeDeep } from "./utils/misc";
-import { ItemType } from "./utils/objectDefinitions";
+import { ItemRarity, ItemType } from "./utils/objectDefinitions";
 
 export const enum Constants {
     MAX_POSITION = 1924,
@@ -289,45 +289,7 @@ export const TentTints = {
     purple: 0x994cb2
 };
 
-export const defaultUnlockGuns:string[]=[
-    "g19",
-    "dual_g19",
-    "cz75a",
-    "dual_cz75a",
-    "mp40",
-    "saf200",
-    "micro_uzi",
-    "vector",
-    "vss",
-
-    "m1895",
-    "dual_m1895",
-    "ak47",
-    "mcx_spear",
-    "arx160",
-    "lewis_gun",
-    "mosin_nagant",
-    "sr25",
-    "blr",
-    "bar",
-
-    "aug",
-    "acr",
-    "m16a4",
-    "stoner_63",
-    "mg36",
-    "cz600",
-    "mini14",
-    "l86a2",
-    "an94",
-
-    "hp18",
-    "flues",
-    "model_37",
-    "m3k",
-    "vepr12",
-    "super90",
-]
+export const defaultUnlockGuns:string[]=[]
 export const defaultUnlockMelees:string[]=[
     "baseball_bat",
     "sickle",

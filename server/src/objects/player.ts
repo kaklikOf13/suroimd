@@ -607,7 +607,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 f_list.splice(f_list.indexOf(f))
                 if(this.fabrication[f]<0){
                     this.fabrication[f]=this.perks.fabrication[f].time
-                    this.inventory.giveItem(f,this.perks.fabrication[f].count,true)
+                    this.inventory.giveItem(f,this.perks.fabrication[f].count,false)
                     this.dirty.weapons=true
                     this.dirty.items=true
                 }else{
@@ -2062,6 +2062,8 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                     if(perk.sizeMod){
                         newModifiers.size *= perk.sizeMod;
                     }
+                    newModifiers.maxHealth*=perk.healthMod??1
+                    newModifiers.baseSpeed*=perk.speedMod??1
                     break
                 }
             }
@@ -2158,7 +2160,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             if(this.game.gamemode.weaponSwap?.killswap||source.hasPerk(PerkIds.AppleArt)){
                 source.switchWeapon(params as (DamageParams))
             }
-            if(source.hasPerk(PerkIds.Takedown)){
+            if(source.id!==this.id&&source.hasPerk(PerkIds.Takedown)){
                 const def=Perks.fromString(PerkIds.Takedown)
                 source.give_boost(def.boost_won!.type,def.boost_won!.time)
                 source.health+=def.healing??0
@@ -2821,6 +2823,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
                 blockEmoting: this.blockEmoting,
                 sizeMod:this._sizeMod,
                 healAura:this.hasPerk(PerkIds.HealingAura),
+                iron_skin:this.hasPerk(PerkIds.IronSkin),
                 fist_loadout:this.fist_loadout,
                 boost:this.current_boost as number
             }

@@ -28,6 +28,9 @@ export interface BasicPerk extends ItemDefinition {
     readonly healing?:number
 
     readonly sizeMod?:number
+    readonly healthMod?:number
+    readonly speedMod?:number
+
     readonly adrenSet?:number
     readonly adrenDecay?:number
 
@@ -94,7 +97,9 @@ export const enum PerkIds {
     HealingCharges="healing_charges",
 
     GoldenApple="golden_apple",
-    AppleArt="apple_art"
+    AppleArt="apple_art",
+    DefendOnTitan="defend_on_titan",
+    IronSkin="iron_skin"
 }
 
 export const enum PerkCategories {
@@ -230,11 +235,11 @@ const perks = [
     {
         idString: PerkIds.LowProfile,
         name: "Low Profile",
-        description: "Become smaller and take less damage from explosions.",
+        description: "Become smaller and walk fast.",
         category: PerkCategories.Normal,
 
-        sizeMod: 0.8, // multiplicative
-        explosionMod: 0.5 // multiplicative
+        sizeMod: 0.75,
+        speedMod:1.1
     },
     {
         idString: PerkIds.Takedown,
@@ -327,6 +332,24 @@ const perks = [
         description: "You Have Apple Power",
         category: PerkCategories.Normal,
         type: PerkQualities.Positive,
+    },
+    {
+        idString: PerkIds.DefendOnTitan,
+        name: "Defend On Titan",
+        description: "Great Life, Giga Size, Small Speed",
+        category: PerkCategories.Normal,
+        type: PerkQualities.Positive,
+        sizeMod:2.5,
+        healthMod:3,
+        speedMod: 0.5,
+    },
+    {
+        idString: PerkIds.IronSkin,
+        name: "Iron Skin",
+        description: "Reduce Bullet Damage By 50% And Reflect Bullets",
+        category: PerkCategories.Normal,
+        type: PerkQualities.Positive,
+        sizeMod:1.35,
     },
 ] as const satisfies ReadonlyArray<
     GetMissing<

@@ -60,6 +60,8 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             readonly activeDisguise?: ObstacleDefinition
             readonly blockEmoting: boolean
             readonly boost:number
+
+            readonly iron_skin:boolean
         }
     }
     //
@@ -245,7 +247,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 activeDisguise,
                 blockEmoting,
                 fist_loadout,
-                boost
+                boost,
+                iron_skin
             } }
         ): void {
             stream.writeLayer(layer);
@@ -263,7 +266,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 hasVest,
                 hasDisguise,
                 blockEmoting,
-                healAura
+                healAura,
+                iron_skin
             );
             stream.writeUint8(teamID);
             stream.writeUint8(groupID);
@@ -323,7 +327,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 hasVest,
                 hasDisguise,
                 blockEmoting,
-                healingAura
+                healingAura,
+                iron_skin
             ] = stream.readBooleanGroup2();
 
             return {
@@ -345,7 +350,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 activeDisguise: hasDisguise ? Obstacles.readFromStream(stream) : undefined,
                 blockEmoting,
                 healAura:healingAura,
-                boost:stream.readUint8()
+                boost:stream.readUint8(),
+                iron_skin
             };
         }
     },
