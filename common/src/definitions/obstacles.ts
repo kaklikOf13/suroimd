@@ -151,7 +151,10 @@ type RawObstacleDefinition = ObjectDefinition & {
     }
     readonly sell?:{
         readonly cost:number
-        readonly loot_table?:string
+        readonly loot_table?:{
+            readonly id:string
+            readonly count:number
+        }
         readonly item?:{readonly id:string,readonly count:number|MinMax<number>}
     }
 } & ObstacleRoleMixin & VariationMixin;
@@ -4792,6 +4795,60 @@ export const Obstacles = ObjectDefinitions.withDefault<ObstacleDefinition>()(
                 frames: {
                     particle: "metal_particle"
                 }
+            },
+            {
+                idString: "armor_shed",
+                name: "Armor Shed",
+                material: "appliance",
+                health: 1000,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.8
+                },
+                indestructible:true,
+                hitbox: new GroupHitbox(RectangleHitbox.fromRect(29.5, 25, Vec.create(0, -1.55)),RectangleHitbox.fromRect(19, 5, Vec.create(0, 11.6))),
+                spawnHitbox: RectangleHitbox.fromRect(35,30, Vec.create(0, 0)),
+                rotationMode: RotationMode.Limited,
+                allowFlyover: FlyoverPref.Never,
+                role:ObstacleSpecialRoles.Activatable,
+                frames: {
+                    particle: "flint_stone_particle"
+                },
+                sell:{
+                    cost:200,
+                    loot_table:{
+                        id:"special_equipment",
+                        count:1
+                    }
+                },
+            },
+            {
+                idString: "melee_shed",
+                name: "Melee Shed",
+                material: "appliance",
+                health: 1000,
+                scale: {
+                    spawnMin: 1,
+                    spawnMax: 1,
+                    destroy: 0.8
+                },
+                indestructible:true,
+                hitbox: new GroupHitbox(RectangleHitbox.fromRect(29.5, 25, Vec.create(0, -1.55)),RectangleHitbox.fromRect(19, 5, Vec.create(0, 11.6))),
+                spawnHitbox: RectangleHitbox.fromRect(35,30, Vec.create(0, 0)),
+                rotationMode: RotationMode.Limited,
+                allowFlyover: FlyoverPref.Never,
+                role:ObstacleSpecialRoles.Activatable,
+                frames: {
+                    particle: "flint_stone_particle"
+                },
+                sell:{
+                    cost:200,
+                    loot_table:{
+                        id:"melee",
+                        count:1
+                    }
+                },
             },
         ] satisfies readonly Missing[]).map(
             o => {

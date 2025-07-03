@@ -406,6 +406,17 @@ export class Obstacle extends BaseGameObject.derive(ObjectCategory.Obstacle) {
                             //@ts-ignore
                             this.game.addLoot(Loots.fromString(definition.sell.item.id as never),this.position,this.layer,{count:(definition.sell.item.count["min"]===undefined?definition.sell.item.count:random((definition.sell.item.count as MinMax<number>).min,(definition.sell.item.count as MinMax<number>).max))as number})
                         }
+                        if(definition.sell.loot_table){
+                            const l=getLootFromTable(definition.sell.loot_table.id,this.game.gamemode.lootTables)
+                            for (const item of l) {
+                                this.game.addLoot(
+                                    item.idString,
+                                    this.position,
+                                    this.layer,
+                                    { count: item.count }
+                                )
+                            }
+                        }
                     }
                 }
                 break;
