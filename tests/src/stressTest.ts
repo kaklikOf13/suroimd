@@ -23,7 +23,7 @@ console.log("start");
 const config = {
     mainAddress: "http://127.0.0.1:8000",
     gameAddress: "ws://127.0.0.1:800<ID>",
-    botCount: 49,
+    botCount: 160,
     joinDelay: 30,
     rejoinOnDeath: false
 };

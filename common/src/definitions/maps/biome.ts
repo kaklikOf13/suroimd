@@ -32,6 +32,7 @@ export const Biomes: Record<string, BiomeDefinition> = {
         colors: {
             [OtherColorKeys.border]: "hsl(211, 63%, 30%)",
             [OtherColorKeys.gas]: "hsla(17, 100%, 50%, 0.55)",
+            //@ts-ignore
             [OtherColorKeys.void]: "hsl(25, 80%, 6%)"
         },
         ambience: "wind_ambience",

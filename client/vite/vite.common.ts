@@ -3,7 +3,7 @@ import path, { resolve } from "path";
 import { type UserConfig } from "vite";
 // import { ViteImageOptimizer } from "vite-plugin-image-optimizer";
 import pkg from "../../package.json";
-import { newsPosts } from "./plugins/news-posts-plugin";
+//import { newsPosts } from "./plugins/news-posts-plugin";
 import { translations } from "./plugins/translations-plugin";
 import { spritesheet } from "./plugins/image-spritesheet-plugin";
 
@@ -21,14 +21,15 @@ const commonConfig: UserConfig = {
         rollupOptions: {
             input: {
                 main: resolve(__dirname, "../index.html"),
-                changelog: resolve(__dirname, "../changelog/index.html"),
-                news: resolve(__dirname, "../news/index.html"),
-                rules: resolve(__dirname, "../rules/index.html"),
-                editor: resolve(__dirname, "../editor/index.html")
+                //changelog: resolve(__dirname, "../changelog/index.html"),
+                //news: resolve(__dirname, "../news/index.html"),
+                //rules: resolve(__dirname, "../rules/index.html"),
+                //editor: resolve(__dirname, "../editor/index.html")
             },
             output: {
                 assetFileNames(assetInfo) {
                     let path = "assets";
+                    if(!assetInfo.names)return  `${path}/[name]-[hash][extname]`;
                     switch (assetInfo.names[0].split(".").at(-1)) {
                         case "css":
                             path = "styles";
@@ -61,7 +62,7 @@ const commonConfig: UserConfig = {
         //     logStats: false
         // }),
         spritesheet(),
-        newsPosts(),
+        //newsPosts(),
         translations()
     ],
 

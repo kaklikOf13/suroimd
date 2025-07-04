@@ -1520,4 +1520,5 @@ export const maps={
 } satisfies Record<string,MapDefinition>;
 
 export type MapName = keyof typeof maps;
+//@ts-ignore
 export const Maps: Record<MapName, MapDefinition> = maps;
