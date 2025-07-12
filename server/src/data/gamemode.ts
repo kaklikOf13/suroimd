@@ -525,6 +525,17 @@ export interface Gamemode{
         readonly enabled:boolean
         readonly haveHelmet?:boolean
     }
+    readonly coinsDrop:number
+    readonly levelUp?:{
+        readonly level_hp:number
+        readonly level_stamina:number
+        readonly level_size:number
+        readonly initial_hp:number
+        readonly initial_stamina:number
+        readonly initial_size:number
+        readonly base_xp:number
+        readonly factor:number
+    }
     readonly lootTables?:Record<string,LootTable>
     readonly button?:{
         readonly icon: string
@@ -588,6 +599,8 @@ export const DefaultGamemode:Gamemode={
     adrenalineLoss:0.0004,
     globalDamage:.76,
     armorProtection:1,
+
+    coinsDrop:30,
 
     data:Date.UTC(87,2,24,2,4,25),
 
@@ -1602,8 +1615,35 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
         ]},
     },
     normal:DefaultGamemode,
-    mini_normal:{
-        map:"mini_normal",
-        maxPlayersPerGame:20,
+    level_debug:{
+        gas:{mode:GasMode.Disabled},
+        map:"debug",
+        weaponsSelect:true,
+        coinsDrop:0,
+        plugins:[
+            {construct:StartWithRolePlugin,params:DefaultRoles["full"]},
+        ],
+        airdrop:{
+            particlesCount:15,
+            crate:"big_airdrop_crate_locked",
+            particlesDelay:20,
+        },
+        spawn:{mode:SpawnMode.Center},
+        roles:{
+            enabled:true
+        },
+        canRespawn:true,
+        keepInventory:true,
+        joinTime:30*30*30,
+        levelUp:{
+            initial_hp:0.1,
+            initial_stamina:0.05,
+            initial_size:0.68,
+            level_hp:0.05,
+            level_stamina:0.025,
+            level_size:0.02,
+            base_xp:10,
+            factor:1.6
+        }
     }
 }

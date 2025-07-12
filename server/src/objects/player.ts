@@ -355,6 +355,18 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
      */
     ticksSinceLastUpdate = 0;
 
+    _xp:number=0
+    level:number=1
+    get xp():number{
+        return this._xp
+    }
+    set xp(v:number){
+        if(!this.game.gamemode.levelUp)return
+        this._xp=v
+        this.level=Math.min(Math.floor(Math.pow(this._xp / this.game.gamemode.levelUp.base_xp, 1 / this.game.gamemode.levelUp.factor)),2025);
+        this.updateAndApplyModifiers()
+    }
+
     private _scope!: ScopeDefinition;
     get effectiveScope(): ScopeDefinition { return this._scope; }
     set effectiveScope(target: ReifiableDef<ScopeDefinition>) {
@@ -898,12 +910,12 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             )
 
         // Calculate speed
-        let speed = this.baseSpeed                                          // Base speed
+        let speed = this.baseSpeed                                            // Base speed
             * (FloorTypes[this.floor].speedMultiplier ?? 1)                   // Speed multiplier from floor player is standing in
             * recoilMultiplier                                                // Recoil from items
             * perkSpeedMod                                                    // See above
             * (this.action?.speedMultiplier ?? 1)                             // Speed modifier from performing actions
-            * (1 + (this.adrenaline / 700))                                   // Linear speed boost from adrenaline
+            * Math.min((1 + (this.adrenaline / 700)),2)                       // Linear speed boost from adrenaline
             * (this.downed ? 0.5 : this.activeItemDefinition.speedMultiplier) // Active item/knocked out speed modifier
             * (this.beingRevivedBy ? 0.5 : 1)                                 // Being revived speed multiplier
             * this._modifiers.baseSpeed;                                      // Current on-wearer modifier
@@ -1871,6 +1883,9 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             source,
             weaponUsed
         });
+        if(params.source&&params.source instanceof Player&&this.game.gamemode.levelUp){
+            amount*=0.12+(0.03*(params.source.level-1))
+        }
 
         // Reductions are merged additively
         amount *= this.game.gamemode.globalDamage - ((
@@ -2017,6 +2032,18 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
             damageDealt: []
         };
 
+        if(this.game.gamemode.levelUp){
+            const lu=this.game.gamemode.levelUp
+            newModifiers.maxHealth*=lu.initial_hp
+            newModifiers.maxAdrenaline*=lu.initial_stamina
+            newModifiers.size*=lu.initial_size
+
+            const ll=(this.level-1)
+            newModifiers.maxHealth+=(lu.level_hp*ll)
+            newModifiers.maxAdrenaline+=(lu.level_stamina*ll)
+            newModifiers.size=Math.min(newModifiers.size+(lu.level_size*ll),2)
+        }
+
         const maxWeapons = GameConstants.player.maxWeapons;
         for (let i = 0; i < maxWeapons; i++) {
             const weapon = this.inventory.getWeapon(i);
@@ -2155,18 +2182,24 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
 
         if (sourceIsPlayer) {
             this.killedBy = source;
-            if (source !== this && (!this.game.teamMode || source.teamID !== this.teamID)) {source.kills++;source.score+=this.game.gamemode.score.kill};
+            if (source !== this && (!this.game.teamMode || source.teamID !== this.teamID)) {
+                source.kills++;
+                source.score+=this.game.gamemode.score.kill;
+                source.xp+=5+(this.xp/4)
 
-            if(this.game.gamemode.weaponSwap?.killswap||source.hasPerk(PerkIds.AppleArt)){
-                source.switchWeapon(params as (DamageParams))
-            }
-            if(source.id!==this.id&&source.hasPerk(PerkIds.Takedown)){
-                const def=Perks.fromString(PerkIds.Takedown)
-                source.give_boost(def.boost_won!.type,def.boost_won!.time)
-                source.health+=def.healing??0
-                source.adrenaline+=def.healing??0
+                
+                if(this.game.gamemode.weaponSwap?.killswap||source.hasPerk(PerkIds.AppleArt)){
+                    source.switchWeapon(params as (DamageParams))
+                }
+                if(source.id!==this.id&&source.hasPerk(PerkIds.Takedown)){
+                    const def=Perks.fromString(PerkIds.Takedown)
+                    source.give_boost(def.boost_won!.type,def.boost_won!.time)
+                    source.health+=def.healing??0
+                    source.adrenaline+=def.healing??0
+                }
             }
         }
+        this.xp*=0.8
 
         if (
             sourceIsPlayer
@@ -2318,7 +2351,7 @@ export class Player extends BaseGameObject.derive(ObjectCategory.Player) {
         this.teamWipe();
 
         this.dropAll()
-        this.game.addLoot(Ammos.fromString("coin" as never),this.position,this.layer,{count:30})
+        if(this.game.gamemode.coinsDrop)this.game.addLoot(Ammos.fromString("coin" as never),this.position,this.layer,{count:this.game.gamemode.coinsDrop})
 
         // Disguise funnies
         if (this.activeDisguise !== undefined) {
