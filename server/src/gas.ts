@@ -45,7 +45,7 @@ export class Gas {
         this.mapSize = (this.game.map.width + this.game.map.height) / 2;
 
         let firstStage:GasStage=DefaultGasStages[0]
-
+        let ll=true
         switch(game.gamemode.gas.mode){
             case GasMode.Staged:
                 firstStage = game.gamemode.gas.stages[0];
@@ -55,6 +55,12 @@ export class Gas {
             case GasMode.Procedural:
                 this.oldRadius = game.gamemode.gas.initialRadius * this.mapSize;
                 this.newRadius=this.oldRadius
+                if(game.gamemode.gas.initialPosition){
+                    const aa=Vec.scale(game.gamemode.gas.initialPosition, this.mapSize)
+                    this.newPosition=aa
+                    this.oldPosition=aa
+                    ll=false
+                }
                 this.state=GasState.Inactive
                 this.stage=0
 
@@ -62,8 +68,10 @@ export class Gas {
                 this.advTime=game.gamemode.gas.advance.initialTime
         }
         this.currentRadius = this.oldRadius;
-        this.oldPosition = Vec.create(this.game.map.width / 2, this.game.map.height / 2);
-        this.newPosition = Vec.clone(this.oldPosition);
+        if(ll){
+            this.oldPosition = Vec.create(this.game.map.width / 2, this.game.map.height / 2);
+            this.newPosition = Vec.clone(this.oldPosition);
+        }
         this.currentPosition = Vec.clone(this.oldPosition);
         this._lastDamageTimestamp = this.game.now;
     }

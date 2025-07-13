@@ -80,6 +80,7 @@ type RawObstacleDefinition = ObjectDefinition & {
     }
     readonly hitbox: Hitbox
     readonly spawnHitbox?: Hitbox
+    readonly noCollisionsWithLoot?:boolean
     readonly noCollisions: boolean
     readonly noCollisionAfterDestroyed?: boolean
     readonly pallet?: boolean

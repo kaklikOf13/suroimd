@@ -1,4 +1,5 @@
 import { GasState } from "@common/constants";
+import { Vector } from "@common/utils/vector";
 
 export interface GasStage {
     readonly state: GasState
@@ -7,6 +8,7 @@ export interface GasStage {
     readonly newRadius: number
     readonly dps: number
     readonly summonAirdrop?: boolean
+    readonly position?:Vector
 }
 
 export const DefaultGasStages: GasStage[] = [

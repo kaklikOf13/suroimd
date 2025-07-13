@@ -1,5 +1,5 @@
 import { GasState, Layer } from "@common/constants"
-import { Vector } from "@common/utils/vector"
+import { Vec, Vector } from "@common/utils/vector"
 import { DefaultGasStages, GasStage } from "./gasStages"
 import { type PluginDefinition } from "../pluginManager"
 import { mergeDeep,cloneDeep } from "@common/utils/misc"
@@ -470,6 +470,7 @@ export type GasConfig={ readonly mode: GasMode.Disabled }
     readonly damage:number[]
     readonly airdrop:number[]
     readonly airstrikes?:{airstrike:Airstrike,stage:number}[]
+    readonly initialPosition?:Vector
  } | {
     readonly mode: GasMode.Debug
     readonly overridePosition?: boolean
@@ -1011,10 +1012,52 @@ export const Gamemodes:Record<string,Partial<Gamemode>>={
     },
     manhunt:{
         group:true,
+        factions:{
+            count:1,
+            spawnIslands:[0],
+        },
+        gas:{
+            damage:[10,10,13,13,15,15],
+            airdrop:[3,5],
+            airstrikes:[
+                {
+                    airstrike:Airstrikes["tactical_nuke"],
+                    stage:2
+                },
+                {
+                    airstrike:Airstrikes["bombs"],
+                    stage:2
+                },
+                {
+                    airstrike:Airstrikes["tactical_nuke"],
+                    stage:4
+                },
+                {
+                    airstrike:Airstrikes["bombs"],
+                    stage:4
+                },
+            ],
+            mode:GasMode.Procedural,
+            advance:{
+                initialTime:50,
+                timeMin:14,
+                timeDecay:0.9,
+            },
+            waiting:{
+                initialTime:60,
+                timeMin:20,
+                timeDecay:0.9,
+            },
+            minRadius:0.005,
+            initialRadius:0.3,
+            initialPosition:Vec.create(0.33,0.33),
+            radiusDecay:0.78,
+        },
         defaultGroup:0,
         start_after:60,
         joinTime:30,
         maxPlayersPerGame:36,
+        map:"double_island",
         button:{
             buttonCss:"btn-redmode",
             buttonText:"manhunt",

@@ -56,6 +56,7 @@ interface SubBuilding {
 
 export interface BuildingDefinition extends ObjectDefinition {
     readonly noCollisions?: boolean
+    readonly noCollisionsWithLoot?:boolean
     readonly noBulletCollision?: boolean
     readonly reflectBullets?: boolean
     readonly collideWithLayers?: Layers
@@ -3684,6 +3685,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
                 idString: "small_bridge",
                 name: "Small Bridge",
                 noBulletCollision: true,
+                noCollisionsWithLoot:true,
                 allowFlyover: FlyoverPref.Always,
                 material: "wood",
                 particle: "furniture_particle",
@@ -3729,6 +3731,7 @@ export const Buildings = ObjectDefinitions.withDefault<BuildingDefinition>()(
             {
                 idString: "large_bridge",
                 name: "Large Bridge",
+                noCollisionsWithLoot:true,
                 allowFlyover: FlyoverPref.Always,
                 material: "stone",
                 particle: "rock_particle",
