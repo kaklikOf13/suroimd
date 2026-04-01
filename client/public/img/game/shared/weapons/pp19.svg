@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   width="110"
-   height="110"
-   viewBox="0 0 110 110"
+   width="125.48701"
+   height="39.515919"
+   viewBox="0 0 125.48702 39.515919"
    fill="none"
    version="1.1"
    id="svg50"
    sodipodi:docname="pp19.svg"
-   inkscape:version="1.3.2 (1:1.3.2+202311252150+091e20ef0f)"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -21,19 +21,19 @@
      inkscape:pageopacity="0"
      inkscape:pagecheckerboard="1"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="7.6431815"
-     inkscape:cx="50.110023"
-     inkscape:cy="60.773122"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:zoom="3.8215908"
+     inkscape:cx="27.475469"
+     inkscape:cy="89.884035"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg50" />
   <g
      clip-path="url(#clip0_1714_788)"
      id="g50"
-     transform="matrix(1.0232126,0,0,1.0232126,-1.7606431,0.42728358)">
+     transform="matrix(0.88612811,0.5116063,-0.5116063,0.88612811,39.315464,-62.392254)">
     <path
        d="m 73.7343,30.4708 c 0,0 0.9598,1.4451 1.1443,1.7647 0.1845,0.3196 0.5896,1.1147 0.5896,1.1147 l 0.6942,1.2023 c 0,0 1.1375,2.0505 1.3763,2.4641 0.2387,0.4136 0.3952,1.0752 0.3952,1.0752 l 0.9588,-0.5535 c 0,0 0.4967,-0.3119 0.1653,-0.9728 -0.3315,-0.6609 -2.0819,-3.7362 -2.0819,-3.7362 l 0.7332,-0.4233 -1.4219,-2.4628 -0.9208,0.5317 c 0,0 -0.4716,-0.643 -0.928,-0.3917 z"
        fill="#4a4a43"
@@ -385,8 +385,10 @@
       <rect
          width="110"
          height="110"
-         fill="white"
-         id="rect50" />
+         fill="#ffffff"
+         id="rect50"
+         x="0"
+         y="0" />
     </clipPath>
   </defs>
 </svg>

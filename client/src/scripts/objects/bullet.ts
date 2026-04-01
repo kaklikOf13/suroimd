@@ -1,7 +1,7 @@
 import { Layer, ObjectCategory, ZIndexes } from "@common/constants";
 import { BaseBullet, type BulletOptions } from "@common/utils/baseBullet";
 import { RectangleHitbox } from "@common/utils/hitbox";
-import { getEffectiveZIndex, isVisibleFromLayer } from "@common/utils/layer";
+import { adjacentOrEqualLayer, getEffectiveZIndex, isVisibleFromLayer } from "@common/utils/layer";
 import { Geometry, Numeric, resolveStairInteraction } from "@common/utils/math";
 import { random, randomFloat, randomRotation } from "@common/utils/random";
 import { Vec } from "@common/utils/vector";
@@ -9,7 +9,7 @@ import { colord } from "colord";
 import { BloomFilter } from "pixi-filters";
 import { Color } from "pixi.js";
 import { type Game } from "../game";
-import { MODE, PIXI_SCALE } from "../utils/constants";
+import { Biome, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, toPixiCoords } from "../utils/pixi";
 import type { Building } from "./building";
 import { type Obstacle } from "./obstacle";
@@ -43,7 +43,7 @@ export class Bullet extends BaseBullet {
         const mods = options.modifiers;
         const tracerMods = mods?.tracer;
 
-        this.tracerLength = tracerStats.length * (tracerMods?.length ?? 1);
+        this.tracerLength = (tracerStats.length * (tracerMods?.length ?? 1))*1.7;
         this.maxLength = this._image.width * this.tracerLength;
         this._image.scale.y = tracerStats.width * (tracerMods?.width ?? 1) * (this.thin ? 0.5 : 1);
         this._image.alpha = tracerStats.opacity * (tracerMods?.opacity ?? 1) / (this.reflectionCount + 1);
@@ -61,7 +61,7 @@ export class Bullet extends BaseBullet {
                 ? random(0, white)
                 : tracerStats.color ?? white
         );
-        if (MODE.bulletTrailAdjust) color.multiply(MODE.bulletTrailAdjust);
+        if (Biome.bulletTrailAdjust) color.multiply(Biome.bulletTrailAdjust);
         if (this.saturate) {
             const hsl = colord(color.toRgbaString()).saturate(50);
             color.value = (hsl.brightness() < 0.6 ? hsl.lighten(0.1) : hsl.darken(0.2)).rgba;
@@ -95,7 +95,11 @@ export class Bullet extends BaseBullet {
 
                 const { point, normal } = collision.intersection;
 
-                (object as Player | Obstacle | Building).hitEffect(point, Math.atan2(normal.y, normal.x));
+                if(object.isPlayer){
+                    (object as Player).hitEffect(point, Math.atan2(normal.y, normal.x),this.headshot?"headshot":undefined);
+                }else{
+                    (object as Obstacle | Building).hitEffect(point, Math.atan2(normal.y, normal.x));
+                }
 
                 this.damagedIDs.add(object.id);
 
@@ -109,7 +113,7 @@ export class Bullet extends BaseBullet {
         }
         if (this._playBulletWhiz) {
             const intersection = this.game.activePlayer?.bulletWhizHitbox.intersectsLine(this.initialPosition, this.position);
-            if (intersection) {
+            if (intersection && this.game.layer !== undefined && adjacentOrEqualLayer(this.layer, this.game.layer)) {
                 this.game.soundManager.play(`bullet_whiz_${random(1, 3)}`, { position: intersection.point });
                 this._playBulletWhiz = false;
             }

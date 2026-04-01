@@ -31,6 +31,7 @@ export interface BulletOptions {
     readonly reflectionCount?: number
     readonly variance?: number
     readonly rangeOverride?: number
+    readonly headshot?:boolean
 }
 
 type GameObject = {
@@ -72,6 +73,7 @@ export class BaseBullet {
     readonly rangeVariance: number;
 
     dead = false;
+    headshot=false;
 
     readonly definition: BulletDefinition;
 
@@ -97,7 +99,7 @@ export class BaseBullet {
             ? undefined
             : options.modifiers;
 
-        let range = (this.modifiers?.range ?? 1) * this.definition.range;
+        let range = ((this.modifiers?.range ?? 1) * this.definition.range);
 
         if (this.definition.allowRangeOverride && options.rangeOverride !== undefined) {
             range = Numeric.clamp(options.rangeOverride, 0, range);
@@ -107,6 +109,8 @@ export class BaseBullet {
         this.maxDistanceSquared = this.maxDistance ** 2;
 
         this.direction = Vec.create(Math.sin(this.rotation), -Math.cos(this.rotation));
+
+        this.headshot=options.headshot??false
 
         this.velocity = Vec.scale(
             this.direction,
@@ -173,12 +177,15 @@ export class BaseBullet {
 
     serialize(stream: SuroiByteStream): void {
         Bullets.writeToStream(stream, this.definition);
-        stream.writePosition(this.initialPosition);
+        stream.writeFullPosition(this.initialPosition);
         stream.writeRotation2(this.rotation);
         stream.writeLayer(this.layer);
         stream.writeFloat(this.rangeVariance, 0, 1, 4);
         stream.writeUint8(this.reflectionCount);
-        stream.writeObjectId(this.sourceID);
+        stream.writeObjectId(this.sourceID)
+        stream.writeBooleanGroup(
+            this.headshot
+        )
 
         // don't care about damage
         // don't care about dtc
@@ -207,7 +214,7 @@ export class BaseBullet {
             traceWidthMod,
             traceLengthMod,
             this.saturate,
-            this.thin
+            this.thin,
         );
 
         if (hasMods) {
@@ -245,12 +252,16 @@ export class BaseBullet {
 
     static deserialize(stream: SuroiByteStream): BulletOptions {
         const source = Bullets.readFromStream(stream);
-        const position = stream.readPosition();
+        const position = stream.readFullPosition();
         const rotation = stream.readRotation2();
         const layer = stream.readLayer();
         const variance = stream.readFloat(0, 1, 4);
         const reflectionCount = stream.readUint8();
         const sourceID = stream.readObjectId();
+
+        const [
+            headshot
+        ]=stream.readBooleanGroup()
 
         const [
             hasMods,
@@ -260,7 +271,7 @@ export class BaseBullet {
             traceWidthMod,
             traceLengthMod,
             saturate,
-            thin
+            thin,
         ] = stream.readBooleanGroup();
 
         const modifiers = hasMods
@@ -296,7 +307,8 @@ export class BaseBullet {
             rangeOverride,
             modifiers,
             saturate,
-            thin
+            thin,
+            headshot:headshot??false
         };
     }
 }

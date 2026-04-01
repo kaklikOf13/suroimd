@@ -1,8 +1,8 @@
 import { WebSocket, type MessageEvent } from "ws";
 import { GameConstants, InputActions, ObjectCategory } from "../../common/src/constants";
-import { Emotes, type EmoteDefinition } from "../../common/src/definitions/emotes";
+import { Emotes, type EmoteDefinition } from "../../common/src/definitions/loadout/emotes";
 import { Loots } from "../../common/src/definitions/loots";
-import { Skins, type SkinDefinition } from "../../common/src/definitions/skins";
+import { Skins, type SkinDefinition } from "../../common/src/definitions/loadout/skins";
 import { GameOverPacket } from "../../common/src/packets/gameOverPacket";
 import { areDifferent, PlayerInputPacket, type InputAction, type PlayerInputData } from "../../common/src/packets/inputPacket";
 import { JoinPacket } from "../../common/src/packets/joinPacket";
@@ -13,16 +13,18 @@ import { type GetGameResponse } from "../../common/src/typings";
 import { Geometry, π, τ } from "../../common/src/utils/math";
 import { ItemType, type ReferenceTo } from "../../common/src/utils/objectDefinitions";
 import { type FullData } from "../../common/src/utils/objectsSerializations";
-import { pickRandomInArray, random, randomBoolean, randomFloat, randomSign } from "../../common/src/utils/random";
+import { pickRandomInArray, random, randomBoolean, randomSign } from "../../common/src/utils/random";
 import { Vec, type Vector } from "../../common/src/utils/vector";
+import { HealingItems } from "@common/definitions/healingItems";
+import { ExtraLoadout, ExtraLoadoutList, ExtraLoadoutType } from "@common/definitions/loadout/extra_loadout";
 
 console.log("start");
 
 const config = {
     mainAddress: "http://127.0.0.1:8000",
     gameAddress: "ws://127.0.0.1:800<ID>",
-    botCount: 79,
-    joinDelay: 100,
+    botCount: 160,
+    joinDelay: 30,
     rejoinOnDeath: false
 };
 
@@ -79,6 +81,10 @@ class Bot {
     get disconnected(): boolean { return this._disconnected; }
 
     private readonly _ws: WebSocket;
+
+    adrenaline:number=0;
+    health:number=100
+    items:Record<string,number>={}
 
     private _lastInputPacket?: InputPacket<PlayerInputData>;
 
@@ -138,6 +144,13 @@ class Bot {
             case packet instanceof UpdatePacket: {
                 const { output } = packet;
 
+                this.adrenaline=output.playerData?.adrenaline??0;
+                this.health=output.playerData?.health??100;
+
+                if (output.playerData?.items) {
+                    this.items=output.playerData?.items.items
+                }
+
                 this._serverId ??= output.playerData?.id?.id;
                 this._slot = output.playerData?.inventory?.activeWeaponIndex ?? this._slot;
 
@@ -184,13 +197,17 @@ class Bot {
 
         const name = `BOT_${this.id}`;
         console.log(`${name} connected to game ${this.gameID}`);
-
+        let role=pickRandomInArray(ExtraLoadoutList)
+        while(ExtraLoadout[role].type!==ExtraLoadoutType.Role){
+            role=pickRandomInArray(ExtraLoadoutList)
+        }
         this.sendPacket(
             JoinPacket.create({
                 name,
                 isMobile: false,
                 skin: Loots.reify(pickRandomInArray(skins)),
-                emotes: this._emotes
+                emotes: this._emotes,
+                role:ExtraLoadoutList.indexOf(role),
             })
         );
     }
@@ -204,7 +221,7 @@ class Bot {
 
     private _dontCommitGrenadeSuicideTimer?: NodeJS.Timeout;
     private _grenadeSuicidePrevention = false;
-
+    safe=true
     sendInputs(): void {
         if (!this._connected) return;
 
@@ -237,12 +254,15 @@ class Bot {
                 emote: pickRandomInArray(this._emotes)
             });
         }
-
-        if (this._interact) {
-            actions.push({ type: InputActions.Interact });
+        if(this.safe){
+            if(100-this.adrenaline>=50&&this.items["tablets"]>0){
+                actions.push({type:InputActions.UseItem,item:HealingItems.fromString("tablets")})
+            }else if(100-this.adrenaline>=25&&this.items["soda"]>0){
+                actions.push({type:InputActions.UseItem,item:HealingItems.fromString("soda")})
+            }
         }
 
-        if (this._swap) {
+        /*if (this._swap) {
             this._swap = false;
             const slot = aimhax ? random(0, 1) : random(0, GameConstants.player.maxWeapons - 1);
             actions.push({ type: InputActions.EquipItem, slot });
@@ -255,7 +275,7 @@ class Bot {
             }
         } else if (aimhax && this._slot >= 2) {
             actions.push({ type: InputActions.EquipItem, slot: random(0, 1) });
-        }
+        }*/
 
         const inputPacket = PlayerInputPacket.create({
             movement: { ...this._moving },

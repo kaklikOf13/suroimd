@@ -43,10 +43,14 @@
     "@fortawesome/fontawesome-free": "^6.6.0",
     "@pixi/sound": "^6.0.1",
     "colord": "^2.9.3",
+    "front-matter": "^4.0.2",
+    "hjson": "^3.2.2",
     "jquery": "^3.7.1",
+    "marked": "^16.0.0",
     "nipplejs": "^0.10.2",
     "pixi-dashed-line": "^1.4.2",
     "pixi-filters": "^6.0.5",
-    "pixi.js": "^8.5.0"
+    "pixi.js": "^8.5.0",
+    "svelte-mount": "^3.0.2"
   }
 }

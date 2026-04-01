@@ -5,9 +5,15 @@ import { findGame } from "./gameManager";
 import { type Player } from "./objects/player";
 import { customTeams } from "./server";
 import { removeFrom } from "./utils/misc";
+import { GOAPGoal } from "./utils/goap";
+import { PerkIds } from "@common/definitions/perks";
+import { type MapIndicator } from "./map";
+import { type Vector } from "@common/utils/vector";
 
 export class Team {
     readonly id: number;
+
+    group?:number;
 
     private readonly _players: Player[] = [];
     get players(): readonly Player[] { return this._players; }
@@ -131,7 +137,11 @@ export class Team {
         return this.players.filter(player => !player.dead && !player.disconnected);
     }
 }
-
+export class GoapTeam extends Team{
+    spotedEnemys:Player[]=[]
+    alert:number=1
+    goal:GOAPGoal|undefined
+}
 export class CustomTeam {
     private static readonly _idChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static readonly _idCharMax = this._idChars.length - 1;
@@ -269,6 +279,77 @@ export class CustomTeamPlayer {
 
     sendMessage(message: CustomTeamMessage): void {
         this.socket.send(JSON.stringify(message));
+    }
+}
+
+export class Group {
+    readonly id: number;
+
+    private readonly _players: Player[] = [];
+    get players(): readonly Player[] { return this._players; }
+
+    readonly _indexMapping = new Map<Player, number>();
+
+    constructor(id: number) {
+        this.id = id;
+    }
+
+    addPlayer(player: Player): void {
+        if(player.group){
+            player.group.removePlayer(player);
+        }
+        player.group=this
+        player.groupID=this.id
+        this._indexMapping.set(player, this._players.push(player) - 1);
+    }
+
+    removePlayer(player: Player): boolean {
+        const index = this._indexMapping.get(player);
+        const exists = index !== undefined;
+        if (exists) {
+            this._players.splice(index, 1);
+            this._indexMapping.delete(player);
+
+            player.group=undefined
+            player.groupID=-1
+
+            for (const [player, mapped] of this._indexMapping.entries()) {
+                if (mapped <= index) continue;
+                this._indexMapping.set(player, mapped - 1);
+            }
+        }
+
+        return exists;
+    }
+
+    hasLivingPlayers(): boolean {
+        return this.players.some(player => !player.dead && !player.disconnected);
+    }
+    hasNotDownedPlayers(): boolean {
+        return this.players.some(player => !player.dead && !player.disconnected && (!player.downed||player.hasPerk(PerkIds.SelfRevive)));
+    }
+
+    getLivingPlayers(): Player[] {
+        return this.players.filter(player => !player.dead && !player.disconnected);
+    }
+    getNotDownedPlayers(): Player[] {
+        return this.players.filter(player => !player.dead && !player.disconnected && (!player.downed||player.hasPerk(PerkIds.SelfRevive)));
+    }
+
+    map_indicators:Record<number,MapIndicator>={}
+    add_indicator(id:number,position:Vector,frame:string,tint:number=0xffffff,scale:number=1,from_player:boolean=false):MapIndicator{
+        this.map_indicators[id]={
+            sprite:{
+                frame:frame,
+                from_player:from_player,
+                scale:scale,
+                tint:tint
+            },
+            id:id,
+            position:position,
+            rewrite:true
+        }
+        return this.map_indicators[id]
     }
 }
 

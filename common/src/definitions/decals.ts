@@ -24,6 +24,11 @@ export const Decals = ObjectDefinitions.withDefault<DecalDefinition>()(
             rotationMode: RotationMode.Full
         },
         {
+            name: "Explosion Nuke Decal",
+            scale:3,
+            rotationMode: RotationMode.Full
+        },
+        {
             name: "Frag Explosion Decal",
             rotationMode: RotationMode.Full
         },

@@ -2,7 +2,7 @@ import { GameConstants, InputActions } from "../constants";
 import { type AmmoDefinition } from "../definitions/ammos";
 import { type ArmorDefinition } from "../definitions/armors";
 import { type BackpackDefinition } from "../definitions/backpacks";
-import { type EmoteDefinition } from "../definitions/emotes";
+import { type EmoteDefinition } from "../definitions/loadout/emotes";
 import { type HealingItemDefinition } from "../definitions/healingItems";
 import { Loots, type WeaponDefinition } from "../definitions/loots";
 import { type MapPingDefinition, MapPings, type PlayerPing } from "../definitions/mapPings";
@@ -68,11 +68,11 @@ type MobileMixin = {
 };
 
 type TurningMixin = {
-    readonly turning: false
-    readonly rotation?: undefined
+    turning: false
+    rotation?: undefined
 } | ({
-    readonly turning: true
-    readonly rotation: number
+    turning: true
+    rotation: number
 } & ({
     readonly isMobile: false
     readonly distanceToMouse: number
@@ -83,10 +83,10 @@ type TurningMixin = {
 
 export type PlayerInputData = {
     readonly movement: {
-        readonly up: boolean
-        readonly down: boolean
-        readonly left: boolean
-        readonly right: boolean
+        up: boolean
+        down: boolean
+        left: boolean
+        right: boolean
     }
     readonly attacking: boolean
     readonly actions: readonly InputAction[]
@@ -151,7 +151,7 @@ export const PlayerInputPacket = createPacket("PlayerInputPacket")<PlayerInputDa
                     break;
                 case InputActions.MapPing:
                     MapPings.writeToStream(stream, action.ping);
-                    stream.writePosition(action.position);
+                    stream.writeFullPosition(action.position);
                     break;
             }
         }, 1);
@@ -234,7 +234,7 @@ export const PlayerInputPacket = createPacket("PlayerInputPacket")<PlayerInputDa
                     break;
                 case InputActions.MapPing:
                     ping = MapPings.readFromStream(stream);
-                    position = stream.readPosition();
+                    position = stream.readFullPosition();
                     break;
             }
 

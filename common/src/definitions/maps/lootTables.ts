@@ -1,0 +1,1282 @@
+import { NullString, ReferenceTo } from "../../utils/objectDefinitions";
+import { LootDefinition, Loots } from "../loots";
+import { random, weightedRandom } from "../../utils/random";
+import { isArray } from "../../utils/misc";
+import { PerkIds, Perks } from "../perks";
+
+export type WeightedItem =
+    (
+        | { readonly item: ReferenceTo<LootDefinition> | typeof NullString }
+        | { readonly table: string }
+    )
+    & { readonly weight: number }
+    & (
+        | { readonly spawnSeparately?: false, readonly count?: number }
+        | { readonly spawnSeparately: true, readonly count: number }
+    );
+
+export type SimpleLootTable = readonly WeightedItem[] | ReadonlyArray<readonly WeightedItem[]>;
+
+export type FullLootTable = {
+    readonly min: number
+    readonly max: number
+    /**
+     * Ensures no duplicate drops. Only applies to items in the table, not tables.
+     */
+    readonly noDuplicates?: boolean
+    readonly loot: readonly WeightedItem[]
+};
+
+export type LootTable = SimpleLootTable | FullLootTable;
+
+export class LootItem {
+    constructor(
+        public readonly idString: ReferenceTo<LootDefinition>,
+        public readonly count: number
+    ) { }
+}
+
+export function getLootFromTable(tableID: string,lootTables?:Record<string,LootTable>): LootItem[] {
+    const lootTable = resolveTable(tableID,lootTables);
+    if (lootTable === undefined) {
+        throw new ReferenceError(`Unknown loot table: ${tableID}`);
+    }
+
+    const isSimple = lootTable instanceof Array;
+    const { min, max, noDuplicates, loot } = isSimple
+        ? {
+            min: 1,
+            max: 1,
+            noDuplicates: false,
+            loot: lootTable
+        }
+        : lootTable.noDuplicates
+            ? { ...lootTable, loot: [...lootTable.loot] } // cloning the array is necessary because noDuplicates mutates it
+            : lootTable;
+    return (
+        isSimple && isArray(loot[0])
+            ? (loot as readonly WeightedItem[][]).map(innerTable => getLoot(innerTable,lootTables))
+            : min === 1 && max === 1
+                ? getLoot(loot as WeightedItem[],lootTables, noDuplicates)
+                : Array.from(
+                    { length: random(min, max) },
+                    () => getLoot(loot as WeightedItem[],lootTables, noDuplicates)
+                )
+    ).flat();
+}
+
+export function resolveTable(tableID: string,lootTables?:Record<string,LootTable>): LootTable {
+    return (lootTables?lootTables[tableID]:undefined)??(LootTables.normal[tableID]);
+}
+
+function getLoot(items: WeightedItem[],tables?:Record<string,LootTable>, noDuplicates?: boolean): LootItem[] {
+    const selection = items.length === 1
+        ? items[0]
+        : weightedRandom(items, items.map(({ weight }) => weight));
+
+
+    if ("table" in selection) {
+        if(selection.spawnSeparately){
+            const ret:LootItem[]=[]
+            for(let i=0;i<selection.count;i++){
+                ret.push(...getLootFromTable(selection.table,tables))
+            }
+            return ret
+        }else{
+            return getLootFromTable(selection.table,tables);
+        }
+    }
+
+    const item = selection.item;
+    if (item === NullString) return [];
+
+    const loot: LootItem[] = selection.spawnSeparately
+        ? Array.from({ length: selection.count }, () => new LootItem(item, 1))
+        : [new LootItem(item, selection.count ?? 1)];
+
+    const definition = Loots.fromStringSafe(item);
+    if (definition === undefined) {
+        throw new ReferenceError(`Unknown loot item: ${item}`);
+    }
+
+    if ("ammoType" in definition && definition.ammoSpawnAmount) {
+        // eslint-disable-next-line prefer-const
+        let { ammoType, ammoSpawnAmount } = definition;
+
+        if (selection.spawnSeparately) {
+            ammoSpawnAmount *= selection.count;
+        }
+
+        if (ammoSpawnAmount > 1) {
+            const halfAmount = ammoSpawnAmount / 2;
+            loot.push(
+                new LootItem(ammoType, Math.floor(halfAmount)),
+                new LootItem(ammoType, Math.ceil(halfAmount))
+            );
+        } else {
+            loot.push(new LootItem(ammoType, ammoSpawnAmount));
+        }
+    }
+
+    if (noDuplicates) {
+        const index = items.findIndex(entry => "item" in entry && entry.item === selection.item);
+        if (index !== -1) items.splice(index, 1);
+    }
+
+    return loot;
+}
+
+export const LootTables: Record<string, Record<string, LootTable>> = {
+    normal: {
+        ground_loot: [
+            { table: "equipment", weight: 1 },
+            { table: "healing_items", weight: 1 },
+            { table: "ammo", weight: 1 },
+            { table: "guns", weight: 0.9 },
+            { table: "scopes", weight: 0.3 },
+            { table: "coins", weight: 0.25 }
+        ],
+        regular_crate: [
+            { table: "guns", weight: 1.4 },
+            { table: "equipment", weight: 1 },
+            { table: "healing_items", weight: 0.9 },
+            { table: "ammo", weight: 0.5 },
+            { table: "scopes", weight: 0.3 },
+            { table: "throwables", weight: 0.2 },
+            { table: "melee", weight: 0.04 }
+        ],
+        bottle_crate:[
+            { table: "healing_items", weight: 1.3 },
+            { table: "ammo", weight: 1.1 },
+            { table: "scopes", weight: 0.85 },
+            { table: "throwables", weight: 0.5 },
+            { table: "equipment", weight: 0.35 },
+            { table: "guns", weight: 0.1 },
+            { table: "melee", weight: 0.04 }
+        ],
+        hazel_crate: [
+            [{ item: "firework_launcher", weight: 1 }],
+        ],
+        viking_chest: [
+            [{ item: "seax", weight: 1 }],
+            [{ table: "viking_chest_guns", weight: 1 }],
+            [{ table: "viking_chest_guns", weight: 1 }],
+            [
+                { table: "special_equipment", weight: 0.65 },
+                { table: "viking_chest_guns", weight: 0.5 },
+                { table: "special_scopes", weight: 0.3 }
+            ],
+            [
+                { table: "special_equipment", weight: 0.65 },
+                { table: "special_scopes", weight: 0.3 }
+            ]
+        ],
+        river_chest: [
+            [{ table: "river_chest_guns", weight: 1 }],
+            [{ table: "river_chest_guns", weight: 1 }],
+            [
+                { table: "special_equipment", weight: 0.65 },
+                { table: "river_chest_guns", weight: 0.5 },
+                { table: "special_scopes", weight: 0.3 }
+            ],
+            [
+                { table: "special_equipment", weight: 0.65 },
+                { table: "special_scopes", weight: 0.3 }
+            ]
+        ],
+        aegis_crate: {
+            min: 3,
+            max: 5,
+            loot: [
+                { table: "special_guns", weight: 1.1 },
+                { table: "special_equipment", weight: 0.65 },
+                { table: "special_scopes", weight: 0.3 },
+                { table: "special_healing_items", weight: 0.15 }
+            ]
+        },
+        flint_crate: {
+            min: 3,
+            max: 5,
+            loot: [
+                { table: "special_guns", weight: 1.1 },
+                { table: "special_equipment", weight: 0.65 },
+                { table: "special_healing_items", weight: 0.15 },
+                { table: "special_scopes", weight: 0.3 }
+            ]
+        },
+        md_crate: {
+            min: 4,
+            max: 6,
+            loot: [
+                { item: "airstrike", weight: 2.5 },
+                { item: "curadell", weight: 1.5 },
+                { item: "radio", weight: 0.45 },
+                { item: "nuke_radio", weight: 0.1 },
+            ]
+        },
+        survival_crate: [
+            [{ table: "shotguns_guns", weight: 1 }],
+            [{ table: "assault_rifles_guns", weight: 1 }],
+            [{ table: "helmets", weight: 1 }],
+            [{ table: "vests", weight: 1 }],
+            [{ table: "backpacks", weight: 1 }],
+            [{ table: "special_healing_items", weight: 1 }],
+            [{ table: "special_scopes", weight: 1 }]
+        ],
+        frozen_crate: [
+            [
+                { table: "epic_guns", weight: 0.5 },
+                { item: "firework_launcher", weight: 0.25 },
+                { table: "river_chest_guns", weight: 1 }
+            ],
+            [
+                { table: "ammo", weight: 1 },
+                { table: "airdrop_scopes", weight: 1 }
+            ],
+            [{ table: "airdrop_healing_items", weight: 0.5 }],
+            [
+                { table: "equipment", weight: 1 },
+                { table: "special_equipment", weight: 0.5 }
+            ]
+        ],
+        dumpster: {
+            min: 1,
+            max: 2,
+            loot: [
+                { table: "guns", weight: 0.8 },
+                { table: "healing_items", weight: 0.6 },
+                { table: "scopes", weight: 0.4 },
+                { table: "equipment", weight: 0.3 }
+            ]
+        },
+        grenade_box: [
+            { item: "frag_grenade", weight: 1, count: 2 },
+            { item: "mirv_grenade", weight: .1, count: 2 },
+            { item: "ice_grenade", weight: 0.05, count: 2 },
+            { item: "smoke_grenade", weight: 1, count: 2 }
+        ],
+        melee_crate: {
+            min: 2,
+            max: 3,
+            loot: [
+                { table: "melee", weight: 1 }
+            ]
+        },
+        grenade_crate: {
+            min: 3,
+            max: 4,
+            loot: [
+                { table: "throwables", weight: 1 }
+            ]
+        },
+        tango_crate: [
+            [
+                { item: "4x_scope", weight: 1 },
+                { item: "8x_scope", weight: 0.1 },
+                { item: "15x_scope", weight: 0.025 },
+                { item: "20x_scope", weight: 0.009 },
+            ],
+            [
+                { item: "tango_51", weight: 60 },
+                { item: "tango_51", spawnSeparately: true, count: 2, weight: 30 },
+                { item: "tango_51", spawnSeparately: true, count: 3, weight: 3.5 },
+                { item: "tango_51", spawnSeparately: true, count: 4, weight: 0.1 },
+                { item: "tango_51", spawnSeparately: true, count: 5, weight: 0.00001 },
+            ]
+        ],
+        golden_container:[
+            [{table:"airdrop_scopes",weight:1}],
+            [{ item: "sv98", count:1, weight:1 }],
+        ],
+        lux_crate: [
+            [{ item: "rgs", weight: 1 }],
+            [{ table: "scopes", weight: 1 }]
+        ],
+        gold_rock: [
+            { item: "mosin_nagant", weight: 1 }
+        ],
+        loot_tree: [
+            [
+                { item: "model_37", weight: 1 },
+                { item: "m3k", weight: 0.3 },
+                { item: "vepr12", weight: 0.2 }
+            ],
+            [{ item: "hatchet", weight: 1 }],
+            [{ item: "lumberjack", weight: 1 }],
+            [{ item: "basic_helmet", weight: 1 }],
+            [{ item: "basic_pack", weight: 1 }],
+            [{ item: "12g", count: 15, weight: 1 }]
+        ],
+        loot_barrel: [
+            [{ item: "crowbar", weight: 1 }],
+            [{ item: "sr25", weight: 1 }],
+            [{ item: "c4", weight: 1, count: 3 }],
+            [
+                { table: "equipment", weight: 1 },
+                { table: "scopes", weight: 1 },
+                { table: "healing_items", weight: 1 }
+            ]
+        ],
+        pumpkin: [
+            { table: "equipment", weight: 1 },
+            { table: "healing_items", weight: 1 },
+            { table: "ammo", weight: 1 },
+            { table: "guns", weight: 0.9 },
+            { table: "scopes", weight: 0.3 }
+        ],
+        large_pumpkin: {
+            min: 2,
+            max: 3,
+            loot: [
+                { table: "equipment", weight: 1 },
+                { table: "healing_items", weight: 1 },
+                { table: "ammo", weight: 1 },
+                { table: "guns", weight: 0.9 },
+                { table: "scopes", weight: 0.3 }
+            ]
+        },
+        birthday_cake: [
+            { table: "special_guns", weight: 0.25 },
+            { table: "special_equipment", weight: 0.25 },
+            { item: "1st_birthday", weight: 0.25 },
+            { item: "40mm", weight: 0.2 },
+            { item: "firework_launcher", weight: 0.01 }
+        ],
+        special_bush: [
+            { item:NullString, weight: 3},
+            { table: "special_equipment", weight: 1 },
+            { table: "healing_items", weight: 1 },
+            { table: "scopes", weight: 1 }
+        ],
+        warehouse: [
+            { table: "special_guns", weight: 1 },
+            { table: "special_scopes", weight: 0.25 },
+            { table: "special_equipment", weight: 0.65 }
+        ],
+        large_drawer: [
+            { table: "guns", weight: 1 },
+            { table: "coins", weight: 0.85 },
+            { table: "equipment", weight: 0.65 },
+            { table: "scopes", weight: 0.3 }
+        ],
+        small_drawer: [
+            { table: "ammo", weight: 1 },
+            { table: "coins", weight: 0.9 },
+            { table: "healing_items", weight: 0.8 },
+            { table: "guns", weight: 0.3 }
+        ],
+        filing_cabinet: [
+            { table: "ammo", weight: 1 },
+            { table: "equipment", weight: 0.85 },
+            { table: "healing_items", weight: 0.4 },
+            { table: "guns", weight: 0.3 }
+        ],
+        small_table: [
+            { table: "healing_items", weight: 1 },
+            { table: "ammo", weight: 1 },
+            { table: "coins", weight: 0.85 },
+        ],
+        box: [
+            { table: "ammo", weight: 1.2 },
+            { table: "healing_items", weight: 1 },
+            { table: "equipment", weight: 1 },
+            { table: "guns", weight: 0.5 },
+            { table: "scopes", weight: 0.3 }
+        ],
+        small_desk: [
+            [
+                { table: "healing_items", weight: 0.8 },
+                { table: "equipment", weight: 1 },
+                { table: "guns", weight: 1 },
+                { table: "scopes", weight: 0.4 }
+            ],
+            [
+                { table: "healing_items", weight: 1 },
+                { table: "scopes", weight: 1 },
+                { table: "coins", weight: 0.85 },
+            ]
+        ],
+        bookshelf: {
+            min: 1,
+            max: 2,
+            loot: [
+                { table: "equipment", weight: 1.1 },
+                { table: "scopes", weight: 0.4 },
+                { table: "guns", weight: 1 },
+                { table: "healing_items", weight: 0.6 },
+                { table: "coins", weight: 0.4 },
+            ]
+        },
+        trash: [
+            { table: "ammo", weight: 1 },
+            { item: "cola", weight: 0.1 }
+        ],
+        fridge: {
+            min: 2,
+            max: 3,
+            loot: [
+                { item: "cola", weight: 1 }
+            ]
+        },
+        vending_machine: {
+            min: 2,
+            max: 3,
+            loot: [
+                { item: "cola", weight: 1 },
+                { item: "medikit", weight: 0.25 },
+                { item: "tablets", weight: 0.1 }
+            ]
+        },
+        cooler: {
+            min: 2,
+            max: 3,
+            loot: [
+                { item: "cola", weight: 1 }
+            ]
+        },
+        washing_machine: [
+            { item: "lemon", weight: 1 },
+            { item: "flamingo", weight: 1 },
+            { item: "verified", weight: 0.5 },
+            { item: "no_kil_pls", weight: 0.5 },
+            { item: "basic_outfit", weight: 0.001 }
+        ],
+        toilet: {
+            min: 2,
+            max: 3,
+            loot: [
+                { table: "healing_items", weight: 3 },
+                { table: "coins", weight: 0.4 },
+                { table: "scopes", weight: 0.1 },
+                { table: "guns", weight: 0.05 }
+            ]
+        },
+        used_toilet: {
+            min: 2,
+            max: 3,
+            loot: [
+                { table: "guns", weight: 1.25 },
+                { table: "equipment", weight: 1 },
+                { table: "scopes", weight: 0.35 },
+                { table: "coins", weight: 0.3 },
+                { table: "special_guns", weight: 0.8 },
+                { table: "healing_items", weight: 0.75 }
+            ]
+        },
+        porta_potty_toilet_open: {
+            min: 2,
+            max: 3,
+            loot: [
+                { table: "guns", weight: 1.25 },
+                { table: "healing_items", weight: 1 },
+                { table: "equipment", weight: 0.9 },
+                { table: "coins", weight: 0.8 },
+                { table: "special_guns", weight: 0.8 },
+                { table: "special_scopes", weight: 0.35 }
+            ]
+        },
+        porta_potty_toilet_closed: {
+            min: 2,
+            max: 3,
+            loot: [
+                { table: "healing_items", weight: 3 },
+                { table: "scopes", weight: 0.1 },
+                { table: "coins", weight: 0.07 },
+                { table: "guns", weight: 0.05 }
+            ]
+        },
+        ...["mcx_spear", "hp18", "stoner_63","model_37","zombie_hatchet", "mini14", "maul", "m590m", "dual_rsh12"].reduce(
+            (acc, item) => {
+                acc[`gun_mount_${item}`] = [{ item, weight: 1 }];
+                return acc;
+            },
+            {} as Record<string, LootTable>
+        ),
+        gas_can: [
+            { item: "gas_can", weight: 1 }
+        ],
+        hq_skin: [
+            { item: "gold_tie_event", weight: 1 }
+        ],
+        ship_skin: [
+            { item: "ship_carrier", weight: 1 }
+        ],
+        armory_skin: [
+            { item: "nsd_uniform", weight: 1 }
+        ],
+        plumpkin_bunker_skin: [
+            { item: "pumpkified", weight: 1 }
+        ],
+        bombed_armory_skin: [
+            { item: "one_at_nsd", weight: 1 }
+        ],
+        airdrop_crate: [
+            [{ table: "airdrop_equipment", weight: 1 }],
+            [{ table: "airdrop_scopes", weight: 1 }],
+            [{ table: "airdrop_healing_items", weight: 1 }],
+            [{ item: NullString, weight: 1.5 },{ table: "airdrop_skins", weight: 1 }],
+            [{ table: "airdrop_melee", weight: 1 }],
+            [{ table: "ammo", weight: 1 }],
+            [{ table: "epic_guns", weight: 1 }],
+            [{ table: "special_throwables", count: 1, weight: 2 }],
+            [{ table: "special_coins", weight: 1 }]
+        ],
+        gold_airdrop_crate: [
+            [{ table: "airdrop_equipment", weight: 1 }],
+            [{ table: "airdrop_scopes", weight: 1 }],
+            [{ table: "airdrop_healing_items", weight: 1 }],
+            [{ item: NullString, weight: 2.5 },{ table: "airdrop_skins", weight: .6 },{ table: "shiny_skins", weight: 2 }],
+            [{ table: "airdrop_melee", weight: 1 }],
+            [{ table: "ammo", weight: 1 }],
+            [{ table: "legendary_guns", weight: 1 }],
+            [{ table: "special_throwables", count: 1, weight: 2 }],
+            [{ table: "special_coins", weight: 1 }]
+        ],
+        big_airdrop_crate: [
+            [{ table: "airdrop_equipment",spawnSeparately:true,count:5, weight: 1 }],
+            [{ table: "airdrop_scopes",spawnSeparately:true,count:5, weight: 1 }],
+            [{ table: "airdrop_healing_items",spawnSeparately:true,count:7, weight: 1 }],
+
+            [{ table: "airdrop_skins_def",spawnSeparately:true,count:5, weight: 1 }],
+
+            [{ table: "airdrop_melee",spawnSeparately:true,count:3, weight: 1 }],
+            [{ table: "ammo",spawnSeparately:true,count:5, weight: 1 }],
+
+            [{ table: "big_airdrop_guns",spawnSeparately:true,count:8, weight: 1 }],
+
+            [{ table: "special_throwables", count: 5,spawnSeparately:true, weight: 2 }],
+            [{ table: "special_coins",count:6,spawnSeparately:true, weight: 1 }],
+        ],
+        gold_big_airdrop_crate: [
+            [{ table: "airdrop_equipment",spawnSeparately:true,count:5, weight: 1 }],
+            [{ table: "airdrop_scopes",spawnSeparately:true,count:5, weight: 1 }],
+            [{ table: "airdrop_healing_items",spawnSeparately:true,count:7, weight: 1 }],
+
+            [{ table: "airdrop_skins_def",spawnSeparately:true,count:5, weight: 1 }],
+
+            [{ table: "airdrop_melee",spawnSeparately:true,count:3, weight: 1 }],
+            [{ table: "ammo",spawnSeparately:true,count:5, weight: 1 }],
+
+            [{ table: "gold_big_airdrop_guns",spawnSeparately:true,count:8, weight: 1 }],
+
+            [{ table: "special_throwables", count: 5,spawnSeparately:true, weight: 2 }],
+            [{ table: "special_coins",count:7,spawnSeparately:true, weight: 1 }]
+        ],
+        pod_medic: [
+            [{ table: "equipment", weight: 1 }],
+            [{ table: "scopes", weight: 1 }],
+            [{ table: "healing_items", weight: 1, count:4 }],
+            [
+                { item: NullString, weight: 15 },
+                { item: "m9_bayonet", weight: 3 },
+                { item: "battlesaw", weight: 1 },
+                { table: "special_melee", weight: 0.02 },
+            ],
+            [{ table: "ammo", weight: 1 }],
+            [{ table: "dmrs_guns", weight: 1 }],
+        ],
+        pod_scout: [
+            [{ table: "equipment", weight: 1 }],
+            [{ table: "scopes", weight: 1 }],
+            [{ table: "stamina_items", weight: 1, count: 4 }],
+            [
+                { item: NullString, weight: 15 },
+                { item: "m9_bayonet", weight: 3 },
+                { item: "crowbar", weight: 1 },
+                { table: "special_melee", weight: 0.02 },
+            ],
+            [{ table: "ammo", weight: 1 }],
+            [{ table: "smgs_guns", weight: 1 }],
+        ],
+        pod_apple_master: [
+            [{ table: "equipment", weight: 1 },{ item: "apple_helmet", weight: 0.1 }],
+            [{ table: "scopes", weight: 1 }],
+            [{ table: "healing_items", weight: 1 }],
+            [
+                { item: NullString, weight: 15 },
+                { item: "m9_bayonet", weight: 3 },
+                { table: "melee", weight: 1 },
+                { table: "special_melee", weight: 0.1 },
+            ],
+            [{ table: "ammo", weight: 1 }],
+            [{ table: "special_guns", weight: 1 }],
+        ],
+        pod_sniper: [
+            [{ table: "equipment", weight: 1 }],
+            [{ table: "special_scopes", weight: 1 }],
+            [{ table: "healing_items", weight: 1 }],
+            [
+                { item: NullString, weight: 15 },
+                { item: "m9_bayonet", weight: 3 },
+                { item: "crowbar", weight: 1 },
+            ],
+            [{ table: "ammo", weight: 1 }],
+            [{ table: "snipers_guns", weight: 1 }],
+        ],
+        pod_assault: [
+            [{ table: "special_equipment", weight: 1 }],
+            [{ table: "scopes", weight: 1 }],
+            [{ table: "healing_items", weight: 1 }],
+            [
+                { item: NullString, weight: 15 },
+                { item: "m9_bayonet", weight: 3 },
+                { item: "crowbar", weight: 1 },
+                { table: "special_melee", weight: 0.02 },
+            ],
+            [{ table: "ammo", weight: 1, count: 3 }],
+            [{ table: "assault_rifles_guns", weight: 1 }],
+        ],
+        pod_demo: [
+            [{ table: "special_equipment", weight: 1 }],
+            [{ table: "scopes", weight: 1 }],
+            [{ table: "special_throwables", weight: 1, count:4 }],
+            [{ table: "equipment", weight: 1 }],
+            [{ table: "healing_items", weight: 1 }],
+            [
+                { item: NullString, weight: 15 },
+                { item: "m9_bayonet", weight: 3 },
+                { item: "crowbar", weight: 1 },
+                { table: "special_melee", weight: 0.02 },
+            ],
+            [{ table: "ammo", weight: 1 }],
+            [{ table: "shotguns_guns", weight: 1 }],
+        ],
+        pod_tank: [
+            [{ table: "airdrop_equipment",count:1, weight: 1 }],
+            [{ table: "scopes", weight: 1 }],
+            [{ table: "throwables", weight: 1, count:1 }],
+            [{ table: "healing_items", weight: 1 }],
+            [
+                { item: NullString, weight: 15 },
+                { item: "m9_bayonet", weight: 3 },
+                { item: "maul", weight: 1 },
+                { table: "special_melee", weight: 0.02 },
+            ],
+            [{ table: "ammo", weight: 1 }],
+            [{ table: "lmgs_guns", weight: 1 }],
+        ],
+        big_airdrop_guns:[
+            [{ table: "epic_guns", weight: 1 },{ table: "legendary_guns", weight: 0.12 }],
+        ],
+        gold_big_airdrop_guns:[
+            [{ table: "legendary_guns", weight: 1 },{ table: "epic_guns", weight: 0.1 }],
+        ],
+        airdrop_skins_def:[
+            [{ item: NullString, weight: 1.5 },{ table: "airdrop_skins", weight: 1 }],
+        ],
+        flint_stone: [
+            { table: "legendary_guns", weight: 1 }
+        ],
+        christmas_tree: {
+            min: 4,
+            max: 5,
+            loot: [
+                { table: "special_guns", weight: 1 },
+                { table: "special_equipment", weight: 0.65 },
+                { table: "special_healing_items", weight: 0.65 },
+                { table: "special_scopes", weight: 0.3 },
+                { item: "radio", weight: 0.1 }
+            ]
+        },
+        gun_case: {
+            min: 1,
+            max: 2,
+            loot: [
+                { table: "special_guns", weight: 1 }
+            ]
+        },
+        gun_locker: {
+            min: 1,
+            max: 2,
+            loot: [
+                { table: "special_guns", weight: 1 }
+            ]
+        },
+        ammo_crate: [
+            [{ table: "ammo", weight: 1 }],
+            [{ table: "ammo", weight: 1 }],
+            [
+                { item: NullString, weight: 1 },
+                { item: "50cal", count: 20, weight: 0.3 },
+                { item: "338lap", count: 6, weight: 0.1 },
+                { item: "curadell", weight: 0.1 }
+            ]
+        ],
+        rocket_box: [
+            { item: "40mm", count: 10, weight: 2 },
+            { table: "ammo", weight: 1 },
+            { item: "curadell", weight: 0.02 }
+        ],
+        falchion_case: [
+            { item: "falchion", weight: 1 }
+        ],
+        hatchet_stump: [
+            { item: "hatchet", weight: 1 }
+        ],
+        aegis_golden_case: [
+            { item: "deagle", weight: 1 },
+            { item: "rsh12", weight: 0.5 },
+            { item: "dual_deagle", weight: 0.05 },
+            { item: "dual_rsh12", weight: 0.025 },
+            { item: "g19", weight: 0.0005 }
+        ],
+        red_case: [
+            [{ item: "sergeant_helmet", weight: 1 }],
+            [{ item: "fire_hatchet", weight: 1 }],
+            [
+                { item: "super90", weight: 4 },
+                { item: "m590m", weight: 0.5 },
+                { item: "usas12", weight: 0.1 },
+            ],
+            [{ table: "vests", weight: 1 }],
+            [{ table: "backpacks", weight: 1 }],
+            [{ table: "special_healing_items", weight: 1 }],
+            [{ table: "special_scopes", weight: 1 }],
+            [{ item: "shiny_hasanger", weight: 1 }],
+        ],
+        blue_case: [
+            [{ item: "sergeant_helmet", weight: 1 }],
+            [{ item: "fire_hatchet", weight: 1 }],
+            [
+                { item: "an94", weight: 4 },
+                { item: "mg5", weight: 0.5 },
+                { item: "pkp", weight: 0.1 }
+            ],
+            [{ table: "vests", weight: 1 }],
+            [{ table: "backpacks", weight: 1 }],
+            [{ table: "special_healing_items", weight: 1 }],
+            [{ table: "special_scopes", weight: 1 }],
+            [{ item: "shiny_123op", weight: 1 }],
+        ],
+        fire_hatchet_case: [
+            { item: "fire_hatchet", weight: 1 }
+        ],
+        ice_pick_case: [
+            [{ item: "ice_pick", weight: 1 }],
+            [{ item: "frosty", weight: 1 }]
+        ],
+        confetti_grenade_box: {
+            min: 1,
+            max: 2,
+            loot: [
+                { item: "confetti_grenade", count: 4, weight: 2 },
+                { table: "throwables", weight: 1 }
+            ]
+        },
+        cabinet: [
+            { table: "special_guns", weight: 1 },
+            { table: "special_healing_items", weight: 0.65 },
+            { table: "special_equipment", weight: 0.65 },
+            { table: "special_scopes", weight: 0.3 }
+        ],
+        briefcase: [
+            { item: "vector", weight: 5 },
+            { table: "lmgs_guns", weight: 2 },
+        ],
+        sink: [
+            { table: "healing_items", weight: 1.2 },
+            { table: "coins", weight: 1.1 },
+            { table: "ammo", weight: 1 },
+            { table: "guns", weight: 0.2 }
+        ],
+        sink2: [
+            { table: "healing_items", weight: 1.2 },
+            { table: "coins", weight: 1.1 },
+            { table: "ammo", weight: 1 },
+            { table: "guns", weight: 0.4 }
+        ],
+        kitchen_unit_1: [
+            { table: "healing_items", weight: 1.2 },
+            { table: "ammo", weight: 1 },
+            { table: "coins", weight: 1 },
+            { table: "guns", weight: 0.5 },
+        ],
+        kitchen_unit_2: [
+            { table: "healing_items", weight: 1.2 },
+            { table: "coins", weight: 1.2 },
+            { table: "ammo", weight: 1 },
+            { table: "guns", weight: 0.5 },
+            { table: "special_guns", weight: 0.5 }
+        ],
+        kitchen_unit_3: [
+            { table: "healing_items", weight: 1.2 },
+            { table: "coins", weight: 1.1 },
+            { table: "ammo", weight: 1 },
+            { table: "guns", weight: 0.23 }
+        ],
+        sea_traffic_control_floor: [
+            [{ item: NullString,weight: 0.9 },{ item: "curadell", weight: 0.2, count:1},{ item: "curadell", weight: 0.09, count:2},{ item: "curadell", weight: 0.02, count:3}],
+            [{ item: "radio", weight: 1 }]
+        ],
+        sea_traffic_control_outside: [
+            { item: "peachy_breeze", weight: 1 }
+        ],
+        tugboat_red_floor: [
+            { item: "deep_sea", weight: 1 }
+        ],
+        potted_plant: [
+            { table: "coins", weight: 1.2 },
+            { table: "ammo", weight: 1 },
+            { table: "healing_items", weight: 0.5 },
+            { table: "equipment", weight: 0.3 },
+            { table: "guns", weight: 0.07 },
+        ],
+        pistols_guns:[
+            { item: "g19", weight: 200 },
+            { item: "m1895", weight: 190 },
+            { item: "px4", weight: 160 },
+            { item: "dual_g19", weight: 150 },
+            { item: "dual_m1895", weight: 140 },
+            { item: "dual_px4", weight: 110 },
+            { item: "cz75a", weight: 100 },
+            { item: "taurus_tx22", weight: 90 },
+            { item: "dual_cz75a", weight: 70 },
+            { item: "dual_taurus_tx22", weight: 60 },
+            { item: "medic_pistol", weight: 30 },
+            { item: "px4s", weight: 30 },
+            { item: "pfeifer_zeliska", weight: 1 },
+            { item: "medic_pistol", weight: 1 },
+            { item: "dual_px4s", weight: 1 },
+            { item: "dual_pfeifer_zeliska", weight: 0.1 },
+        ],
+        assault_rifles_guns:[
+            { item: "mp40", weight: 155 },
+            { item: "mp5", weight: 150 },
+            { item: "mp5e", weight: 120 },
+            { item: "ak47", weight: 100 },
+            { item: "saf200", weight: 90 },
+            { item: "aug", weight: 90 },
+            { item: "m16a4", weight: 70 },
+            { item: "arx160", weight: 70 },
+            { item: "mg36", weight: 60 },
+            { item: "mcx_spear", weight: 40 },
+            { item: "bar", weight: 40 },
+            { item: "an94", weight: 20 },
+        ],
+        lmgs_guns: [
+            { item: "lewis_gun", count: 1, weight: 200 },
+            { item: "stoner_63", count: 1, weight: 80 },
+            { item: "vickers", count: 1, weight: 75 },
+            { item: "m249", count: 1, weight: 10 },
+            { item: "mg5", count: 1, weight: 10 },
+            { item: "pkp", count: 1, weight: 7 },
+            { item: "negev", count: 1, weight: 7 },
+            { item: "m134", count: 1, weight: 4 },
+            { item: "m134_22lr", count: 1, weight: 1 },
+        ],
+        smgs_guns: [
+            { item: "micro_uzi", weight: 100 },
+            { item: "uzi_22lr", weight: 70 },
+            { item: "acr", weight:50 },
+            { item: "ppsh41", weight:30 },
+        ],
+        dmrs_guns: [
+            { item: "vss", weight: 200 },
+            { item: "sr25", weight: 130 },
+            { item: "mini14", weight: 125 },
+            { item: "m1_garand", weight: 75 },
+            { item: "l86a2", weight: 60 },
+            { item: "svd", weight: 60 },
+        ],
+        shotguns_guns:[
+            { item: "hp18", weight: 190 },
+            { item: "model_37", weight: 170 },
+            { item: "flues", weight: 165 },
+            { item: "m3k", weight: 80 },
+            { item: "vepr12", weight: 65 },
+            { item: "super90", weight: 10 },
+            { item: "m590m", weight: 3 },
+            { item: "usas12", weight: 1 },
+        ],
+        snipers_guns:[
+            { item: "cz600", weight: 120 },
+            { item: "blr", weight: 80 },
+            { item: "rgs", weight: 80 },
+            { item: "mosin_nagant", weight: 50 },
+            { item: "tango_51", weight: 30 },
+            { item: "sv98", weight: 10 },
+            { item: "l115a1", weight: 0.5 },
+            { item: "awms", weight: .1 }
+        ],
+        common_guns:[
+            { item: "g19", weight: 1 },
+            { item: "m1895", weight: 0.9 },
+            { item: "px4", weight: 0.8 },
+            { item: "cz75a", weight: 0.7 },
+            { item: "taurus_tx22", weight: 0.5 },
+        ],
+        uncommon_guns:[
+            { item: "mp40", weight: 250 },
+            { item: "mp5", weight: 240 },
+            { item: "saf200", weight: 220 },
+            { item: "hp18", weight: 220 },
+            { item: "micro_uzi", weight: 120 },
+            { item: "uzi_22lr", weight: 110 },
+            { item: "ak47", weight: 105 },
+            { item: "aug", weight: 98 },
+            { item: "flues", weight: 90 },
+            { item: "model_37", weight: 89 },
+            { item: "mp5e", weight: 89 },
+            { item: "sks", weight: 30 },
+        ],
+        rare_guns:[
+            { item: "m16a4", weight:1 },
+            { item: "acr", weight:1 },
+            { item: "arx160", weight:1 },
+            { item: "lewis_gun", weight: 0.85 },
+            { item: "rifle_cbc", weight: 0.85 },
+            { item: "m3k", weight: 0.8 },
+            { item: "g17_scoped", weight: 0.7 },
+            { item: "ppsh41", weight: 0.7 },
+            { item: "mg36", weight: 0.6 },
+            { item: "cz600", weight: 0.5 },
+        ],
+        epic_guns:[
+            { item: "vss", weight: 1.1 },
+            { item: "sr25", weight: 1 },
+            { item: "mini14", weight: 1 },
+            { item: "mcx_spear", weight: 1 },
+            { item: "deagle", weight: 0.9 },
+            { item: "bar", weight: 0.9 },
+            { item: "vepr12", weight: 0.8 },
+            { item: "vector", weight: 0.8 },
+            { item: "mosin_nagant", weight: 0.7 },
+            { item: "blr", weight: 0.7 },
+            { item: "px4s", weight: 0.67 },
+            { item: "tango_51", weight: 0.65 },
+            { item: "stoner_63", weight: 0.6 },
+            { item: "vickers", weight: 0.6 },
+            { item: "sv98", weight: 0.5 },
+            { item: "medic_pistol", weight: 0.2 },
+            { item: "radio", weight: 0.1 },
+        ],
+        legendary_guns:[
+            { item: "m1_garand", weight: 1.05 },
+            { item: "l86a2", weight: 1.05 },
+            { item: "svd", weight: 1.05 },
+            { item: "dual_px4s", weight: 1.05 },
+            { item: "pp19", weight: 1 },
+            { item: "negev", weight: 1 },
+            { item: "m249", weight: 1 },
+            { item: "mg5", weight: 1 },
+            { item: "pkp", weight: 1 },
+            { item: "super90", weight: 0.8 },
+            { item: "m590m", weight: 0.8 },
+            { item: "usas12", weight: 0.6 },
+            { item: "mk18", weight: 0.5 },
+            { item: "l115a1", weight: 0.5 },
+            { item: "pfeifer_zeliska", weight: 0.5 },
+            { item: "dual_rsh12", weight: 0.5 },
+            { item: "awms", weight: 0.4 },
+            { item: "m134", weight: 0.4 },
+            { item: "m134_22lr", weight: 0.2 },
+            { item: "nuke_radio", weight: 0.1 },
+        ],
+        guns: [
+            { table: "common_guns", weight: 140 },
+            { table: "uncommon_guns", weight: 90 },
+            { table: "rare_guns", weight: 35 },
+            { table: "epic_guns", weight: 10 },
+            { table: "legendary_guns", weight: 1 },
+        ],
+        special_guns: [
+            { table: "common_guns", weight: 110 },
+            { table: "uncommon_guns", weight: 78 },
+            { table: "rare_guns", weight: 35 },
+            { table: "epic_guns", weight: 10 },
+            { table: "legendary_guns", weight: 1 },
+        ],
+        healing_items: [
+            { item: "gauze", count: 5, weight: 3 },
+            { item: "cola", weight: 2 },
+            { item: "tablets", weight: 1 },
+            { item: "medikit", weight: 1 }
+        ],
+        stamina_items: [
+            { item: "cola", weight: 6 },
+            { item: "tablets", weight: 1 },
+        ],
+        scopes: [
+            { item: "2x_scope", weight: 1 },
+            { item: "4x_scope", weight: 0.5 },
+            { item: "8x_scope", weight: 0.1 },
+            { item: "15x_scope", weight: 0.025 },
+            { item: "20x_scope", weight: 0.01 },
+            { item: "30x_scope", weight: 0.00025 }
+        ],
+        equipment: [
+            { item: "basic_helmet", weight: 3.5 },
+            { item: "regular_helmet", weight: 0.3 },
+            { item: "tactical_helmet", weight: 0.01 },
+
+            { item: "basic_vest", weight: 3.5 },
+            { item: "regular_vest", weight: 0.3 },
+            { item: "tactical_vest", weight: 0.01 },
+
+            { item: "basic_pack", weight: 3.5 },
+            { item: "regular_pack", weight: 0.3 },
+            { item: "tactical_pack", weight: 0.01 }
+        ],
+        helmets: [
+            { item: "basic_helmet", weight: 3 },
+            { item: "regular_helmet", weight: 0.3 },
+            { item: "tactical_helmet", weight: 0.01 },
+        ],
+        vests: [
+            { item: "basic_vest", weight: 1 },
+            { item: "regular_vest", weight: 0.3 },
+            { item: "tactical_vest", weight: 0.01 },
+        ],
+        backpacks: [
+            { item: "basic_pack", weight: 1 },
+            { item: "regular_pack", weight: 0.35 },
+            { item: "tactical_pack", weight: 0.08 },
+            { item: "ultra_pack", weight: 0.01 }
+        ],
+        ammo: [
+            { item: "556mm", count: 60, weight: 1 },
+            { item: "762mm", count: 60, weight: 1 },
+            { item: "9mm", count: 60, weight: 1 },
+            { item: "22lr", count: 100, weight: 1.05 },
+            { item: "12g", count: 10, weight: 0.75 },
+            { item: "50cal", count: 20, weight: 0.05 },
+            { item: "medic_charge", count: 30, weight: 0.006 },
+            { item: "338lap", count: 6, weight: 0.005 },
+            { item: "curadell", count: 1, weight: 0.003 }
+        ],
+        coins: [
+            { item: "coin", count: 10, weight: 120 },
+            { item: "coin", count: 15, weight: 70 },
+            { item: "coin", count: 30, weight: 30 },
+            { item: "coin", count: 50, weight: 5 },
+            { item: "coin", count: 100, weight: 0.1 },
+        ],
+        special_coins: [
+            { item: "coin", count: 20, weight: 120 },
+            { item: "coin", count: 40, weight: 70 },
+            { item: "coin", count: 70, weight: 30 },
+            { item: "coin", count: 100, weight: 5 },
+            { item: "coin", count: 150, weight: 0.1 },
+        ],
+        throwables: [
+            { item: "frag_grenade", count: 2, weight: 1 },
+            { item: "smoke_grenade", count: 2, weight: 1 },
+            { item: "mirv_grenade", count: 1, weight: 0.55 },
+            { item: "c4", count: 2, weight: 0.2 },
+            { item: "ice_grenade", count: 1, weight: 0.08 },
+            { item: "airstrike", count: 1, weight: 0.015 },
+        ],
+        special_throwables: [
+            { item: "frag_grenade", count: 1, weight: 1 },
+            { item: "smoke_grenade", count: 1, weight: 1 },
+            { item: "mirv_grenade", count: 1, weight: 0.6 },
+            { item: "c4", count: 2, weight: 0.6 },
+            { item: "ice_grenade", count: 1, weight: 0.3 },
+            { item: "airstrike", count: 1, weight: 0.25 },
+        ],
+        special_healing_items: [
+            { item: "cola", weight: 3 },
+            { item: "tablets", weight: 1 },
+            { item: "medikit", weight: 1 },
+            { item: "gauze", count: 5, weight: 3 }
+        ],
+        special_scopes: [
+            { item: "2x_scope", weight: 1 },
+            { item: "4x_scope", weight: 0.45 },
+            { item: "8x_scope", weight: 0.1 },
+            { item: "15x_scope", weight: 0.02 },
+            { item: "20x_scope", weight: 0.008 },
+            { item: "30x_scope", weight: 0.0005 }
+        ],
+        special_equipment: [
+            { item: "basic_helmet", weight: 3 },
+            { item: "regular_helmet", weight: 0.35 },
+            { item: "tactical_helmet", weight: 0.05 },
+
+            { item: "basic_vest", weight: 3 },
+            { item: "regular_vest", weight: 0.35 },
+            { item: "tactical_vest", weight: 0.05 },
+
+            { item: "basic_pack", weight: 3},
+            { item: "regular_pack", weight: 0.4 },
+            { item: "tactical_pack", weight: 0.1 },
+            { item: "ultra_pack", weight: 0.01 }
+        ],
+        melee: [
+            { item: "baseball_bat", weight: 3 },
+            { item: "sickle", weight: 3 },
+            { item: "m9_bayonet", weight: 2 },
+            { item: "hatchet", weight: 0.8 },
+            { item: "fire_hatchet", weight: 0.6 },
+            { item: "battlesaw", weight: 0.01 },
+        ],
+        airdrop_equipment: [
+            { item: "tactical_helmet", weight: 1 },
+            { item: "tactical_vest", weight: 1 },
+            { item: "tactical_pack", weight: 0.85 },
+            { item: "ultra_pack", weight: 0.3 }
+        ],
+        airdrop_scopes: [
+            { item: "4x_scope", weight: 1 },
+            { item: "8x_scope", weight: 0.5 },
+            { item: "15x_scope", weight: 0.1 },
+            { item: "20x_scope", weight: 0.08 },
+            { item: "30x_scope", weight: 0.0026 }
+        ],
+        airdrop_healing_items: [
+            { item: "gauze", count: 7, weight: 1.5 },
+            { item: "medikit", weight: 1 },
+            { item: "cola", weight: 1 },
+            { item: "tablets", count:2, weight: 1 }
+        ],
+        airdrop_skins: [
+            { item: "stardust", weight: 0.5 },
+            { item: "aurora", weight: 0.5 },
+            { item: "nebula", weight: 0.4 },
+            { item: "ghillie_suit", weight: 0.15 },
+            { item: "basic_outfit", weight: 0.0001 }
+        ],
+        shiny_skins:[
+            { item: "shiny_anonymous", weight: 1.3 },
+            { item: "shiny_hasanger", weight: 1 },
+            { item: "shiny_123op", weight: 1 },
+            { item: "shiny_leia", weight: 0.9 },
+            { item: "shiny_max_mcfly", weight: 0.95  },
+            { item: "shiny_aurora", weight: 0.8  },
+        ],
+        airdrop_melee: [
+            { item: NullString, weight: 1 },
+            { item: "crowbar", weight: 0.1 },
+            { item: "hatchet", weight: 0.1 },
+            { item: "fire_hatchet", weight: 0.09 },
+            { item: "falchion", weight: 0.05 },
+            { item: "battlesaw", weight: 0.01 },
+        ],
+        special_melee: [
+            { item: "crowbar", weight: 1 },
+            { item: "hatchet", weight: 1 },
+            { item: "fire_hatchet", weight: 1},
+            { item: "zombie_hatchet", weight: 1 },
+            { item: "ice_pick", weight: 1 },
+            { item: "falchion", weight: 1 },
+            { item: "battlesaw", weight: 1},
+            { item: "maul", weight: 1 },
+            { item: "halberd", weight: 1 },
+        ],
+        viking_chest_guns: [
+            { table: "uncommon_guns", weight: 17 },
+            { table: "rare_guns", weight: 10 },
+            { table: "epic_guns", weight: 1 },
+            { table: "legendary_guns", weight: 0.05 },
+        ],
+        river_chest_guns: [
+            { table: "uncommon_guns", weight: 17 },
+            { table: "rare_guns", weight: 10 },
+            { table: "epic_guns", weight: 1 },
+            { table: "legendary_guns", weight: 0.05 },
+        ],
+        jack_o_lantern: [
+            [{ table: "pumpkin", weight: 1 }],
+            [{ table: "pumpkin", weight: 1 }],
+            [
+                { table: "pumpkin", weight: 1 },
+                { item: NullString, weight: 1 }
+            ],
+            [
+                { item: NullString, weight: 1.5 },
+            ]
+        ],
+        plumpkin: {
+            min: 3,
+            max: 3,
+            loot: [{ table: "perks", weight: 1 }]
+        },
+        perks: {
+            min: 1,
+            max: 1,
+            noDuplicates: true,
+            loot: [
+                { item: PerkIds.NatureBreath, weight: 1 },
+                { item: PerkIds.Takedown, weight: 1 },
+                { item: PerkIds.SelfRevive, weight: 1 },
+                { item: PerkIds.InfiniteAmmo, weight: 1 },
+                { item: PerkIds.ExtendedMags, weight: 1 },
+                { item: PerkIds.Flechettes, weight: 1 },
+                { item: PerkIds.DemoExpert, weight: 1 },
+                { item: PerkIds.SecondWind, weight: 1 },
+                { item: PerkIds.FieldMedic, weight: 1 },
+                { item: PerkIds.GreatAmmoBox, weight: 1 },
+                { item: PerkIds.AdvancedAthletics, weight: 1 },
+                { item: PerkIds.Toploaded, weight: 1 },
+                { item: PerkIds.CloseQuartersCombat, weight: 1 },
+                { item: PerkIds.LowProfile, weight: 1 },
+                { item: PerkIds.Berserker, weight: 1 },
+                { item: PerkIds.DefendOnTitan, weight: 0.8 }
+            ]
+        },
+        red_gift: [
+            [
+                { item: "model_37", weight: 0.4 },
+                { item: "m3k", weight: 0.3 },
+                { item: "flues", weight: 0.25 },
+                { item: "vepr12", weight: 0.05 }
+            ],
+            [
+                { item: NullString, weight: 1 }
+            ]
+        ],
+        blue_gift: [
+            [
+                { item: "arx160", weight: 0.5 },
+                { item: "lewis_gun", weight: 0.4 },
+                { item: "mosin_nagant", weight: 0.05 },
+                { item: "sr25", weight: 0.04 },
+                { item: "m1_garand", weight: 0.01 },
+                { item: "mg5", weight: 0.01 }
+            ],
+            [
+                { item: NullString, weight: 1 }
+            ]
+        ],
+        green_gift: [
+            [
+                { item: "m16a4", weight: 0.5 },
+                { item: "cz600", weight: 0.35 },
+                { item: "mg36", weight: 0.1 },
+                { item: "mini14", weight: 0.04 },
+                { item: "negev", weight: 0.01 }
+            ],
+            [
+                { item: NullString, weight: 1 }
+            ]
+        ],
+        purple_gift: [
+            [
+                { item: "model_89", weight: 0.5 },
+                { item: "tango_51", weight: 0.2 },
+                { item: "pp19", weight: 0.2 },
+                { item: "mg5", weight: 0.1 }
+            ],
+            [
+                { item: NullString, weight: 1 }
+            ]
+        ],
+        black_gift: [
+            [
+                { item: NullString, weight: 0.25 },
+                { item: "deagle", weight: 0.5 },
+                { item: "vks", weight: 0.25 }
+            ],
+            [
+                { item: NullString, weight: 1 }
+            ]
+        ],
+        //Originals
+        apple:[
+            [{item:NullString,weight:7},{table:"perks",weight:0.3},{item:"apple_helmet",weight:0.1},{item:"apple_launcher",weight:0.2}],
+        ],
+        bonesaw_small_table:[
+            [{item:"battlesaw",weight:7}]
+        ]
+    },
+};

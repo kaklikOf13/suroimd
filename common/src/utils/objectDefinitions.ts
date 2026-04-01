@@ -38,6 +38,37 @@ import { type Vector } from "./vector";
  * }
  * ```
  */
+
+export class SetArray<T> extends Set<T> {
+    private _valueCache?: T[];
+    get valueArray(): T[] {
+        return this._valueCache ??= [...super.values()];
+    }
+
+    add(value: T): this {
+        super.add(value);
+        this._valueCache = undefined;
+        return this;
+    }
+
+    delete(value: T): boolean {
+        const ret = super.delete(value);
+        this._valueCache = undefined;
+        return ret;
+    }
+
+    clear(): void {
+        super.clear();
+        this._valueCache = undefined;
+    }
+
+    values(): IterableIterator<T> {
+        const iterator = this.values();
+        this._valueCache ??= [...iterator];
+
+        return iterator;
+    }
+}
 export const inheritFrom: unique symbol = Symbol("inherit from");
 
 /**
@@ -582,7 +613,7 @@ export enum MapObjectSpawnMode {
 
 export const LootRadius: Record<ItemType, number> = {
     [ItemType.Gun]: 3.4,
-    [ItemType.Ammo]: 2,
+    [ItemType.Ammo]: 2.5,
     [ItemType.Melee]: 3,
     [ItemType.Throwable]: 3,
     [ItemType.Healing]: 2.5,
@@ -598,6 +629,12 @@ export type BaseBulletDefinition = {
     readonly obstacleMultiplier: number
     readonly speed: number
     readonly range: number
+    readonly heal?:boolean
+
+    readonly headshot?:{
+        readonly chance:number
+        readonly modify:number
+    }
 
     readonly tracer: {
         readonly opacity: number
@@ -741,10 +778,18 @@ export interface EventModifiers {
     readonly damageDealt: readonly ExtendedWearerAttributes[]
 }
 
+export enum ItemRarity{
+    Common=0,
+    Uncommon,
+    Rare,
+    Epic,
+    Legendary
+}
 export interface ItemDefinition extends ObjectDefinition {
     readonly itemType: ItemType
     readonly noDrop: boolean
     readonly devItem?: boolean
+    readonly rarity?:ItemRarity
 }
 
 export interface InventoryItemDefinition extends ItemDefinition {

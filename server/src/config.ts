@@ -1,64 +1,33 @@
-import { Layer, TeamSize } from "@common/constants";
-import { type Vector } from "@common/utils/vector";
-import { type Maps } from "./data/maps";
-import { type Game } from "./game";
-import { type GamePlugin } from "./pluginManager";
-
-export const enum SpawnMode {
-    Normal,
-    Radius,
-    Fixed,
-    Center
-}
-export const enum GasMode {
-    Normal,
-    Debug,
-    Disabled
-}
+import { TeamSize } from "@common/constants";
+import { type GamemodeMap } from "./data/gamemode";
 
 export const Config = {
-    host: "127.0.0.1",
+    host: "0.0.0.0",
     port: 8000,
 
-    map: "winter",
-
-    spawn: { mode: SpawnMode.Normal },
+    map: "normal",
+    gamemode:"normal",
 
     maxTeamSize: TeamSize.Solo,
 
-    maxPlayersPerGame: 70,
-    maxGames: 5,
-    gameJoinTime: 60,
+    maxGames: 4,
 
-    gas: { mode: GasMode.Normal },
-
-    tps: 40,
-
-    plugins: [],
+    tps: 60,
 
     roles: {
         developr: { password: "developr", isDev: true },
-        designr: { password: "designr" },
-        lead_designr: { password: "lead_designr" },
-        vip_designr: { password: "vip_designr" },
-        lead_composr: { password: "lead_composr" },
-        composr: { password: "composr" },
-        sound_designr: { password: "sound_designr" },
-        moderatr: { password: "moderatr" },
-        administratr: { password: "administratr" },
-        content_creatr: { password: "content_creatr" },
-        donatr: { password: "donatr" },
+        youtubr: { password: "youtubr" },
 
-        hasanger: { password: "hasanger", isDev: true },
-        pap: { password: "pap", isDev: true },
-        error: { password: "error", isDev: true },
-        limenade: { password: "limenade", isDev: true },
-        solstice: { password: "solstice", isDev: true }
+        beta_tester: { password: "beta_tester" }
     },
+
+    antiCrash:false,
 
     authServer: {
         address: "http://localhost:8080"
-    }
+    },
+
+    logsFile:false
 } satisfies ConfigType as ConfigType;
 
 export interface ConfigType {
@@ -87,29 +56,19 @@ export interface ConfigType {
      * Example: `"main"` for the main map or `"debug"` for the debug map.
      * Parameters can also be specified for certain maps, separated by colons (e.g. `singleObstacle:rock`)
      */
-    readonly map: `${keyof typeof Maps}${string}`
+    readonly map: GamemodeMap
 
-    /**
-     * There are 4 spawn modes: `Normal`, `Radius`, `Fixed`, and `Center`.
-     * - `SpawnMode.Normal` spawns the player at a random location that is at least 50 units away from other players.
-     * - `SpawnMode.Radius` spawns the player at a random location within the circle with the given position and radius.
-     * - `SpawnMode.Fixed` always spawns the player at the exact position given.
-     * - `SpawnMode.Center` always spawns the player in the center of the map.
-     */
-    readonly spawn:
-        | { readonly mode: SpawnMode.Normal }
-        | {
-            readonly mode: SpawnMode.Radius
-            readonly position: Vector
-            readonly radius: number
-        }
-        | {
-            readonly mode: SpawnMode.Fixed
-            readonly position: Vector
-            readonly layer?: Layer
-        }
-        | { readonly mode: SpawnMode.Center }
-
+    readonly gamemode:string|string[]|{
+        /**
+         * The duration between switches. Must be a cron pattern.
+         */
+        readonly switchSchedule: number
+        /**
+         * The team sizes to switch between.
+         */
+        readonly rotation: (string|string[])[]
+    },
+    
     /**
      * The maximum number of players allowed to join a team.
      *
@@ -130,44 +89,14 @@ export interface ConfigType {
     }
 
     /**
-     * The maximum number of players allowed to join a game.
-     */
-    readonly maxPlayersPerGame: number
-
-    /**
      * The maximum number of concurrent games.
      */
     readonly maxGames: number
 
     /**
-     * The number of seconds after which players are prevented from joining a game.
-     */
-    readonly gameJoinTime: number
-
-    /**
-     * There are 3 gas modes: GasMode.Normal, GasMode.Debug, and GasMode.Disabled.
-     * GasMode.Normal: Default gas behavior. overrideDuration is ignored.
-     * GasMode.Debug: The duration of each stage is always the duration specified by overrideDuration.
-     * GasMode.Disabled: Gas is disabled.
-     */
-    readonly gas:
-        | { readonly mode: GasMode.Disabled }
-        | { readonly mode: GasMode.Normal }
-        | {
-            readonly mode: GasMode.Debug
-            readonly overridePosition?: boolean
-            readonly overrideDuration?: number
-        }
-
-    /**
      * The number of game ticks that occur per second.
      */
     readonly tps: number
-
-    /**
-     * List of plugin classes to load.
-     */
-    readonly plugins: Array<new (game: Game) => GamePlugin>
 
     /**
      * Allows scopes and radios to work in buildings.
@@ -179,6 +108,8 @@ export interface ConfigType {
      * The filter is very basic, censoring only the most extreme slurs and the like.
      */
     readonly disableUsernameFilter?: boolean
+
+    readonly antiCrash:boolean
 
     /**
      * If this option is present, various options to mitigate bots and cheaters are enabled.
@@ -234,6 +165,13 @@ export interface ConfigType {
         }
     }
 
+    readonly allowRoles?:string[]
+
+    /**
+        * logsFile
+    */
+        readonly logsFile?:boolean
+
     /**
      * If this option is specified, the given HTTP header will be used to determine IP addresses.
      * If using nginx with the sample config, set it to `"X-Real-IP"`.
@@ -267,3 +205,9 @@ export interface ConfigType {
         readonly address: string
     }
 }
+
+/*
+Roles
+youtubr:http://localhost:3000/?password=youtubr&role=youtubr
+developr:http://localhost:3000/?password=developr&role=developr
+*/

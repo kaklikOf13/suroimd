@@ -6,7 +6,7 @@ import { Decals, type DecalDefinition } from "../definitions/decals";
 import { type HealingItemDefinition } from "../definitions/healingItems";
 import { Loots, type LootDefinition, type WeaponDefinition } from "../definitions/loots";
 import { Obstacles, RotationMode, type ObstacleDefinition } from "../definitions/obstacles";
-import { Skins, type SkinDefinition } from "../definitions/skins";
+import { Skins, type SkinDefinition } from "../definitions/loadout/skins";
 import { SyncedParticles, type SyncedParticleDefinition } from "../definitions/syncedParticles";
 import { type ThrowableDefinition } from "../definitions/throwables";
 import { type Orientation, type Variation } from "../typings";
@@ -41,21 +41,27 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             readonly item: HealingItemDefinition
         })
         readonly full?: {
+            readonly healAura:boolean
             readonly layer: Layer
             readonly dead: boolean
             readonly downed: boolean
             readonly beingRevived: boolean
             readonly teamID: number
+            readonly groupID: number
             readonly invulnerable: boolean
             readonly activeItem: WeaponDefinition
-            readonly sizeMod?: number
+            readonly sizeMod: number
             readonly skin: SkinDefinition
+            readonly fist_loadout?:number
             readonly helmet?: ArmorDefinition
             readonly vest?: ArmorDefinition
             readonly backpack: BackpackDefinition
             readonly halloweenThrowableSkin: boolean
             readonly activeDisguise?: ObstacleDefinition
             readonly blockEmoting: boolean
+            readonly boost:number
+
+            readonly iron_skin:boolean
         }
     }
     //
@@ -76,6 +82,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
             readonly variation?: Variation
             readonly activated?: boolean
             readonly detectedMetal?: boolean
+            readonly interactorClass: number
             readonly door?: {
                 readonly offset: number
                 readonly locked: boolean
@@ -125,6 +132,7 @@ export interface ObjectsNetData extends BaseObjectsNetData {
     readonly [ObjectCategory.Decal]: {
         readonly position: Vector
         readonly rotation: number
+        readonly isNew:boolean
         readonly layer: Layer
         readonly definition: DecalDefinition
     }
@@ -146,8 +154,8 @@ export interface ObjectsNetData extends BaseObjectsNetData {
         readonly layer: Layer
         readonly airborne: boolean
         readonly activated: boolean
+        readonly z:number
         readonly throwerTeamID: number
-
         readonly full?: {
             readonly definition: ThrowableDefinition
             readonly halloweenSkin: boolean
@@ -184,7 +192,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     //
     [ObjectCategory.Player]: {
         serializePartial(stream, { position, rotation, animation, action }): void {
-            stream.writePosition(position);
+            stream.writeFullPosition(position);
             stream.writeRotation2(rotation);
 
             /*
@@ -224,8 +232,10 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 layer,
                 dead,
                 downed,
+                healAura,
                 beingRevived,
                 teamID,
+                groupID,
                 invulnerable,
                 activeItem,
                 sizeMod,
@@ -235,11 +245,13 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 backpack,
                 halloweenThrowableSkin,
                 activeDisguise,
-                blockEmoting
+                blockEmoting,
+                fist_loadout,
+                boost,
+                iron_skin
             } }
         ): void {
             stream.writeLayer(layer);
-            const hasSizeMod = sizeMod !== undefined;
             const hasHelmet = helmet !== undefined;
             const hasVest = vest !== undefined;
             const hasDisguise = activeDisguise !== undefined;
@@ -249,31 +261,35 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 downed,
                 beingRevived,
                 invulnerable,
-                hasSizeMod,
                 halloweenThrowableSkin,
                 hasHelmet,
                 hasVest,
                 hasDisguise,
-                blockEmoting
+                blockEmoting,
+                healAura,
+                iron_skin
             );
             stream.writeUint8(teamID);
+            stream.writeUint8(groupID);
             Loots.writeToStream(stream, activeItem);
 
-            if (hasSizeMod) {
-                stream.writeFloat(sizeMod, 0, 4, 1);
-            }
+            stream.writeFloat(sizeMod, 0, 4, 1);
 
             Skins.writeToStream(stream, skin);
+
+            stream.writeUint8(fist_loadout??0);
 
             if (hasHelmet) Armors.writeToStream(stream, helmet);
             if (hasVest) Armors.writeToStream(stream, vest);
             Backpacks.writeToStream(stream, backpack);
 
             if (hasDisguise) Obstacles.writeToStream(stream, activeDisguise);
+
+            stream.writeUint8(boost)
         },
         deserializePartial(stream) {
             const data: Mutable<ObjectsNetData[ObjectCategory.Player]> = {
-                position: stream.readPosition(),
+                position: stream.readFullPosition(),
                 rotation: stream.readRotation2()
             };
 
@@ -306,12 +322,13 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 downed,
                 beingRevived,
                 invulnerable,
-                hasSizeMod,
                 halloweenThrowableSkin,
                 hasHelmet,
                 hasVest,
                 hasDisguise,
-                blockEmoting
+                blockEmoting,
+                healingAura,
+                iron_skin
             ] = stream.readBooleanGroup2();
 
             return {
@@ -322,14 +339,19 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 invulnerable,
                 halloweenThrowableSkin,
                 teamID: stream.readUint8(),
+                groupID: stream.readUint8(),
                 activeItem: Loots.readFromStream(stream),
-                sizeMod: hasSizeMod ? stream.readFloat(0, 4, 1) : undefined,
+                sizeMod: stream.readFloat(0, 4, 1),
                 skin: Skins.readFromStream(stream),
+                fist_loadout:stream.readUint8(),
                 helmet: hasHelmet ? Armors.readFromStream(stream) : undefined,
                 vest: hasVest ? Armors.readFromStream(stream) : undefined,
                 backpack: Backpacks.readFromStream(stream),
                 activeDisguise: hasDisguise ? Obstacles.readFromStream(stream) : undefined,
-                blockEmoting
+                blockEmoting,
+                healAura:healingAura,
+                boost:stream.readUint8(),
+                iron_skin
             };
         }
     },
@@ -355,13 +377,14 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                     activated,
                     detectedMetal,
                     variation,
-                    layer
+                    layer,
+                    interactorClass
                 }
             }
         ): void {
             Obstacles.writeToStream(stream, definition);
 
-            stream.writePosition(position);
+            stream.writeFullPosition(position);
             stream.writeLayer(layer);
 
             /*
@@ -455,6 +478,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                     break;
                 }
             }
+            stream.writeUint16(interactorClass)
         },
         deserializePartial(stream) {
             const [
@@ -473,12 +497,13 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
 
             const data: SDeepMutable<NonNullable<ObjectsNetData[ObjectCategory.Obstacle]["full"]>> = {
                 definition,
-                position: stream.readPosition(),
+                position: stream.readFullPosition(),
                 layer: stream.readLayer(),
                 rotation: {
                     orientation: 0,
                     rotation: 0
-                }
+                },
+                interactorClass:0
             };
 
             // see the comments in serializeFull to understand what's going on
@@ -555,6 +580,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 //     break;
                 // }
             }
+            data.interactorClass=stream.readUint16()
             return data;
         }
     },
@@ -563,7 +589,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     //
     [ObjectCategory.Loot]: {
         serializePartial(stream, data): void {
-            stream.writePosition(data.position);
+            stream.writeFullPosition(data.position);
             stream.writeLayer(data.layer);
         },
         serializeFull(stream, { full }): void {
@@ -580,7 +606,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         },
         deserializePartial(stream) {
             return {
-                position: stream.readPosition(),
+                position: stream.readFullPosition(),
                 layer: stream.readLayer()
             };
         },
@@ -599,7 +625,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     //
     [ObjectCategory.DeathMarker]: {
         serializePartial(stream, data): void {
-            stream.writePosition(data.position);
+            stream.writeFullPosition(data.position);
             stream.writeLayer(data.layer);
             stream.writeUint8(data.isNew ? -1 : 0);
             stream.writeObjectId(data.playerID);
@@ -607,7 +633,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         serializeFull(): void { /* death markers have no full serialization */ },
         deserializePartial(stream) {
             return {
-                position: stream.readPosition(),
+                position: stream.readFullPosition(),
                 layer: stream.readLayer(),
                 isNew: stream.readUint8() !== 0,
                 playerID: stream.readObjectId()
@@ -633,7 +659,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         },
         serializeFull(stream, { full }): void {
             Buildings.writeToStream(stream, full.definition);
-            stream.writePosition(full.position);
+            stream.writeFullPosition(full.position);
             stream.writeUint8(full.orientation);
         },
         deserializePartial(stream) {
@@ -655,7 +681,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         deserializeFull(stream) {
             return {
                 definition: Buildings.readFromStream(stream),
-                position: stream.readPosition(),
+                position: stream.readFullPosition(),
                 orientation: stream.readUint8() as Orientation
             };
         }
@@ -666,7 +692,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
     [ObjectCategory.Decal]: {
         serializePartial(stream, data): void {
             Decals.writeToStream(stream, data.definition);
-            stream.writePosition(data.position);
+            stream.writeUint8(data.isNew?1:0)
+            stream.writeFullPosition(data.position);
             stream.writeObstacleRotation(data.rotation, data.definition.rotationMode);
             stream.writeLayer(data.layer);
         },
@@ -675,7 +702,8 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             const definition = Decals.readFromStream(stream);
             return {
                 definition,
-                position: stream.readPosition(),
+                isNew:stream.readUint8()==1,
+                position: stream.readFullPosition(),
                 rotation: stream.readObstacleRotation(definition.rotationMode).rotation,
                 layer: stream.readLayer()
             };
@@ -687,7 +715,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             stream.writeFloat(data.height, 0, 1, 1);
         },
         serializeFull(stream, { full }) {
-            stream.writePosition(full.position);
+            stream.writeFullPosition(full.position);
         },
         deserializePartial(stream) {
             return {
@@ -697,7 +725,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         deserializeFull(stream) {
             return {
 
-                position: stream.readPosition()
+                position: stream.readFullPosition()
 
             };
         }
@@ -706,7 +734,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         serializePartial(stream, data) {
             const { position, rotation, layer, scale, alpha } = data;
 
-            stream.writePosition(position);
+            stream.writeFullPosition(position);
             stream.writeRotation2(rotation);
             stream.writeLayer(layer);
             const writeScale = scale !== undefined;
@@ -744,7 +772,7 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
         },
         deserializePartial(stream) {
             const data: Mutable<ObjectsNetData[ObjectCategory.SyncedParticle]> = {
-                position: stream.readPosition(),
+                position: stream.readFullPosition(),
                 rotation: stream.readRotation2(),
                 layer: stream.readLayer()
             };
@@ -781,10 +809,11 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
                 data.airborne,
                 data.activated
             )
-                .writePosition(data.position)
+                .writeFullPosition(data.position)
                 .writeRotation2(data.rotation)
                 .writeLayer(data.layer)
-                .writeUint8(data.throwerTeamID);
+                .writeUint8(data.throwerTeamID)
+                .writeFloat(data.z,0,1,1);
         },
         serializeFull(stream, { full }) {
             Loots.writeToStream(stream, full.definition);
@@ -798,12 +827,13 @@ export const ObjectSerializations: { [K in ObjectCategory]: ObjectSerialization<
             ] = stream.readBooleanGroup();
 
             return {
-                position: stream.readPosition(),
+                position: stream.readFullPosition(),
                 rotation: stream.readRotation2(),
                 layer: stream.readLayer(),
                 airborne,
                 activated,
-                throwerTeamID: stream.readUint8()
+                throwerTeamID: stream.readUint8(),
+                z:stream.readFloat(0,1,1),
             };
         },
         deserializeFull(stream) {

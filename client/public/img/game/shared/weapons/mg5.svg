@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   width="110"
-   height="110"
-   viewBox="0 0 110 110"
+   width="124.63199"
+   height="43.957726"
+   viewBox="0 0 124.63198 43.957726"
    fill="none"
    version="1.1"
    id="svg65"
    sodipodi:docname="mg5.svg"
-   inkscape:version="1.3.2 (1:1.3.2+202311252150+091e20ef0f)"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -21,19 +21,19 @@
      inkscape:pageopacity="0"
      inkscape:pagecheckerboard="1"
      inkscape:deskcolor="#505050"
-     inkscape:zoom="10.645455"
-     inkscape:cx="55"
-     inkscape:cy="55"
-     inkscape:window-width="2560"
-     inkscape:window-height="1368"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:zoom="3.7637367"
+     inkscape:cx="43.573718"
+     inkscape:cy="75.324079"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg65" />
   <g
      clip-path="url(#clip0_2088_1898)"
      id="g65"
-     transform="matrix(1.0197701,0,0,1.0197701,-1.2393344,3.105985)">
+     transform="matrix(0.88314681,0.50988505,-0.50988505,0.88314681,37.317296,-57.217893)">
     <path
        d="m 89.3021,16.7913 c -0.4004,0.2312 -0.5376,0.7432 -0.3064,1.1435 l 3.026,5.2413 -0.4619,0.2667 0.57,0.9872 2.9852,-1.7235 -0.57,-0.9872 -0.6214,0.3588 -3.0261,-5.2413 C 90.6664,16.4364 90.1544,16.2992 89.754,16.5304 Z"
        fill="#47433e"
@@ -310,7 +310,8 @@
        fill="#3f3b37"
        stroke="#37332f"
        stroke-width="0.418543"
-       id="rect39" />
+       id="rect39"
+       ry="0.568753" />
     <rect
        width="0.96655297"
        height="7.6357598"
@@ -502,8 +503,10 @@
       <rect
          width="110"
          height="110"
-         fill="white"
-         id="rect65" />
+         fill="#ffffff"
+         id="rect65"
+         x="0"
+         y="0" />
     </clipPath>
   </defs>
 </svg>

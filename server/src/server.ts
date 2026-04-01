@@ -1,6 +1,6 @@
 import { GameConstants, TeamSize } from "@common/constants";
-import { Badges } from "@common/definitions/badges";
-import { Skins } from "@common/definitions/skins";
+import { Badges } from "@common/definitions/loadout/badges";
+import { Skins } from "@common/definitions/loadout/skins";
 import { type GetGameResponse } from "@common/typings";
 import { Numeric } from "@common/utils/math";
 import { Cron } from "croner";
@@ -11,11 +11,13 @@ import { type WebSocket } from "uWebSockets.js";
 import { isMainThread } from "worker_threads";
 import { version } from "../../package.json";
 import { Config } from "./config";
-import { findGame, games, newGame, WorkerMessages } from "./gameManager";
+import { aliveCount, currentGamemode, currentGMSTime, findGame, games, GMC, newGame, WorkerMessages } from "./gameManager";
 import { CustomTeam, CustomTeamPlayer, type CustomTeamPlayerContainer } from "./team";
 import IPChecker, { Punishment } from "./utils/apiHelper";
 import { cleanUsername, Logger } from "./utils/misc";
 import { cors, createServer, forbidden, getIP, textDecoder } from "./utils/serverHelpers";
+import { Gamemodes } from "./data/gamemode";
+import fs from "node:fs"
 
 let punishments: Punishment[] = [];
 
@@ -73,7 +75,9 @@ export let maxTeamSize = typeof Config.maxTeamSize === "number" ? Config.maxTeam
 let teamSizeRotationIndex = 0;
 
 let maxTeamSizeSwitchCron: Cron | undefined;
-
+if(Config.logsFile&&!fs.existsSync("logs")){
+    fs.mkdirSync("logs")
+}
 if (isMainThread) {
     // Initialize the server
     createServer().get("/api/serverInfo", res => {
@@ -81,9 +85,10 @@ if (isMainThread) {
         res
             .writeHeader("Content-Type", "application/json")
             .end(JSON.stringify({
-                playerCount: games.reduce((a, b) => (a + (b?.aliveCount ?? 0)), 0),
-                maxTeamSize,
-
+                playerCount: aliveCount,
+                maxTeamSize:GMC.group?TeamSize.Squad:maxTeamSize,
+                gamemode:GMC.button,
+                modeNextSwitchTime: currentGMSTime,
                 nextSwitchTime: maxTeamSizeSwitchCron?.nextRun()?.getTime(),
                 protocolVersion: GameConstants.protocolVersion
             }));
@@ -110,7 +115,7 @@ if (isMainThread) {
             }
             response = { success: false, message: punishment.punishmentType, reason: punishment.reason, reportID: punishment.reportId };
         } else {
-            const teamID = maxTeamSize !== TeamSize.Solo && new URLSearchParams(req.getQuery()).get("teamID"); // must be here or it causes uWS errors
+            const teamID = (maxTeamSize !== TeamSize.Solo||GMC.group) && new URLSearchParams(req.getQuery()).get("teamID"); // must be here or it causes uWS errors
             if (await isVPNCheck(ip)) {
                 response = { success: false, message: "vpn" };
             } else if (teamID) {
@@ -167,7 +172,7 @@ if (isMainThread) {
             const ip = getIP(res, req);
             const maxTeams = Config.protection?.maxTeams;
             if (
-                maxTeamSize === TeamSize.Solo
+                !(GMC.group||maxTeamSize !== TeamSize.Solo)
                 || (maxTeams && teamsCreated[ip] > maxTeams)
             ) {
                 forbidden(res);
@@ -189,7 +194,7 @@ if (isMainThread) {
             }
 
             if (noTeamIdGiven) {
-                if (team.locked || team.players.length >= (maxTeamSize as number)) {
+                if (team.locked || GMC.group?team.players.length >= TeamSize.Squad:(team.players.length >= (maxTeamSize as number))) {
                     forbidden(res); // TODO "Team is locked" and "Team is full" messages
                     return;
                 }
@@ -291,15 +296,18 @@ if (isMainThread) {
             player.team.removePlayer(player);
         }
     }).listen(Config.host, Config.port, (): void => {
-        console.log(
-            `
- _____ _   _______ _____ _____
-/  ___| | | | ___ \\  _  |_   _|
-\\ \`--.| | | | |_/ / | | | | |
- \`--. \\ | | |    /| | | | | |
-/\\__/ / |_| | |\\ \\\\ \\_/ /_| |_
-\\____/ \\___/\\_| \\_|\\___/ \\___/
-            `);
+        console.log(" _____  _   _ ______  _____  _____ ");
+        console.log("/  ___|| | | || ___ \\|  _  ||_   _|");
+        console.log("\\ `--. | | | || |_/ /| | | |  | |  ");
+        console.log(" `--. \\| | | ||    / | | | |  | |  ");
+        console.log("/\\__/ /| |_| || |\\ \\ \\ \\_/ / _| |_ ");
+        console.log("\\____/  \\___/ \\_| \\_| \\___/  \\___/ ");
+        console.log("___  _________                     ");
+        console.log("|  \\/  ||  _  \\                    ");
+        console.log("| .  . || | | |                    ");
+        console.log("| |\\/| || | | |                    ");
+        console.log("| |  | || |/ /                     ");
+        console.log("\\_|  |_/|___/                      ");        
 
         Logger.log(`Suroi Server v${version}`);
         Logger.log(`Listening on ${Config.host}:${Config.port}`);
@@ -318,6 +326,10 @@ if (isMainThread) {
                 perfString += ` | Load (1m, 5m, 15m): ${load}%`;
             }
 
+            perfString+= ` | Games: ${Object.values(games).filter(v=>{
+                return !(v?.stopped)
+            }).length}`
+
             Logger.log(perfString);
         }, 60000);
 
@@ -326,7 +338,7 @@ if (isMainThread) {
             maxTeamSizeSwitchCron = Cron(teamSize.switchSchedule, () => {
                 maxTeamSize = teamSize.rotation[teamSizeRotationIndex = (teamSizeRotationIndex + 1) % teamSize.rotation.length];
 
-                for (const game of games) {
+                for (const game of Object.values(games)) {
                     game?.worker.postMessage({ type: WorkerMessages.UpdateMaxTeamSize, maxTeamSize });
                 }
 

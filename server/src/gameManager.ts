@@ -10,11 +10,19 @@ import { PlayerContainer } from "./objects/player";
 import { maxTeamSize } from "./server";
 import { Logger } from "./utils/misc";
 import { createServer, forbidden, getIP } from "./utils/serverHelpers";
-
+import { pickRandomInArray } from "@common/utils/random";
+import { Gamemode, Gamemodes } from "./data/gamemode";
+import { exit } from "node:process";
+export let currentGamemode:string|string[]=(typeof Config.gamemode==="string"||Array.isArray(Config.gamemode))?Config.gamemode:(Config.gamemode.rotation[0]??undefined)
+export let currentGMSTime=0
+export let GMC:Partial<Gamemode>=Gamemodes[typeof currentGamemode==="string"?currentGamemode:currentGamemode[0]]
+let gamemodeIndex = 0;
 export interface WorkerInitData {
     readonly id: number
     readonly maxTeamSize: number
+    readonly gamemode: string
 }
+
 
 export enum WorkerMessages {
     AllowIP,
@@ -22,7 +30,8 @@ export enum WorkerMessages {
     UpdateGameData,
     UpdateMaxTeamSize,
     CreateNewGame,
-    Reset
+    Reset,
+    Stop
 }
 
 export type WorkerMessage =
@@ -39,9 +48,10 @@ export type WorkerMessage =
         readonly maxTeamSize: TeamSize
     }
     | {
-        readonly type:
-            | WorkerMessages.CreateNewGame
-            | WorkerMessages.Reset
+        readonly type: WorkerMessages.CreateNewGame|WorkerMessages.Stop
+    }| {
+        readonly type: WorkerMessages.Reset
+        readonly gamemode: string
     };
 
 export interface GameData {
@@ -49,6 +59,7 @@ export interface GameData {
     allowJoin: boolean
     over: boolean
     stopped: boolean
+    started: boolean
     startedTime: number
 }
 
@@ -62,6 +73,7 @@ export class GameContainer {
         allowJoin: false,
         over: false,
         stopped: false,
+        started:false,
         startedTime: -1
     };
 
@@ -69,17 +81,18 @@ export class GameContainer {
     get allowJoin(): boolean { return this._data.allowJoin; }
     get over(): boolean { return this._data.over; }
     get stopped(): boolean { return this._data.stopped; }
+    get started(): boolean { return this._data.started; }
     get startedTime(): number { return this._data.startedTime; }
 
     private readonly _ipPromiseMap = new Map<string, Array<() => void>>();
 
-    constructor(readonly id: number, resolve: (id: number) => void) {
+    constructor(readonly id: number,readonly gamemode:string, resolve: (id: number) => void) {
         this.resolve = resolve;
         (
             this.worker = new Worker(
                 __filename,
                 {
-                    workerData: { id, maxTeamSize } satisfies WorkerInitData,
+                    workerData: { id, maxTeamSize, gamemode } satisfies WorkerInitData,
                     execArgv: __filename.endsWith(".ts")
                         ? ["-r", "ts-node/register", "-r", "tsconfig-paths/register"]
                         : undefined
@@ -131,7 +144,7 @@ export class GameContainer {
 
 export async function findGame(): Promise<GetGameResponse> {
     let gameID: number;
-    let eligibleGames = games.filter((g?: GameContainer): g is GameContainer => !!g && g.allowJoin && !g.over);
+    let eligibleGames = Object.values(games).filter((g?: GameContainer): g is GameContainer => !!g && g.allowJoin && !g.over);
 
     // Attempt to create a new game if one isn't available
     if (!eligibleGames.length) {
@@ -139,7 +152,7 @@ export async function findGame(): Promise<GetGameResponse> {
         if (gameID !== -1) {
             return { success: true, gameID };
         } else {
-            eligibleGames = games.filter((g?: GameContainer): g is GameContainer => !!g && !g.over);
+            eligibleGames = Object.values(games).filter((g?: GameContainer): g is GameContainer => !!g && !g.over);
         }
     }
 
@@ -164,6 +177,7 @@ export async function findGame(): Promise<GetGameResponse> {
 }
 
 let creatingID = -1;
+export let aliveCount=0;
 
 export async function newGame(id?: number): Promise<number> {
     return new Promise<number>(resolve => {
@@ -174,10 +188,10 @@ export async function newGame(id?: number): Promise<number> {
             Logger.log(`Game ${id} | Creating...`);
             const game = games[id];
             if (!game) {
-                games[id] = new GameContainer(id, resolve);
+                games[id] = new GameContainer(id,Array.isArray(currentGamemode)?pickRandomInArray(currentGamemode):currentGamemode, resolve);
             } else if (game.stopped) {
                 game.resolve = resolve;
-                game.sendMessage({ type: WorkerMessages.Reset });
+                game.sendMessage({ type: WorkerMessages.Reset,gamemode:Array.isArray(currentGamemode)?pickRandomInArray(currentGamemode):currentGamemode });
             } else {
                 Logger.warn(`Game ${id} | Already exists`);
                 resolve(id);
@@ -196,19 +210,86 @@ export async function newGame(id?: number): Promise<number> {
     });
 }
 
-export const games: Array<GameContainer | undefined> = [];
+export const games: Record<string,GameContainer | undefined> = {};
 
-if (!isMainThread) {
+
+if (isMainThread) {
+    if(!(typeof Config.gamemode==="string"||Array.isArray(Config.gamemode))){
+        const base=Config.gamemode.switchSchedule
+        currentGMSTime=Config.gamemode.switchSchedule
+        setInterval(async() => {
+            if(currentGMSTime<=0){
+                //@ts-expect-error
+                currentGamemode = Config.gamemode.rotation[gamemodeIndex = (gamemodeIndex + 1) % Config.gamemode.rotation.length];
+
+                GMC=Gamemodes[typeof currentGamemode==="string"?currentGamemode:currentGamemode[0]]
+
+                for(const g of Object.values(games)){
+                    if(g&&g.worker&&(!g.started||g.stopped)){
+                        g.sendMessage({
+                            type:WorkerMessages.Stop,
+                        })
+                        //await g.worker.terminate()
+                        delete games[g.id]
+                    }
+                }
+
+                currentGMSTime=base
+
+                Logger.log(`Switching gamemode to ${currentGamemode}`);
+            }else{
+                currentGMSTime--;
+            }
+            aliveCount=0
+            for(const g of Object.values(games)){
+                aliveCount+=(!g||g?.stopped)?0:g?.aliveCount
+            }
+        },1000);
+    }
+}else{
     const id = (workerData as WorkerInitData).id;
     let maxTeamSize = (workerData as WorkerInitData).maxTeamSize;
 
-    let game = new Game(id, maxTeamSize);
+    let gamemode=(workerData as WorkerInitData).gamemode;
+    //@ts-ignore
+    let game:Game=undefined
+    const createGame=()=>{
+        if(game){
+            game.stopped=true
+        }
+        if(Config.antiCrash){
+            //@ts-ignore
+            game=undefined
+            let trys=0
+            while(game===undefined&&trys<40){
+                try{
+                    game = new Game(id, maxTeamSize,gamemode);
+                }catch(e){
+                    //@ts-ignore
+                    game=undefined
+                    Logger.warn("Game Creation Error")
+                }
+                trys++
+            }
+            if(game===undefined){
+                Logger.warn("Big Fatal Error")
+                exit(1)
+            }
+        }else{
+            game = new Game(id, maxTeamSize,gamemode);
+        }
+    }
+    createGame()
 
     // string = ip, number = expire time
     const allowedIPs = new Map<string, number>();
 
     const simultaneousConnections: Record<string, number> = {};
     let joinAttempts: Record<string, number> = {};
+
+    const ps=Config.port.toString()
+
+    const port=ps.length>0&&ps.at(ps.length-1)=="0"?Config.port+(id+1):parseInt(Config.port.toString()+(id+1).toString())
 
     parentPort?.on("message", (message: WorkerMessage) => {
         switch (message.type) {
@@ -221,7 +302,21 @@ if (!isMainThread) {
                 break;
             }
             case WorkerMessages.Reset: {
-                game = new Game(id, maxTeamSize);
+                gamemode=message.gamemode
+                if(!game.stopped){
+                    game.killEveryone()
+                    game.StartGame()
+                }
+                createGame()
+                break;
+            }
+            case WorkerMessages.Stop:{
+                game.killEveryone()
+                game.StartGame()
+                setTimeout(()=>{
+                    s.close()
+                    process.exit(0)  
+                },4000)
                 break;
             }
             case WorkerMessages.UpdateMaxTeamSize: {
@@ -231,7 +326,7 @@ if (!isMainThread) {
         }
     });
 
-    createServer().ws("/play", {
+    const s=createServer().ws("/play", {
         idleTimeout: 30,
 
         /**
@@ -268,6 +363,12 @@ if (!isMainThread) {
             }
 
             const searchParams = new URLSearchParams(req.getQuery());
+
+            // hack to prevent late respawning
+            if (game.gas.stage > 4) {
+                forbidden(res);
+                return;
+            }
 
             //
             // Ensure IP is allowed
@@ -369,8 +470,8 @@ if (!isMainThread) {
             Logger.log(`Game ${id} | "${player.name}" left`);
             game.removePlayer(player);
         }
-    }).listen(Config.host, Config.port + id + 1, (): void => {
-        Logger.log(`Game ${id} | Listening on ${Config.host}:${Config.port + id + 1}`);
+    }).listen(Config.host, port, (): void => {
+        Logger.log(`Game ${id} | Listening on ${Config.host}:${port}`);
     });
 
     if (Config.protection?.maxJoinAttempts) {

@@ -1,10 +1,10 @@
-import { GameConstants, KillfeedMessageType, Layer, ObjectCategory, TeamSize } from "@common/constants";
+import { defaultUnlockGuns, defaultUnlockMelees, defaultUnlockWeapons, GameConstants, KillfeedMessageType, Layer, ObjectCategory, TeamSize } from "@common/constants";
 import { type ExplosionDefinition } from "@common/definitions/explosions";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
 import { MapPings, type MapPing } from "@common/definitions/mapPings";
 import { Obstacles, type ObstacleDefinition } from "@common/definitions/obstacles";
 import { SyncedParticles, type SyncedParticleDefinition, type SyncedParticleSpawnerDefinition } from "@common/definitions/syncedParticles";
-import { type ThrowableDefinition } from "@common/definitions/throwables";
+import { Throwables, type ThrowableDefinition } from "@common/definitions/throwables";
 import { PlayerInputPacket } from "@common/packets/inputPacket";
 import { JoinPacket, type JoinPacketData } from "@common/packets/joinPacket";
 import { JoinedPacket } from "@common/packets/joinedPacket";
@@ -16,16 +16,14 @@ import { SpectatePacket } from "@common/packets/spectatePacket";
 import { type PingSerialization } from "@common/packets/updatePacket";
 import { CircleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { EaseFunctions, Geometry, Numeric, Statistics } from "@common/utils/math";
-import { Timeout } from "@common/utils/misc";
-import { ItemType, MapObjectSpawnMode, type ReifiableDef } from "@common/utils/objectDefinitions";
-import { pickRandomInArray, randomFloat, randomPointInsideCircle, randomRotation } from "@common/utils/random";
+import { mergeDeep, Timeout } from "@common/utils/misc";
+import { ItemType, MapObjectSpawnMode, SetArray, type ReifiableDef } from "@common/utils/objectDefinitions";
+import { pickRandomInArray, random, randomFloat, randomPointInsideCircle, randomRotation } from "@common/utils/random";
 import { type SuroiByteStream } from "@common/utils/suroiByteStream";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type WebSocket } from "uWebSockets.js";
 import { parentPort } from "worker_threads";
-
-import { Config, SpawnMode } from "./config";
-import { MapName, Maps } from "./data/maps";
+import { Config } from "./config";
 import { WorkerMessages, type GameData, type WorkerMessage } from "./gameManager";
 import { Gas } from "./gas";
 import { GunItem } from "./inventory/gunItem";
@@ -43,11 +41,20 @@ import { Player, type PlayerContainer } from "./objects/player";
 import { SyncedParticle } from "./objects/syncedParticle";
 import { ThrowableProjectile } from "./objects/throwableProj";
 import { PluginManager } from "./pluginManager";
-import { Team } from "./team";
+import { Group, Team } from "./team";
 import { Grid } from "./utils/grid";
 import { IDAllocator } from "./utils/idAllocator";
 import { cleanUsername, Logger, removeFrom } from "./utils/misc";
-
+import { GoapAgent } from "./utils/goap";
+import { Building } from "./objects/building";
+import { Guns } from "@common/definitions/guns";
+import { Melees } from "@common/definitions/melees";
+import { DefaultGamemode, Gamemode, GamemodeMap, Gamemodes, SpawnMode } from "./data/gamemode";
+import { ExtraLoadout, ExtraLoadoutList, ExtraLoadoutType } from "@common/definitions/loadout/extra_loadout";
+import { Perks } from "@common/definitions/perks";
+import { Decal } from "./objects/decal";
+import { MapName, Maps } from "@common/definitions/maps/maps";
+import { Skins } from "@common/definitions/loadout/skins";
 /*
     eslint-disable
 
@@ -57,10 +64,13 @@ import { cleanUsername, Logger, removeFrom } from "./utils/misc";
 /*
     `@stylistic/indent-binary-ops`: eslint sucks at indenting ts types
  */
+
+
 export class Game implements GameData {
     public readonly id: number;
 
     readonly map: GameMap;
+    readonly gamemode:Gamemode;
     readonly gas: Gas;
     readonly grid: Grid;
     readonly pluginManager = new PluginManager(this);
@@ -68,9 +78,12 @@ export class Game implements GameData {
     readonly partialDirtyObjects = new Set<BaseGameObject>();
     readonly fullDirtyObjects = new Set<BaseGameObject>();
 
+    canEnd:boolean=true;
     updateObjects = false;
 
+
     readonly livingPlayers = new Set<Player>();
+    readonly livingNpcs=new Set<Player>();
     /**
      * Players that have connected but haven't sent a JoinPacket yet
      */
@@ -91,40 +104,15 @@ export class Game implements GameData {
      */
     readonly packets: InputPacket[] = [];
 
+    readonly newDecals:Decal[]=[]
+
     readonly maxTeamSize: TeamSize;
 
     readonly teamMode: boolean;
 
-    readonly teams = new (class SetArray<T> extends Set<T> {
-        private _valueCache?: T[];
-        get valueArray(): T[] {
-            return this._valueCache ??= [...super.values()];
-        }
-
-        add(value: T): this {
-            super.add(value);
-            this._valueCache = undefined;
-            return this;
-        }
-
-        delete(value: T): boolean {
-            const ret = super.delete(value);
-            this._valueCache = undefined;
-            return ret;
-        }
-
-        clear(): void {
-            super.clear();
-            this._valueCache = undefined;
-        }
-
-        values(): IterableIterator<T> {
-            const iterator = this.values();
-            this._valueCache ??= [...iterator];
-
-            return iterator;
-        }
-    })<Team>();
+    readonly teams = new SetArray<Team>();
+    readonly npcTeams = new Map<number,Team>();
+    readonly groups = new Map<number,Group>();
 
     private _nextTeamID = -1;
     get nextTeamID(): number { return ++this._nextTeamID; }
@@ -154,6 +142,7 @@ export class Game implements GameData {
     readonly planes: Array<{
         readonly position: Vector
         readonly direction: number
+        readonly airstrike?: boolean
     }> = [];
 
     readonly detectors: Obstacle[] = [];
@@ -171,7 +160,7 @@ export class Game implements GameData {
         return timeout;
     }
 
-    private _started = false;
+    _started = false;
 
     // #region GameData interface members
 
@@ -179,8 +168,14 @@ export class Game implements GameData {
     allowJoin = false;
     over = false;
     stopped = false;
+    get started():boolean{
+        return this._started
+    }
+    set started(v){
+        this._started=v
+    }
     get aliveCount(): number {
-        return this.livingPlayers.size;
+        return Math.max(this.livingPlayers.size-this.livingNpcs.size,0);
     }
 
     // #endregion
@@ -219,10 +214,17 @@ export class Game implements GameData {
         return this._idAllocator.takeNext();
     }
 
-    constructor(id: number, maxTeamSize: TeamSize) {
+    killEveryone(){
+        for(const p of this.livingPlayers.values()){
+            p.die({
+                
+            })
+        }
+    }
+
+    constructor(id: number, maxTeamSize: TeamSize,gamemode?:string|string[]) {
         this.id = id;
         this.maxTeamSize = maxTeamSize;
-        this.teamMode = this.maxTeamSize > TeamSize.Solo;
         this.updateGameData({
             aliveCount: 0,
             allowJoin: false,
@@ -231,14 +233,29 @@ export class Game implements GameData {
             startedTime: -1
         });
 
-        this.pluginManager.loadPlugins();
-
-        const { width, height } = Maps[Config.map.split(":")[0] as MapName];
+        const { width, height } = Maps[typeof Config.map==="string"?Config.map.split(":")[0] as MapName:Config.map.extends.split(":")[0] as MapName];
         this.grid = new Grid(this, width, height);
 
-        this.map = new GameMap(this, Config.map);
+        if(gamemode){
+            const gm=Gamemodes[typeof gamemode==="string"?gamemode:pickRandomInArray(gamemode)]
+            this.gamemode=mergeDeep(DefaultGamemode,gm)
+            this.teamMode=this.gamemode.group?true:this.maxTeamSize > TeamSize.Solo;
+            this.maxTeamSize=this.gamemode.group?TeamSize.Squad:this.maxTeamSize;
+            //@ts-ignore
+            this.gamemode.lootTables=gm.lootTables
+        }else{
+            this.teamMode = this.maxTeamSize > TeamSize.Solo;
+            this.gamemode=DefaultGamemode
+        }
+
+        this.currentFaction=this.gamemode.factions?0:this.gamemode.defaultGroup
+
+        //@ts-ignore
+        this.map = new GameMap(this, (this.gamemode.map||Config.map) as GamemodeMap|string);
 
         this.gas = new Gas(this);
+
+        this.pluginManager.loadPlugins();
 
         this.setGameData({ allowJoin: true });
 
@@ -247,6 +264,59 @@ export class Game implements GameData {
 
         // Start the tick loop
         this.tick();
+    }
+
+    extra_ilum=0;
+    tslru=0
+
+    readonly nature={
+        brightness:1,
+        rain:0,
+        thunderstorm:false,
+        bolt:false,
+
+        rainDest:0,
+        day:true,
+        daytime:0,
+    }
+
+    updateNature(){
+        const nature=this.gamemode.nature
+        if(this.nature.rain>0){
+            if(this.nature.bolt){
+                this.extra_ilum=Numeric.lerp(this.extra_ilum,2.1,0.4)
+                if(this.extra_ilum>=2){
+                    this.extra_ilum=2
+                    this.nature.bolt=false
+                }
+            }else if(Math.random()<=nature.rain.storm.boltChance){
+                this.nature.bolt=true
+            }else{
+                this.extra_ilum=Numeric.lerp(this.extra_ilum,0,0.45)
+            }
+            if(this.nature.thunderstorm){
+                if(Math.random()<=nature.rain.storm.stopChance)this.nature.thunderstorm=!this.nature.thunderstorm
+            }else{
+                if(Math.random()<=nature.rain.storm.stopChance)this.nature.thunderstorm=!this.nature.thunderstorm
+            }
+            if(Math.abs(this.nature.rainDest-this.nature.rain)<=0.01){
+                this.nature.rain=this.nature.rainDest
+                this.nature.rainDest=Math.random()<=nature.rain.stopChance?0:Numeric.round(randomFloat(.15,1),3)
+            }
+        }else if(Math.random()<=nature.rain.chance){
+            this.nature.rainDest=randomFloat(.1,1)
+            this.nature.thunderstorm=false
+            this.extra_ilum=Numeric.lerp(this.extra_ilum,0,0.6)
+            if(Math.random()<=this.gamemode.nature.rain.storm.chance[0]){
+                this.addTimeout(()=>this.nature.thunderstorm=true,random(30,1100))
+            }
+        }
+        this.nature.brightness=Numeric.clamp(Numeric.clamp(1-(this.nature.rain/4)-(this.nature.daytime/3),.2,1)+this.extra_ilum,0,3)
+        this.nature.daytime=Numeric.clamp(this.nature.daytime+((this.nature.day?1:-1)*nature.daynightDelay),0,1)
+        if((this.nature.daytime==1&&this.nature.day)||(this.nature.daytime==0&&!this.nature.day)){
+            this.nature.day=!this.nature.day
+        }
+        this.nature.rain=Numeric.round(Numeric.lerp(this.nature.rain,this.nature.rainDest,nature.rain.transition),5)
     }
 
     onMessage(stream: SuroiByteStream, player: Player): void {
@@ -265,7 +335,7 @@ export class Game implements GameData {
                 break;
             case packet instanceof PlayerInputPacket:
                 // Ignore input packets from players that haven't finished joining, dead players, and if the game is over
-                if (!player.joined || player.dead || player.game.over) return;
+                if (!player.joined || player.dead || player.game.stopped) return;
                 player.processInputs(packet.output);
                 break;
             case packet instanceof SpectatePacket:
@@ -319,19 +389,26 @@ export class Game implements GameData {
         // Update bullets
         let records: DamageRecord[] = [];
         for (const bullet of this.bullets) {
-            records = records.concat(bullet.update());
+            const r=bullet.update()
+            records = records.concat(r);
 
             if (bullet.dead) {
                 const onHitExplosion = bullet.definition.onHitExplosion;
-                if (onHitExplosion && !bullet.reflected) {
-                    this.addExplosion(
-                        onHitExplosion,
-                        bullet.position,
-                        bullet.shooter,
-                        bullet.layer,
-                        bullet.sourceGun instanceof GunItem ? bullet.sourceGun : undefined
-                    );
+                if(!bullet.reflected){
+                    if(bullet.currentDamage>0&&r.length>0&&!(r[0].object.isPlayer||r[0].object.isBuilding||bullet.definition.onHitExplosion)){
+                        bullet.continueB()
+                    }
+                    if(onHitExplosion){
+                        this.addExplosion(
+                            onHitExplosion,
+                            bullet.position,
+                            bullet.shooter,
+                            bullet.layer,
+                            bullet.sourceGun instanceof GunItem ? bullet.sourceGun : undefined
+                        );
+                    }
                 }
+
                 this.bullets.delete(bullet);
             }
         }
@@ -346,14 +423,14 @@ export class Game implements GameData {
             bullets to pass through unhindered since the crate would have been destroyed by the
             first pellets.
         */
-        for (const { object, damage, source, weapon, position } of records) {
+        /*for (const { object, damage, source, weapon, position } of records) {
             object.damage({
                 amount: damage,
                 source,
                 weaponUsed: weapon,
                 position: position
             });
-        }
+        }*/
 
         // Handle explosions
         for (const explosion of this.explosions) {
@@ -365,15 +442,19 @@ export class Game implements GameData {
             detector.updateDetector();
         }
 
+        for(let i=0;i<this.map.updatableObjects.length;i++){
+            this.map.obstacles[i].update()
+        }
+
         // Update gas
         this.gas.tick();
 
         // Delete players that haven't sent a JoinPacket after 5 seconds
-        for (const player of this.connectingPlayers) {
-            if (this.now - player.joinTime > 5000) {
+        /*for (const player of this.connectingPlayers) {
+            if (this.now - player.joinTime > 10000) {
                 player.disconnect("JoinPacket not received after 5 seconds");
             }
-        }
+        }*/
 
         // First loop over players: movement, animations, & actions
         for (const player of this.grid.pool.getCategory(ObjectCategory.Player)) {
@@ -390,6 +471,11 @@ export class Game implements GameData {
             fullObject.serializeFull();
         }
 
+        //NPCS AI
+        for(const npc of this.livingNpcs){
+            npc.AI()
+        }
+
         // Second loop over players: calculate visible objects & send updates
         for (const player of this.connectedPlayers) {
             if (!player.joined) continue;
@@ -403,11 +489,23 @@ export class Game implements GameData {
             player.postPacket();
         }
 
+        for(const d of this.newDecals){
+            d.isNew=false
+        }
+
+        if(this.tslru===0){
+            this.updateNature()
+            this.tslru=2
+        }else{
+            this.tslru--
+        }
+
         // Reset everything
         this.fullDirtyObjects.clear();
         this.partialDirtyObjects.clear();
         this.newBullets.length = 0;
         this.explosions.length = 0;
+        this.newDecals.length=0
         this.emotes.length = 0;
         this.newPlayers.length = 0;
         this.deletedPlayers.length = 0;
@@ -419,37 +517,46 @@ export class Game implements GameData {
         this.gas.completionRatioDirty = false;
         this.updateObjects = false;
 
-        // Winning logic
         if (
             this._started
             && !this.over
+            && this.canEnd
             && (
-                this.teamMode
+                this.gamemode.group ? new Set([...this.livingPlayers].map(p => p.groupID)).size <= 1:(this.teamMode
                     ? this.aliveCount <= (this.maxTeamSize as number) && new Set([...this.livingPlayers].map(p => p.teamID)).size <= 1
-                    : this.aliveCount <= 1
+                    : this.aliveCount <= 1)
             )
+            &&(!this.gamemode.canRespawn||!this.allowJoin)
         ) {
-            for (const player of this.livingPlayers) {
-                const { movement } = player;
-                movement.up = movement.down = movement.left = movement.right = false;
-                player.attacking = false;
-                player.sendEmote(player.loadout.emotes[4]);
-                player.sendGameOverPacket(true);
-                this.pluginManager.emit("player_did_win", player);
-            }
-
             this.pluginManager.emit("game_end", this);
+
+            const ct=Math.min(Math.max(this.gas.currentRadius>0?(this.gas.mapSize*5.5)/this.gas.currentRadius:this.gas.mapSize/100,3),20)
+
+            this.gas.clearGas(ct);
+            const sd=Math.floor(ct*1000)-500
+            for (const player of this.livingPlayers) {
+                player.sendGameOverPacket(true,sd);
+            }
 
             this.setGameData({ allowJoin: false, over: true });
 
             // End the game in 1 second
             this.addTimeout(() => {
-                this.setGameData({ stopped: true });
-                Logger.log(`Game ${this.id} | Ended`);
-            }, 1000);
+                for (const player of this.livingPlayers) {
+                    const { movement } = player;
+                    movement.up = movement.down = movement.left = movement.right = false;
+                    player.attacking = false;
+                    player.sendEmote(player.loadout.emotes[4]);
+                    this.pluginManager.emit("player_did_win", player);
+                }
+                setTimeout(()=>{
+                    this.setGameData({ stopped: true });
+                    Logger.log(`Game ${this.id} | Ended`);
+                },100)
+            }, sd);
         }
 
-        if (this.aliveCount >= Config.maxPlayersPerGame) {
+        if (this.aliveCount >= this.gamemode.maxPlayersPerGame) {
             this.createNewGame();
         }
 
@@ -503,6 +610,7 @@ export class Game implements GameData {
             this._killLeader = player;
 
             if (oldKillLeader !== this._killLeader) {
+                this._killLeader.score+=this.gamemode.score.becomeKillLeader
                 this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderAssigned);
             }
         } else if (player === oldKillLeader) {
@@ -512,6 +620,9 @@ export class Game implements GameData {
 
     killLeaderDead(killer?: Player): void {
         this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderDeadOrDisconnected, { attackerId: killer?.id });
+        if(killer){
+            killer.score+=this.gamemode.score.killKillLeader
+        }
         let newKillLeader: Player | undefined;
         for (const player of this.livingPlayers) {
             if (player.kills > (newKillLeader?.kills ?? (GameConstants.player.killLeaderMinKills - 1)) && !player.dead) {
@@ -520,6 +631,12 @@ export class Game implements GameData {
         }
         this._killLeader = newKillLeader;
         this._sendKillLeaderKFPacket(KillfeedMessageType.KillLeaderAssigned);
+    }
+
+    giveScoreToAll(score:number){
+        for(const p of this.livingPlayers){
+            p.score+=score
+        }
     }
 
     killLeaderDisconnected(leader: Player): void {
@@ -558,54 +675,43 @@ export class Game implements GameData {
         );
     }
 
-    addPlayer(socket: WebSocket<PlayerContainer>): Player | undefined {
-        if (this.pluginManager.emit("player_will_connect")) {
-            return undefined;
+    addPlayerIntoGroup(player:Player,id:number){
+        if(id>=this.groups.size||!this.groups.has(id)){
+            this.groups.set(id,new Group(id))
+            this.groups.get(id)!.addPlayer(player)
+        }else{
+            this.groups.get(id)!.addPlayer(player)
         }
+        player.dirty.group=true
+        player.setDirty()
+    }
 
+    getPlayerSpawnPosition(group:number=0,team:undefined|Team):[Vector,number]{
         let spawnPosition = Vec.create(this.map.width / 2, this.map.height / 2);
-        let spawnLayer;
-
-        let team: Team | undefined;
-        if (this.teamMode) {
-            const { teamID, autoFill } = socket.getUserData();
-
-            if (teamID) {
-                team = this.customTeams.get(teamID);
-
-                if (
-                    !team // team doesn't exist
-                    || (team.players.length && !team.hasLivingPlayers()) // team isn't empty but has no living players
-                    || team.players.length >= (this.maxTeamSize as number) // team is full
-                ) {
-                    this.teams.add(team = new Team(this.nextTeamID, autoFill));
-                    this.customTeams.set(teamID, team);
-                }
-            } else {
-                const vacantTeams = this.teams.valueArray.filter(
-                    team =>
-                        team.autoFill
-                        && team.players.length < (this.maxTeamSize as number)
-                        && team.hasLivingPlayers()
-                );
-                if (vacantTeams.length) {
-                    team = pickRandomInArray(vacantTeams);
-                } else {
-                    this.teams.add(team = new Team(this.nextTeamID));
-                }
-            }
-        }
-
-        switch (Config.spawn.mode) {
+        let spawnLayer=Layer.Ground;
+        switch (this.gamemode.spawn.mode) {
             case SpawnMode.Normal: {
                 const hitbox = new CircleHitbox(5);
                 const gasPosition = this.gas.currentPosition;
                 const gasRadius = this.gas.newRadius ** 2;
-                const teamPosition = this.teamMode
-                    // teamMode should guarantee the `team` object's existence
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    ? pickRandomInArray(team!.getLivingPlayers())?.position
-                    : undefined;
+                let teamPosition:Vector|undefined=undefined
+                let island=random(0,this.map.islands.length-1)
+                const glp=this.groups.get(group)?.getLivingPlayers()
+                if(this.gamemode.group){
+                    if(this.gamemode.factions&&this.gamemode.factions.spawnIslands&&(!glp||glp.length===0)){
+                        island=this.gamemode.factions.spawnIslands[group%this.gamemode.factions.spawnIslands.length]
+                    }else if(this.groups.get(group)){
+                        if(team&&team.players.length>0){
+                            const tp=pickRandomInArray(team!.getLivingPlayers())
+                            teamPosition=tp.position
+                            spawnLayer=tp.layer
+                        }else if(glp!.length>0){
+                            teamPosition=pickRandomInArray(glp!)!.position
+                        }
+                    }
+                }else if(this.teamMode&&!this.gamemode.group){
+                    teamPosition=pickRandomInArray(team!.getLivingPlayers())?.position
+                }
 
                 let foundPosition = false;
                 for (let tries = 0; !foundPosition && tries < 200; tries++) {
@@ -614,10 +720,11 @@ export class Game implements GameData {
                         {
                             maxAttempts: 500,
                             spawnMode: MapObjectSpawnMode.GrassAndSand,
-                            getPosition: this.teamMode && teamPosition
+                            getPosition: (this.teamMode||this.gamemode.group) && teamPosition
                                 ? () => randomPointInsideCircle(teamPosition, 20, 10)
                                 : undefined,
-                            collides: position => Geometry.distanceSquared(position, gasPosition) >= gasRadius
+                            collides: position => Geometry.distanceSquared(position, gasPosition) >= gasRadius,
+                            ir:this.map.islands[Numeric.clamp(island,0,this.map.islands.length-1)]
                         }
                     );
 
@@ -645,17 +752,17 @@ export class Game implements GameData {
                 break;
             }
             case SpawnMode.Radius: {
-                const { x, y } = Config.spawn.position;
+                const { x, y } = this.gamemode.spawn.position;
                 spawnPosition = randomPointInsideCircle(
                     Vec.create(x, y),
-                    Config.spawn.radius
+                    this.gamemode.spawn.radius
                 );
                 break;
             }
             case SpawnMode.Fixed: {
-                const { x, y } = Config.spawn.position;
+                const { x, y } = this.gamemode.spawn.position;
                 spawnPosition = Vec.create(x, y);
-                spawnLayer = Config.spawn.layer ?? Layer.Ground;
+                spawnLayer =this.gamemode.spawn.layer ?? Layer.Ground;
                 break;
             }
             case SpawnMode.Center: {
@@ -663,24 +770,75 @@ export class Game implements GameData {
                 break;
             }
         }
+        return [spawnPosition,spawnLayer]
+    }
 
+    addPlayer(socket: WebSocket<PlayerContainer>): Player | undefined {
+        if (this.pluginManager.emit("player_will_connect")) {
+            return undefined;
+        }
+
+        let group=this.currentFaction
+
+        let team: Team | undefined;
+        if (this.teamMode) {
+            const { teamID, autoFill } = socket.getUserData();
+
+            if (teamID) {
+                team = this.customTeams.get(teamID);
+
+                if (
+                    !team // team doesn't exist
+                    || (team.players.length && !team.hasLivingPlayers()) // team isn't empty but has no living players
+                    || team.players.length >= (this.maxTeamSize as number) // team is full
+                ) {
+                    this.teams.add(team = new Team(this.nextTeamID, autoFill));
+                    this.customTeams.set(teamID, team);
+                }
+            } else {
+                const vacantTeams = this.teams.valueArray.filter(
+                    team =>
+                        team.autoFill
+                        && team.players.length < (this.maxTeamSize as number)
+                        && team.hasLivingPlayers()
+                        && (((!this.gamemode.group)||team.group===undefined)||team.group===group)
+                );
+                if (vacantTeams.length) {
+                    team = pickRandomInArray(vacantTeams);
+                } else {
+                    this.teams.add(team = new Team(this.nextTeamID));
+                    team.group=group
+                }
+            }
+        }
+
+        const pp=this.getPlayerSpawnPosition(group,team)
+        
         // Player is added to the players array when a JoinPacket is received from the client
-        const player = new Player(this, socket, spawnPosition, spawnLayer, team);
+        const player = new Player(this, pp[0], socket, pp[1], team);
         this.connectingPlayers.add(player);
         this.pluginManager.emit("player_did_connect", player);
         return player;
     }
 
+    currentFaction=0
+
     // Called when a JoinPacket is sent by the client
     activatePlayer(player: Player, packet: JoinPacketData): void {
         const rejectedBy = this.pluginManager.emit("player_will_join", { player, joinPacket: packet });
+        this.connectingPlayers.delete(player);
         if (rejectedBy) {
             player.disconnect(`Connection rejected by server plugin '${rejectedBy.constructor.name}'`);
             return;
         }
 
-        if (packet.protocolVersion !== GameConstants.protocolVersion) {
+        if (packet.protocolVersion !== GameConstants.protocolVersion&&!player.isNpc) {
             player.disconnect(`Invalid game version (expected ${GameConstants.protocolVersion}, was ${packet.protocolVersion})`);
+            return;
+        }
+
+        if(Config.allowRoles!==undefined&&(!player.role||!Config.allowRoles.includes(player.role))){
+            player.disconnect(`Don't Have Permition To Join. Ask For Permition`);
             return;
         }
 
@@ -701,10 +859,48 @@ export class Game implements GameData {
             player.loadout.badge = badge;
         }
         player.loadout.emotes = packet.emotes;
+        
+        if(this.gamemode.weaponsSelect){
+            const weapons=[defaultUnlockGuns,defaultUnlockMelees]
+            if(packet.gun1&&Guns.fromStringSafe(packet.gun1)&&weapons[0].includes(packet.gun1)){
+                player.inventory.addOrReplaceWeapon(0,Guns.fromString(packet.gun1 as never))
+                const w=player.inventory.getWeapon(0) as GunItem
+                w.ammo=w.definition.capacity
+            }
+            if(packet.gun2&&Guns.fromStringSafe(packet.gun2)&&weapons[0].includes(packet.gun2)){
+                player.inventory.addOrReplaceWeapon(1,Guns.fromString(packet.gun2 as never))
+                const w=player.inventory.getWeapon(1) as GunItem
+                w.ammo=w.definition.capacity
+            }
+            if(packet.melee&&Melees.fromStringSafe(packet.melee)&&weapons[1].includes(packet.melee)){
+                player.inventory.addOrReplaceWeapon(2,Melees.fromString(packet.melee as never))
+            }
+        }
+        if(this.gamemode.roles&&this.gamemode.roles.enabled){
+            setTimeout(()=>{
+                try{
+                    player.gamerole=ExtraLoadoutList[packet.role]!
+                    const role=ExtraLoadout[ExtraLoadoutList[packet.role]]
+                    if(!role||role.type!==ExtraLoadoutType.Role){
+                        player.disconnect("invalid_role")
+                        return
+                    }
+                    for(const r of role.perks){
+                        player.perks.addPerk(Perks.fromString(r),true)
+                        player.fullDirty()
+                    }
+                    if(role.skin){
+                        player.loadout.skin=Skins.fromString(pickRandomInArray(role.skin))
+                        player.dropable.skin=false
+                    }
+                }catch{
+                    player.disconnect("invalid_role");
+                }
+            },2000)
+        }
 
         this.livingPlayers.add(player);
         this.spectatablePlayers.push(player);
-        this.connectingPlayers.delete(player);
         this.connectedPlayers.add(player);
         this.newPlayers.push(player);
         this.grid.addObject(player);
@@ -720,27 +916,29 @@ export class Game implements GameData {
                 {
                     maxTeamSize: this.maxTeamSize,
                     teamID: player.teamID ?? 0,
-                    emotes: player.loadout.emotes
+                    groupMode:this.gamemode.group,
+                    emotes: player.loadout.emotes,
+                    date:BigInt(this.gamemode.data??0)
                 }
             )
         );
 
         player.sendData(this.map.buffer);
 
+        if(player.isNpc){
+            this.livingNpcs.add(player)
+        }
+
         this.addTimeout(() => { player.disableInvulnerability(); }, 5000);
 
         if (
-            (this.teamMode ? this.teams.size : this.aliveCount) > 1
+            ((this.teamMode&&!this.gamemode.group) ? this.teams.size : this.aliveCount) > 1
             && !this._started
             && this.startTimeout === undefined
         ) {
             this.startTimeout = this.addTimeout(() => {
-                this._started = true;
-                this.setGameData({ startedTime: this.now });
-                this.gas.advanceGasStage();
-
-                this.addTimeout(this.createNewGame.bind(this), Config.gameJoinTime * 1000);
-            }, 3000);
+                this.StartGame()
+            }, this.gamemode.start_after*1000);
         }
 
         Logger.log(`Game ${this.id} | "${player.name}" joined`);
@@ -758,12 +956,48 @@ export class Game implements GameData {
                         },
                         body: `{ "username": "${username}" }`
                     }
-                // you fuckin stupid or smth?
-                // eslint-disable-next-line @typescript-eslint/use-unknown-in-catch-callback-variable
+                    // you fuckin stupid or smth?
+
                 ).catch(console.error);
             }
         }
+
+        if(this.gamemode.group){
+            if(this.gamemode.factions){
+                this.addPlayerIntoGroup(player,this.currentFaction)
+                this.currentFaction=(this.currentFaction+1)%this.gamemode.factions.count
+            }else{
+                this.addPlayerIntoGroup(player,this.currentFaction)
+            }
+        }
+
         this.pluginManager.emit("player_did_join", { player, joinPacket: packet });
+    }
+    StartGame(){
+        if(!this._started){
+            this._started = true;
+            this.setGameData({ startedTime: this.now });
+            this.gas.advanceGasStage();
+            this.map.generate_after_start();
+
+            this.pluginManager.emit("game_started",this)
+
+            this.addTimeout(this.createNewGame.bind(this), this.gamemode.joinTime * 1000);
+            this.addTimeout(this.IATargetCheck.bind(this),3000);
+
+            for(const p of this.livingPlayers.values()){
+                p.setDirty()
+            }
+        }
+    }
+
+    IATargetCheck(){
+        for(const npc of this.livingNpcs){
+            if(npc.goapAgent){
+                npc.goapAgent.targetCheck()
+            }
+        }
+        this.addTimeout(this.IATargetCheck.bind(this),1300)
     }
 
     removePlayer(player: Player): void {
@@ -777,7 +1011,11 @@ export class Game implements GameData {
         this.connectedPlayers.delete(player);
 
         if (player.canDespawn) {
+            player.dropAll()
             this.livingPlayers.delete(player);
+            if(player.isNpc){
+                this.livingNpcs.delete(player);
+            }
             this.removeObject(player);
             this.deletedPlayers.push(player.id);
             removeFrom(this.spectatablePlayers, player);
@@ -789,6 +1027,16 @@ export class Game implements GameData {
                     team.removePlayer(player);
 
                     if (!team.players.length) this.teams.delete(team);
+                }
+                player.teamWipe();
+                player.beingRevivedBy?.action?.cancel();
+            }
+            if(this.gamemode.group){
+                const group = player.group;
+                if (group) {
+                    group.removePlayer(player);
+
+                    if (!group.players.length) this.groups.delete(group.id);
                 }
                 player.teamWipe();
                 player.beingRevivedBy?.action?.cancel();
@@ -813,14 +1061,30 @@ export class Game implements GameData {
             this.startTimeout = undefined;
         }
 
-        try {
-            player.socket.close();
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (_) {
-            /* not a really big deal if we can't close the socket */
-            // when does this ever fail?
+        if(!player.isNpc){
+            try {
+                player.socket?.close();
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            } catch (_) {
+                /* not a really big deal if we can't close the socket */
+                // when does this ever fail?
+            }
         }
         this.pluginManager.emit("player_disconnect", player);
+    }
+
+    addNpc(position:Vector,join:JoinPacketData,layer:number,protectBuild?:Building,team?:number):Player{
+        let t:Team|undefined=undefined
+        if(team!==undefined){
+            t=this.npcTeams.get(team)??this.npcTeams.set(team,new Team(team,false)).get(team)
+        }
+        const npc=new Player(this,position,undefined,layer,t)
+        npc.autoReload=false
+        npc.goapAgent=new GoapAgent(npc,protectBuild)
+        npc.isNpc=true
+        this.activatePlayer(npc,join)
+        npc.teamID=team
+        return npc
     }
 
     /**
@@ -917,14 +1181,15 @@ export class Game implements GameData {
         source: GameObject,
         layer: Layer,
         weapon?: GunItem | MeleeItem | ThrowableItem,
-        damageMod = 1
+        damageMod = 1,
+        owner?:ThrowableProjectile
     ): Explosion {
-        const explosion = new Explosion(this, type, position, source, layer, weapon, damageMod);
+        const explosion = new Explosion(this, type, position, source, layer, weapon, damageMod,owner);
         this.explosions.push(explosion);
         return explosion;
     }
 
-    addProjectile(definition: ThrowableDefinition, position: Vector, layer: Layer, source: ThrowableItem): ThrowableProjectile {
+    addProjectile(definition: ThrowableDefinition, position: Vector, layer: Layer, source?: ThrowableItem): ThrowableProjectile {
         const projectile = new ThrowableProjectile(this, position, layer, definition, source);
         this.grid.addObject(projectile);
         return projectile;
@@ -1013,7 +1278,7 @@ export class Game implements GameData {
 
         const paddingFactor = 1.25;
 
-        const crateDef = Obstacles.fromString("airdrop_crate_locked");
+        const crateDef = Obstacles.fromString(this.gamemode.airdrop.crate);
         const crateHitbox = (crateDef.spawnHitbox ?? crateDef.hitbox).clone();
         let thisHitbox = crateHitbox.clone();
 
@@ -1176,6 +1441,38 @@ export class Game implements GameData {
         }, GameConstants.airdrop.flyTime);
 
         this.pluginManager.emit("airdrop_did_summon", { airdrop, position });
+    }
+    addAirstrike(position:Vector,owner:Player|undefined,count:number=10,radius:number=35,definition:string="airstrike_bomb",bombsCount:number=7,ping:string="airstrike_ping"){
+        this.mapPings.push({
+            definition:MapPings.fromString<MapPing>(ping),
+            position:position,
+        })
+        for(let i=0;i<count;i++){
+            this.addTimeout(this.addAirstrikePlane.bind(this,Vec.addComponent(position,randomFloat(-radius,radius),randomFloat(-radius,radius)),owner,definition,bombsCount),i==0?0:random(0,2200))
+        }
+    }
+    addAirstrikePlane(position:Vector,owner:Player|undefined,definition:string,bombsCount:number=7){
+        const direction = randomRotation();
+
+        const planePos = Vec.add(
+            position,
+            Vec.fromPolar(direction, -GameConstants.maxPosition),
+        );
+        this.planes.push({ position: planePos, direction, airstrike:true });
+        const def=Throwables.fromString(definition)
+        this.addTimeout(()=>{
+            for(let i=0;i<bombsCount;i++){
+                this.addTimeout(()=>{
+                    const proj=this.addProjectile(def,Vec.addComponent(position,randomFloat(-9,9),randomFloat(-9,9)),Layer.Ground,
+                        owner?new ThrowableItem(def,owner,{
+                            kills:0,
+                            damage:0,
+                        },1):undefined
+                    )
+                    proj.detonate(def.fuseTime)
+                },i==0?0:random(0,1000))
+            }
+        },3000)
     }
 }
 

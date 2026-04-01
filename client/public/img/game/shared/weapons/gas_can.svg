@@ -7,7 +7,7 @@
    viewBox="0 0 29.104166 29.104167"
    version="1.1"
    id="svg1"
-   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
    sodipodi:docname="gas_can.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -23,13 +23,13 @@
      inkscape:pagecheckerboard="true"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
-     inkscape:zoom="7.1272935"
-     inkscape:cx="38.163154"
-     inkscape:cy="59.068705"
-     inkscape:window-width="2560"
-     inkscape:window-height="1372"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:zoom="3.5636468"
+     inkscape:cx="12.066291"
+     inkscape:cy="82.359454"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1"
      inkscape:pageshadow="0"
@@ -76,7 +76,7 @@
      transform="translate(-17.540748,-43.255778)">
     <g
        id="g840"
-       transform="matrix(0.42031844,0.24267096,-0.24267096,0.42031844,33.391331,18.617351)">
+       transform="matrix(0.48534193,0,0,0.48534193,13.62211,23.218634)">
       <rect
          style="fill:#333333;fill-opacity:1;stroke:#000000;stroke-width:0.979001;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
          id="rect8"
@@ -85,7 +85,8 @@
          x="18.294447"
          y="63.587769"
          transform="rotate(-26.047004)"
-         ry="1.1286789" />
+         ry="1.1286789"
+         rx="1.1286789" />
       <rect
          style="fill:#333333;fill-opacity:1;stroke:#000000;stroke-width:0.979;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
          id="rect7"
@@ -107,7 +108,8 @@
          x="56.514015"
          y="-48.743275"
          transform="rotate(90)"
-         ry="3.7009492" />
+         ry="3.7009492"
+         rx="3.7009492" />
       <rect
          style="fill:#d50000;fill-opacity:1;stroke:#830000;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
          id="rect327-4-6"
@@ -116,7 +118,8 @@
          x="60.321514"
          y="-44.999454"
          transform="rotate(90)"
-         ry="2.8349578" />
+         ry="2.8349578"
+         rx="2.8349578" />
       <path
          style="fill:#333333;stroke:#830000;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
          d="M 40.501628,66.657317 26.932395,88.85877"

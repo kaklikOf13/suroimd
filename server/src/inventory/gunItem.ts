@@ -1,13 +1,13 @@
 import { AnimationType, FireMode, InventoryMessages } from "@common/constants";
 import { type GunDefinition } from "@common/definitions/guns";
-import { PerkData, PerkIds } from "@common/definitions/perks";
+import { PerkData, PerkIds, Perks } from "@common/definitions/perks";
 import { PickupPacket } from "@common/packets/pickupPacket";
 import { Orientation } from "@common/typings";
 import { type BulletOptions } from "@common/utils/baseBullet";
 import { CircleHitbox, RectangleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer, isStairLayer } from "@common/utils/layer";
 import { Angle, Geometry, HALF_PI, resolveStairInteraction } from "@common/utils/math";
-import { type DeepMutable, type DeepRequired, type Timeout } from "@common/utils/misc";
+import { cloneDeep, type DeepMutable, type DeepRequired, type Timeout } from "@common/utils/misc";
 import { ItemType, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { randomFloat, randomPointInsideCircle } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
@@ -16,6 +16,7 @@ import { type Player } from "../objects/player";
 import { getPatterningShape } from "../utils/misc";
 import { ReloadAction } from "./action";
 import { InventoryItem } from "./inventoryItem";
+import { Throwables } from "@common/definitions/throwables";
 
 /**
  * A class representing a firearm
@@ -76,11 +77,11 @@ export class GunItem extends InventoryItem<GunDefinition> {
         const definition = this.definition;
 
         if (
-            (!skipAttackCheck && !owner.attacking)
+            ((!skipAttackCheck && !owner.attacking)
             || owner.dead
             || owner.downed
             || owner.disconnected
-            || this !== owner.activeItem
+            || this !== owner.activeItem)
         ) {
             this._consecutiveShots = 0;
             return;
@@ -183,27 +184,20 @@ export class GunItem extends InventoryItem<GunDefinition> {
         // ! evil starts here
         let modifiersModified = false; // lol
         let doSplinterGrouping = false;
+        if(this.owner.hasPerk(PerkIds.Flechettes)){
+            const perk=Perks.fromString(PerkIds.Flechettes)
+            if (definition.ballistics.onHitExplosion === undefined && !definition.summonAirdrop) {
+                doSplinterGrouping = true;
+                //@ts-ignore
+                modifiers.damage *= perk.damageMod;
+                modifiers.tracer.width*=1.5;
+                //@ts-ignore
+                modifyForDamageMod(perk.damageMod);
+                modifiersModified = true;
+            }
+        }
         for (const perk of owner.perks) {
             switch (perk.idString) {
-                case PerkIds.Flechettes: {
-                    if (definition.ballistics.onHitExplosion === undefined && !definition.summonAirdrop) {
-                        doSplinterGrouping = true;
-                        modifiers.damage *= perk.damageMod;
-                        modifyForDamageMod(perk.damageMod);
-                        modifiersModified = true;
-                    }
-                    break;
-                }
-                case PerkIds.SabotRounds: {
-                    modifiers.range *= perk.rangeMod;
-                    modifiers.speed *= perk.speedMod;
-                    modifiers.damage *= perk.damageMod;
-                    modifyForDamageMod(perk.damageMod);
-                    modifiers.tracer.length *= perk.tracerLengthMod;
-                    spread *= perk.spreadMod;
-                    modifiersModified = true;
-                    break;
-                }
                 case PerkIds.CloseQuartersCombat: {
                     const sqCutoff = perk.cutoff ** 2;
                     if (
@@ -235,10 +229,18 @@ export class GunItem extends InventoryItem<GunDefinition> {
                     for (const [cutoff, mod] of perk.thresholds) {
                         if (ratio <= cutoff) {
                             modifiers.damage *= mod;
+                            modifiers.tracer.width*=Math.max(mod*1.2,1.2)
                             modifyForDamageMod(mod);
+                            modifiersModified=true
                             break;
                         }
                     }
+                    break;
+                }
+                
+                case PerkIds.GreatAmmoBox: {
+                    modifyForDamageMod(perk.damageMod!);
+                    modifiersModified=true
                     break;
                 }
             }
@@ -256,7 +258,24 @@ export class GunItem extends InventoryItem<GunDefinition> {
             )
             : (_: Vector) => owner.layer;
 
-        const spawn = (position: Vector, spread: number): void => {
+        const pp=Throwables.fromStringSafe(definition.projectile?.def??"")
+        const spawn = (position: Vector, spread: number,weak?:boolean): void => {
+            const m=cloneDeep(modifiersModified) ? cloneDeep(modifiers) : undefined;
+            if(pp&&definition.projectile){
+                const proj=owner.game.addProjectile(pp,position,getStartingLayer(position))
+                let spd=definition.projectile.speedCap
+                if(definition.projectile.chooseSpeed){
+                    spd=Math.min(rangeOverride>0?(rangeOverride/80)*definition.projectile.speedCap:definition.projectile.speedCap*0.05,definition.projectile.speedCap)
+                }
+                proj.push(owner.rotation+ spread,spd)
+                proj.detonate(pp.fuseTime)
+            }
+            if(weak===true&&m!==undefined){
+                m.damage*=0.3
+                m.tracer.opacity*=0.35
+                m.tracer.width*=0.75
+            }
+
             owner.game.addBullet(
                 this,
                 owner,
@@ -265,7 +284,7 @@ export class GunItem extends InventoryItem<GunDefinition> {
                     rotation: owner.rotation + HALF_PI + spread,
                     layer: getStartingLayer(position),
                     rangeOverride,
-                    modifiers: modifiersModified ? modifiers : undefined,
+                    modifiers: m,
                     saturate,
                     thin
                 }
@@ -307,7 +326,8 @@ export class GunItem extends InventoryItem<GunDefinition> {
             for (let j = 0; j < split; j++) {
                 spawn(
                     finalSpawnPosition,
-                    (8 * (j / sM1 - 0.5) ** 3) * dev + rotation
+                    (8 * (j / sM1 - 0.5) ** 3) * dev + rotation,
+                    j!=1
                 );
             }
         }
@@ -331,17 +351,20 @@ export class GunItem extends InventoryItem<GunDefinition> {
                 return;
             }
         }
-
-        if (!definition.infiniteAmmo) {
-            --this.ammo;
+        if(definition.airstrike){
+            this.owner.game.addAirstrike(this.owner.position,this.owner,definition.airstrike.planesCount,definition.airstrike.radius,definition.airstrike.bomb,definition.airstrike.bombsCount,definition.airstrike.ping)
         }
+
+        --this.ammo;
 
         if (this.ammo <= 0) {
             this._consecutiveShots = 0;
-            this._reloadTimeout = owner.game.addTimeout(
-                this.reload.bind(this, true),
-                definition.fireDelay
-            );
+            if(this.owner.autoReload){
+                this._reloadTimeout = owner.game.addTimeout(
+                    this.reload.bind(this, true),
+                    definition.fireDelay
+                );
+            }
             return;
         }
 
@@ -385,13 +408,17 @@ export class GunItem extends InventoryItem<GunDefinition> {
         );
     }
 
+    infinity_ammo():boolean{
+        const { owner, definition } = this;
+        return (this.owner.hasPerk(PerkIds.InfiniteAmmo)||owner.perks.has_infinitys[definition.ammoType]||this.owner.infinityAmmo||definition.infiniteAmmo)&&!definition.no_infinity_ammo
+    }
+
     reload(skipFireDelayCheck = false): void {
         const { owner, definition } = this;
 
         if (
-            definition.infiniteAmmo
-            || this.ammo >= (this.owner.hasPerk(PerkIds.ExtendedMags) ? definition.extendedCapacity ?? definition.capacity : definition.capacity)
-            || (!owner.inventory.items.hasItem(definition.ammoType) && !this.owner.hasPerk(PerkIds.InfiniteAmmo))
+            this.ammo >= (this.owner.hasPerk(PerkIds.ExtendedMags) ? definition.extendedCapacity ?? definition.capacity : definition.capacity)
+            || !(owner.inventory.items.hasItem(definition.ammoType) || this.infinity_ammo())
             || owner.action !== undefined
             || owner.activeItem !== this
             || (!skipFireDelayCheck && owner.game.now - this._lastUse < definition.fireDelay)

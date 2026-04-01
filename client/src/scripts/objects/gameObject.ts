@@ -8,7 +8,6 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { Container, Graphics } from "pixi.js";
 import { type Game } from "../game";
 import { type GameSound, type SoundOptions } from "../managers/soundManager";
-import { HITBOX_DEBUG_MODE } from "../utils/constants";
 import { toPixiCoords } from "../utils/pixi";
 
 export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> extends makeGameObjectTemplate() {
@@ -110,7 +109,7 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
 
         this.game.camera.addObject(this.container);
 
-        if (HITBOX_DEBUG_MODE) {
+        if (this.game.console.getBuiltInCVar("db_hitbox")) {
             this.debugGraphics = new Graphics();
             this.debugGraphics.zIndex = 999;
             this.game.camera.addObject(this.debugGraphics);
@@ -119,7 +118,7 @@ export abstract class GameObject<Cat extends ObjectCategory = ObjectCategory> ex
 
     destroy(): void {
         this.destroyed = true;
-        if (HITBOX_DEBUG_MODE) {
+        if (this.game.console.getBuiltInCVar("db_hitbox")) {
             this.debugGraphics.destroy();
         }
         for (const timeout of this.timeouts) {

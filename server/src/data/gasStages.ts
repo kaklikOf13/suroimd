@@ -1,4 +1,5 @@
 import { GasState } from "@common/constants";
+import { Vector } from "@common/utils/vector";
 
 export interface GasStage {
     readonly state: GasState
@@ -7,9 +8,10 @@ export interface GasStage {
     readonly newRadius: number
     readonly dps: number
     readonly summonAirdrop?: boolean
+    readonly position?:Vector
 }
 
-export const GasStages: GasStage[] = [
+export const DefaultGasStages: GasStage[] = [
     {
         state: GasState.Inactive,
         duration: 0,
@@ -28,7 +30,7 @@ export const GasStages: GasStage[] = [
     },
     {
         state: GasState.Advancing,
-        duration: 30,
+        duration: 60,
         oldRadius: 0.762,
         newRadius: 0.381,
         dps: 1
@@ -42,7 +44,7 @@ export const GasStages: GasStage[] = [
     },
     {
         state: GasState.Advancing,
-        duration: 20,
+        duration: 40,
         oldRadius: 0.381,
         newRadius: 0.238,
         dps: 2
@@ -57,7 +59,7 @@ export const GasStages: GasStage[] = [
     },
     {
         state: GasState.Advancing,
-        duration: 10,
+        duration: 30,
         oldRadius: 0.238,
         newRadius: 0.095,
         dps: 3
@@ -71,7 +73,7 @@ export const GasStages: GasStage[] = [
     },
     {
         state: GasState.Advancing,
-        duration: 5,
+        duration: 12,
         oldRadius: 0.095,
         newRadius: 0.048,
         dps: 4
@@ -85,21 +87,21 @@ export const GasStages: GasStage[] = [
     },
     {
         state: GasState.Advancing,
-        duration: 5,
+        duration: 16,
         oldRadius: 0.048,
         newRadius: 0.024,
         dps: 6.5
     },
     {
         state: GasState.Waiting,
-        duration: 10,
+        duration: 12,
         oldRadius: 0.024,
         newRadius: 0,
         dps: 7.5
     },
     {
         state: GasState.Advancing,
-        duration: 5,
+        duration: 10,
         oldRadius: 0.024,
         newRadius: 0,
         dps: 9

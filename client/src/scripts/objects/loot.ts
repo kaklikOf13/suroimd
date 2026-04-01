@@ -9,11 +9,12 @@ import { ItemType, LootRadius } from "@common/utils/objectDefinitions";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
-import { DIFF_LAYER_HITBOX_OPACITY, GHILLIE_TINT, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
+import { DIFF_LAYER_HITBOX_OPACITY, GHILLIE_TINT, HITBOX_COLORS } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { type Player } from "./player";
+import type { SkinDefinition } from "@common/definitions/loadout/skins";
 
 export class Loot extends GameObject.derive(ObjectCategory.Loot) {
     definition!: LootDefinition;
@@ -55,13 +56,14 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
             this.container.addChild(this.images.background, this.images.item);
 
             if (itemType === ItemType.Skin) {
+                const frame=(this.definition as SkinDefinition).frame??this.definition.idString
                 this.images.item
-                    .setFrame(`${this.definition.idString}_base`)
+                    .setFrame(`${frame}_base`)
                     .setPos(0, -3)
                     .setScale(0.65)
                     .setAngle(90);
 
-                const skinFist = `${this.definition.idString}_fist`;
+                const skinFist = `${frame}_fist`;
                 this.images.skinFistLeft
                     .setFrame(skinFist)
                     .setPos(22, 20)
@@ -88,6 +90,7 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
             let backgroundTexture: string | undefined;
             switch (itemType) {
                 case ItemType.Gun: {
+                    this.images.item.setRotation(-0.52)
                     backgroundTexture = `loot_background_gun_${definition.ammoType}`;
                     this.images.item.scale.set(0.85);
                     break;
@@ -98,6 +101,7 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
                 case ItemType.Melee: {
                     backgroundTexture = "loot_background_melee";
                     const imageScale = definition.image?.lootScale;
+                    this.images.item.setRotation(-0.52)
                     if (imageScale !== undefined) this.images.item.scale.set(imageScale);
                     break;
                 }
@@ -114,13 +118,12 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
                 }
                 case ItemType.Throwable: {
                     backgroundTexture = "loot_background_throwable";
+                    this.images.item.setRotation(-0.52)
                     break;
                 }
                 case ItemType.Perk: {
                     // FIXME bad
-                    backgroundTexture = definition.idString === PerkIds.PlumpkinGamble
-                        ? "loot_background_plumpkin_gamble"
-                        : "loot_background_perk";
+                    backgroundTexture = "loot_background_perk";
                     break;
                 }
             }
@@ -144,11 +147,11 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
 
             // Play an animation if this is new loot
             if (data.full.isNew && isNew) {
-                this.container.scale.set(0);
+                this.container.scale.set(.1);
                 this.animation = this.game.addTween({
                     target: this.container.scale,
                     to: { x: 1, y: 1 },
-                    duration: 1000,
+                    duration: 1500,
                     ease: EaseFunctions.elasticOut2,
                     onComplete: () => {
                         this.animation = undefined;
@@ -175,7 +178,7 @@ export class Loot extends GameObject.derive(ObjectCategory.Loot) {
     }
 
     override updateDebugGraphics(): void {
-        if (!HITBOX_DEBUG_MODE) return;
+        if (!this.game.console.getBuiltInCVar("db_hitbox")) return;
 
         this.debugGraphics.clear();
         drawHitbox(

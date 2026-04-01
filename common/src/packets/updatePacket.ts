@@ -1,5 +1,5 @@
 import { Constants, DEFAULT_INVENTORY, Derived, itemKeys, itemKeysLength, Layer, ObjectCategory, type GasState } from "../constants";
-import { Badges, type BadgeDefinition } from "../definitions/badges";
+import { Badges, type BadgeDefinition } from "../definitions/loadout/badges";
 import { Explosions, type ExplosionDefinition } from "../definitions/explosions";
 import { Loots, type WeaponDefinition } from "../definitions/loots";
 import { MapPings, type MapPing, type PlayerPing } from "../definitions/mapPings";
@@ -26,16 +26,31 @@ interface ObjectPartialData {
     readonly data: ObjectsNetData[ObjectCategory]
 }
 
+export interface ReadOnlyIndicator{
+    readonly id: number
+    readonly rewrite:boolean
+    readonly position:Vector
+    readonly sprite?:{
+        readonly frame:string
+        readonly scale:number
+        readonly tint:number
+        readonly from_player:boolean
+    }
+}
+
 function serializePlayerData(
     strm: SuroiByteStream,
     {
         minMax,
         health,
         adrenaline,
+        capacity,
         zoom,
         layer,
         id,
         teammates,
+        groupPlayers,
+        otherIndicators,
         inventory,
         lockedSlots,
         items,
@@ -46,11 +61,14 @@ function serializePlayerData(
     /* eslint-disable @stylistic/no-multi-spaces */
     const hasMinMax      = minMax !== undefined;
     const hasHealth      = health !== undefined;
+    const hasCapacity    = capacity !== undefined;
     const hasAdrenaline  = adrenaline !== undefined;
     const hasZoom        = zoom !== undefined;
     const hasLayer       = layer !== undefined;
     const hasId          = id !== undefined;
     const hasTeammates   = teammates !== undefined;
+    const hasGroupPlayers= groupPlayers !== undefined;
+    const hasAnotherIndicators= otherIndicators !== undefined&&otherIndicators.length>0;
     const hasInventory   = inventory !== undefined;
     const hasLockedSlots = lockedSlots !== undefined;
     const hasItems       = items !== undefined;
@@ -62,10 +80,13 @@ function serializePlayerData(
         hasMinMax,
         hasHealth,
         hasAdrenaline,
+        hasCapacity,
         hasZoom,
         hasLayer,
         hasId,
         hasTeammates,
+        hasGroupPlayers,
+        hasAnotherIndicators,
         hasInventory,
         hasLockedSlots,
         hasItems,
@@ -86,6 +107,10 @@ function serializePlayerData(
 
     if (hasAdrenaline) {
         strm.writeFloat(adrenaline, 0, 1, 2);
+    }
+
+    if (hasCapacity) {
+        strm.writeUint8(capacity);
     }
 
     if (hasZoom) {
@@ -117,9 +142,52 @@ function serializePlayerData(
                     (downed ? 2 : 0) + (disconnected ? 1 : 0)
                 )
                     .writeObjectId(id)
-                    .writePosition(position ?? Vec.create(0, 0))
+                    .writeFullPosition(position ?? Vec.create(0, 0))
                     .writeFloat(normalizedHealth, 0, 1, 1)
                     .writeUint8(colorIndex);
+            },
+            1
+        );
+    }
+    if (hasGroupPlayers) {
+        strm.writeArray(
+            groupPlayers,
+            ({
+                id,
+                groupID,
+                teamID,
+                position,
+                downed,
+                disconnected,
+                dead,
+            }) => {
+                strm.writeBooleanGroup(downed,disconnected,dead)
+                    .writeObjectId(id)
+                    .writeUint8(groupID)
+                    .writeUint8(teamID??0)
+                    .writeFullPosition(position ?? Vec.create(0, 0))
+            },
+            1
+        );
+    }
+    if (hasAnotherIndicators) {
+        strm.writeArray(
+            otherIndicators,
+            ({
+                id,
+                position,
+                rewrite,
+                sprite
+            }) => {
+                strm.writeBooleanGroup(rewrite,sprite!.from_player)
+                .writeFullPosition(position)
+                .writeObjectId(id)
+                if(rewrite){
+                    strm.writeUint8(sprite!.frame.length)
+                    strm.writeString(sprite!.frame.length,sprite!.frame)
+                    strm.writeUint32(sprite!.tint)
+                    strm.writeFloat(sprite!.scale,0.1,3,2)
+                }
             },
             1
         );
@@ -259,10 +327,13 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
         hasMinMax,
         hasHealth,
         hasAdrenaline,
+        hasCapacity,
         hasZoom,
         hasLayer,
         hasId,
         hasTeammates,
+        hasGroupPlayer,
+        hasMapIndicators,
         hasInventory,
         hasLockedSlots,
         hasItems,
@@ -288,6 +359,10 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
         data.adrenaline = strm.readFloat(0, 1, 2);
     }
 
+    if (hasCapacity) {
+        data.capacity = strm.readUint8();
+    }
+
     if (hasZoom) {
         data.zoom = strm.readUint8();
     }
@@ -309,7 +384,7 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
                 const status = strm.readUint8();
                 return {
                     id: strm.readObjectId(),
-                    position: strm.readPosition(),
+                    position: strm.readFullPosition(),
                     normalizedHealth: strm.readFloat(0, 1, 1),
                     downed: (status & 2) !== 0,
                     disconnected: (status & 1) !== 0,
@@ -318,6 +393,42 @@ function deserializePlayerData(strm: SuroiByteStream): PlayerData {
             },
             1
         );
+    }
+    if (hasGroupPlayer) {
+        data.groupPlayers = strm.readArray(
+            () => {
+                const status:boolean[] = strm.readBooleanGroup();
+                return {
+                    id: strm.readObjectId(),
+                    groupID: strm.readUint8(),
+                    teamID: strm.readUint8(),
+                    position: strm.readFullPosition(),
+                    downed: status[0],
+                    disconnected: status[1],
+                    dead: status[2],
+                };
+            },
+            1
+        )as [];
+    }
+    if (hasMapIndicators) {
+        data.otherIndicators = strm.readArray(
+            () => {
+                const status:boolean[] = strm.readBooleanGroup();
+                return {
+                    position: strm.readFullPosition(),
+                    id: strm.readObjectId(),
+                    rewrite:status[0],
+                    sprite:{
+                        frame:strm.readString(strm.readUint8()),
+                        tint:strm.readUint32(),
+                        scale:strm.readFloat(0.1,3,2),
+                        from_player:status[1],
+                    }
+                };
+            },
+            1
+        )as [];
     }
 
     if (hasInventory) {
@@ -437,7 +548,7 @@ const enum UpdateFlags {
     DeletedPlayers = 1 << 10,
     AliveCount = 1 << 11,
     Planes = 1 << 12,
-    MapPings = 1 << 13
+    MapPings = 1 << 13,
 }
 
 export type MapPingSerialization = {
@@ -477,6 +588,7 @@ export type PlayerData = {
     }
     readonly health?: number
     readonly adrenaline?: number
+    readonly capacity?:number
     readonly zoom?: number
     readonly layer?: number
     readonly id?: {
@@ -491,6 +603,16 @@ export type PlayerData = {
         readonly disconnected: boolean
         readonly colorIndex: number
     }>
+    readonly groupPlayers?: ReadonlyArray<{
+        readonly id: number
+        readonly groupID: number
+        readonly teamID?: number
+        readonly position: Vector
+        readonly downed: boolean
+        readonly disconnected: boolean
+        readonly dead: boolean
+    }>
+    readonly otherIndicators?: ReadonlyArray<ReadOnlyIndicator>
     readonly inventory?: {
         readonly activeWeaponIndex: number
         readonly weapons?: ReadonlyArray<undefined | {
@@ -525,6 +647,12 @@ export type UpdatePacketDataCommon = {
         readonly newRadius: number
     }
     readonly gasProgress?: number
+    readonly nature?:{
+        readonly brightness:number
+        readonly rain:number
+        readonly thunderstorm:boolean
+        readonly bolt:boolean
+    }
     readonly newPlayers?: ReadonlyArray<{
         readonly id: number
         readonly name: string
@@ -541,6 +669,7 @@ export type UpdatePacketDataCommon = {
     readonly planes?: ReadonlyArray<{
         readonly position: Vector
         readonly direction: number
+        readonly airstrike?: boolean
     }>
     readonly mapPings?: readonly PingSerialization[]
 };
@@ -577,7 +706,13 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
         let flags = 0;
         // save the current index to write flags later
         const flagsIdx = strm.index;
-        strm.writeUint16(0);
+        strm.writeUint16(0).
+        writeBooleanGroup(data.nature!==undefined)
+        if(data.nature!==undefined){
+            strm.writeBooleanGroup(data.nature.thunderstorm,data.nature.bolt)
+            strm.writeFloat(data.nature.brightness,0,3,3)
+            strm.writeFloat(data.nature.rain,0,1,1)
+        }
 
         if (data.playerData) {
             if (Object.keys(data.playerData).length > 0) {
@@ -634,7 +769,7 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
                 data.explosions,
                 explosion => {
                     Explosions.writeToStream(strm, explosion.definition);
-                    strm.writePosition(explosion.position)
+                    strm.writeFullPosition(explosion.position)
                         .writeLayer(explosion.layer);
                 },
                 1
@@ -658,10 +793,10 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
             const gas = data.gas;
             strm.writeUint8(gas.state)
                 .writeUint8(gas.currentDuration)
-                .writePosition(gas.oldPosition)
-                .writePosition(gas.newPosition)
-                .writeFloat(gas.oldRadius, 0, 2048, 2)
-                .writeFloat(gas.newRadius, 0, 2048, 2);
+                .writeFullPosition(gas.oldPosition)
+                .writeFullPosition(gas.newPosition)
+                .writeFloat32(gas.oldRadius)
+                .writeFloat32(gas.newRadius);
             flags |= UpdateFlags.Gas;
         }
 
@@ -713,15 +848,11 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
             strm.writeArray(
                 data.planes,
                 plane => {
-                    strm.writeVector(
-                        plane.position,
-                        -Constants.MAX_POSITION,
-                        -Constants.MAX_POSITION,
-                        Derived.DOUBLE_MAX_POS,
-                        Derived.DOUBLE_MAX_POS,
-                        3
+                    strm.writeFullPosition(
+                        plane.position
                     );
                     strm.writeRotation2(plane.direction);
+                    strm.writeBooleanGroup(plane.airstrike??false)
                 },
                 1
             );
@@ -733,7 +864,7 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
                 data.mapPings,
                 ping => {
                     MapPings.writeToStream(strm, ping.definition);
-                    strm.writePosition(ping.position);
+                    strm.writeFullPosition(ping.position);
                     if (ping.definition.isPlayerPing) {
                         strm.writeObjectId((ping as PlayerPingSerialization).playerId);
                     }
@@ -754,6 +885,16 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
         const data = {} as Mutable<UpdatePacketDataOut>;
 
         const flags = stream.readUint16();
+        const [hasNature]=stream.readBooleanGroup()
+        if(hasNature){
+            const bg=stream.readBooleanGroup()
+            data.nature={
+                brightness:stream.readFloat(0,3,3),
+                rain:stream.readFloat(0,1,1),
+                thunderstorm:bg[0],
+                bolt:bg[1]
+            }
+        }
 
         if (flags & UpdateFlags.PlayerData) {
             data.playerData = deserializePlayerData(stream);
@@ -799,7 +940,7 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
         if (flags & UpdateFlags.Explosions) {
             data.explosions = stream.readArray(() => ({
                 definition: Explosions.readFromStream(stream),
-                position: stream.readPosition(),
+                position: stream.readFullPosition(),
                 layer: stream.readLayer()
             }), 1);
         }
@@ -815,10 +956,10 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
             data.gas = {
                 state: stream.readUint8(),
                 currentDuration: stream.readUint8(),
-                oldPosition: stream.readPosition(),
-                newPosition: stream.readPosition(),
-                oldRadius: stream.readFloat(0, 2048, 2),
-                newRadius: stream.readFloat(0, 2048, 2)
+                oldPosition: stream.readFullPosition(),
+                newPosition: stream.readFullPosition(),
+                oldRadius: stream.readFloat32(),
+                newRadius: stream.readFloat32()
             };
         }
 
@@ -853,14 +994,9 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
 
         if (flags & UpdateFlags.Planes) {
             data.planes = stream.readArray(() => ({
-                position: stream.readVector(
-                    -Constants.MAX_POSITION,
-                    -Constants.MAX_POSITION,
-                    Derived.DOUBLE_MAX_POS,
-                    Derived.DOUBLE_MAX_POS,
-                    3
-                ),
-                direction: stream.readRotation2()
+                position: stream.readFullPosition(),
+                direction: stream.readRotation2(),
+                airstrike:stream.readBooleanGroup()[0]
             }), 1);
         }
 
@@ -870,7 +1006,7 @@ export const UpdatePacket = createPacket("UpdatePacket")<UpdatePacketDataIn, Upd
 
                 return {
                     definition,
-                    position: stream.readPosition(),
+                    position: stream.readFullPosition(),
                     ...(definition.isPlayerPing ? { playerId: stream.readObjectId() } : {})
                 } as MapPingSerialization;
             }, 1);

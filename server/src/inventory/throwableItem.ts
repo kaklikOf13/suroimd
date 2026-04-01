@@ -1,7 +1,7 @@
 import { AnimationType, Layer } from "@common/constants";
 import { PerkData, PerkIds } from "@common/definitions/perks";
 import { type ThrowableDefinition } from "@common/definitions/throwables";
-import { Numeric } from "@common/utils/math";
+import { EaseFunctions, Numeric } from "@common/utils/math";
 import { type Timeout } from "@common/utils/misc";
 import { ItemType, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { Vec } from "@common/utils/vector";
@@ -10,6 +10,7 @@ import { type ItemData } from "../objects/loot";
 import { type Player } from "../objects/player";
 import { type ThrowableProjectile } from "../objects/throwableProj";
 import { CountableInventoryItem } from "./inventoryItem";
+import { randomFloat } from "@common/utils/random";
 
 export class ThrowableItem extends CountableInventoryItem<ThrowableDefinition> {
     declare readonly category: ItemType.Throwable;
@@ -50,6 +51,7 @@ export class ThrowableItem extends CountableInventoryItem<ThrowableDefinition> {
         this._lastUse = owner.game.now;
         owner.animation = AnimationType.ThrowableCook;
         owner.setPartialDirty();
+        owner.dirty.capacity=true;
 
         owner.action?.cancel();
 
@@ -113,7 +115,8 @@ class GrenadeHandler {
                 this.parent.owner,
                 this._projectile?.layer ?? this.parent.owner.layer,
                 this.parent,
-                (this._projectile?.halloweenSkin ?? false) ? PerkData[PerkIds.PlumpkinBomb].damageMod : 1
+                undefined,
+                this._projectile
             );
         }
 
@@ -126,6 +129,7 @@ class GrenadeHandler {
         const owner = this.owner;
 
         owner.dirty.weapons = true;
+        owner.dirty.capacity=true;
 
         if (!owner.dead) {
             owner.inventory.removeThrowable(this.definition, false, 1);
@@ -219,18 +223,20 @@ class GrenadeHandler {
             this.parent
         );
 
+        this.owner.dirty.capacity=true;
+
         if (!this.definition.c4) {
             projectile.velocity = Vec.add(
                 Vec.fromPolar(
-                    this.owner.rotation,
+                    this.owner.rotation+randomFloat(-0.065,0.065),
                     soft
                         ? 0
-                        : Numeric.min(
-                            definition.maxThrowDistance * this.owner.mapPerkOrDefault(PerkIds.DemoExpert, ({ rangeMod }) => rangeMod, 1),
-                            0.9 * this.owner.distanceToMouse
+                        : (Numeric.min(
+                            (definition.maxThrowDistance * this.owner.mapPerkOrDefault(PerkIds.DemoExpert, ({ rangeMod }) => rangeMod, 1)),
+                            1.7 * this.owner.distanceToMouse
                         //  ^^^ Grenades will consistently undershoot the mouse by 10% in order to make long-range shots harder
                         //      while not really affecting close-range shots
-                        ) / 985
+                        )*randomFloat(0.9,1.1)) / 985
                         //  ^^^ Heuristics says that dividing desired range by this number makes the grenade travel roughly that distance
                 ),
                 this.owner.movementVector

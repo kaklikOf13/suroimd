@@ -1,9 +1,11 @@
-import { ObjectCategory } from "../constants";
+import { Layer, ObjectCategory } from "../constants";
 import { Buildings } from "../definitions/buildings";
 import { Obstacles, RotationMode } from "../definitions/obstacles";
 import { type Orientation, type Variation } from "../typings";
 import type { CommonGameObject } from "../utils/gameObject";
+import { BaseHitbox, Hitbox, PolygonHitbox, RectangleHitbox } from "../utils/hitbox";
 import { Angle, halfπ } from "../utils/math";
+import { FloorNames } from "../utils/terrain";
 import { type Vector } from "../utils/vector";
 import { createPacket } from "./packet";
 
@@ -11,38 +13,52 @@ export type MapObject = {
     readonly scale?: number
     readonly variation?: Variation
 } & CommonGameObject;
+export type MapFloor={
+    hitbox:Hitbox
+    type:FloorNames
+    build:boolean
+    layer:Layer
+}
 
 export type MapPacketData = {
     readonly seed: number
     readonly width: number
     readonly height: number
-    readonly oceanSize: number
-    readonly beachSize: number
 
-    readonly rivers: ReadonlyArray<{ readonly width: number, readonly points: readonly Vector[], readonly isTrail: boolean }>
+    readonly rivers: ReadonlyArray<{ readonly width: number, readonly points: readonly Vector[], readonly isTrail: boolean,floor:FloorNames,outline:FloorNames,bounds:RectangleHitbox,waterHitbox?:PolygonHitbox,bankHitbox:PolygonHitbox }>
+    readonly floors: MapFloor[]
     readonly objects: readonly MapObject[]
     readonly places: ReadonlyArray<{ readonly position: Vector, readonly name: string }>
+    
+    readonly map:string
 };
 
 export const MapPacket = createPacket("MapPacket")<MapPacketData>({
     serialize(strm, data) {
         strm.writeUint32(data.seed)
-            .writeUint16(data.width)
-            .writeUint16(data.height)
-            .writeUint16(data.oceanSize)
-            .writeUint16(data.beachSize)
+            .writeUint32(data.width)
+            .writeUint32(data.height)
+            .writeString(25,data.map)
             .writeArray(data.rivers, river => {
                 strm.writeUint8(river.width)
                     .writeArray(
                         river.points,
-                        point => { strm.writePosition(point); },
+                        point => { strm.writeFullPosition(point); },
                         1
                     )
-                    .writeUint8(river.isTrail ? -1 : 0);
+                    .writeUint8(river.isTrail ? -1 : 0)
+                    .writeUint16(river.floor.length)
+                    .writeString(river.floor.length,river.floor)
+                    .writeUint16(river.outline.length)
+                    .writeString(river.outline.length,river.outline)
+                    river.bounds.writeStream(strm)
+                    river.bankHitbox.writeStream(strm)
+                    strm.writeBooleanGroup(river.waterHitbox!==undefined)
+                    if(river.waterHitbox!==undefined)river.waterHitbox.writeStream(strm)
             }, 1)
             .writeArray(data.objects, object => {
                 strm.writeObjectType(object.type)
-                    .writePosition(object.position);
+                    .writeFullPosition(object.position);
 
                 switch (object.type) {
                     case ObjectCategory.Obstacle: {
@@ -87,26 +103,47 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
                         break;
                 }
             }, 2)
+            .writeArray(data.floors.filter((v)=>{
+                return !v.build
+            }),(item)=>{
+                strm.writeLayer(item.layer)
+                item.hitbox.writeStream(strm)
+                strm.writeUint16(item.type.length)
+                strm.writeString(item.type.length,item.type)
+            },2)
             .writeArray(data.places ?? [], place => {
                 strm.writeString(24, place.name);
-                strm.writePosition(place.position);
-            }, 1);
+                strm.writeFullPosition(place.position);
+            }, );
     },
     deserialize(stream) {
         return {
             seed: stream.readUint32(),
-            width: stream.readUint16(),
-            height: stream.readUint16(),
-            oceanSize: stream.readUint16(),
-            beachSize: stream.readUint16(),
-            rivers: stream.readArray(() => ({
-                width: stream.readUint8(),
-                points: stream.readArray(() => stream.readPosition(), 1),
-                isTrail: stream.readUint8() !== 0
-            }), 1),
+            width: stream.readUint32(),
+            height: stream.readUint32(),
+            map:stream.readString(25),
+            rivers: stream.readArray(() => 
+            {
+                const ret={
+                    width: stream.readUint8(),
+                    points: stream.readArray(() => stream.readFullPosition(), 1),
+                    isTrail: stream.readUint8() !== 0,
+                    floor:stream.readString(stream.readUint16()),
+                    outline:stream.readString(stream.readUint16()),
+                    bounds:BaseHitbox.fromStream(stream),
+                    bankHitbox:BaseHitbox.fromStream(stream),
+                    waterHitbox:undefined as (undefined | PolygonHitbox)
+                }
+
+                const bools=stream.readBooleanGroup()
+                if(bools[0]){
+                    ret.waterHitbox=BaseHitbox.fromStream(stream) as PolygonHitbox
+                }
+                return ret
+            }, 1),
             objects: stream.readArray(() => {
                 const type = stream.readObjectType() as ObjectCategory.Obstacle | ObjectCategory.Building;
-                const position = stream.readPosition();
+                const position = stream.readFullPosition();
 
                 switch (type) {
                     case ObjectCategory.Obstacle: {
@@ -176,9 +213,19 @@ export const MapPacket = createPacket("MapPacket")<MapPacketData>({
                     }
                 }
             }, 2),
+            floors: stream.readArray((s)=>{
+                const ret={
+                    layer:s.readLayer(),
+                    type:FloorNames.Void,
+                } as MapFloor
+                ret.hitbox=BaseHitbox.fromStream(s)
+                let ss=s.readUint16()
+                ret.type=s.readString(ss) as FloorNames
+                return ret
+            },2),
             places: stream.readArray(() => ({
                 name: stream.readString(24),
-                position: stream.readPosition()
+                position: stream.readFullPosition()
             }), 1)
         } as MapPacketData;
     }

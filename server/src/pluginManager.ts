@@ -199,6 +199,8 @@ export const Events = {
      * leader (if they were there)
      */
     player_did_die: makeEvent(),
+
+    player_did_down: makeEvent(),
     /**
      * Emitted for each winning player. By the time this event
      * is dispatched, win emote and game over packet will have
@@ -406,6 +408,15 @@ export const Events = {
      */
     game_created: makeEvent(),
     /**
+      * Emitted when a game is started, near the end of
+     * {@link Game}'s constructor. Relevant websocket
+     * listeners will have been set up, plugins will have been
+     * loaded, and the {@link Grid grid}, {@link GameMap game map},
+     * and {@link Gas gas} will have been loaded. The game
+     * loop will not have been started
+     */
+    game_started: makeEvent(),
+    /**
      * Emitted at the end of a game tick. All side-effects
      * will have occurred (including the potential dispatch
      * of {@link Events.game_end}), but the next tick will
@@ -464,6 +475,7 @@ export interface EventDataMap {
     readonly player_did_piercing_damaged: PlayerDamageEvent
     readonly player_will_die: Omit<PlayerDamageEvent, "amount">
     readonly player_did_die: Omit<PlayerDamageEvent, "amount">
+    readonly player_did_down: Omit<PlayerDamageEvent, "amount">
     readonly player_did_win: Player
 
     readonly inv_item_equip: InventoryItem
@@ -592,6 +604,7 @@ export interface EventDataMap {
     readonly airdrop_landed: Airdrop
 
     readonly game_created: Game
+    readonly game_started:Game
     readonly game_tick: Game
     readonly game_end: Game
 }
@@ -643,8 +656,8 @@ const pluginDispatchers = new ExtendedMap<
 export abstract class GamePlugin {
     private readonly _events: EventHandlers = {};
 
-    constructor(public readonly game: Game) {
-        this.initListeners();
+    constructor(public readonly game: Game,params:Record<string,any>|undefined) {
+        this.initListeners(params);
         pluginDispatchers.set(
             this,
             <Ev extends EventTypes>(eventType: Ev, ...args: [...ArgsFor<Ev>, ...EventData<Ev>]) => {
@@ -671,7 +684,7 @@ export abstract class GamePlugin {
     /**
      * Method responsible for adding any listeners regulating this plugin's behavior
      */
-    protected abstract initListeners(): void;
+    protected abstract initListeners(params:Record<string,any>|undefined): void;
 
     on<Ev extends EventTypes>(eventType: Ev, cb: EventHandler<Ev>): void {
         ((this._events[eventType] as Set<typeof cb> | undefined) ??= new Set()).add(cb);
@@ -685,6 +698,11 @@ export abstract class GamePlugin {
 
         (this._events[eventType] as Set<typeof cb> | undefined)?.delete(cb);
     }
+}
+
+export type PluginDefinition={
+    params?:Record<string,any>
+    construct: new (game: Game,params:Record<string,any>|undefined) => GamePlugin
 }
 
 /**
@@ -725,19 +743,13 @@ export class PluginManager {
         return cancelSource;
     }
 
-    loadPlugin(pluginClass: new (game: Game) => GamePlugin): void {
-        for (const plugin of this._plugins) {
-            if (plugin instanceof pluginClass) {
-                console.warn(`Plugin ${pluginClass.name} already loaded`);
-                return;
-            }
-        }
+    loadPlugin(pluginD:PluginDefinition): void {
         try {
-            const plugin = new pluginClass(this.game);
+            const plugin = new pluginD.construct(this.game,pluginD.params);
             this._plugins.add(plugin);
-            Logger.log(`Game ${this.game.id} | Plugin ${pluginClass.name} loaded`);
+            Logger.log(`Game ${this.game.id} | Plugin ${pluginD.construct.name} loaded`);
         } catch (error) {
-            console.error(`Failed to load plugin ${pluginClass.name}, err:`, error);
+            console.error(`Failed to load plugin $pluginD.construct.name}, err:`, error);
         }
     }
 
@@ -746,7 +758,7 @@ export class PluginManager {
     }
 
     loadPlugins(): void {
-        for (const plugin of Config.plugins) {
+        for (const plugin of this.game.gamemode.plugins) {
             this.loadPlugin(plugin);
         }
     }

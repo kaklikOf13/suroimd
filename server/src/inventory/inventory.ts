@@ -17,6 +17,7 @@ import { GunItem } from "./gunItem";
 import { InventoryItem } from "./inventoryItem";
 import { MeleeItem } from "./meleeItem";
 import { ThrowableItem } from "./throwableItem";
+import { PerkIds, Perks } from "@common/definitions/perks";
 
 type ReifiableItem =
     GunItem |
@@ -134,6 +135,20 @@ export class Inventory {
     unlockAllSlots(): void {
         this._lockedSlots = 0;
         this.owner.dirty.slotLocks = true;
+    }
+
+    getUCurCap():number{
+        let ret=0
+        for(const a of Ammos){
+            ret+=this.items.hasItem(a.idString)?(this.items.getItem(a.idString)===Infinity?0:this.items.getItem(a.idString)*a.size):0
+        }
+        for(const r of HealingItems){
+            ret+=this.items.hasItem(r.idString)?(this.items.getItem(r.idString)===Infinity?0:this.items.getItem(r.idString)*r.size):0
+        }
+        for(const t of Throwables){
+            ret+=this.items.hasItem(t.idString)?(this.items.getItem(t.idString)===Infinity?0:this.items.getItem(t.idString)*t.size):0
+        }
+        return ret
     }
 
     /**
@@ -418,7 +433,6 @@ export class Inventory {
     ): void {
         this.owner.game
             .addLoot(toDrop, this.owner.position, this.owner.layer, { jitterSpawn: false, pushVel: 0, count, data })
-            ?.push(this.owner.rotation + Math.PI, 0.025);
     }
 
     removeThrowable(type: ReifiableDef<ThrowableDefinition>, drop = true, removalCount?: number): void {
@@ -462,7 +476,9 @@ export class Inventory {
         } else {
             // only fails if `throwableItemMap` falls out-of-sync… which hopefully shouldn't happen lol
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.throwableItemMap.get(definition.idString)!.count -= removalAmount;
+            if(this.throwableItemMap.get(definition.idString)){
+                this.throwableItemMap.get(definition.idString)!.count -= removalAmount;
+            }
         }
     }
 
@@ -493,7 +509,7 @@ export class Inventory {
 
             this._setWeapon(slot, undefined);
 
-            if (item instanceof GunItem && item.ammo > 0) {
+            if (item instanceof GunItem && item.ammo > 0 && !item.definition.infiniteAmmo && !item.infinity_ammo()) {
                 // Put the ammo in the gun back in the inventory
                 this.giveItem((definition as GunDefinition).ammoType, item.ammo);
                 item.ammo = 0;
@@ -503,6 +519,7 @@ export class Inventory {
         this.owner.setDirty();
         this.owner.dirty.items = true;
         this.owner.dirty.weapons = true;
+        this.owner.dirty.capacity=true
 
         return item;
     }
@@ -520,8 +537,11 @@ export class Inventory {
         this.owner.dirty.weapons = true;
     }
 
-    giveItem(item: ReifiableDef<LootDefinition>, amount = 1): void {
+    giveItem(item: ReifiableDef<LootDefinition>, amount = 1, doa=true): number {
         const itemString = typeof item === "string" ? item : item.idString;
+        const itemDef=typeof item === "string" ? Loots.fromStringSafe(item) : item
+        //@ts-expect-error
+        const cc=itemDef?this.getUCurCap()+(amount*(itemDef.size?itemDef.size:9)):0
         this.items.incrementItem(
             itemString,
             amount
@@ -544,15 +564,38 @@ export class Inventory {
 
             To solve this, we just ignore capacity limits when the player is dead.
         */
-        const overAmount = Loots.reify<AmmoDefinition>(itemString).ephemeral || this.owner.dead
+        let overAmount = 0
+        //@ts-expect-error
+        if(typeof itemDef.size !== "undefined"){
+            if(amount==Infinity){
+                this.items.setItem(itemString,this.backpack.maxCapacity[itemString])
+                return 0;
+            }else if(cc<=this.backpack.capacity){
+                overAmount=0
+            }else{
+                //@ts-expect-error
+                overAmount=Math.floor(Numeric.clamp((cc-this.backpack.capacity)/itemDef.size,0,amount))
+            }
+        }else{
+            overAmount = Loots.reify<AmmoDefinition>(itemString).ephemeral || this.owner.dead
             ? 0
             : this.items.getItem(itemString) - (this.backpack.maxCapacity[itemString] ?? 0);
+        }
+        
+        this.items.decrementItem(itemString, overAmount);
 
-        if (overAmount > 0) {
-            this.items.decrementItem(itemString, overAmount);
-
+        if (overAmount > 0&&doa) {
             this._dropItem(item, { count: overAmount });
         }
+
+        this.owner.dirty.capacity=true
+        this.owner.dirty.weapons=true
+
+        if(itemDef?.itemType===ItemType.Throwable){
+            this.useItem(itemString);
+            this.throwableItemMap.get(itemString)!.count = this.items.getItem(itemString);
+        }
+        return overAmount
     }
 
     /**
@@ -575,9 +618,15 @@ export class Inventory {
 
         switch (itemType) {
             case ItemType.Healing:
+                const itemAmount = this.items.getItem(idString);
+                const removalAmount=Math.ceil(itemAmount/2)
+                if(removalAmount>itemAmount)break
+                this._dropItem(definition, { count: removalAmount });
+                this.items.decrementItem(idString, removalAmount);
+                break;
             case ItemType.Ammo: {
                 const itemAmount = this.items.getItem(idString);
-                const removalAmount = Numeric.min(itemAmount, Math.ceil(itemAmount / 2));
+                const removalAmount = Numeric.min(itemAmount, Math.max(Math.ceil(itemAmount / 2),Math.ceil((definition as AmmoDefinition).dropAmmout/4)));
 
                 this._dropItem(definition, { count: removalAmount });
                 this.items.decrementItem(idString, removalAmount);
@@ -621,6 +670,9 @@ export class Inventory {
                         break;
                     }
                 }
+                for(const p of definition.givePerks){
+                    this.owner.perks.removePerk(Perks.fromString(p))
+                }
                 this._dropItem(definition);
                 break;
             }
@@ -629,7 +681,7 @@ export class Inventory {
             }
 
             case ItemType.Perk: {
-                if (!this.owner.hasPerk(definition)) return;
+                if (!this.owner.hasPerk(definition)||this.owner.perks.fromRoles.includes(definition.idString)) return;
                 this.owner.perks.removePerk(definition);
                 this._dropItem(definition);
                 this.owner.dirty.perks = true;
@@ -639,6 +691,8 @@ export class Inventory {
 
         this.owner.setDirty();
         this.owner.dirty.items = true;
+
+        this.owner.dirty.capacity=true
     }
 
     /**
@@ -769,18 +823,22 @@ export class Inventory {
             case ItemType.Healing: {
                 if (
                     // Already consuming something else
-                    this.owner.action instanceof HealingAction
-                    || (
+                    this.owner.action instanceof HealingAction||((
+                    (
                         definition.healType === HealType.Health
                         && this.owner.health >= this.owner.maxHealth
                     ) || (
                         definition.healType === HealType.Adrenaline
                         && this.owner.adrenaline >= this.owner.maxAdrenaline
-                    )
+                    ))&&!this.owner.hasPerk(PerkIds.HealingAura))
                 ) return;
 
                 // Can't have downed players using consumables
                 if (this.owner.downed) return;
+
+                if(this.owner.hasPerk(PerkIds.HealingAura)){
+                    this.owner.sendEmote(HealingItems.fromString(idString));
+                }
 
                 this.owner.executeAction(new HealingAction(this.owner, idString));
                 break;
@@ -793,6 +851,7 @@ export class Inventory {
                 if (this.activeWeapon.category === ItemType.Throwable) {
                     this.activeWeapon.stopUse();
                 }
+                if(this.owner.inventory.items.getItem(itemString.toString())<=0)return
 
                 this.owner.setDirty();
                 this.owner.dirty.weapons = true;
@@ -892,7 +951,7 @@ export class ItemCollection<ItemDef extends LootDefinition> {
      * @param amount By how much to decrement the count. Defaults to 1
      */
     decrementItem(key: ReferenceTo<ItemDef>, amount = 1): void {
-        this.setItem(key, Numeric.max(this.getItem(key) - amount, 0));
+        this.setItem(key, Math.floor(Numeric.max(this.getItem(key) - amount, 0)));
     }
 
     // addChangeListener(listener: (key: ReferenceTo<ItemDef>, oldValue: number, newValue: number) => void): void {

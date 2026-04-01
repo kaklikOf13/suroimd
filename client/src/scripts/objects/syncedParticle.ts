@@ -4,7 +4,7 @@ import { getEffectiveZIndex } from "@common/utils/layer";
 import { Numeric } from "@common/utils/math";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { type Game } from "../game";
-import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE } from "../utils/constants";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS } from "../utils/constants";
 import { drawHitbox, SuroiSprite, toPixiCoords } from "../utils/pixi";
 import { GameObject } from "./gameObject";
 
@@ -95,7 +95,7 @@ export class SyncedParticle extends GameObject.derive(ObjectCategory.SyncedParti
     }
 
     override updateDebugGraphics(): void {
-        if (!HITBOX_DEBUG_MODE || !this.definition.hitbox) return;
+        if (!this.game.console.getBuiltInCVar("db_hitbox") || !this.definition.hitbox) return;
 
         this.debugGraphics.clear();
 

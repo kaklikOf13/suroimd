@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="124.99999"
+   height="124.99999"
+   viewBox="0 0 33.072909 33.072909"
+   version="1.1"
+   id="svg899"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   sodipodi:docname="nuke_ping.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview901"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:zoom="4.0000001"
+     inkscape:cx="41.499999"
+     inkscape:cy="61.374998"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g7278"
+     units="px"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#d1d1d1" />
+  <defs
+     id="defs896" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(73.317052,-107.42759)">
+    <g
+       id="g7278">
+      <g
+         id="g1"
+         transform="matrix(1.5124405,0,0,1.5124405,55.362506,-37.258365)">
+        <circle
+           style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:1.36671;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="path6698"
+           cx="-74.147118"
+           cy="106.59752"
+           r="10.250268" />
+        <g
+           id="g2"
+           transform="translate(9.177576e-8,0.90133528)">
+          <path
+             d="m -77.350254,96.998619 3.203137,0.976185 3.203135,-0.976185 v 3.599711 l -2.135423,2.9896 h -2.135424 l -2.135425,-2.9896 z"
+             fill="#c9be00"
+             stroke="#202020"
+             stroke-width="1.28871"
+             id="path1"
+             style="isolation:isolate;fill:#ffffff;fill-opacity:1;stroke-width:0;stroke-dasharray:none" />
+          <ellipse
+             cy="74.147118"
+             cx="108.05887"
+             rx="6.3348861"
+             ry="4.9270411"
+             transform="rotate(90)"
+             fill="#fff205"
+             stroke="#202020"
+             stroke-width="1.28871"
+             id="ellipse1"
+             style="isolation:isolate;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:0;stroke-dasharray:none;stroke-opacity:1" />
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

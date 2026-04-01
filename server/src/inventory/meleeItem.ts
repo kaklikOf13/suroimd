@@ -53,7 +53,7 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
 
         owner.action?.cancel();
 
-        this.owner.game.addTimeout((): void => {
+        const doDamage=(cd=0)=>{
             if (
                 this.owner.activeItem === this
                 && (owner.attacking || skipAttackCheck)
@@ -99,17 +99,6 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                     let multiplier = 1;
 
                     multiplier *= this.owner.mapPerkOrDefault(PerkIds.Berserker, ({ damageMod }) => damageMod, 1);
-                    multiplier *= this.owner.mapPerkOrDefault(PerkIds.Lycanthropy, ({ damageMod }) => damageMod, 1);
-
-                    if (closestObject.isObstacle) {
-                        multiplier *= definition.piercingMultiplier !== undefined && closestObject.definition.impenetrable
-                            ? definition.piercingMultiplier
-                            : definition.obstacleMultiplier;
-
-                        if (closestObject.definition.material === "ice" && definition.iceMultiplier) {
-                            multiplier *= definition.iceMultiplier;
-                        }
-                    }
 
                     if (closestObject.isThrowableProjectile) {
                         multiplier *= definition.obstacleMultiplier;
@@ -118,7 +107,8 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                     closestObject.damage({
                         amount: definition.damage * multiplier,
                         source: owner,
-                        weaponUsed: this
+                        weaponUsed: this,
+                        resistanceDamage:definition.resistanceDamage
                     });
 
                     if (closestObject.isObstacle && !closestObject.dead) {
@@ -133,8 +123,18 @@ export class MeleeItem extends InventoryItem<MeleeDefinition> {
                         definition.cooldown
                     );
                 }
+                if(Array.isArray(definition.damageDelay)&&cd<definition.damageDelay.length){
+                    this.owner.game.addTimeout(doDamage.bind(this,cd+1), definition.damageDelay[cd]);
+                }
             }
-        }, 50);
+        }
+
+
+        if(Array.isArray(definition.damageDelay)){
+            this.owner.game.addTimeout(doDamage.bind(this,1), definition.damageDelay[0]);
+        }else{
+            this.owner.game.addTimeout(doDamage.bind(this,1), definition.damageDelay);
+        }
     }
 
     override itemData(): ItemData<MeleeDefinition> {

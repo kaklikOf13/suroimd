@@ -73,6 +73,10 @@ export const Numeric = Object.freeze({
             ? a % n
             : (a % n + n) % n;
     },
+    round(num: number, decimalPlaces: number = 0): number {
+        const factor = Math.pow(10, decimalPlaces);
+        return Math.round(num * factor) / factor;
+    },
     /**
      * Interpolate between two values
      * @param start The start value
@@ -82,6 +86,23 @@ export const Numeric = Object.freeze({
      */
     lerp(start: number, end: number, interpFactor: number): number {
         return start * (1 - interpFactor) + end * interpFactor;
+    },
+    lerpAngle(start: number, end: number, interpFactor: number): number {
+        // Normalize angles to the range [0, 2 * PI]
+        const twoPi = Math.PI * 2;
+        const normalizedStart = ((start % twoPi) + twoPi) % twoPi;
+        const normalizedEnd = ((end % twoPi) + twoPi) % twoPi;
+
+        // Calculate the difference and ensure the shortest path
+        let diff = normalizedEnd - normalizedStart;
+        if (diff > Math.PI) {
+            diff -= twoPi; // Wrap around positively
+        } else if (diff < -Math.PI) {
+            diff += twoPi; // Wrap around negatively
+        }
+
+        // Interpolate the angle
+        return normalizedStart + diff * interpFactor;
     },
     /**
      * Conform a number to specified bounds
@@ -1025,7 +1046,7 @@ export const EaseFunctions = Object.freeze({
         : t < 0.5
             ? -(2 ** (10 * (2 * t - 1) - 1)) * Math.sin(π * (80 * (2 * t - 1) - 9) / 18)
             : 2 ** (-10 * (2 * t - 1) - 1) * Math.sin(π * (80 * (2 * t - 1) - 9) / 18) + 1,
-    elasticOut2: (t: number) => (Math.pow(2, t * -10) * Math.sin(((t - 0.75 / 4) * (π * 2)) / 0.75) + 1),
+    elasticOut2: (t: number) => (Math.pow(2, t * -10) * Math.sin(((t - 0.6 / 4) * (π * 2)) / 0.6) + 1),
 
     ...generatePolynomialEasingTriplet(2, "quadratic"),
     ...generatePolynomialEasingTriplet(3, "cubic"),

@@ -1,10 +1,10 @@
 import { GameConstants, Layer } from "@common/constants";
-import { Modes, type ColorKeys } from "@common/definitions/modes";
+import { Biomes, type ColorKeys } from "@common/definitions/maps/biome";
+import { FloorTypes } from "@common/utils/terrain";
 import { Color } from "pixi.js";
 
 export const FORCE_MOBILE = false;
 export const UI_DEBUG_MODE = false;
-export const HITBOX_DEBUG_MODE = false;
 export const DIFF_LAYER_HITBOX_OPACITY = 0;
 export const FOOTSTEP_HITBOX_LAYER = Layer.Ground;
 
@@ -25,20 +25,30 @@ export const HITBOX_COLORS = {
     player: new Color("blue"),
     playerWeapon: new Color("lime")
 };
-
-export const MODE = Modes[GameConstants.modeName];
+export function Set_Biome(b:string="normal"){
+    Biome=Biomes[b]
+    COLORS = (Object.keys(Biome.colors) as ColorKeys[])
+        .reduce(
+            (result, key) => {
+                result[key] = new Color(Biome.colors[key as ColorKeys]??Biomes["normal"].colors[key]!);
+                return result;
+            },
+            {} as Record<ColorKeys, Color>
+        );
+    GHILLIE_TINT = (COLORS["grass"]??new Color(FloorTypes["grass"].color)).multiply(new Color("hsl(0, 0%, 99%)"));
+}
+export let Biome = Biomes["normal"];
 
 // Converts the strings in the mode definition to Color objects
-export const COLORS = (Object.keys(MODE.colors) as ColorKeys[])
+export let COLORS = (Object.keys(Biome.colors) as ColorKeys[])
     .reduce(
         (result, key) => {
-            result[key] = new Color(MODE.colors[key]);
+            result[key] = new Color(Biome.colors[key as ColorKeys]??Biomes["normal"].colors[key]!);
             return result;
         },
         {} as Record<ColorKeys, Color>
     );
-
-export const GHILLIE_TINT = COLORS.grass.multiply(new Color("hsl(0, 0%, 99%)"));
+export let GHILLIE_TINT = (COLORS["grass"]??new Color(FloorTypes["grass"].color)).multiply(new Color("hsl(0, 0%, 99%)"));
 
 export const TEAMMATE_COLORS = [
     new Color("#00ffff"),
@@ -46,12 +56,20 @@ export const TEAMMATE_COLORS = [
     new Color("#ffff00"),
     new Color("#ff8000")
 ];
+export const GROUPS_COLORS = [
+    new Color("#ff0000"),
+    new Color("#0000ff"),
+    new Color("#00ff00"),
+    new Color("#ffff00")
+];
 
 export const PIXI_SCALE = 20;
 
 export const WALL_STROKE_WIDTH = 8;
 
 export const EMOTE_SLOTS = ["top", "right", "bottom", "left", "win", "death"] as const;
+
+export const weaponsSlots = ["gun1","gun2","melee"] as const;
 
 export const SHOCKWAVE_EXPLOSION_MULTIPLIERS = Object.freeze({
     time: 5,

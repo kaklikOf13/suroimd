@@ -15,7 +15,7 @@ export class PlaceObjectPlugin extends GamePlugin {
     readonly obstacleToPlace: ReferenceTo<ObstacleDefinition> = "jack_o_lantern";
     private readonly _playerToObstacle = new ExtendedMap<Player, Obstacle>();
 
-    protected override initListeners(): void {
+    protected override initListeners(_params:unknown): void {
         this.on("player_did_join", ({ player }) => {
             const obstacle = new Obstacle(player.game, this.obstacleToPlace, player.position);
             this._playerToObstacle.set(player, obstacle);

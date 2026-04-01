@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   width="110"
-   height="110"
-   viewBox="0 0 110 110"
+   width="126.04122"
+   height="21.32279"
+   viewBox="0 0 126.04122 21.32279"
    fill="none"
    version="1.1"
    id="svg65"
    sodipodi:docname="lewis_gun.svg"
-   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -21,19 +21,21 @@
      inkscape:pageopacity="0"
      inkscape:pagecheckerboard="1"
      showgrid="false"
-     inkscape:zoom="7.9181818"
-     inkscape:cx="54.936854"
-     inkscape:cy="54.936854"
-     inkscape:window-width="2560"
-     inkscape:window-height="1372"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:zoom="3.9590909"
+     inkscape:cx="100.78071"
+     inkscape:cy="62.009185"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg65" />
+     inkscape:current-layer="svg65"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#d1d1d1" />
   <g
      clip-path="url(#clip0_616_1148)"
      id="g58"
-     transform="matrix(1.0059358,0,0,1.0059358,-0.35992913,-0.2582951)">
+     transform="matrix(0.87116596,0.5029679,-0.5029679,0.87116596,42.094493,-65.306994)">
     <path
        d="m 38.5894,53.7325 1.357,-0.7835 0.1469,0.2545 0.8482,-0.4897 -0.1469,-0.2544 1.1874,-0.6856 0.1469,0.2545 1.0178,-0.5876 -0.1469,-0.2545 0.9329,-0.5386 0.1469,0.2544 0.7634,-0.4407 -0.1469,-0.2544 0.7633,-0.4408 0.1469,0.2545 0.6785,-0.3917 -0.1469,-0.2545 0.6785,-0.3917 0.1469,0.2544 0.7634,-0.4407 1.4201,2.4596 -16.6238,9.5977 -1.42,-2.4596 0.7633,-0.4407 -0.1469,-0.2545 0.6785,-0.3917 0.1469,0.2545 0.6785,-0.3918 -0.1469,-0.2544 0.7633,-0.4408 0.147,0.2545 0.7633,-0.4407 -0.1469,-0.2545 0.933,-0.5386 0.1469,0.2544 1.0178,-0.5876 -0.147,-0.2544 1.1875,-0.6856 0.1469,0.2545 0.8481,-0.4897 z"
        fill="#585450"
@@ -240,8 +242,10 @@
       <rect
          width="110"
          height="110"
-         fill="white"
-         id="rect60" />
+         fill="#ffffff"
+         id="rect60"
+         x="0"
+         y="0" />
     </clipPath>
   </defs>
 </svg>

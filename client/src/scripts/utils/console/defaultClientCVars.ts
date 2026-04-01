@@ -3,6 +3,7 @@ import { type Result, type ResultRes } from "@common/utils/misc";
 import { isMobile } from "pixi.js";
 import { type Stringable } from "./gameConsole";
 import { Casters, type CVarChangeListener, type CVarFlags, type ConVar, type ExtractConVarValue } from "./variables";
+import { ExtraLoadoutList } from "@common/definitions/loadout/extra_loadout";
 
 /*
     eslint-disable
@@ -23,7 +24,11 @@ export const CVarCasters = Object.freeze({
     cv_player_name: Casters.toString,
 
     cv_loadout_skin: Casters.toString,
+    cv_loadout_role: Casters.toInt,
     cv_loadout_badge: Casters.toString,
+    cv_loadout_melee:Casters.toString,
+    cv_loadout_gun1:Casters.toString,
+    cv_loadout_gun2:Casters.toString,
     cv_loadout_crosshair: Casters.toInt,
     cv_loadout_top_emote: Casters.toString,
     cv_loadout_right_emote: Casters.toString,
@@ -52,7 +57,10 @@ export const CVarCasters = Object.freeze({
     cv_renderer_res: Casters.generateUnionCaster(["auto", "0.5", "1", "2", "3"]),
     cv_high_res_textures: Casters.toBoolean,
     cv_cooler_graphics: Casters.toBoolean,
+    cv_vignetting: Casters.toBoolean,
     cv_ambient_particles: Casters.toBoolean,
+    cv_brighteffects: Casters.toBoolean,
+
     cv_blur_splash: Casters.toBoolean,
 
     cv_rules_acknowledged: Casters.toBoolean,
@@ -92,11 +100,16 @@ export const CVarCasters = Object.freeze({
     mb_joystick_transparency: Casters.toNumber,
     mb_high_res_textures: Casters.toBoolean,
 
+    db_hitbox:Casters.toBoolean,
+
     dv_password: Casters.toString,
     dv_role: Casters.toString,
     dv_name_color: Casters.toString,
     dv_lobby_clearing: Casters.toBoolean,
-    dv_weapon_preset: Casters.toString
+    dv_weapon_preset: Casters.toString,
+
+    st_toggle_status:Casters.toBoolean,
+    st_stats:Casters.toString
 } satisfies Record<string, (val: string) => Result<unknown, string>>);
 
 type GetRes<R extends Result<unknown, unknown>> = R extends ResultRes<infer Res> ? Res : never;
@@ -131,13 +144,16 @@ type SimpleCVarMapping = {
 
 export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_player_name: "",
-
+    cv_loadout_role:ExtraLoadoutList.indexOf("medic_role"),
     cv_loadout_skin: GameConstants.player.defaultSkin,
     cv_loadout_badge: "",
+    cv_loadout_melee:"",
+    cv_loadout_gun1:"m3k",
+    cv_loadout_gun2:"mosin_nagant",
     cv_loadout_crosshair: 0,
     cv_loadout_top_emote: "happy_face",
     cv_loadout_right_emote: "thumbs_up",
-    cv_loadout_bottom_emote: "suroi_logo",
+    cv_loadout_bottom_emote: "suroimd_logo",
     cv_loadout_left_emote: "sad_face",
     cv_loadout_death_emote: "",
     cv_loadout_win_emote: "",
@@ -152,7 +168,7 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_use_old_menu_music: false,
     cv_region: "",
     cv_camera_shake_fx: true,
-    cv_killfeed_style: "text",
+    cv_killfeed_style: "icon",
     cv_weapon_slot_style: "colored",
     cv_movement_smoothing: true,
     cv_responsive_rotation: true,
@@ -161,8 +177,10 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_renderer: "webgl2",
     cv_renderer_res: "auto",
     cv_high_res_textures: true,
-    cv_cooler_graphics: false,
+    cv_cooler_graphics: true,
+    cv_vignetting: true,
     cv_ambient_particles: true,
+    cv_brighteffects:true,
     cv_blur_splash: !isMobile.any, // blur kills splash screen performance on phones from my testing
 
     cv_rules_acknowledged: false,
@@ -197,10 +215,10 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
         }
     },
 
-    cv_crosshair_color: "#000000",
+    cv_crosshair_color: "#ff0000",
     cv_crosshair_size: 1.5,
     cv_crosshair_stroke_color: "#000000",
-    cv_crosshair_stroke_size: 0,
+    cv_crosshair_stroke_size: 1,
 
     cv_autopickup: true,
     cv_autopickup_dual_guns: true,
@@ -210,8 +228,8 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     cv_mute_audio: false,
     //
 
-    pf_show_fps: false,
-    pf_show_ping: false,
+    pf_show_fps: true,
+    pf_show_ping: true,
     pf_show_pos: false,
 
     mb_controls_enabled: true,
@@ -219,11 +237,16 @@ export const defaultClientCVars: SimpleCVarMapping = Object.freeze({
     mb_joystick_transparency: 0.8,
     mb_high_res_textures: false,
 
+    db_hitbox:false,
+
     dv_password: "",
     dv_role: "",
     dv_name_color: "",
     dv_lobby_clearing: false,
-    dv_weapon_preset: ""
+    dv_weapon_preset: "",
+
+    st_toggle_status:false,
+    st_stats:"",
 } satisfies SimpleCVarMapping);
 
 export const defaultBinds = Object.freeze({
@@ -231,32 +254,32 @@ export const defaultBinds = Object.freeze({
     "+down": ["S", "ArrowDown"],
     "+left": ["A", "ArrowLeft"],
     "+right": ["D", "ArrowRight"],
-    "interact": ["F"],
+    "interact": ["E"],
     "loot": [],
-    "slot 0": ["1"],
-    "slot 1": ["2"],
-    "slot 2": ["3", "E"],
+    "slot 0": ["2"],
+    "slot 1": ["3"],
+    "slot 2": ["1"],
     "equip_or_cycle_throwables 1": ["4"],
-    "last_item": ["Q"],
+    "last_item": [],
     "other_weapon": ["Space"],
-    "swap_gun_slots": ["T"],
-    "cycle_items -1": ["MWheelUp"],
-    "cycle_items 1": ["MWheelDown"],
+    "swap_gun_slots": ["F"],
+    "cycle_items -1": [],
+    "cycle_items 1": [],
     "+attack": ["Mouse0"],
     "drop": [],
     "reload": ["R"],
     "explode_c4": ["Z"],
-    "cycle_scopes -1": [],
-    "cycle_scopes 1": [],
-    "use_consumable gauze": ["7"],
-    "use_consumable medikit": ["8"],
-    "use_consumable cola": ["9"],
-    "use_consumable tablets": ["0"],
+    "cycle_scopes -1": ["MWheelUp"],
+    "cycle_scopes 1": ["MWheelDown"],
+    "use_consumable gauze": ["5"],
+    "use_consumable medikit": ["6"],
+    "use_consumable cola": ["7"],
+    "use_consumable tablets": ["8"],
     "cancel_action": ["X"],
     "+view_map": [],
-    "toggle_map": ["G", "M"],
+    "toggle_map": ["M"],
     "toggle_minimap": ["N"],
-    "toggle_hud": [],
+    "toggle_hud": ["I"],
     "+emote_wheel": ["Mouse2"],
     "+map_ping_wheel": ["C"],
     "toggle_console": [],

@@ -2,15 +2,15 @@ import { GameConstants, GasState, Layer, ObjectCategory, ZIndexes } from "@commo
 import { type MapPingDefinition } from "@common/definitions/mapPings";
 import { type MapPacketData } from "@common/packets/mapPacket";
 import { type PingSerialization, type PlayerPingSerialization } from "@common/packets/updatePacket";
-import { RectangleHitbox } from "@common/utils/hitbox";
+import { BaseHitbox, HitboxType, PolygonHitbox, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { Numeric } from "@common/utils/math";
-import { FloorTypes, River, Terrain } from "@common/utils/terrain";
+import { FloorNames, FloorTypes, River, Terrain, type FloorBase } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
-import { Container, Graphics, RenderTexture, Sprite, Text, isMobile, type ColorSource, type Texture } from "pixi.js";
-import { getTranslatedString } from "../../translations";
+import { Color, Container, Graphics, RenderTexture, Sprite, Text, isMobile, type ColorSource, type Texture } from "pixi.js";
+import { getTranslatedString } from "../utils/translations/translations";
 import { type Game } from "../game";
-import { COLORS, DIFF_LAYER_HITBOX_OPACITY, FOOTSTEP_HITBOX_LAYER, HITBOX_DEBUG_MODE, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
+import { COLORS, DIFF_LAYER_HITBOX_OPACITY, FOOTSTEP_HITBOX_LAYER, PIXI_SCALE, TEAMMATE_COLORS } from "../utils/constants";
 import { SuroiSprite, drawGroundGraphics, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { GasRender } from "./gas";
 
@@ -60,6 +60,12 @@ export class Minimap {
     readonly teammateIndicators = new Map<number, SuroiSprite>();
     readonly teammateIndicatorContainer = new Container();
 
+    readonly groupIndicators = new Map<number, SuroiSprite>();
+    readonly groupIndicatorContainer = new Container();
+
+    readonly anotherIndicators=new Map<number,SuroiSprite>();
+    readonly anotherIndicatorContainer=new Container();
+
     private _width = 0;
     get width(): number { return this._width; }
 
@@ -77,7 +83,7 @@ export class Minimap {
     readonly gasRender = new GasRender(1);
     readonly placesContainer = new Container();
 
-    private _terrain = new Terrain(0, 0, 0, 0, 0, []);
+    private _terrain = new Terrain(0, 0, 0);
     get terrain(): Terrain { return this._terrain; }
 
     readonly pings = new Set<MapPing>();
@@ -106,7 +112,9 @@ export class Minimap {
 
         this.safeZone.zIndex = 997;
         this.pingsContainer.zIndex = 998;
-        this.teammateIndicatorContainer.zIndex = 999;
+        this.teammateIndicatorContainer.zIndex = 1000;
+        this.groupIndicatorContainer.zIndex = 999;
+        this.anotherIndicatorContainer.zIndex = 1001;
 
         this._objectsContainer.addChild(
             this.sprite,
@@ -116,7 +124,9 @@ export class Minimap {
             this.pingGraphics,
             this.pingsContainer,
             this.indicator,
-            this.teammateIndicatorContainer
+            this.teammateIndicatorContainer,
+            this.groupIndicatorContainer,
+            this.anotherIndicatorContainer
         ).sortChildren();
 
         this._borderContainer.on("click", e => {
@@ -137,32 +147,54 @@ export class Minimap {
             e.stopImmediatePropagation();
         });
     }
+    getFloorColor(f:FloorNames):Color{
+        return COLORS[f as keyof typeof COLORS]??FloorTypes[f].color
+    }
+    drawTerrainHB(ctx:Graphics, scale:number, f:{hitbox: Hitbox,type: FloorNames}){
+        const radiusS = 20 * scale;
+        switch(f.hitbox.type){
+            case HitboxType.Polygon:
+                ctx.beginPath().roundShape(f.hitbox.points.map(point => Vec.scale(point, scale)),radiusS).fill(this.getFloorColor(f.type));
+                ctx.cut();
+                break;
+            case HitboxType.Rect:
+                const pos=Vec.scale((f.hitbox as RectangleHitbox).min,scale)
+                const size=Vec.scale(Vec.sub((f.hitbox as RectangleHitbox).max,(f.hitbox as RectangleHitbox).min),scale)
+                ctx.rect(pos.x,pos.y,size.x,size.y).fill(this.getFloorColor(f.type))
+                break;
+            case HitboxType.Circle:
+                ctx.circle(f.hitbox.position.x*scale,f.hitbox.position.y*scale,f.hitbox.radius*scale).fill(this.getFloorColor(f.type))
+        }
+    }
 
     drawTerrain(ctx: Graphics, scale: number, gridLineWidth: number): void {
         ctx.zIndex = ZIndexes.Ground;
 
+        for(const f of this.terrain.floors[this.game.layer??Layer.Ground]){
+            if(f.build)continue
+            this.drawTerrainHB(ctx,scale,f)
+        }
+
         const radius = 20 * scale;
-        const [
-            { points: beachPoints },
-            { points: grassPoints }
-        ] = [this._terrain.beachHitbox, this._terrain.grassHitbox];
-
-        const beach = scale === 1 ? beachPoints : beachPoints.map(point => Vec.scale(point, scale));
-        // The grass is a hole in the map shape, the background clear color is the grass color
-        ctx.roundShape(beach, radius);
-        ctx.cut();
-
-        ctx.roundShape?.(beach, radius);
-        ctx.fill(COLORS.beach);
-
-        const grass = scale === 1 ? grassPoints : grassPoints.map(point => Vec.scale(point, scale));
-        ctx.roundShape(grass, radius);
-        ctx.cut();
-
-        // gets the river polygon with the middle 2 points not rounded
-        // so it joins nicely with other rivers
-        function getRiverPoly(points: readonly Vector[]): Array<Vector & { readonly radius: number }> {
+        const getRiverPoly=(points: readonly Vector[]): Array<Vector & { readonly radius: number }>=>{
             const half = points.length / 2;
+            //@ts-ignore
+            /*const ret=[]
+            let lastP:Vector=points[0]
+            for(let index=0;index<points.length;index++){
+                const point=points[index]
+                if(!(this.beachs[beach].isPointInside(point))){
+                    continue
+                }
+                ret.push({
+                    x: point.x * scale,
+                    y: point.y * scale,
+                    radius: (index === half || index === half - 1) ? 0 : radius
+                })
+                lastP=point
+            }
+            //@ts-ignore
+            return ret*/
             return points.map(
                 (point, index) => ({
                     x: point.x * scale,
@@ -173,26 +205,29 @@ export class Minimap {
         }
 
         // river bank needs to be draw first
-        for (const river of this._terrain.rivers) {
+        /*for (const river of this._terrain.rivers) {
             ctx
                 .beginPath()
                 .roundShape(getRiverPoly(river.bankHitbox.points), 0, true)
-                .fill(river.isTrail ? COLORS.trail : COLORS.riverBank);
-        }
+                .fill(this.getFloorColor(river.outline));
+        }*/
 
-        ctx.beginPath();
         for (const river of this._terrain.rivers) {
+            ctx.beginPath();
             if (river.waterHitbox) {
                 ctx.roundShape(getRiverPoly(river.waterHitbox.points), 0, true);
             }
+            ctx.fill(this.getFloorColor(river.floor));
         }
-        ctx.fill(COLORS.water);
-
-        ctx.beginPath();
-        ctx.rect(0, 0, this._width * scale, this._height * scale);
-        ctx.fill(COLORS.water);
-        ctx.roundShape(beach, radius);
-        ctx.cut();
+        /*for(const b of this.beachs){
+            const br=b.toRectangle()
+            ctx.beginPath();
+            ctx.rect(br.min.x*scale, br.min.y*scale, br.max.x*scale, br.max.y*scale);
+            ctx.fill(COLORS.water);
+            const beach = scale === 1 ? b.points : b.points.map(point => Vec.scale(point, scale));
+            ctx.roundShape(beach, 5*radius);
+            ctx.cut();
+        }*/
 
         ctx.setStrokeStyle({
             color: 0x000000,
@@ -372,7 +407,7 @@ export class Minimap {
             this.placesContainer.addChild(text);
         }
 
-        if (HITBOX_DEBUG_MODE) {
+        if (this.game.console.getBuiltInCVar("db_hitbox")) {
             this.renderMapDebug();
         }
     }
@@ -381,19 +416,17 @@ export class Minimap {
         const debugGraphics = this.debugGraphics;
         debugGraphics.clear();
         debugGraphics.zIndex = 999;
-        for (const [hitbox, { floorType, layer }] of this._terrain.floors) {
-            drawHitbox(hitbox, (FloorTypes[floorType].debugColor * (2 ** 8) + 0x80).toString(16), debugGraphics, layer as Layer === FOOTSTEP_HITBOX_LAYER ? 1 : DIFF_LAYER_HITBOX_OPACITY);
+        const layer=this.game.layer??Layer.Ground
+        /*for (const f of this._terrain.floors[layer]) {
+            drawHitbox(hitbox, (FloorTypes[floorType].color * (2 ** 8) + 0x80).toString(16), debugGraphics, layer as Layer === FOOTSTEP_HITBOX_LAYER ? 1 : DIFF_LAYER_HITBOX_OPACITY);
             //                                                      ^^^^^^ using << 8 can cause 32-bit overflow lol
-        }
-
-        drawHitbox(this._terrain.beachHitbox, FloorTypes.sand.debugColor, debugGraphics);
-        drawHitbox(this._terrain.grassHitbox, FloorTypes.grass.debugColor, debugGraphics);
+        }*/
 
         for (const river of this._terrain.rivers) {
             const points = river.points.map(point => Vec.scale(point, PIXI_SCALE));
 
-            if (river.waterHitbox) drawHitbox(river.waterHitbox, FloorTypes.water.debugColor, debugGraphics);
-            drawHitbox(river.bankHitbox, FloorTypes.sand.debugColor, debugGraphics);
+            if (river.waterHitbox) drawHitbox(river.waterHitbox, FloorTypes.water.color, debugGraphics);
+            drawHitbox(river.bankHitbox, FloorTypes.sand.color, debugGraphics);
 
             debugGraphics.setStrokeStyle({
                 width: 10,
@@ -414,9 +447,14 @@ export class Minimap {
                 debugGraphics.fill(0xff0000);
             }
         }
+        for (const f of this._terrain.floors[this.game.layer??Layer.Ground]) {
+            drawHitbox(f.hitbox, FloorTypes[f.type].color, debugGraphics);
+        }
 
         this.game.camera.addObject(debugGraphics);
     }
+
+    beachs:PolygonHitbox[]=[]
 
     updateFromPacket(mapPacket: MapPacketData): void {
         console.log(`Joining game with seed: ${mapPacket.seed}`);
@@ -427,28 +465,25 @@ export class Minimap {
         this._objects = mapPacket.objects;
         this._places = mapPacket.places;
 
-        const mapBounds = new RectangleHitbox(
-            Vec.create(mapPacket.oceanSize, mapPacket.oceanSize),
-            Vec.create(mapPacket.width - mapPacket.oceanSize, mapPacket.height - mapPacket.oceanSize)
-        );
-
         const rivers: River[] = [];
-        rivers.push(...mapPacket.rivers.map(({ width, points, isTrail }) => new River(width, points, rivers, mapBounds, isTrail)));
+        rivers.push(...mapPacket.rivers.map(({ width, points, isTrail,floor,outline,bounds,waterHitbox,bankHitbox }) => new River(width, points, rivers, bounds, isTrail,floor,outline,waterHitbox,bankHitbox)));
 
         this._terrain = new Terrain(
             width,
             height,
-            mapPacket.oceanSize,
-            mapPacket.beachSize,
-            mapPacket.seed,
-            rivers
+            mapPacket.seed
         );
+        this.terrain.addRivers(rivers)
+
+        for(const f of mapPacket.floors){
+            this._terrain.addFloor(f.type,BaseHitbox.fromJSON(f.hitbox),f.layer)
+        }
 
         for (const object of this._objects) {
             if (object.isBuilding) {
                 for (const floor of object.definition.floors) {
                     const hitbox = floor.hitbox.transform(object.position, 1, object.orientation);
-                    this._terrain.addFloor(floor.type, hitbox, floor.layer ?? object.layer ?? 0);
+                    this._terrain.addFloor(floor.type, hitbox, floor.layer ?? object.layer ?? 0,!floor.visible);
                 }
             }
         }
@@ -578,6 +613,14 @@ export class Minimap {
             for (const [, indicator] of this.teammateIndicators) {
                 indicator.setScale(1);
             }
+
+            for (const [, indicator] of this.groupIndicators) {
+                indicator.setScale(1);
+            }
+
+            for (const [, indicator] of this.anotherIndicators) {
+                indicator.setScale(1);
+            }
         } else {
             if (!this._visible) return;
 
@@ -596,6 +639,12 @@ export class Minimap {
 
             this.indicator.scale.set(0.75);
             for (const [, indicator] of this.teammateIndicators) {
+                indicator.setScale(0.75);
+            }
+            for (const [, indicator] of this.groupIndicators) {
+                indicator.setScale(0.75);
+            }
+            for (const [, indicator] of this.anotherIndicators) {
                 indicator.setScale(0.75);
             }
         }

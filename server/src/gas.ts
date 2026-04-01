@@ -2,12 +2,12 @@ import { GameConstants, GasState } from "@common/constants";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { Geometry, Numeric } from "@common/utils/math";
 import { MapObjectSpawnMode } from "@common/utils/objectDefinitions";
-import { randomBoolean, randomPointInsideCircle } from "@common/utils/random";
+import { pickRandomInArray, random, randomBoolean, randomPointInsideCircle } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
-import { Config, GasMode } from "./config";
-import { GasStages } from "./data/gasStages";
 import { type Game } from "./game";
-
+import { DefaultGasStages, GasStage } from "./data/gasStages";
+import { GasMode } from "./data/gamemode";
+import { Airstrike } from "@common/definitions/guns";
 export class Gas {
     stage = 0;
     state = GasState.Inactive;
@@ -15,16 +15,16 @@ export class Gas {
     countdownStart = 0;
     completionRatio = 0;
 
-    oldPosition: Vector;
-    newPosition: Vector;
-    currentPosition: Vector;
+    oldPosition!: Vector;
+    newPosition!: Vector;
+    currentPosition!: Vector;
 
-    oldRadius: number;
-    newRadius: number;
-    currentRadius: number;
+    oldRadius!: number;
+    newRadius!: number;
+    currentRadius!: number;
 
     dps = 0;
-    private _lastDamageTimestamp;
+    private _lastDamageTimestamp!:number;
 
     dirty = false;
     completionRatioDirty = false;
@@ -35,23 +35,49 @@ export class Gas {
     readonly game: Game;
     readonly mapSize: number;
 
+    clearing:boolean=false;
+
+    gasTime:number=0
+    advTime:number=0
+
     constructor(game: Game) {
         this.game = game;
         this.mapSize = (this.game.map.width + this.game.map.height) / 2;
 
-        const firstStage = GasStages[0];
-        this.oldRadius = firstStage.oldRadius * this.mapSize;
-        this.newRadius = firstStage.newRadius * this.mapSize;
-        this.currentRadius = firstStage.oldRadius * this.mapSize;
+        let firstStage:GasStage=DefaultGasStages[0]
+        let ll=true
+        switch(game.gamemode.gas.mode){
+            case GasMode.Staged:
+                firstStage = game.gamemode.gas.stages[0];
+                this.oldRadius = firstStage.oldRadius * this.mapSize;
+                this.newRadius = firstStage.newRadius * this.mapSize;
+                break;
+            case GasMode.Procedural:
+                this.oldRadius = game.gamemode.gas.initialRadius * this.mapSize;
+                this.newRadius=this.oldRadius
+                if(game.gamemode.gas.initialPosition){
+                    const aa=Vec.scale(game.gamemode.gas.initialPosition, this.mapSize)
+                    this.newPosition=aa
+                    this.oldPosition=aa
+                    ll=false
+                }
+                this.state=GasState.Inactive
+                this.stage=0
 
-        this.oldPosition = Vec.create(game.map.width / 2, game.map.height / 2);
-        this.newPosition = Vec.clone(this.oldPosition);
+                this.gasTime=game.gamemode.gas.waiting.initialTime
+                this.advTime=game.gamemode.gas.advance.initialTime
+        }
+        this.currentRadius = this.oldRadius;
+        if(ll){
+            this.oldPosition = Vec.create(this.game.map.width / 2, this.game.map.height / 2);
+            this.newPosition = Vec.clone(this.oldPosition);
+        }
         this.currentPosition = Vec.clone(this.oldPosition);
         this._lastDamageTimestamp = this.game.now;
     }
 
     tick(): void {
-        if (this.state !== GasState.Inactive) {
+        if (this.state !== GasState.Inactive&&!(this.completionRatio>1&&this.clearing)) {
             this.completionRatio = (this.game.now - this.countdownStart) / (1000 * this.currentDuration);
             this.completionRatioDirty = true;
         }
@@ -67,6 +93,21 @@ export class Gas {
                 this.currentRadius = Numeric.lerp(this.oldRadius, this.newRadius, this.completionRatio);
             }
         }
+    }
+    clearGas(transition:number=1){
+        if(this.clearing)return
+        this.state=GasState.Advancing
+        this.clearing=true;
+        this.oldRadius=this.currentRadius;
+        this.newRadius=0.95*this.mapSize;
+        this.oldPosition=this.currentPosition;
+        this.newPosition=Vec.create(this.game.map.width / 2, this.game.map.height / 2)
+        this.countdownStart=this.game.now
+        this.currentDuration=transition
+        this.completionRatio=0
+        this.dps=0
+        this.dirty=true
+        this.completionRatioDirty = true;
     }
 
     // Generate random coordinate within quadrant
@@ -104,79 +145,147 @@ export class Gas {
     }
 
     advanceGasStage(): void {
-        const { gas } = Config;
-        if (gas.mode === GasMode.Disabled) return;
+        const gas = this.game.gamemode.gas;
+        if (gas.mode === GasMode.Disabled||this.clearing) return;
 
-        const currentStage = GasStages[this.stage + 1];
-        if (currentStage === undefined) return;
+        if(this.game.gamemode.gas.mode===GasMode.Staged){
+            const currentStage = this.game.gamemode.gas.stages[this.stage + 1];
+            if (currentStage === undefined) return;
 
-        const isDebug = gas.mode === GasMode.Debug;
-        const duration = isDebug && gas.overrideDuration !== undefined && currentStage.duration !== 0
-            ? gas.overrideDuration
-            : currentStage.duration;
+            const isDebug = gas.mode === GasMode.Debug;
+            const duration = isDebug && gas.overrideDuration !== undefined && currentStage.duration !== 0
+                ? gas.overrideDuration
+                : currentStage.duration;
 
-        this.stage++;
-        this.state = currentStage.state;
-        this.currentDuration = duration;
-        this.completionRatio = 1;
-        this.countdownStart = this.game.now;
+            this.stage++;
+            this.state = currentStage.state;
+            this.currentDuration = duration;
+            this.completionRatio = 1;
+            this.countdownStart = this.game.now;
 
-        if (currentStage.state === GasState.Waiting) {
-            this.oldPosition = Vec.clone(this.newPosition);
-            if (currentStage.newRadius !== 0) {
-                const { width, height } = this.game.map;
-                if (isDebug && gas.overridePosition) {
-                    this.newPosition = Vec.create(width / 2, height / 2);
+            if (currentStage.state === GasState.Waiting) {
+                this.oldPosition = Vec.clone(this.newPosition);
+                if (currentStage.newRadius !== 0) {
+                    const { width, height } = this.game.map;
+                    if (isDebug && gas.overridePosition) {
+                        this.newPosition = Vec.create(width / 2, height / 2);
+                    } else {
+                        this.randomPos(currentStage.oldRadius,currentStage.newRadius)
+                    }
                 } else {
-                    const maxDistance = (currentStage.oldRadius - currentStage.newRadius) * this.mapSize;
-                    const maxDistanceSquared = maxDistance ** 2;
-
-                    this.newPosition = randomPointInsideCircle(this.oldPosition, maxDistance);
-
-                    let quadCoord = Gas._genQuadCoord(this.newPosition, width, height);
-                    let foundPosition = false;
-                    for (let attempts = 0; attempts < 100; attempts++) {
-                        quadCoord = Gas._genQuadCoord(this.newPosition, width, height);
-                        if (Geometry.distanceSquared(quadCoord, this.oldPosition) <= maxDistanceSquared) {
-                            foundPosition = true;
-                            break;
-                        }
-                    }
-
-                    if (foundPosition) this.newPosition = quadCoord;
+                    this.newPosition = Vec.clone(this.oldPosition);
                 }
-            } else {
-                this.newPosition = Vec.clone(this.oldPosition);
+                this.currentPosition = Vec.clone(this.oldPosition);
+                this.currentRadius = currentStage.oldRadius * this.mapSize;
             }
-            this.currentPosition = Vec.clone(this.oldPosition);
-            this.currentRadius = currentStage.oldRadius * this.mapSize;
-        }
 
-        this.oldRadius = currentStage.oldRadius * this.mapSize;
-        this.newRadius = currentStage.newRadius * this.mapSize;
-        this.dps = currentStage.dps;
-        this.dirty = true;
-        this.completionRatioDirty = true;
+            this.oldRadius = currentStage.oldRadius * this.mapSize;
+            this.newRadius = currentStage.newRadius * this.mapSize;
+            this.dps = currentStage.dps;
+            this.dirty = true;
+            this.completionRatioDirty = true;
 
-        if (currentStage.summonAirdrop) {
-            this.game.summonAirdrop(
-                this.game.map.getRandomPosition(
-                    new CircleHitbox(15),
-                    {
-                        maxAttempts: 500,
-                        spawnMode: MapObjectSpawnMode.GrassAndSand,
-                        collides: position => Geometry.distanceSquared(position, this.currentPosition) >= this.newRadius ** 2
-                    }
-                ) ?? this.newPosition
-            );
-        }
+            if (currentStage.summonAirdrop) {
+                this.addAirdrop()
+            }
 
-        // Start the next stage
-        if (duration !== 0) {
-            this.game.addTimeout(() => this.advanceGasStage(), duration * 1000);
+            // Start the next stage
+            if (duration !== 0) {
+                this.completionRatio=0
+                this.game.addTimeout(() => {if(!this.clearing){this.advanceGasStage()}}, duration * 1000);
+            }
+        }else if(gas.mode===GasMode.Procedural){
+            let duration=0
+            if(this.state!==GasState.Waiting){
+                this.state=GasState.Waiting
+                this.oldRadius=this.newRadius
+                this.newRadius=this.oldRadius*gas.radiusDecay
+                if(this.newRadius/this.mapSize<=gas.minRadius){
+                    this.newRadius=0
+                    this.newPosition=this.currentPosition
+                }else{
+                    this.oldPosition=this.newPosition
+                    this.randomPos(this.oldRadius/this.mapSize,this.newRadius/this.mapSize)
+                }
+                duration=this.gasTime
+                this.gasTime=Math.max(this.gasTime*gas.waiting.timeDecay,gas.waiting.timeMin)
+            }else{
+                this.state=GasState.Advancing
+                duration=this.advTime
+                this.advTime=Math.max(this.advTime*gas.advance.timeDecay,gas.advance.timeMin)
+            }
+            this.stage++
+            this.currentPosition=this.oldPosition
+            this.currentRadius=this.oldRadius
+            this.currentDuration=duration
+            this.countdownStart = this.game.now;
+            this.dirty = true;
+            this.completionRatioDirty = true;
+            this.dps=this.stage>2?gas.damage[Math.min(this.stage-2,gas.damage.length)]:0
+            if(gas.airdrop.includes(this.stage-1)){
+                this.addAirdrop()
+            }
+            for(const a of gas.airstrikes??[]){
+                if(a.stage===this.stage-1){
+                    this.game.addTimeout(this.addAirstrike.bind(this,a.airstrike),random(0,40*1000))
+                }
+            }
+            if(this.state==GasState.Waiting&&this.currentRadius===0&&this.newRadius===0){
+                this.currentDuration=0
+                this.completionRatio=1
+                this.oldRadius=0
+                this.newRadius=0
+                this.currentRadius=0
+                return
+            }
+            if (duration !== 0) {
+                this.completionRatio=0
+                this.game.addTimeout(() => {if(!this.clearing){this.advanceGasStage()}}, duration * 1000);
+            }
         }
     }
+    addAirstrike(airstrike:Airstrike){
+        this.game.addAirstrike(
+            Vec.clone(pickRandomInArray(Array.from(this.game.livingPlayers.values())).position),
+            undefined,
+            airstrike.planesCount,
+            airstrike.radius,
+            airstrike.bomb,
+            airstrike.bombsCount,
+            airstrike.ping
+        )
+    }
+    addAirdrop(){
+        this.game.summonAirdrop(
+            this.game.map.getRandomPosition(
+                new CircleHitbox(15),
+                {
+                    maxAttempts: 500,
+                    spawnMode: MapObjectSpawnMode.GrassAndSand,
+                    collides: position => Geometry.distanceSquared(position, this.currentPosition) >= this.newRadius ** 2,
+                    ir:pickRandomInArray(this.game.map.islands)
+                }
+            ) ?? this.newPosition
+        );
+    }
+    randomPos(oldRadius:number,newRadius:number){
+        const maxDistance = (oldRadius - newRadius) * this.mapSize;
+        const maxDistanceSquared = maxDistance ** 2;
 
+        this.newPosition = randomPointInsideCircle(this.oldPosition, maxDistance);
+
+        let quadCoord = Gas._genQuadCoord(this.newPosition, this.game.map.width, this.game.map.height);
+        let foundPosition = false;
+        for (let attempts = 0; attempts < 100; attempts++) {
+            quadCoord = Gas._genQuadCoord(this.newPosition, this.game.map.width, this.game.map.height);
+            if (Geometry.distanceSquared(quadCoord, this.oldPosition) <= maxDistanceSquared) {
+                foundPosition = true;
+                break;
+            }
+        }
+
+        if (foundPosition) this.newPosition = quadCoord;
+    }
     isInGas(position: Vector): boolean {
         return Geometry.distanceSquared(position, this.currentPosition) >= this.currentRadius ** 2;
     }

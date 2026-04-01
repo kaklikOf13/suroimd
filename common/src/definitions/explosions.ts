@@ -1,9 +1,11 @@
 import { defaultBulletTemplate } from "../constants";
 import { inheritFrom, ObjectDefinitions, type BaseBulletDefinition, type ObjectDefinition, type ReferenceTo } from "../utils/objectDefinitions";
+import { Vec, Vector } from "../utils/vector";
 import { type DecalDefinition } from "./decals";
 
 export interface ExplosionDefinition extends ObjectDefinition {
     readonly damage: number
+    readonly resistanceDamage?: number
     readonly obstacleMultiplier: number
     readonly radius: {
         readonly min: number
@@ -19,6 +21,17 @@ export interface ExplosionDefinition extends ObjectDefinition {
         readonly scale: number
     }
     readonly sound?: string // TODO: move the barrel and super barrel destroy sounds to explosion sounds
+
+    readonly subthrowable?:{
+        readonly proj:string
+        //X=Min Y=Max
+        readonly count:number
+        readonly speed:number|Vector
+    }
+    readonly obstacle?:{
+        readonly def:string
+    }
+    readonly callAirstrike?:boolean
 
     readonly decal?: ReferenceTo<DecalDefinition>
     readonly shrapnelCount: number
@@ -43,8 +56,34 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             },
             animation: {
                 duration: 1000,
-                tint: 0x91140b,
+                tint: 0x91160b,
                 scale: 1.5
+            },
+            shrapnelCount: 10,
+            ballistics: {
+                damage: 2,
+                obstacleMultiplier: 1,
+                speed: 0.08,
+                range: 20,
+                rangeVariance: 1,
+                shrapnel: true
+            }
+        },{
+            name: "Acid Barrel",
+            damage: 90,
+            obstacleMultiplier: 1,
+            radius: {
+                min: 8,
+                max: 25
+            },
+            cameraShake: {
+                duration: 250,
+                intensity: 50
+            },
+            animation: {
+                duration: 5000,
+                tint: 0x407639,
+                scale: 3
             },
             shrapnelCount: 10,
             ballistics: {
@@ -165,6 +204,34 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             }
         },
         {
+            name:"Propane",
+            damage: 30,
+            obstacleMultiplier: 0,
+            radius: {
+                min: 0,
+                max: 0
+            },
+            cameraShake: {
+                duration: 100,
+                intensity: 1
+            },
+            animation: {
+                duration: 500,
+                tint: 0x8A7C7B,
+                scale: 0.5
+            },
+            shrapnelCount: 0,
+            ballistics: {
+                damage: 3,
+                obstacleMultiplier: 0,
+                speed: 0,
+                range: 0,
+                shrapnel: false
+            },
+            sound: "smoke_grenade",
+            decal: "smoke_explosion_decal"
+        },
+        {
             name: "Small Refinery Barrel",
             damage: 200,
             obstacleMultiplier: 2,
@@ -178,7 +245,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             },
             animation: {
                 duration: 1500,
-                tint: 0x91140b,
+                tint: 0x91160b,
                 scale: 2.5
             },
             shrapnelCount: 25,
@@ -339,6 +406,38 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             decal: "explosion_decal"
         },
         {
+            name: "Apple Launcher",
+            damage: 80,
+            obstacleMultiplier: 2,
+            radius: {
+                min: 9,
+                max: 19
+            },
+            cameraShake: {
+                duration: 160,
+                intensity: 10
+            },
+            animation: {
+                duration: 1500,
+                tint: 0xED2929,
+                scale: 0.8
+            },
+            shrapnelCount: 0,
+            ballistics: {
+                damage: 3,
+                obstacleMultiplier: 1.5,
+                speed: 0.06,
+                range: 10,
+                rangeVariance: 1,
+                shrapnel: true,
+                tracer: {
+                    color: -1
+                }
+            },
+            sound: "firework_rocket_explode",
+            decal: "explosion_decal"
+        },
+        {
             name: "Confetti Grenade",
             damage: 97,
             obstacleMultiplier: 1,
@@ -395,12 +494,12 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             },
             animation: {
                 duration: 1000,
-                tint: 0x91140b,
+                tint: 0x91160b,
                 scale: 1.5
             },
             shrapnelCount: 10,
             ballistics: {
-                damage: 15,
+                damage: 50,
                 obstacleMultiplier: 1,
                 speed: 0.08,
                 range: 20,
@@ -409,6 +508,197 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             },
             sound: "frag_grenade",
             decal: "frag_explosion_decal"
+        },
+        {
+            name: "Ice Grenade",
+            damage: 70,
+            obstacleMultiplier: 1.15,
+            radius: {
+                min: 7,
+                max: 5
+            },
+            cameraShake: {
+                duration: 50,
+                intensity: 10
+            },
+            animation: {
+                duration: 500,
+                tint: 0x0771b3,
+                scale: 2
+            },
+            obstacle:{
+                def:"ice_rock"
+            },
+            shrapnelCount: 0,
+            ballistics: {
+                damage: 15,
+                obstacleMultiplier: 1,
+                speed: 0.08,
+                range: 20,
+                rangeVariance: 1,
+                shrapnel: true
+            },
+            sound: "smoke_grenade",
+            decal: "smoke_explosion_decal"
+        },
+        {
+            name: "Mirv Grenade",
+            damage: 130,
+            obstacleMultiplier: 1.2,
+            radius: {
+                min: 10,
+                max: 25
+            },
+            subthrowable:{
+                proj:"mirv_subgrenade",
+                count:6,
+                speed:Vec.create(0,0.034)
+            },
+            cameraShake: {
+                duration: 200,
+                intensity: 30
+            },
+            animation: {
+                duration: 1000,
+                tint: 0x005bf9,
+                scale: 1.5
+            },
+            shrapnelCount: 0,
+            ballistics: {
+                damage: 40,
+                obstacleMultiplier: 1,
+                speed: 0.08,
+                range: 20,
+                rangeVariance: 1,
+                shrapnel: true
+            },
+            
+            sound: "frag_grenade",
+            decal: "explosion_decal"
+        },
+        {
+            name: "SubMirv Grenade",
+            damage: 60,
+            obstacleMultiplier: 1.15,
+            radius: {
+                min: 7,
+                max: 14
+            },
+            cameraShake: {
+                duration: 100,
+                intensity: 10
+            },
+            animation: {
+                duration: 800,
+                tint: 0x005bf9,
+                scale: 1
+            },
+            shrapnelCount: 3,
+            ballistics: {
+                damage: 5,
+                obstacleMultiplier: 1,
+                speed: 0.08,
+                range: 10,
+                rangeVariance: 1,
+                shrapnel: true
+            },
+            
+            sound: "12g_frag_explosion",
+            decal: "explosion_decal"
+        },
+        {
+            name: "Airstrike Bomb",
+            damage: 60,
+            obstacleMultiplier: 1.15,
+            radius: {
+                min: 16,
+                max: 26
+            },
+            cameraShake: {
+                duration: 250,
+                intensity: 9
+            },
+            animation: {
+                duration: 1000,
+                tint: 0x888811,
+                scale: 2
+            },
+            shrapnelCount: 4,
+            ballistics: {
+                damage: 5,
+                obstacleMultiplier: 1,
+                speed: 0.08,
+                range: 10,
+                rangeVariance: 1,
+                shrapnel: true
+            },
+            resistanceDamage:3,
+            sound: "airstrike_explosion",
+            decal: "explosion_decal"
+        },
+        {
+            name: "Tactical Nuke",
+            damage: 15,
+            obstacleMultiplier: 3,
+            radius: {
+                min: 50,
+                max: 100
+            },
+            cameraShake: {
+                duration: 2000,
+                intensity: 100
+            },
+            /*cameraShake: {
+                duration: 2000,
+                intensity: 1
+            },*/
+            animation: {
+                duration: 2000,
+                tint: 0xff0000,
+                scale: 10
+            },
+            shrapnelCount: 300,
+            ballistics: {
+                damage: 51,
+                obstacleMultiplier: 1,
+                speed: 0.075,
+                range: 120,
+                rangeVariance: 3,
+                shrapnel: true
+            },
+            resistanceDamage:3,
+            sound: "metal_heavy_destroyed",
+            decal: "explosion_nuke_decal"
+        },
+        {
+            name: "Airstrike",
+            damage: 0,
+            obstacleMultiplier: 1.15,
+            radius: {
+                min: 0,
+                max: 0
+            },
+            callAirstrike:true,
+            cameraShake: {
+                duration: 0,
+                intensity: 0
+            },
+            animation: {
+                duration: 0,
+                tint: 0x222211,
+                scale: 1
+            },
+            shrapnelCount: 0,
+            ballistics: {
+                damage: 5,
+                obstacleMultiplier: 1,
+                speed: 0.08,
+                range: 10,
+                rangeVariance: 1,
+                shrapnel: true
+            },
+            
+            decal: ""
         },
         {
             name: "Smoke Grenade",
@@ -440,7 +730,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
         },
         {
             name: "C4",
-            damage: 150,
+            damage: 130,
             obstacleMultiplier: 1.15,
             radius: {
                 min: 10,
@@ -452,10 +742,10 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             },
             animation: {
                 duration: 1000,
-                tint: 0x91140b,
+                tint: 0x91160b,
                 scale: 1.5
             },
-            shrapnelCount: 0,
+            shrapnelCount: 10,
             ballistics: {
                 damage: 15,
                 obstacleMultiplier: 1,
@@ -481,7 +771,7 @@ export const Explosions = ObjectDefinitions.withDefault<ExplosionDefinition>()(
             },
             animation: {
                 duration: 1000,
-                tint: 0x91140b,
+                tint: 0x91160b,
                 scale: 1.5
             },
             sound: "pumpkin_bomb",

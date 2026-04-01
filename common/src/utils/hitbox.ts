@@ -2,6 +2,7 @@ import { type Orientation } from "../typings";
 import { Collision, Geometry, Numeric, type CollisionRecord, type IntersectionResponse } from "./math";
 import { cloneDeepSymbol, cloneSymbol, type Cloneable, type DeepCloneable } from "./misc";
 import { pickRandomInArray, randomFloat, randomPointInsideCircle } from "./random";
+import { SuroiByteStream } from "./suroiByteStream";
 import { Vec, type Vector } from "./vector";
 
 export enum HitboxType {
@@ -48,6 +49,7 @@ export abstract class BaseHitbox<T extends HitboxType = HitboxType> implements D
     abstract type: HitboxType;
 
     abstract toJSON(): HitboxJSONMapping[T];
+    abstract writeStream(strm:SuroiByteStream):void;
 
     static fromJSON<T extends HitboxType>(data: HitboxJSONMapping[T]): HitboxMapping[T];
     static fromJSON(data: HitboxJSON): Hitbox {
@@ -62,6 +64,29 @@ export abstract class BaseHitbox<T extends HitboxType = HitboxType> implements D
                 );
             case HitboxType.Polygon:
                 return new PolygonHitbox(data.points);
+        }
+    }
+    static fromStream<T extends HitboxType>(strm:SuroiByteStream): HitboxMapping[T];
+    static fromStream(strm:SuroiByteStream):Hitbox{
+        const tp=strm.readUint8() as HitboxType
+        switch(tp){
+            case HitboxType.Circle:
+                return new CircleHitbox(strm.readFloat64(),strm.readPosition())
+            case HitboxType.Rect:
+                return new RectangleHitbox(strm.readFullPosition(),strm.readFullPosition())
+            case HitboxType.Group:
+                const g=new GroupHitbox()
+                g.position=strm.readFullPosition()
+                g.hitboxes=strm.readArray((st)=>{
+                    return this.fromStream(st)
+                },2) as []
+                return g
+            case HitboxType.Polygon:
+                const pos=strm.readFullPosition()
+                const points=strm.readArray(()=>{
+                    return Vec.add(strm.readPosition(),pos)
+                },2)
+                return new PolygonHitbox(points,pos)
         }
     }
 
@@ -150,6 +175,11 @@ export class CircleHitbox extends BaseHitbox<HitboxType.Circle> {
             radius,
             position: center ?? Vec.create(0, 0)
         };
+    }
+    writeStream(strm:SuroiByteStream):void{
+        strm.writeUint8(this.type)
+        strm.writeFloat64(this.radius)
+        strm.writeFullPosition(this.position)
     }
 
     constructor(radius: number, position?: Vector) {
@@ -272,6 +302,11 @@ export class RectangleHitbox extends BaseHitbox<HitboxType.Rect> {
                 Numeric.max(a.y, b.y)
             )
         );
+    }
+    writeStream(strm:SuroiByteStream):void{
+        strm.writeUint8(this.type)
+        strm.writeFullPosition(this.min)
+        strm.writeFullPosition(this.max)
     }
 
     static fromRect(width: number, height: number, center = Vec.create(0, 0)): RectangleHitbox {
@@ -422,6 +457,13 @@ export class GroupHitbox<GroupType extends Array<RectangleHitbox | CircleHitbox>
     override readonly type = HitboxType.Group;
     position = Vec.create(0, 0);
     hitboxes: GroupType;
+    writeStream(strm:SuroiByteStream):void{
+        strm.writeUint8(this.type)
+        strm.writeFullPosition(this.position);
+        strm.writeArray(this.hitboxes,(v)=>{
+            v.writeStream(strm)
+        },2);
+    }
 
     static simple<ChildType extends ReadonlyArray<RectangleHitbox | CircleHitbox> = ReadonlyArray<RectangleHitbox | CircleHitbox>>(...hitboxes: ChildType): HitboxJSONMapping[HitboxType.Group] {
         return {
@@ -568,6 +610,14 @@ export class PolygonHitbox extends BaseHitbox<HitboxType.Polygon> {
             center
         };
     }
+    writeStream(strm:SuroiByteStream):void{
+        strm.writeUint8(this.type)
+        const pos=Vec.add(this.toRectangle().min,this.center)
+        strm.writeFullPosition(pos);
+        strm.writeArray(this.points,(v)=>{
+            strm.writePosition(Vec.sub(v,pos))
+        },2);
+    }
 
     constructor(points: Vector[], center = Vec.create(0, 0)) {
         super();
@@ -578,7 +628,7 @@ export class PolygonHitbox extends BaseHitbox<HitboxType.Polygon> {
     override toJSON(): HitboxJSONMapping[HitboxType.Polygon] {
         return {
             type: this.type,
-            points: this.points.map(point => Vec.clone(point)),
+            points: this.points.map(point => Vec.create(Math.floor(point.x),Math.floor(point.y))),
             center: this.center
         };
     }

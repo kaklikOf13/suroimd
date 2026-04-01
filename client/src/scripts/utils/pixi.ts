@@ -2,15 +2,27 @@ import { Obstacles } from "@common/definitions/obstacles";
 import { HitboxType, RectangleHitbox, type Hitbox } from "@common/utils/hitbox";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
-import { Assets, Graphics, RendererType, RenderTexture, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type SpritesheetData, type WebGLRenderer } from "pixi.js";
-import { getTranslatedString } from "../../translations";
+import { Assets, Container, Graphics, RendererType, RenderTexture, Sprite, Spritesheet, Texture, type ColorSource, type Renderer, type SpritesheetData, type WebGLRenderer } from "pixi.js";
+import { getTranslatedString } from "./translations/translations";
 import { PIXI_SCALE, WALL_STROKE_WIDTH } from "./constants";
+import { Atlases } from "@common/definitions/maps/maps";
 
 const textures: Record<string, Texture> = {};
 
 const loadingText = $("#loading-text");
+export async function unloadTextures(renderer: Renderer){
+    for(const key in textures){
+        const tex = textures[key];
 
-export async function loadTextures(renderer: Renderer, highResolution: boolean): Promise<void> {
+        if (tex.source?.resource?.url) {
+            await Assets.unload(tex.source.resource.url);
+        }
+
+        tex.destroy(false);
+        delete textures[key];
+    }
+}
+export async function loadTextures(renderer: Renderer, highResolution: boolean,used:Atlases[]=[Atlases.normal,Atlases.shared]): Promise<void> {
     // If device doesn't support 4096x4096 textures, force low resolution textures since they are 2048x2048
     if (renderer.type as RendererType === RendererType.WEBGL) {
         const gl = (renderer as WebGLRenderer).gl;
@@ -21,11 +33,17 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
 
     // we pray
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const spritesheets: SpritesheetData[] = highResolution
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        ? (await import("virtual:spritesheets-jsons-high-res")).atlases
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        : (await import("virtual:spritesheets-jsons-low-res")).atlases;
+    //const spritesheetsDir: string=(await import("virtual:spritesheets-dir")).atlases
+    
+    const spritesheets:SpritesheetData[]=[]
+    for(const s of used){
+        const j=await(await fetch(`atlases/atlas-${s}-data.json`)).json()
+        if(highResolution){
+            spritesheets.push(...j.high)
+        }else{
+            spritesheets.push(...j.low)
+        }
+    }
 
     let resolved = 0;
     const count = spritesheets.length;
@@ -38,6 +56,7 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
              */
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const image = spritesheet.meta.image!;
+            
 
             console.log(`Loading spritesheet ${location.origin}/${image}`);
 
@@ -45,6 +64,7 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
                 const texture = await Assets.load<Texture>(image);
                 await renderer.prepare.upload(texture);
                 Object.assign(textures, await new Spritesheet(texture, spritesheet).parse());
+                console.log(image)
 
                 const resolvedCount = ++resolved;
                 const progress = `(${resolvedCount} / ${count})`;
@@ -92,7 +112,96 @@ export async function loadTextures(renderer: Renderer, highResolution: boolean):
             });
             textures.vest_world = vestTexture;
             resolve();
-        })
+        }),
+        ...Obstacles.definitions
+            .filter(obj => obj.gunMount)
+            .map(def => new Promise<void>(resolve => {
+                if (def.gunMount === undefined) return;
+
+                const spriteWidth = def.gunMount.type === "melee" ? 153.394 : 166.75;
+                const spriteHeight = def.gunMount.type === "melee" ? 81.035 : 74.5;
+
+                const mountTexture = RenderTexture.create({ width: spriteWidth, height: spriteHeight, antialias: true });
+
+                const MOUNT_BORDER_COLOR = 0x302412;
+                const MOUNT_FILL_COLOR = 0x785a2e;
+
+                const mountBorderRadius = 5;
+
+                const container = new Container();
+
+                switch (def.gunMount.type) {
+                    case "gun": {
+                        const mainRect = new Graphics()
+                            .roundRect(7.5, 4.2, 150, 11, (mountBorderRadius - 1))
+                            .fill({ color: MOUNT_FILL_COLOR });
+
+                        const mainBorderRect = new Graphics()
+                            .roundRect(0, 0, 166, 20, mountBorderRadius)
+                            .fill({ color: MOUNT_BORDER_COLOR });
+
+                        container.addChild(mainBorderRect, mainRect);
+
+                        for (let i = 0; i < 3; i++) {
+                            const xPosConstant = [1, 63, 126][i];
+
+                            const borderRect = new Graphics()
+                                .roundRect(14 + xPosConstant, 16, 13, 60, (mountBorderRadius * 1.25))
+                                .fill({ color: MOUNT_BORDER_COLOR });
+
+                            container.addChild(borderRect);
+
+                            for (let j = 0; j < 2; j++) {
+                                const yPos = [24, 54][j];
+                                const rect = new Graphics()
+                                    .roundRect(16.5 + xPosConstant, yPos, 8, 16, (mountBorderRadius - 3))
+                                    .fill({ color: MOUNT_FILL_COLOR });
+
+                                container.addChild(rect);
+                            }
+                        }
+                        break;
+                    }
+
+                    case "melee": {
+                        const mainRect = new Graphics()
+                            .roundRect(31, 9.2, 92, 11, (mountBorderRadius - 1))
+                            .fill({ color: MOUNT_FILL_COLOR });
+
+                        const mainBorderRect = new Graphics()
+                            .roundRect(24.3, 5, 104, 20, mountBorderRadius)
+                            .fill({ color: MOUNT_BORDER_COLOR });
+
+                        for (let i = 0; i < 2; i++) {
+                            const xPosConstant = [25.25, 87][i];
+
+                            const borderRect = new Graphics()
+                                .roundRect(14 + xPosConstant, 18, 13, 60, mountBorderRadius * 1.1)
+                                .fill({ color: MOUNT_BORDER_COLOR });
+
+                            container.addChild(borderRect);
+
+                            for (let j = 0; j < 2; j++) {
+                                const yPos = [28, 60][j];
+                                const rect = new Graphics()
+                                    .roundRect(16.5 + xPosConstant, yPos, 8, 14, (mountBorderRadius - 3))
+                                    .fill({ color: MOUNT_FILL_COLOR });
+
+                                container.addChild(rect);
+                            }
+                        }
+                        container.addChild(mainBorderRect, mainRect);
+                        break;
+                    }
+                }
+
+                renderer.render({
+                    target: mountTexture,
+                    container: container
+                });
+                textures[def.idString] = mountTexture;
+                resolve();
+            }))
     ]);
 }
 

@@ -13,6 +13,7 @@ import { Building } from "./building";
 import { BaseGameObject, type DamageParams, type GameObject } from "./gameObject";
 import { Obstacle } from "./obstacle";
 import { equalLayer } from "@common/utils/layer";
+import { randomFloat } from "@common/utils/random";
 
 const enum Drag {
     Normal = 0.001,
@@ -21,7 +22,7 @@ const enum Drag {
 
 export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.ThrowableProjectile) {
     override readonly fullAllocBytes = 4;
-    override readonly partialAllocBytes = 12;
+    override readonly partialAllocBytes = 18;
 
     private health?: number;
 
@@ -40,7 +41,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         this._velocity.y = velocity.y ?? this._velocity.y;
     }
 
-    private _angularVelocity = 0.0035;
+    _angularVelocity = 0.008;
     get angularVelocity(): number { return this._angularVelocity; }
 
     private readonly _spawnTime: number;
@@ -76,12 +77,16 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
      */
     private _damagedLastTick = new Set<GameObject>();
 
+    z:number=1
+    detonating:boolean=false
+    fuseDelay:number=0
+
     constructor(
         game: Game,
         position: Vector,
         layer: Layer,
         readonly definition: ThrowableDefinition,
-        readonly source: ThrowableItem,
+        readonly source?: ThrowableItem,
         radius?: number
     ) {
         super(game, position);
@@ -89,18 +94,26 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         this._spawnTime = this.game.now;
         this.hitbox = new CircleHitbox(radius ?? 1, position);
 
-        this.halloweenSkin = this.source.owner.perks.hasPerk(PerkIds.PlumpkinBomb);
+        if(this.source){
+            this._angularVelocity=definition.initialAngularSpeed*randomFloat(0.8,1.2)
+            if(definition.canInvertASpeed&&Math.random()<=.5){
+                this._angularVelocity*=-1
+            }
+            this.halloweenSkin = false;
 
-        // Colored Teammate C4s
-        this.tintIndex = this.source.owner.colorIndex;
-        if (this.source.owner.teamID) this.throwerTeamID = this.source.owner.teamID;
+            // Colored Teammate C4s
+            this.tintIndex = this.source.owner.colorIndex;
+            if (this.source.owner.teamID) this.throwerTeamID = this.source.owner.teamID;
 
-        for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
-            this.handleCollision(object);
-        }
-        if (this.definition.c4) {
-            this.source.owner.c4s.push(this);
-            this.source.owner.dirty.activeC4s = true;
+            for (const object of this.game.grid.intersectsHitbox(this.hitbox)) {
+                this.handleCollision(object);
+            }
+            if (this.definition.c4) {
+                this.source.owner.c4s.push(this);
+                this.source.owner.dirty.activeC4s = true;
+            }
+        }else{
+            this.halloweenSkin=false
         }
         if (this.definition.health) this.health = this.definition.health;
     }
@@ -121,17 +134,15 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
 
         return displacement;
     }
+    explode(){
+        if (this.dead) return;
 
-    detonate(delay: number): void {
-        this._activated = true;
-        this.setDirty();
-        setTimeout(() => {
-            if (this.dead) return;
+        this.game.removeProjectile(this);
+        this.setDirty()
 
-            this.game.removeProjectile(this);
+        const { explosion } = this.definition.detonation;
 
-            const { explosion } = this.definition.detonation;
-
+        if(this.source){
             const referencePosition = Vec.clone(this.position ?? this.source.owner.position);
             const game = this.game;
 
@@ -141,13 +152,55 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
                     referencePosition,
                     this.source.owner,
                     this.layer,
-                    this.source
+                    this.source,
+                    undefined,
+                    this
                 );
             }
-        }, delay);
+        }else{
+            if (explosion !== undefined) {
+                this.game.addExplosion(
+                    explosion,
+                    this.position,
+                    this,
+                    this.layer,
+                    this.source,
+                    undefined,
+                    this
+                );
+            }
+        }
+    }
+    detonate(delay: number): void {
+        this._activated = true;
+        this.setDirty();
+        if(this.definition.detonation.cexplodeOnBuilding){
+            const objects = this.game.grid.intersectsHitbox(this.hitbox);
+            for (const object of objects) {
+                if(!object.isBuilding||!object.definition.ceilingHitbox||!object.hitbox)continue
+                const hb=object.definition.ceilingHitbox.transform(object.hitbox.getCenter())
+                if (this.hitbox.collidesWith(hb)) {
+                    this.game.removeProjectile(this);
+                    return
+                }
+            }
+        }
+        this.detonating=true
+        this.fuseDelay=delay
     }
 
     update(): void {
+        if(this.z==0){
+            this.velocity.x=this.velocity.x*0.85
+            this.velocity.y=this.velocity.y*0.85
+            this._angularVelocity=Numeric.lerp(this._angularVelocity,0,0.1)
+            if(this.definition.detonation.explode_on?.touch_ground){
+                this.fuseDelay=0
+            }
+        }else{
+            this.z=Numeric.clamp(this.z-(this.definition.zDecay*this.game.dt),0,1)
+        }
+
         if (this.definition.c4) {
             this._airborne = false;
             this.game.grid.updateObject(this);
@@ -227,6 +280,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
                     )
                     && (
                         !isPlayer // and it's not a player
+                        || this.source===undefined
                         || !shouldDealImpactDamage // or impact damage isn't active
                         || (!this._collideWithOwner && object === this.source.owner) // or collisions with owner are off
                     )
@@ -282,9 +336,12 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
             // else console.log(object.data);
 
             if (shouldDealImpactDamage && !this._damagedLastTick.has(object)) {
+                if(this.definition.detonation.explode_on?.collide){
+                    this.fuseDelay=0
+                }
                 object.damage({
                     amount: impactDamage * ((isObstacle ? this.definition.obstacleMultiplier : undefined) ?? 1),
-                    source: this.source.owner,
+                    source: this.source?this.source.owner:undefined,
                     weaponUsed: this.source
                 });
 
@@ -341,6 +398,14 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         this._damagedLastTick = damagedThisTick;
         this.game.grid.updateObject(this);
         this.setPartialDirty();
+
+        if(this.detonating){
+            if(this.fuseDelay>0){
+                this.fuseDelay-=this.game.dt
+            }else{
+                this.explode()
+            }
+        }
     }
 
     /**
@@ -434,6 +499,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         // bail early if…
         if (
             object.dead // the object is dead
+            || this.source===undefined
             || ( // or
                 (
                     !(isObstacle || isBuilding) // it's neither an obstacle nor building
@@ -523,9 +589,12 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
         this.health = this.health - amount;
         if (this.health <= 0) {
             // use a Set instead
-            this.source.owner.c4s.splice(this.source.owner.c4s.indexOf(this), 1);
+            if(this.source){
+                this.source.owner.c4s.splice(this.source.owner.c4s.indexOf(this), 1);
+                this.source.owner.dirty.activeC4s = true;
+            }
+
             this.game.removeProjectile(this);
-            this.source.owner.dirty.activeC4s = true;
         }
     }
 
@@ -536,6 +605,7 @@ export class ThrowableProjectile extends BaseGameObject.derive(ObjectCategory.Th
             layer: this.layer,
             airborne: this._airborne,
             activated: this._activated,
+            z:this.z,
             throwerTeamID: this.throwerTeamID,
             full: {
                 definition: this.definition,

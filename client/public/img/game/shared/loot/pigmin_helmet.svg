@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="100.0203"
+   height="75.099022"
+   xml:space="preserve"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="pigmin_helmet.svg"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><sodipodi:namedview
+   id="namedview1"
+   pagecolor="#ffffff"
+   bordercolor="#000000"
+   borderopacity="0.25"
+   inkscape:showpageshadow="2"
+   inkscape:pageopacity="0.0"
+   inkscape:pagecheckerboard="0"
+   inkscape:deskcolor="#d1d1d1"
+   inkscape:zoom="5.7045264"
+   inkscape:cx="36.549923"
+   inkscape:cy="38.828815"
+   inkscape:window-width="1920"
+   inkscape:window-height="1009"
+   inkscape:window-x="-8"
+   inkscape:window-y="-8"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="svg1"
+   showguides="false" />
+ <defs
+   id="defs12">
+  <radialGradient
+   fy="193.51105"
+   fx="244.17558"
+   gradientTransform="matrix(0.97519478,0,0,0.6470966,5.6754059,56.302564)"
+   id="color-1"
+   gradientUnits="userSpaceOnUse"
+   r="23.545139"
+   cy="193.51105"
+   cx="244.17558">
+   <stop
+   id="stop2"
+   stop-color="#222222"
+   offset="0" />
+   <stop
+   id="stop4"
+   stop-color="#151515"
+   offset="1" />
+  </radialGradient>
+  <radialGradient
+   gradientUnits="userSpaceOnUse"
+   gradientTransform="matrix(-0.00635499,-0.54108093,0.87916612,-0.0103258,5.9671429,74.0497)"
+   r="54.161831"
+   fy="44.75174"
+   fx="70.614807"
+   cy="44.75174"
+   cx="70.614807"
+   id="radialGradient6"
+   xlink:href="#color-1" />
+ </defs>
+ <g
+   id="g1"
+   transform="rotate(90,50.016,50.016)">
+  <title
+   id="title1">Layer 1</title>
+  
+  <path
+   stroke-linecap="round"
+   stroke-width="16"
+   stroke="#000000"
+   fill="url(#radialGradient6)"
+   d="M 45.52851,92.032 C 24.80208,92.032 8,73.22842 8,50.03303 8,26.83765 24.84624,9.38081 45.52851,8.03406 c 26.63886,-1.73461 30.80175,83.99794 0,83.99794 z"
+   id="path5"
+   style="fill:url(#radialGradient6);paint-order:stroke fill markers"
+   sodipodi:nodetypes="sscs" /><path
+   style="fill:#fce500;fill-opacity:1;stroke-width:1.29429"
+   d="m 48.811755,66.358041 v -9.529313 h 14.520648 v -5.896992 h -8.84838 l 3.05e-4,-1.430191 h 8.848378 l -3.03e-4,-5.605453 h -14.52059 l -5.8e-5,-10.43728 h -5.44508 V 46.555091 H 36.56 v 6.806675 h 6.806675 v 13.223121 z"
+   id="path1"
+   sodipodi:nodetypes="ccccccccccccccccc" />
+  
+ </g>
+</svg>

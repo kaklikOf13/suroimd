@@ -1,5 +1,6 @@
 # Build
 dist/
+.spritesheet-cache
 
 # Node
 node_modules/
@@ -29,6 +30,11 @@ build/
 .pnpm-cache/
 .npm/
 *.log
+logs/
 
 # try to prevent error moments from happening (no pun intended)
 .env
+
+#privates
+private/
+privates/

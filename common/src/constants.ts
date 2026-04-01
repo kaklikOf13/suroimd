@@ -1,10 +1,9 @@
 import { Ammos } from "./definitions/ammos";
 import { HealingItems } from "./definitions/healingItems";
-import { Mode } from "./definitions/modes";
 import { Scopes } from "./definitions/scopes";
 import { Throwables } from "./definitions/throwables";
 import { freezeDeep } from "./utils/misc";
-import { ItemType } from "./utils/objectDefinitions";
+import { ItemRarity, ItemType } from "./utils/objectDefinitions";
 
 export const enum Constants {
     MAX_POSITION = 1924,
@@ -43,13 +42,19 @@ const inventorySlotTypings = Object.freeze([ItemType.Gun, ItemType.Gun, ItemType
 export const GameConstants = freezeDeep({
     // !!!!! NOTE: Increase this every time a bit stream change is made between latest release and master
     // or a new item is added to a definition list
-    protocolVersion: 38,
+    protocolVersion: 42,
     gridSize: 32,
     maxPosition: Constants.MAX_POSITION,
-    modeName: "winter" satisfies Mode as Mode,
+    music_chance:0.00005,
+    rain:{
+        raindropsCount:80,
+        raindrop:"ripple_particle",
+        ambience:"rain_ambience",
+        storm_ambience:"storm_ambience",
+    },
     player: {
         radius: 2.25,
-        baseSpeed: 0.02655,
+        baseSpeed: 0.034,
         defaultHealth: 100,
         maxAdrenaline: 100,
         inventorySlotTypings,
@@ -59,13 +64,13 @@ export const GameConstants = freezeDeep({
         defaultSkin: "hazel_jumpsuit",
         killLeaderMinKills: 3,
         maxMouseDist: 256,
-        reviveTime: 8,
-        maxReviveDist: 5,
-        bleedOutDPMs: 0.002, // === 2 dps
+        reviveTime: 6,
+        maxReviveDist: 7,
+        bleedOutDPMs: 0.001, // === 1 dps
         maxPerkCount: 1,
-        rateLimitPunishmentTrigger: 10,
-        emotePunishmentTime: 5000, // ms
-        rateLimitInterval: 1000
+        rateLimitPunishmentTrigger: 20,
+        emotePunishmentTime: 7000, // ms
+        rateLimitInterval: 5000
     },
     gas: {
         damageScaleFactor: 0.005, // Extra damage, linear per distance unit into the gas
@@ -77,7 +82,7 @@ export const GameConstants = freezeDeep({
         flyTime: 30000,
         damage: 300
     },
-    riverPadding: 64,
+    riverPadding: 30,
     trailPadding: 384
 });
 
@@ -131,6 +136,13 @@ export const enum Layer {
     ToFloor1 = 1,
     Floor1 = 2
 }
+export const LayersList=[
+    Layer.Basement1,
+    Layer.ToBasement1,
+    Layer.Ground,
+    Layer.ToFloor1,
+    Layer.Floor1
+]
 
 export const enum Layers {
     All,      // Collide with objects on all layers
@@ -174,7 +186,8 @@ export const enum KillfeedMessageType {
     DeathOrDown,
     KillLeaderAssigned,
     KillLeaderDeadOrDisconnected,
-    KillLeaderUpdated
+    KillLeaderUpdated,
+    Promotion
 }
 
 export const enum GasState {
@@ -253,14 +266,19 @@ export const defaultBulletTemplate = {
     tracer: {
         opacity: 1,
         width: 1,
-        length: 1,
+        length: 1.3,
         image: "base_trail",
         particle: false,
         zIndex: ZIndexes.Bullets
     },
+    headshot:{
+        chance:0.1,
+        modify:1.35,
+    },
     allowRangeOverride: false,
     lastShotFX: false,
-    noCollision: false
+    noCollision: false,
+    heal:false
 };
 
 export const TentTints = {
@@ -270,3 +288,18 @@ export const TentTints = {
     orange: 0xc67438,
     purple: 0x994cb2
 };
+
+export const defaultUnlockGuns:string[]=[]
+export const defaultUnlockMelees:string[]=[
+    "baseball_bat",
+    "sickle",
+    "kbar",
+    "hatchet",
+    "fire_hatchet",
+    "crowbar",
+    "gas_can"
+]
+export const defaultUnlockWeapons:(string)[][]=[
+    defaultUnlockGuns,
+    defaultUnlockMelees
+]

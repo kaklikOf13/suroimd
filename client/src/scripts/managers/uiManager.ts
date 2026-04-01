@@ -1,13 +1,13 @@
 import { DEFAULT_INVENTORY, GameConstants, KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType } from "@common/constants";
 import { Ammos } from "@common/definitions/ammos";
-import { type BadgeDefinition } from "@common/definitions/badges";
-import { type EmoteDefinition } from "@common/definitions/emotes";
+import { Badges, type BadgeDefinition } from "@common/definitions/loadout/badges";
+import { type EmoteDefinition } from "@common/definitions/loadout/emotes";
 import { type GunDefinition } from "@common/definitions/guns";
 import { Loots } from "@common/definitions/loots";
 import { MapPings, type PlayerPing } from "@common/definitions/mapPings";
 import { PerkCategories, PerkIds, type PerkDefinition } from "@common/definitions/perks";
 import { DEFAULT_SCOPE, type ScopeDefinition } from "@common/definitions/scopes";
-import { Skins } from "@common/definitions/skins";
+import { Skins } from "@common/definitions/loadout/skins";
 import { type GameOverData } from "@common/packets/gameOverPacket";
 import { type KillFeedPacketData } from "@common/packets/killFeedPacket";
 import { type PlayerData } from "@common/packets/updatePacket";
@@ -17,12 +17,12 @@ import { ItemType, type ReferenceTo } from "@common/utils/objectDefinitions";
 import { Vec, type Vector } from "@common/utils/vector";
 import $ from "jquery";
 import { Color } from "pixi.js";
-import { getTranslatedString, NO_SPACE_LANGUAGES } from "../../translations";
+import { getTranslatedString, NO_SPACE_LANGUAGES } from "../utils/translations/translations";
 import { type TranslationKeys } from "../../typings/translations";
 import { type Game } from "../game";
 import { type GameObject } from "../objects/gameObject";
 import { Player } from "../objects/player";
-import { GHILLIE_TINT, MODE, TEAMMATE_COLORS, UI_DEBUG_MODE } from "../utils/constants";
+import { GHILLIE_TINT, Biome, TEAMMATE_COLORS,GROUPS_COLORS, UI_DEBUG_MODE } from "../utils/constants";
 import { formatDate, html } from "../utils/misc";
 import { SuroiSprite } from "../utils/pixi";
 import { ClientPerkManager } from "./perkManager";
@@ -60,6 +60,7 @@ export class UIManager {
     emotes: ReadonlyArray<EmoteDefinition | undefined> = [];
 
     teammates: PlayerData["teammates"] & object = [];
+    groupPlayers: PlayerData["groupPlayers"] & object = [];
 
     readonly perks: ClientPerkManager;
 
@@ -100,7 +101,8 @@ export class UIManager {
         return this.getRawPlayerNameNullish(id) ?? "[Unknown Player]";
     }
 
-    getPlayerName(id: number): string {
+    getPlayerData(id: number): { name: string, badge: BadgeDefinition | undefined } {
+        // Name
         const element = $<HTMLSpanElement>("<span>");
         const player = this.game.playerNames.get(id) ?? this._teammateDataCache.get(id);
 
@@ -113,27 +115,23 @@ export class UIManager {
         element.text(name);
 
         // what in the jquery is this
-        return element.prop("outerHTML") as string;
-    }
+        const playerName = element.prop("outerHTML") as string;
 
-    getPlayerBadge(id: number): BadgeDefinition | undefined {
-        if (this.game.console.getBuiltInCVar("cv_anonymize_player_names")) {
-            return;
-        }
+        // Badge
+        let playerBadge: BadgeDefinition | undefined = undefined;
 
-        const player = this.game.playerNames.get(id) ?? this._teammateDataCache.get(id);
-
-        switch (true) {
-            case this.game.console.getBuiltInCVar("cv_anonymize_player_names"): {
-                return;
-            }
-            case player === undefined: {
-                console.warn(`Unknown player name with id ${id}`); return;
-            }
-            default: {
-                return player.badge;
+        if (!this.game.console.getBuiltInCVar("cv_anonymize_player_names")) {
+            if (player !== undefined) {
+                playerBadge = player.badge;
+            } else {
+                console.warn(`Unknown player name with id ${id}`);
             }
         }
+
+        return {
+            name: playerName,
+            badge: playerBadge
+        };
     }
 
     static getHealthColor(normalizedHealth: number, downed?: boolean): string {
@@ -182,6 +180,9 @@ export class UIManager {
         adrenalineBar: $<HTMLDivElement>("#adrenaline-bar"),
         adrenalineBarAmount: $<HTMLSpanElement>("#adrenaline-bar-amount"),
 
+        capacityBar: $<HTMLDivElement>("#capacity-bar"),
+        capacityBarAmount: $<HTMLDivElement>("#capacity-bar-amount"),
+
         killFeed: $<HTMLDivElement>("#kill-feed"),
 
         gameUi: $<HTMLDivElement>("#game-ui"),
@@ -226,6 +227,7 @@ export class UIManager {
         gameOverText: $<HTMLHeadingElement>("#game-over-text"),
         gameOverPlayerName: $<HTMLHeadingElement>("#game-over-player-name"),
         gameOverKills: $<HTMLSpanElement>("#game-over-kills"),
+        gameOverScore: $<HTMLSpanElement>("#game-over-score"),
         gameOverDamageDone: $<HTMLSpanElement>("#game-over-damage-done"),
         gameOverDamageTaken: $<HTMLSpanElement>("#game-over-damage-taken"),
         gameOverTime: $<HTMLSpanElement>("#game-over-time"),
@@ -263,6 +265,10 @@ export class UIManager {
         lockedInfo: $<HTMLButtonElement>("#locked-info"),
         lockedTooltip: $<HTMLDivElement>("#locked-tooltip"),
         lockedTime: $<HTMLSpanElement>("#locked-time"),
+
+        lockedInfo2: $<HTMLButtonElement>("#locked-info2"),
+        lockedTooltip2: $<HTMLDivElement>("#locked-tooltip2"),
+        lockedTime2: $<HTMLSpanElement>("#locked-time2"),
 
         warningTitle: $<HTMLHeadingElement>("#warning-modal-title"),
         warningText: $<HTMLParagraphElement>("#warning-modal-text"),
@@ -400,6 +406,7 @@ export class UIManager {
             gameOverRank,
             gameOverPlayerName,
             gameOverKills,
+            gameOverScore,
             gameOverDamageDone,
             gameOverDamageTaken,
             gameOverTime
@@ -411,13 +418,13 @@ export class UIManager {
             this.ui.btnSpectate.removeClass("btn-disabled").show();
             game.map.indicator.setFrame("player_indicator_dead");
         } else {
-            this.ui.btnSpectate.hide();
+            //this.ui.btnSpectate.hide();
         }
 
         chickenDinner.toggle(packet.won);
 
-        const playerName = this.getPlayerName(packet.playerID);
-        const playerBadge = this.getPlayerBadge(packet.playerID);
+        const playerName = this.getPlayerData(packet.playerID).name;
+        const playerBadge = this.getPlayerData(packet.playerID).badge;
         const playerBadgeText = playerBadge
             ? html`<img class="badge-icon" src="./img/game/shared/badges/${playerBadge.idString}.svg" alt="${playerBadge.name} badge">`
             : "";
@@ -427,7 +434,7 @@ export class UIManager {
                 ? getTranslatedString("msg_win")
                 : (this.game.spectating
                     ? getTranslatedString("msg_player_died", {
-                        player: this.getPlayerName(packet.playerID)
+                        player: playerName
                     })
                     : getTranslatedString("msg_you_died"))
         );
@@ -435,11 +442,10 @@ export class UIManager {
         gameOverPlayerName.html(playerName + playerBadgeText);
 
         gameOverKills.text(packet.kills);
+        gameOverScore.text(packet.score);
         gameOverDamageDone.text(packet.damageDone);
         gameOverDamageTaken.text(packet.damageTaken);
         gameOverTime.text(formatDate(packet.timeAlive));
-
-        if (packet.won) void game.music.play();
 
         this.gameOverScreenTimeout = window.setTimeout(() => gameOverOverlay.fadeIn(500), 500);
 
@@ -458,7 +464,7 @@ export class UIManager {
 
     updateEmoteWheel(): void {
         const { pingWheelActive } = this.game.inputManager;
-        if (this.game.teamMode) {
+        if (this.game.teamMode||this.game.groupMode) {
             $("#ammos-container, #healing-items-container").toggleClass("active", pingWheelActive);
             for (const ammo of Ammos) {
                 const itemSlot = this._itemSlotCache[ammo.idString] ??= $(`#${ammo.idString}-slot`);
@@ -484,17 +490,38 @@ export class UIManager {
 
         this._teammateDataCache.clear();
     }
+    readonly _groupDataCache = new Map<number, PlayerHealthUIGroup>();
+    _blockedGroupSignals:Record<number,boolean>={};
+    clearGroupCache(): void {
+        for (const [, entry] of this._groupDataCache) {
+            entry.destroy();
+        }
+
+        this._blockedGroupSignals={}
+        this._groupDataCache.clear();
+    }
+    private readonly _anotherIndicDataCache = new Map<number, AnotherMapIndicator>();
+    clearAnotherIndicCache(): void {
+        for (const [, entry] of this._anotherIndicDataCache) {
+            entry.destroy();
+        }
+        this._anotherIndicDataCache.clear();
+    }
 
     private _oldHealthPercent = 100;
 
-    updateUI(data: PlayerData): void {
+    async updateUI(data: PlayerData): Promise<void> {
+        if(this.game.loadingProm)await this.game.loadingProm
         const {
             minMax,
             health,
             adrenaline,
+            capacity,
             zoom,
             id,
             teammates,
+            groupPlayers,
+            otherIndicators,
             inventory,
             lockedSlots,
             items,
@@ -509,15 +536,18 @@ export class UIManager {
             this.game.spectating = spectating;
 
             if (spectating) {
-                const badge = this.getPlayerBadge(id.id);
+                const playerName = this.getPlayerData(id.id).name;
+                const badge = this.getPlayerData(id.id).badge;
                 const badgeText = badge ? html`<img class="badge-icon" src="./img/game/shared/badges/${badge.idString}.svg" alt="${badge.name} badge">` : "";
 
                 this.ui.gameOverOverlay.fadeOut();
-                this.ui.spectatingMsgPlayer.html(this.getPlayerName(id.id) + badgeText);
+                this.ui.spectatingMsgPlayer.html(playerName + badgeText);
             }
             this.ui.spectatingContainer.toggle(spectating && this.ui.spectatingOptions.hasClass("fa-eye-slash"));
             this.ui.spectatingMsg.toggle(spectating);
             this.clearTeammateCache();
+            this.clearAnotherIndicCache()
+            this.clearGroupCache()
 
             if (this.game.inputManager.isMobile) {
                 this.ui.emoteButton.toggle(!spectating);
@@ -590,6 +620,7 @@ export class UIManager {
                 ...teammates
             ].forEach((player, index) => {
                 const { id } = player;
+                if(this._blockedGroupSignals[id])return
                 notVisited.delete(id);
 
                 const cacheEntry = _teammateDataCache.get(id);
@@ -633,6 +664,69 @@ export class UIManager {
                 _teammateDataCache.delete(outdated);
             }
         }
+        
+        if(otherIndicators){
+            const _anotherIndicDataCache = this._anotherIndicDataCache;
+            const notVisited = new Set(_anotherIndicDataCache.keys());
+
+            otherIndicators.forEach((indc, index) => {
+                const { id } = indc;
+                notVisited.delete(id);
+                const ele = new AnotherMapIndicator(
+                    this.game,
+                    {
+                        id,
+                        frame:indc.sprite?.frame,
+                        position:indc.position,
+                        from_player:indc.sprite?.from_player,
+                        scale:indc.sprite?.scale,
+                        tint:indc.sprite?.tint
+                    }
+                );
+                _anotherIndicDataCache.set(id, ele);
+            });
+
+            for (const outdated of notVisited) {
+                // the `notVisited` set is exclusively populated with keys from this map
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                _anotherIndicDataCache.get(outdated)!.destroy();
+                _anotherIndicDataCache.delete(outdated);
+            }
+        }
+        if (groupPlayers && this.game.groupMode) {
+            this.groupPlayers = groupPlayers;
+
+            const _groupDataCache = this._groupDataCache;
+            const notVisited = new Set(_groupDataCache.keys());
+
+            groupPlayers.forEach((player, index) => {
+                const { id } = player;
+                if(this.game.teamID==player.teamID){
+                    return
+                }
+                notVisited.delete(id);
+                const ele = new PlayerHealthUIGroup(
+                    this.game,
+                    {
+                        id,
+                        groupID:player.groupID,
+                        teamID:player.teamID,
+                        downed: player.downed,
+                        disconnected:player.disconnected,
+                        dead:player.dead,
+                        position: player.position,
+                    }
+                );
+                _groupDataCache.set(id, ele);
+            });
+
+            for (const outdated of notVisited) {
+                // the `notVisited` set is exclusively populated with keys from this map
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                _groupDataCache.get(outdated)!.destroy();
+                _groupDataCache.delete(outdated);
+            }
+        }
 
         if (zoom) this.game.camera.zoom = zoom;
 
@@ -645,6 +739,14 @@ export class UIManager {
             this.ui.adrenalineBarAmount
                 .text(safeRound(this.adrenaline))
                 .css("color", this.adrenaline < 7 ? "#ffffff" : "#000000");
+        }
+
+        if (capacity !== undefined) {;
+            const percent = Numeric.clamp(capacity,0,100);
+
+            this.ui.capacityBar.css("--value",`${percent}%`);
+
+            this.ui.capacityBarAmount.text(`${Numeric.clamp(Math.floor(percent),0,100)}%`)
         }
 
         if (inventory?.weapons) {
@@ -718,6 +820,10 @@ export class UIManager {
 
     skinID?: string;
 
+    has_infinity_ammo(ammo_type:string){
+        return this.perks.hasPerk(PerkIds.InfiniteAmmo)||this.perks.has_infinitys[ammo_type]
+    }
+
     updateWeapons(): void {
         const inventory = this.inventory;
         const activeIndex = inventory.activeWeaponIndex;
@@ -736,7 +842,7 @@ export class UIManager {
             let showReserve = false;
             if (activeWeapon.definition.itemType === ItemType.Gun) {
                 const ammoType = activeWeapon.definition.ammoType;
-                let totalAmmo: number | string = this.perks.hasPerk(PerkIds.InfiniteAmmo)
+                let totalAmmo: number | string = this.has_infinity_ammo(ammoType)
                     ? "∞"
                     : this.inventory.items[ammoType];
 
@@ -854,11 +960,8 @@ export class UIManager {
                 const oldSrc = itemImage.attr("src");
 
                 let frame = definition.idString;
-                if (this.perks.hasPerk(PerkIds.PlumpkinBomb) && definition.itemType === ItemType.Throwable && !definition.noSkin) {
-                    frame += "_halloween";
-                }
 
-                const location = definition.itemType === ItemType.Melee && definition.reskins?.includes(MODE.idString) ? MODE.idString : "shared";
+                const location = "shared";
                 const newSrc = `./img/game/${location}/weapons/${frame}.svg`;
                 if (oldSrc !== newSrc) {
                     this._playSlotAnimation(container);
@@ -918,14 +1021,14 @@ export class UIManager {
     private readonly _perkSlots: Array<JQuery<HTMLDivElement> | undefined> = [];
     private readonly _animationTimeouts: Array<number | undefined> = [];
     updatePerkSlot(perkDef: PerkDefinition, index: number): void {
-        if (index > 3) index = 0; // overwrite stuff ig?
+        if (index > 4) index = 0; // overwrite stuff ig?
         // no, write a hud that can handle it
 
         const container = this._perkSlots[index] ??= $<HTMLDivElement>(`#perk-slot-${index}`);
         container.attr("data-idString", perkDef.idString);
         container.children(".item-tooltip").html(`<strong>${perkDef.name}</strong><br>${perkDef.description}`);
-        container.children(".item-image").attr("src", `./img/game/${perkDef.category === PerkCategories.Halloween ? "halloween" : "fall"}/perks/${perkDef.idString}.svg`);
-        container.css("visibility", this.perks.hasPerk(perkDef.idString) ? "visible" : "hidden");
+        container.children(".item-image").attr("src", `./img/game/shared/perks/${perkDef.idString}.svg`);
+        container.css("visibility", this.perks.hasPerk2(perkDef.idString) ? "visible" : "hidden");
 
         container.css("outline", !perkDef.noDrop ? "" : "none");
 
@@ -943,7 +1046,7 @@ export class UIManager {
     }
 
     resetPerkSlots(): void {
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 4; i++) {
             this.resetPerkSlot(i);
         }
     }
@@ -962,10 +1065,10 @@ export class UIManager {
 
             countElem.text(count);
 
-            if (this.game.activePlayer) {
+            /*if (this.game.activePlayer) {
                 const backpack = this.game.activePlayer.equipment.backpack;
                 itemSlot.toggleClass("full", count >= backpack.maxCapacity[item]);
-            }
+            }*/
             const isPresent = count > 0;
 
             itemSlot.toggleClass("has-item", isPresent);
@@ -1204,10 +1307,10 @@ export class UIManager {
 
         const getNameAndBadge = (id?: number): { readonly name: string, readonly badgeText: string } => {
             const hasId = id !== undefined;
-            const badge = hasId ? this.getPlayerBadge(id) : undefined;
+            const badge = hasId ? this.getPlayerData(id).badge : undefined;
 
             return {
-                name: hasId ? this.getPlayerName(id) : "",
+                name: hasId ? this.getPlayerData(id).name : "",
                 badgeText: badge
                     ? html`<img class="badge-icon" src="./img/game/shared/badges/${badge.idString}.svg" alt="${badge.name} badge">`
                     : ""
@@ -1510,6 +1613,24 @@ export class UIManager {
                 }
                 break;
             }
+            case KillfeedMessageType.Promotion:{
+                const pn=this.game.playerNames.get(message.playerId)
+                if(pn){
+                    //@ts-ignore
+                    pn.nameColor=new Color(message.role.color)
+                    //@ts-ignore
+                    pn.hasColor=true
+                    if(message.role.hasBadge){
+                        //@ts-ignore
+                        pn.badge=Badges.fromStringSafe(message.role.badge!)
+                    }
+
+                    const cpname=getNameAndBadge(message.playerId)
+                    messageText = html`${getTranslatedString("kf_role_promotion", { player: cpname.badgeText+pn.name,role:(getTranslatedString(("gamerole_"+message.role.name) as TranslationKeys)+cpname.badgeText)})}`
+                }
+                if(message.role.sound!=="")this.game.soundManager.play(message.role.sound)
+                break
+            }
 
             case KillfeedMessageType.KillLeaderAssigned: {
                 const {
@@ -1659,6 +1780,23 @@ interface UpdateDataType {
     readonly nameColor?: Color | null
     readonly badge?: BadgeDefinition | null
 }
+interface UpdateGroupDataType {
+    readonly id?: number | null
+    readonly teamID?:number|null
+    readonly groupID?:number|undefined
+    readonly downed?: boolean | null
+    readonly dead?: boolean | null
+    readonly disconnected?: boolean | null
+    readonly position?: Vector | null
+}
+interface UpdateOIdicDataType {
+    readonly id?: number | null
+    readonly position?: Vector | null
+    readonly frame?:string
+    readonly scale?:number
+    readonly tint?:number
+    readonly from_player?:boolean
+}
 
 class PlayerHealthUI {
     readonly game: Game;
@@ -1746,7 +1884,7 @@ class PlayerHealthUI {
         this.update(data);
     }
 
-    update(data?: UpdateDataType): void {
+    async update(data?: UpdateDataType): Promise<void>{
         const id = this._id.value;
         const hadNoHealth = this._normalizedHealth.value <= 0;
 
@@ -1806,11 +1944,14 @@ class PlayerHealthUI {
 
         let indicator: SuroiSprite | undefined;
 
+        if(this.game.loadingProm){
+            recalcIndicatorFrame=true
+            await this.game.loadingProm
+        }
         if (id === this.game.activePlayerID) {
             indicator = this.game.map.indicator;
         } else {
             const { teammateIndicators } = this.game.map;
-
             if (this._position.dirty && this._position.value) {
                 if ((indicator = teammateIndicators.get(id)) === undefined) {
                     const color = TEAMMATE_COLORS[this.game.uiManager.getTeammateColorIndex(id) ?? this._colorIndex.value];
@@ -1905,5 +2046,277 @@ class PlayerHealthUI {
         const teammateIndicators = this.game.map.teammateIndicators;
         teammateIndicators.get(id)?.destroy();
         teammateIndicators.delete(id);
+    }
+}
+class AnotherMapIndicator {
+    readonly game: Game;
+
+    /*
+      hierarchy:
+
+      container
+      |
+      |-> svgContainer
+      |   |-> healthAmount
+      |
+      |-> indicatorContainer
+      |   |-> teammateIndicator
+      |
+      |-> nameLabel
+      |-> badgeImage
+  */
+
+    private readonly _id = new Wrapper<number>(-1);
+    get id(): number { return this._id.value; }
+
+    private readonly _scale = new Wrapper<number>(1);
+    get scale(): number { return this._scale.value; }
+
+    private readonly _tint = new Wrapper<number>(0xffffff);
+    get tint(): number { return this._tint.value; }
+
+    private readonly _from_player = new Wrapper<boolean>(false);
+    get from_player(): boolean { return this._from_player.value; }
+
+    private readonly _frame = new Wrapper<string>("");
+    get frame(): string { return this._frame.value; }
+
+    private readonly _position = new Wrapper<Vector | undefined>(undefined);
+    get position(): Vector | undefined { return this._position.value; }
+
+    constructor(game: Game, data?: UpdateOIdicDataType) {
+        this.game = game;
+
+        if (typeof data?.id === "number") {
+            this._id.value = data.id;
+            this._id.markClean();
+        }
+
+        this.update(data);
+    }
+
+    update(data?: UpdateOIdicDataType): void {
+        const id = this._id.value;
+
+        if (data !== undefined) {
+            ([
+                "id",
+                "scale",
+                "frame",
+                "tint",
+                "from_player",
+                "position",
+            ] as const).forEach(<K extends keyof UpdateOIdicDataType>(prop: K) => {
+                const value = data[prop];
+                if (prop in data && value !== null) {
+                    type GoofyValueType = Exclude<Required<typeof data>[typeof prop], null>;
+
+                    (this[`_${prop}`] as Wrapper<GoofyValueType>).value = value as GoofyValueType;
+                }
+            });
+        }
+
+        if (this._id.dirty) {
+            // uh… no-op?
+            console.warn(`PlayerHealthUI id unexpectedly marked dirty (was ${id}, currently ${this._id.value}); ignoring change request.`);
+        }
+
+        
+
+        let indicator: SuroiSprite | undefined;
+
+        if(this.from_player){
+            this.game.uiManager._blockedGroupSignals[this._id.value]=true
+            if(this.game.uiManager._groupDataCache.has(this.id)){
+                const vv=this.game.uiManager._groupDataCache.get(this.id)
+                vv?.destroy()
+                this.game.uiManager._groupDataCache.delete(this.id)
+            }
+        }
+
+        if (id === this.game.activePlayerID&&this.from_player) {
+            indicator = this.game.map.indicator;
+        } else {
+            const { anotherIndicators } = this.game.map;
+
+            if (this._position.dirty && this._position.value) {
+                if ((indicator = anotherIndicators.get(id)) === undefined) {
+
+                    anotherIndicators.set(
+                        id,
+                        indicator = new SuroiSprite(this.frame)
+                            .setTint(this.tint)
+                    );
+                    this.game.map.anotherIndicatorContainer.addChild(indicator);
+                }
+
+                indicator
+                    .setVPos(this._position.value)
+                    .setScale(this.game.map.expanded ? 0.60 : 0.4);
+            }
+
+            indicator ??= anotherIndicators.get(id);
+        }
+
+        ([
+            "id",
+            "scale",
+            "frame",
+            "tint",
+            "from_player",
+            "position",
+        ] as const).forEach(<K extends keyof UpdateOIdicDataType>(prop: K) => {
+            (this[`_${prop}`] as Wrapper<unknown>).markClean();
+        });
+    }
+
+    destroy(): void {
+        const id = this._id.value;
+        const teammateIndicators = this.game.map.groupIndicators;
+        teammateIndicators.get(id)?.destroy();
+        teammateIndicators.delete(id);
+    }
+}
+class PlayerHealthUIGroup {
+    readonly game: Game;
+
+    /*
+      hierarchy:
+
+      container
+      |
+      |-> svgContainer
+      |   |-> healthAmount
+      |
+      |-> indicatorContainer
+      |   |-> teammateIndicator
+      |
+      |-> nameLabel
+      |-> badgeImage
+  */
+
+    private readonly _id = new Wrapper<number>(-1);
+    get id(): number { return this._id.value; }
+
+    private readonly _groupID = new Wrapper<number>(-1);
+    get groupID(): number { return this._groupID.value; }
+
+    private readonly _teamID = new Wrapper<number>(-1);
+    get teamID(): number { return this._teamID.value; }
+
+    private readonly _downed = new Wrapper<boolean | undefined>(undefined);
+    get downed(): boolean | undefined { return this._downed.value; }
+
+    private readonly _dead = new Wrapper<boolean | undefined>(undefined);
+    get dead(): boolean | undefined { return this._dead.value; }
+
+    private readonly _disconnected = new Wrapper<boolean>(false);
+    get disconnected(): boolean { return this._disconnected.value; }
+
+    private readonly _position = new Wrapper<Vector | undefined>(undefined);
+    get position(): Vector | undefined { return this._position.value; }
+
+    constructor(game: Game, data?: UpdateGroupDataType) {
+        this.game = game;
+
+        if (typeof data?.id === "number") {
+            this._id.value = data.id;
+            this._id.markClean();
+        }
+
+        this.update(data);
+    }
+
+    async update(data?: UpdateGroupDataType): Promise<void> {
+        const id = this._id.value;
+
+        if (data !== undefined) {
+            ([
+                "id",
+                "downed",
+                "disconnected",
+                "dead",
+                "position",
+                "teamID",
+                "groupID",
+            ] as const).forEach(<K extends keyof UpdateGroupDataType>(prop: K) => {
+                const value = data[prop];
+                if (prop in data && value !== null) {
+                    type GoofyValueType = Exclude<Required<typeof data>[typeof prop], null>;
+
+                    (this[`_${prop}`] as Wrapper<GoofyValueType>).value = value as GoofyValueType;
+                }
+            });
+        }
+
+        if (this._id.dirty) {
+            // uh… no-op?
+            console.warn(`PlayerHealthUI id unexpectedly marked dirty (was ${id}, currently ${this._id.value}); ignoring change request.`);
+        }
+
+        let recalcIndicatorFrame = false;
+
+        if (this._downed.dirty) {
+            recalcIndicatorFrame = true;
+        }
+
+        if (this._disconnected.dirty) {
+
+            const teammateIndicator = this.game.map.groupIndicators.get(id);
+            teammateIndicator?.setAlpha(this._disconnected.value ? 0.5 : 1);
+            recalcIndicatorFrame = true;
+        }
+
+        let indicator: SuroiSprite | undefined;
+
+        if (id === this.game.activePlayerID) {
+            indicator = this.game.map.indicator;
+        } else {
+            const { groupIndicators } = this.game.map;
+
+            if (this._position.dirty && this._position.value) {
+                if ((indicator = groupIndicators.get(id)) === undefined) {
+                    const color = GROUPS_COLORS[this.groupID??0];
+
+
+                    groupIndicators.set(
+                        id,
+                        indicator = new SuroiSprite("player_indicator")
+                            .setTint(color)
+                    );
+                    this.game.map.groupIndicatorContainer.addChild(indicator);
+                }
+
+                indicator
+                    .setVPos(this._position.value)
+                    .setScale(this.game.map.expanded ? 0.60 : 0.4);
+            }
+
+            indicator ??= groupIndicators.get(id);
+        }
+
+        if (recalcIndicatorFrame) {
+            const frame = `player_indicator${this._dead.value ? "_dead" : this._downed.value ? "_downed" : ""}`;
+            indicator?.setFrame(frame);
+        }
+
+        ([
+            "id",
+            "groupID",
+            "teamID",
+            "dead",
+            "downed",
+            "disconnected",
+            "position",
+        ] as const).forEach(<K extends keyof UpdateGroupDataType>(prop: K) => {
+            (this[`_${prop}`] as Wrapper<unknown>).markClean();
+        });
+    }
+
+    destroy(): void {
+        const id = this._id.value;
+        const indicators = this.game.map.anotherIndicators;
+        indicators.get(id)?.destroy();
+        indicators.delete(id);
     }
 }

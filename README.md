@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="client/public/img/backgrounds/github_background.png" alt="Suroi">
+  <img src="client/public/img/backgrounds/thumb.png" alt="Suroi">
   <hr>
 </div>
 
@@ -16,25 +16,20 @@
 </div>
 
 ## About
-Suroi is an open-source 2D battle royale game inspired by [surviv.io](https://survivio.fandom.com/wiki/Surviv.io_Wiki). It is currently a work in progress.
+Suroimd is an open-source 2D battle royale game inspired by [surviv.io](https://survivio.fandom.com/wiki/Surviv.io_Wiki) and [suroi.io](https://suroi.io). It is currently a work in progress.
 
 ## Play the game!
-[suroi.io](https://suroi.io)
-
-## Donate!
-Any amount helps! All donation money goes towards keeping the servers running.
-
-[ko-fi.com/suroi](https://ko-fi.com/suroi)
+[suroimd.io](https://suroimd.io)
 
 ## Join the Discord!
-[discord.suroi.io](https://discord.suroi.io)
+[discord.suroimd.io](https://suroimd.io/discord)
 
 ## Installation and setup
 Start by installing [Node.js](https://nodejs.org) and [pnpm](https://pnpm.io).
 
 Next, [click here to download the repo](https://github.com/HasangerGames/suroi/archive/refs/heads/master.zip), or use the following command to clone it:
 ```sh
-git clone https://github.com/HasangerGames/suroi.git
+git clone https://github.com/kaklikOf13/suroimd.git
 ```
 
 To install dependencies, open a terminal in the project root, and run this command:
@@ -67,3 +62,7 @@ Production builds are served using [NGINX](https://nginx.org). A sample configur
 
 ## Self-hosting
 Visit [the wiki](https://github.com/HasangerGames/suroi/wiki/Self%E2%80%90hosting) for details on how to self-host.
+
+## Better Tutorial
+If You Want Help Or A Better Tutorial Go To Us Discord Server:
+[discord.suroimd.io](https://suroimd.io/discord)

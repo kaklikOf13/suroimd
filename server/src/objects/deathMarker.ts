@@ -6,7 +6,7 @@ import { type Player } from "./player";
 
 export class DeathMarker extends BaseGameObject.derive(ObjectCategory.DeathMarker) {
     override readonly fullAllocBytes = 1;
-    override readonly partialAllocBytes = 12;
+    override readonly partialAllocBytes = 16;
     override readonly hitbox: RectangleHitbox;
 
     readonly player: Player;

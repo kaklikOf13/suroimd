@@ -7,7 +7,7 @@ import { type Airdrop, type Game } from "../game";
 import { BaseGameObject } from "./gameObject";
 
 export class Parachute extends BaseGameObject.derive(ObjectCategory.Parachute) {
-    override readonly fullAllocBytes = 8;
+    override readonly fullAllocBytes = 12;
     override readonly partialAllocBytes = 4;
 
     private _height = 1;
@@ -39,11 +39,11 @@ export class Parachute extends BaseGameObject.derive(ObjectCategory.Parachute) {
             // Spawn smoke
             this.game.addSyncedParticles({
                 type: "airdrop_smoke_particle",
-                count: 5,
+                count: this.game.gamemode.airdrop.particlesCount,
                 deployAnimation: {
                     duration: 2000,
                     staggering: {
-                        delay: 100,
+                        delay: this.game.gamemode.airdrop.particlesDelay,
                         initialAmount: 2
                     }
                 },
@@ -64,7 +64,8 @@ export class Parachute extends BaseGameObject.derive(ObjectCategory.Parachute) {
                         case object.isObstacle: {
                             object.damage({
                                 amount: Infinity,
-                                source: crate
+                                source: crate,
+                                resistanceDamage:Infinity
                             });
                             break;
                         }

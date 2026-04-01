@@ -5,12 +5,12 @@ import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer } from "@common/utils/layer";
 import { Angle, Geometry } from "@common/utils/math";
 import { type ReifiableDef } from "@common/utils/objectDefinitions";
-import { randomRotation } from "@common/utils/random";
+import { randomFloat, randomRotation } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
-import { type GunItem } from "../inventory/gunItem";
-import { type MeleeItem } from "../inventory/meleeItem";
-import { type ThrowableItem } from "../inventory/throwableItem";
+import type { GunItem } from "../inventory/gunItem";
+import type { MeleeItem } from "../inventory/meleeItem";
+import { ThrowableItem } from "../inventory/throwableItem";
 import { Building } from "./building";
 import { Decal } from "./decal";
 import { type GameObject } from "./gameObject";
@@ -18,6 +18,8 @@ import { Loot } from "./loot";
 import { Obstacle } from "./obstacle";
 import { Player } from "./player";
 import { ThrowableProjectile } from "./throwableProj";
+import { Obstacles } from "@common/definitions/obstacles";
+import { Throwables } from "@common/definitions/throwables";
 
 export class Explosion {
     readonly definition: ExplosionDefinition;
@@ -29,7 +31,8 @@ export class Explosion {
         readonly source: GameObject,
         readonly layer: Layer,
         readonly weapon?: GunItem | MeleeItem | ThrowableItem,
-        readonly damageMod = 1
+        readonly damageMod = 1,
+        readonly owner?:ThrowableProjectile
     ) {
         this.definition = Explosions.reify(definition);
     }
@@ -89,11 +92,12 @@ export class Explosion {
                         object.damage({
                             amount: this.damageMod * this.definition.damage
                                 * (isObstacle ? this.definition.obstacleMultiplier : 1)
-                                * (isPlayer ? object.mapPerkOrDefault(PerkIds.LowProfile, ({ explosionMod }) => explosionMod, 1) : 1)
+                                * (isPlayer ? object.mapPerkOrDefault(PerkIds.DemoExpert, ({ explosionMod }) => explosionMod, 1) : 1)
                                 * ((dist > min) ? (max - dist) / (max - min) : 1),
 
                             source: this.source,
-                            weaponUsed: this
+                            weaponUsed: this,
+                            resistanceDamage:this.definition.resistanceDamage
                         });
 
                         // Destroy pallets
@@ -111,6 +115,11 @@ export class Explosion {
                             Angle.betweenPoints(object.position, this.position),
                             (max - dist) * multiplier
                         );
+
+                        if(isThrowableProjectile&&object.definition.speedCap>0){
+                            (object as ThrowableProjectile).z+=(max - dist) * 0.05;
+                            (object as ThrowableProjectile)._angularVelocity=0.008;
+                        }
                     }
                 }
 
@@ -145,17 +154,38 @@ export class Explosion {
         }
 
         if (this.definition.decal) {
-            this.game.grid.addObject(
-                new Decal(
+            const d=new Decal(
                     this.game,
                     this.definition.decal,
                     this.position,
                     randomRotation(),
                     this.layer
                 )
-            );
+            this.game.grid.addObject(d);
+            this.game.newDecals.push(d)
 
             this.game.updateObjects = true;
+        }
+
+        if(this.definition.subthrowable){
+            const def=Throwables.fromString(this.definition.subthrowable.proj)
+            for(let i=0;i<this.definition.subthrowable.count;i++){
+                const proj=this.game.addProjectile(def,this.position,this.layer,new ThrowableItem(def,this.source as Player,{
+                    damage:0,
+                    kills:0,
+                }))
+                proj.detonate(def.fuseTime)
+                if(this.owner&&this.owner.velocity){
+                    proj.velocity=this.owner.velocity
+                }
+                proj.push(randomRotation(),(typeof this.definition.subthrowable.speed=="number")?this.definition.subthrowable.speed:randomFloat(this.definition.subthrowable.speed.x,this.definition.subthrowable.speed.y)/2)
+            }
+        }
+        if(this.definition.callAirstrike){
+            this.game.addAirstrike(this.position,this.source instanceof Player?this.source:undefined)
+        }
+        if(this.definition.obstacle){
+            this.game.map.generateObstacle(Obstacles.fromString(this.definition.obstacle.def),this.position,{activated:true,layer:this.layer})
         }
     }
 }

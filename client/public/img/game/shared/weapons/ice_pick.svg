@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   width="137"
+   width="146.711"
    height="137"
-   viewBox="0 0 137 137"
+   viewBox="0 0 146.711 137"
    fill="none"
    version="1.1"
    id="svg13"
    sodipodi:docname="ice_pick.svg"
-   inkscape:version="1.3 (0e150ed, 2023-07-21)"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -21,14 +21,14 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="1.7226277"
-     inkscape:cx="60.082627"
-     inkscape:cy="90.559322"
-     inkscape:window-width="1312"
-     inkscape:window-height="449"
-     inkscape:window-x="0"
-     inkscape:window-y="25"
-     inkscape:window-maximized="0"
+     inkscape:zoom="2.4361635"
+     inkscape:cx="57.87789"
+     inkscape:cy="33.04376"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
      inkscape:current-layer="svg13" />
   <defs
      id="defs13">
@@ -37,14 +37,16 @@
       <rect
          width="136"
          height="136"
-         fill="white"
-         transform="translate(0.5 0.5)"
-         id="rect13" />
+         fill="#ffffff"
+         transform="translate(0.5,0.5)"
+         id="rect13"
+         x="0"
+         y="0" />
     </clipPath>
   </defs>
   <g
      id="g13"
-     transform="translate(-2.9335334,0.16637304)">
+     transform="rotate(45,70.846266,95.432782)">
     <path
        d="m 20.679969,121.53044 -3.523086,-5.18057 c -0.248351,0.17718 -0.49708,0.3555 -1.296845,1.11854 -0.799729,0.76306 -2.365338,2.31658 -3.560908,4.08577 -1.19557,1.76828 -2.235395,3.95694 -2.8941272,5.45837 -0.6587679,1.50144 -0.9362021,2.31477 -1.2135669,3.12898 1.7466389,-0.2176 3.4931051,-0.43498 4.6905741,-0.59945 1.197401,-0.16441 1.845633,-0.27597 2.602982,-0.49716 0.757416,-0.22105 2.587057,-0.75025 3.882589,-1.38262 1.293805,-0.63147 4.191076,-3.09154 5.283818,-3.92859 -1.584814,-0.39571 -2.997682,-0.99337 -3.97143,-2.20327 z"
        fill="#3a3e41"

@@ -9,9 +9,10 @@ import { BaseGameObject } from "./gameObject";
 
 export class Decal extends BaseGameObject.derive(ObjectCategory.Decal) {
     override readonly fullAllocBytes = 1;
-    override readonly partialAllocBytes = 12;
+    override readonly partialAllocBytes = 17;
 
     declare hitbox?: undefined;
+    isNew:boolean=true
 
     readonly definition: DecalDefinition;
 

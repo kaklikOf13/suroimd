@@ -21,6 +21,16 @@ export type ThrowableDefinition = InventoryItemDefinition & {
     /**
      * Whether cooking the grenade will run down the fuse
      */
+
+    readonly zDecay:number
+    readonly zScaleA:number
+    readonly zBaseScale:number
+
+    readonly initialAngularSpeed:number
+    readonly canInvertASpeed:boolean
+
+    readonly size:number
+
     readonly cookable: boolean
     readonly c4: boolean
     readonly health?: number
@@ -30,6 +40,7 @@ export type ThrowableDefinition = InventoryItemDefinition & {
     readonly image: {
         readonly position: Vector
         readonly angle?: number
+        readonly center?:Vector
         // no relation to the ZIndexes enum
         readonly zIndex: number
     }
@@ -37,9 +48,14 @@ export type ThrowableDefinition = InventoryItemDefinition & {
     readonly hitboxRadius: number
     readonly fireDelay: number
     readonly detonation: {
+        readonly cexplodeOnBuilding?:boolean
         readonly explosion?: ReferenceTo<ExplosionDefinition>
         readonly particles?: SyncedParticleSpawnerDefinition
         readonly spookyParticles?: SyncedParticleSpawnerDefinition
+        readonly explode_on?:{
+            readonly touch_ground:boolean
+            readonly collide:boolean
+        }
     }
     readonly animation: {
         readonly pinImage?: string
@@ -70,7 +86,8 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
     "Throwables",
     {
         itemType: ItemType.Throwable,
-        speedMultiplier: 0.92,
+        speedMultiplier: 1,
+        size:0.65,
         cookable: false,
         fuseTime: 4000,
         cookTime: 150,
@@ -80,12 +97,17 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
         cookSpeedMultiplier: 0.7,
         hitboxRadius: 1,
         impactDamage: 0,
+        zDecay:0.001,
+        zScaleA:.6,
+        zBaseScale:.6,
         obstacleMultiplier: 20,
         image: {
             zIndex: 5
         },
-        maxThrowDistance: 128,
+        maxThrowDistance: 150,
         fireDelay: 250,
+        canInvertASpeed:false,
+        initialAngularSpeed:0.008,
         speedCap: Infinity
     },
     () => [
@@ -101,7 +123,8 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
                 angle: 60
             },
             detonation: {
-                explosion: "frag_grenade_explosion"
+                explosion: "frag_grenade_explosion",
+                subthrowable:undefined
             },
             animation: {
                 pinImage: "proj_frag_pin",
@@ -119,10 +142,228 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
             }
         },
         {
+            idString: "m79_projectile",
+            name: "m79_projectile",
+            fuseTime: 3000,
+            impactDamage: 1,
+            obstacleMultiplier: 20,
+            cookable: true,
+            image: {
+                position: Vec.create(60, 43),
+                angle: 60
+            },
+            detonation: {
+                explosion: "frag_grenade_explosion",
+                subthrowable:undefined,
+                explode_on:{
+                    touch_ground:true,
+                    collide:true
+                }
+            },
+            animation: {
+                pinImage: "proj_frag_pin",
+                liveImage: "proj_frag",
+                leverImage: "proj_frag_lever",
+                cook: {
+                    cookingImage: "proj_frag_nopin",
+                    leftFist: Vec.create(2.5, 0),
+                    rightFist: Vec.create(-0.5, 2.15)
+                },
+                throw: {
+                    leftFist: Vec.create(1.9, -1.75),
+                    rightFist: Vec.create(4, 2.15)
+                }
+            }
+        },
+        {
+            idString: "mirv_grenade",
+            name: "Mirv Grenade",
+            fuseTime: 4000,
+            size:0.9,
+            impactDamage: 3,
+            obstacleMultiplier: 20,
+            cookable: true,
+            image: {
+                position: Vec.create(60, 43),
+                angle: 60
+            },
+            detonation: {
+                explosion: "mirv_grenade_explosion",
+            },
+            animation: {
+                pinImage: "proj_frag_pin",
+                liveImage: "proj_mirv",
+                leverImage: "proj_frag_lever",
+                cook: {
+                    leftFist: Vec.create(2.5, 0),
+                    rightFist: Vec.create(-0.5, 2.15)
+                },
+                throw: {
+                    leftFist: Vec.create(1.9, -1.75),
+                    rightFist: Vec.create(4, 2.15)
+                }
+            }
+        },
+        {
+            idString: "mirv_subgrenade",
+            name: "Mirv Sub Grenade",
+            canInvertASpeed:true,
+            fuseTime: 2000,
+            impactDamage: 1,
+            obstacleMultiplier: 20,
+            cookable: true,
+            image: {
+                position: Vec.create(60, 43),
+                angle: 60
+            },
+            detonation: {
+                explosion: "submirv_grenade_explosion",
+            },
+            animation: {
+                pinImage: "proj_frag_pin",
+                liveImage: "proj_submirv",
+                leverImage: "proj_frag_lever",
+                cook: {
+                    leftFist: Vec.create(2.5, 0),
+                    rightFist: Vec.create(-0.5, 2.15)
+                },
+                throw: {
+                    leftFist: Vec.create(1.9, -1.75),
+                    rightFist: Vec.create(4, 2.15)
+                }
+            }
+        },
+        {
+            idString: "airstrike_bomb",
+            name: "Airstrike Bomb",
+            fuseTime: 1100,
+            impactDamage: 1,
+            canInvertASpeed:true,
+            initialAngularSpeed:0.004,
+            obstacleMultiplier: 20,
+            speedMultiplier:1,
+            speedCap:0,
+            cookable: true,
+            image: {
+                position: Vec.create(60, 43),
+                angle: 60
+            },
+            detonation: {
+                cexplodeOnBuilding:true,
+                explosion: "airstrike_bomb_explosion",
+            },
+            animation: {
+                pinImage: "proj_frag_pin",
+                liveImage: "proj_airstrike_bomb",
+                leverImage: "proj_frag_lever",
+                cook: {
+                    leftFist: Vec.create(2.5, 0),
+                    rightFist: Vec.create(-0.5, 2.15)
+                },
+                throw: {
+                    leftFist: Vec.create(1.9, -1.75),
+                    rightFist: Vec.create(4, 2.15)
+                }
+            },
+            zDecay:0.001,
+            zScaleA:1
+        },
+        {
+            idString: "airstrike",
+            name: "Airstrike",
+            fuseTime: 3000,
+            impactDamage: 1,
+            obstacleMultiplier: 20,
+            cookable: true,
+            image: {
+                position: Vec.create(60, 43),
+                angle: 60
+            },
+            detonation: {
+                explosion: "airstrike_explosion",
+            },
+            animation: {
+                liveImage: "proj_airstrike",
+                cook: {
+                    leftFist: Vec.create(2.5, 0),
+                    rightFist: Vec.create(-0.5, 2.15)
+                },
+                throw: {
+                    leftFist: Vec.create(1.9, -1.75),
+                    rightFist: Vec.create(4, 2.15)
+                }
+            },
+            size:0.8,
+        },
+        {
+            idString: "tactical_nuke",
+            name: "Tactical Nuke",
+            fuseTime: 2000,
+            impactDamage: 1,
+            initialAngularSpeed:0.002,
+            canInvertASpeed:true,
+            obstacleMultiplier: 20,
+            cookable: true,
+            image: {
+                position: Vec.create(60, 43),
+                angle: 60
+            },
+            detonation: {
+                explosion: "tactical_nuke_explosion",
+            },
+            animation: {
+                liveImage: "proj_tactical_nuke",
+                cook: {
+                    leftFist: Vec.create(2.5, 0),
+                    rightFist: Vec.create(-0.5, 2.15)
+                },
+                throw: {
+                    leftFist: Vec.create(1.9, -1.75),
+                    rightFist: Vec.create(4, 2.15)
+                }
+            },
+            zDecay:0.0005,
+            zScaleA:1,
+            speedMultiplier:1,
+            speedCap:0,
+            size:2,
+        },
+        {
+            idString: "ice_grenade",
+            name: "Ice Grenade",
+            fuseTime: 2000,
+            size:0.7,
+            impactDamage: 1,
+            obstacleMultiplier: 20,
+            cookable: true,
+            image: {
+                position: Vec.create(60, 43),
+                angle: 60
+            },
+            detonation: {
+                explosion: "ice_grenade_explosion",
+                subthrowable:undefined
+            },
+            animation: {
+                pinImage: "proj_frag_pin",
+                liveImage: "proj_ice",
+                leverImage: "proj_frag_lever",
+                cook: {
+                    leftFist: Vec.create(2.5, 0),
+                    rightFist: Vec.create(-0.5, 2.15)
+                },
+                throw: {
+                    leftFist: Vec.create(1.9, -1.75),
+                    rightFist: Vec.create(4, 2.15)
+                }
+            }
+        },
+        {
             idString: "smoke_grenade",
             name: "Smoke Grenade",
             fuseTime: 2000,
             cookTime: 150,
+            size:0.4,
             throwTime: 150,
             impactDamage: 1,
             obstacleMultiplier: 20,
@@ -208,7 +449,10 @@ export const Throwables = ObjectDefinitions.withDefault<ThrowableDefinition>()(
             idString: "c4",
             name: "C4",
             c4: true,
+            zScaleA:.7,
+            zBaseScale:.6,
             health: 40,
+            zDecay:0.002,
             image: {
                 position: Vec.create(60, 43),
                 angle: 60

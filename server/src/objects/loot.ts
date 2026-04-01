@@ -2,7 +2,7 @@ import { GameConstants, InventoryMessages, ObjectCategory, PlayerActions } from 
 import { ArmorType } from "@common/definitions/armors";
 import { type GunDefinition } from "@common/definitions/guns";
 import { Loots, type LootDefinition } from "@common/definitions/loots";
-import { PerkCategories } from "@common/definitions/perks";
+import { PerkCategories, Perks } from "@common/definitions/perks";
 import { PickupPacket } from "@common/packets/pickupPacket";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer } from "@common/utils/layer";
@@ -10,7 +10,7 @@ import { Collision, Geometry, Numeric } from "@common/utils/math";
 import { ItemType, LootRadius, type ReifiableDef } from "@common/utils/objectDefinitions";
 import { type FullData } from "@common/utils/objectsSerializations";
 import { randomRotation } from "@common/utils/random";
-import { FloorNames } from "@common/utils/terrain";
+import { FloorNames, FloorTypes } from "@common/utils/terrain";
 import { Vec, type Vector } from "@common/utils/vector";
 import { type Game } from "../game";
 import { GunItem } from "../inventory/gunItem";
@@ -37,7 +37,7 @@ export type ItemData<Def extends LootDefinition = LootDefinition> = DataMap[Def[
 
 export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameObject.derive(ObjectCategory.Loot) {
     override readonly fullAllocBytes = 4;
-    override readonly partialAllocBytes = 8;
+    override readonly partialAllocBytes = 12;
 
     declare readonly hitbox: CircleHitbox;
 
@@ -54,6 +54,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
     set position(pos: Vector) { this.hitbox.position = pos; }
 
     private _oldPosition = Vec.create(0, 0);
+    hasStair:boolean=false
 
     constructor(
         game: Game,
@@ -88,6 +89,53 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
     }
 
     update(): void {
+        const objects = this.game.grid.intersectsHitbox(this.hitbox);
+        if(this.velocity.x==0&&this.velocity.y==0&&objects.size===0){
+            return
+        }
+        this.hasStair=false
+        for(let step=0;step<2;step++){
+            for (const object of objects) {
+                if (
+                    (object.isObstacle || object.isBuilding)
+                    && object.collidable
+                    && !object.definition.noCollisionsWithLoot
+                    && object.hitbox?.collidesWith(this.hitbox)
+                ) {
+                    if (object.isObstacle && object.definition.isStair) {
+                        object.handleStairInteraction(this);
+                        this.hasStair=true
+                    } else if (adjacentOrEqualLayer(object.layer, this.layer)) {
+                        this.hitbox.resolveCollision(object.hitbox);
+                    }
+                }
+
+                if (
+                    object.isLoot
+                    && object !== this
+                    && object.hitbox.collidesWith(this.hitbox)
+                ) {
+                    const collision = Collision.circleCircleIntersection(this.position, this.hitbox.radius, object.position, object.hitbox.radius);
+                    if (collision) {
+                        this.velocity = Vec.sub(this.velocity, Vec.scale(collision.dir, 0.00075));
+                    }
+
+                    const dist = Numeric.max(Geometry.distance(object.position, this.position), 1);
+                    const vecCollision = Vec.create(object.position.x - this.position.x, object.position.y - this.position.y);
+                    const vecCollisionNorm = Vec.create(vecCollision.x / dist, vecCollision.y / dist);
+                    const vRelativeVelocity = Vec.create(this.velocity.x - object.velocity.x, this.velocity.y - object.velocity.y);
+
+                    const speed = (vRelativeVelocity.x * vecCollisionNorm.x + vRelativeVelocity.y * vecCollisionNorm.y) * 0.55;
+
+                    if (speed < 0) continue;
+
+                    this.velocity.x -= speed * vecCollisionNorm.x;
+                    this.velocity.y -= speed * vecCollisionNorm.y;
+                    object.velocity.x += speed * vecCollisionNorm.x;
+                    object.velocity.y += speed * vecCollisionNorm.y;
+                }
+            }
+        }
         const moving = Math.abs(this.velocity.x) > 0.001
             || Math.abs(this.velocity.y) > 0.001
             || !Vec.equals(this._oldPosition, this.position);
@@ -97,16 +145,15 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
         this._oldPosition = Vec.clone(this.position);
 
         const { terrain } = this.game.map;
-        if (terrain.getFloor(this.position, this.layer) === FloorNames.Water && terrain.groundRect.isPointInside(this.position)) {
-            for (const river of terrain.getRiversInPosition(this.position)) {
-                if (river.waterHitbox?.isPointInside(this.position)) {
-                    const tangent = river.getTangent(
-                        river.getClosestT(this.position)
-                    );
+        const floor=terrain.getFloor(this.position,this.layer)
+        for (const river of terrain.getRiversInPosition(this.position,this.layer)) {
+            if (river.waterHitbox?.isPointInside(this.position)) {
+                const tangent = river.getTangent(
+                    river.getClosestT(this.position)
+                );
 
-                    this.push(Math.atan2(tangent.y, tangent.x), -0.001);
-                    break;
-                }
+                this.push(Math.atan2(tangent.y, tangent.x), (-0.001)-(0.001*this.game.nature.rainDest));
+                break;
             }
         }
 
@@ -123,50 +170,14 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
         };
 
         this.position = Vec.add(this.position, calculateSafeDisplacement());
-        this.velocity = Vec.scale(this.velocity, 1 / (1 + this.game.dt * 0.003));
+        this.velocity = Vec.scale(this.velocity, 1 / (1 + this.game.dt * 0.0032));
 
         this.position = Vec.add(this.position, calculateSafeDisplacement());
         this.position.x = Numeric.clamp(this.position.x, this.hitbox.radius, this.game.map.width - this.hitbox.radius);
         this.position.y = Numeric.clamp(this.position.y, this.hitbox.radius, this.game.map.height - this.hitbox.radius);
 
-        const objects = this.game.grid.intersectsHitbox(this.hitbox);
-        for (const object of objects) {
-            if (
-                (object.isObstacle || object.isBuilding)
-                && object.collidable
-                && object.hitbox?.collidesWith(this.hitbox)
-            ) {
-                if (object.isObstacle && object.definition.isStair) {
-                    object.handleStairInteraction(this);
-                } else if (adjacentOrEqualLayer(object.layer, this.layer)) {
-                    this.hitbox.resolveCollision(object.hitbox);
-                }
-            }
-
-            if (
-                object.isLoot
-                && object !== this
-                && object.hitbox.collidesWith(this.hitbox)
-            ) {
-                const collision = Collision.circleCircleIntersection(this.position, this.hitbox.radius, object.position, object.hitbox.radius);
-                if (collision) {
-                    this.velocity = Vec.sub(this.velocity, Vec.scale(collision.dir, 0.0005));
-                }
-
-                const dist = Numeric.max(Geometry.distance(object.position, this.position), 1);
-                const vecCollision = Vec.create(object.position.x - this.position.x, object.position.y - this.position.y);
-                const vecCollisionNorm = Vec.create(vecCollision.x / dist, vecCollision.y / dist);
-                const vRelativeVelocity = Vec.create(this.velocity.x - object.velocity.x, this.velocity.y - object.velocity.y);
-
-                const speed = (vRelativeVelocity.x * vecCollisionNorm.x + vRelativeVelocity.y * vecCollisionNorm.y) * 0.5;
-
-                if (speed < 0) continue;
-
-                this.velocity.x -= speed * vecCollisionNorm.x;
-                this.velocity.y -= speed * vecCollisionNorm.y;
-                object.velocity.x += speed * vecCollisionNorm.x;
-                object.velocity.y += speed * vecCollisionNorm.y;
-            }
+        if(!this.hasStair&&FloorTypes[floor].instaKill){
+            this.game.removeLoot(this)
         }
 
         if (!Vec.equals(this._oldPosition, this.position)) {
@@ -202,19 +213,14 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                     || (!inventory.hasWeapon(1) && !inventory.isLocked(1))
                     || (inventory.activeWeaponIndex < 2 && definition !== inventory.activeWeapon.definition && !inventory.isLocked(inventory.activeWeaponIndex));
             }
+            case ItemType.Throwable:
             case ItemType.Healing:
-            case ItemType.Ammo:
-            case ItemType.Throwable: {
-                const idString = definition.idString;
-
-                if (definition.itemType === ItemType.Throwable && inventory.isLocked(3)) {
-                    return false;
-                } else if (inventory.items.getItem(idString) + 1 > (inventory.backpack.maxCapacity[idString] ?? 0)) {
-                    return InventoryMessages.NotEnoughSpace;
-                } else {
-                    return true;
-                }
+            case ItemType.Ammo:{
+                return inventory.getUCurCap()<inventory.backpack.capacity||this._count===Infinity
             }
+            /*case ItemType.Throwable: {
+                return inventory.backpack.maxCapacity[definition.idString]?inventory.items.getItem(definition.idString)<inventory.backpack.maxCapacity[definition.idString]:false
+            }*/
             case ItemType.Melee: {
                 return definition !== inventory.getWeapon(2)?.definition && !inventory.isLocked(2);
             }
@@ -381,9 +387,10 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
             case ItemType.Throwable: {
                 const currentCount = inventory.items.getItem(idString);
                 const maxCapacity = inventory.backpack.maxCapacity[idString] ?? 0;
-
                 const modifyItemCollections = (): void => {
-                    if (currentCount + 1 <= maxCapacity) {
+                    if(typeof definition.size !== "undefined"){
+                        countToRemove=this._count-inventory.giveItem(definition,this._count,false)
+                    }else{
                         if (currentCount + this._count <= maxCapacity) {
                             inventory.items.incrementItem(idString, this._count);
                             countToRemove = this._count;
@@ -417,14 +424,35 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 break;
             }
             case ItemType.Armor: {
+                let can=false
                 switch (definition.armorType) {
                     case ArmorType.Helmet:
-                        if (player.inventory.helmet) createNewItem({ type: player.inventory.helmet, count: 1 });
+                        if (player.inventory.helmet) {
+                            createNewItem({ type: player.inventory.helmet, count: 1 })
+                            for(const p of player.inventory.helmet.givePerks){
+                                player.perks.removePerk(Perks.fromString(p))
+                            }
+                        };
                         player.inventory.helmet = definition;
+                        can=true
                         break;
                     case ArmorType.Vest:
-                        if (player.inventory.vest) createNewItem({ type: player.inventory.vest, count: 1 });
+                        if (player.inventory.vest){
+                            createNewItem({ type: player.inventory.vest, count: 1 })
+                            for(const p of player.inventory.vest.givePerks){
+                                player.perks.removePerk(Perks.fromString(p))
+                            }
+                        }
                         player.inventory.vest = definition;
+                        can=true
+                }
+                if(can){
+                    for(const p of definition.givePerks){
+                        player.perks.addPerk(Perks.fromString(p),true)
+                    }
+                    if(definition.giveBoost){
+                        player.give_boost(definition.giveBoost.boost_type,definition.giveBoost.time)
+                    }
                 }
 
                 player.setDirty();
@@ -433,8 +461,8 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
             case ItemType.Backpack: {
                 if (player.inventory.backpack.level > 0) createNewItem({ type: player.inventory.backpack, count: 1 });
                 player.inventory.backpack = definition;
-
                 player.setDirty();
+                player.dirty.capacity=true
                 break;
             }
             case ItemType.Scope: {
@@ -447,7 +475,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 break;
             }
             case ItemType.Skin: {
-                if (player.loadout.skin === definition) {
+                if (player.loadout.skin === definition||!player.canChangeSkin) {
                     countToRemove = 0; // eipi's fix
                     break;
                 }
@@ -464,23 +492,21 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
                 const currentPerks = player.perks.asList();
                 // const perksLength = currentPerks.length;
 
-                const isHalloweenPerk = definition.category === PerkCategories.Halloween;
                 const isNormalPerk = definition.category === PerkCategories.Normal;
 
                 // Variable to track which perk to remove
                 let perkToRemove = null;
 
-                if (isHalloweenPerk) {
-                    perkToRemove = currentPerks.find(perk => perk.category === PerkCategories.Halloween);
-                } else if (isNormalPerk) {
+                if (isNormalPerk) {
                     perkToRemove = currentPerks.find(perk => perk.category === PerkCategories.Normal);
                 }
 
+                if(perkToRemove&&player.perks.fromRoles.includes(perkToRemove?.idString)){
+                    perkToRemove=null
+                }
                 // If a perk to remove has been identified, remove it
                 if (perkToRemove) {
-                    if (!perkToRemove.noDrop) {
-                        createNewItem({ type: perkToRemove, count: 1 });
-                    }
+                    createNewItem({ type: perkToRemove, count: 1 });
                     player.perks.removePerk(perkToRemove);
                 }
 
@@ -506,7 +532,7 @@ export class Loot<Def extends LootDefinition = LootDefinition> extends BaseGameO
             //     break;
             // }
         }
-        this._count -= countToRemove;
+        if(this._count!==Infinity)this._count -= countToRemove;
 
         player.dirty.items = true;
 

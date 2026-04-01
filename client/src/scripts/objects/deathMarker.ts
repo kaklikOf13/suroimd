@@ -1,5 +1,5 @@
 import { ObjectCategory, ZIndexes } from "@common/constants";
-import { type BadgeDefinition } from "@common/definitions/badges";
+import { type BadgeDefinition } from "@common/definitions/loadout/badges";
 import { getEffectiveZIndex } from "@common/utils/layer";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
 import { Vec, type Vector } from "@common/utils/vector";

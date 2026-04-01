@@ -12,12 +12,13 @@ import { Vec, type Vector } from "@common/utils/vector";
 import { Graphics } from "pixi.js";
 import { type Game } from "../game";
 import { type GameSound } from "../managers/soundManager";
-import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, HITBOX_DEBUG_MODE, PIXI_SCALE } from "../utils/constants";
+import { DIFF_LAYER_HITBOX_OPACITY, HITBOX_COLORS, PIXI_SCALE } from "../utils/constants";
 import { SuroiSprite, drawHitbox, toPixiCoords } from "../utils/pixi";
 import { type Tween } from "../utils/tween";
 import { GameObject } from "./gameObject";
 import { type Particle, type ParticleEmitter, type ParticleOptions } from "./particles";
 import { type Player } from "./player";
+import { ExtraLoadoutList } from "@common/definitions/loadout/extra_loadout";
 
 export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     override readonly damageable = true;
@@ -57,9 +58,14 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     hitbox!: Hitbox;
     orientation: Orientation = 0;
 
+    mountSpriteInitalized = false;
+    mountSprite: SuroiSprite | undefined;
+
     hitSound?: GameSound;
 
     notOnCoolDown = true;
+
+    interactorClass=0
 
     doorMask?: Graphics;
 
@@ -81,13 +87,29 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
         if (data.full) {
             const full = data.full;
-
             const definition = this.definition = full.definition;
             this.position = full.position;
             this.rotation = full.rotation.rotation;
             this.orientation = full.rotation.orientation;
             this.layer = full.layer;
             this.variation = full.variation;
+            if(full.interactorClass)this.interactorClass=full.interactorClass
+
+            if (definition.gunMount && !this.mountSpriteInitalized) {
+                this.mountSprite = new SuroiSprite()
+                    .setFrame(definition.gunMount.weapon)
+                    .setScale(1.15)
+                    .setPos(0, 10);
+
+                if (definition.gunMount.type === "melee") {
+                    this.mountSprite.scale.set(-0.95, -0.95);
+                    this.mountSprite
+                        .setPos(-12.5, 7);
+                }
+
+                this.container.addChild(this.mountSprite);
+                this.mountSpriteInitalized = true;
+            }
 
             if (this.definition.detector && full.detectedMetal && this.notOnCoolDown) {
                 this.game.soundManager.play("detection", {
@@ -143,7 +165,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
 
                     // :martletdeadass:
                     // FIXME idString check, hard coded behavior
-                    if (this.definition.idString === "airdrop_crate_locked") {
+                    if(definition.role===ObstacleSpecialRoles.Activatable && definition.replaceWith && definition.replaceWith.middleFrame&&definition.replaceWith.particles){
                         const options = (minSpeed: number, maxSpeed: number): Partial<ParticleOptions> => ({
                             zIndex: Numeric.max((this.definition.zIndex ?? ZIndexes.Players) + 1, 4),
                             lifetime: 1000,
@@ -162,15 +184,19 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                         });
 
                         this.game.particleManager.spawnParticle({
-                            frames: "airdrop_particle_1",
+                            frames: `${definition.replaceWith.particles}_1`,
                             position: this.position,
                             ...options(8, 18),
                             rotation: { start: 0, end: randomFloat(Math.PI / 2, Math.PI * 2) }
                         } as ParticleOptions);
 
-                        texture = "airdrop_crate_unlocking";
+                        if(definition.replaceWith!.classUnlock){
+                            texture = definition.replaceWith!.middleFrame+"_"+ExtraLoadoutList[this.interactorClass];
+                        }else{
+                            texture = definition.replaceWith!.middleFrame;
+                        }
 
-                        if (GameConstants.modeName === "winter") {
+                        /*if (GameConstants.modeName === "winter") {
                             this.game.particleManager.spawnParticles(1, () => ({
                                 frames: "airdrop_particle_4",
                                 position: this.hitbox.randomPoint(),
@@ -181,19 +207,17 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
                                 position: this.hitbox.randomPoint(),
                                 ...options(4, 9)
                             } as ParticleOptions));
-                        }
+                        }*/
 
                         this.addTimeout(() => {
-                            this.game.particleManager.spawnParticles(2, () => ({
-                                frames: "airdrop_particle_2",
-                                position: this.hitbox.randomPoint(),
-                                ...options(4, 9)
-                            } as ParticleOptions));
-                            this.game.particleManager.spawnParticles(2, () => ({
-                                frames: "airdrop_particle_3",
-                                position: this.hitbox.randomPoint(),
-                                ...options(4, 9)
-                            } as ParticleOptions));
+                            const p=(definition.replaceWith!.particlesAmmount)??1
+                            for(let i=2;i<=p;i++){
+                                this.game.particleManager.spawnParticles(2, () => ({
+                                    frames: `${definition.replaceWith!.particles}_${i}`,
+                                    position: this.hitbox.randomPoint(),
+                                    ...options(4, 9)
+                                } as ParticleOptions));
+                            }
                         }, 800);
                     }
                 }
@@ -284,6 +308,11 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
         // Change the texture of the obstacle and play a sound when it's destroyed
         if (!this.dead && data.dead) {
             this.dead = true;
+
+            if (this.mountSprite !== undefined) {
+                this.mountSprite.setVisible(false);
+            }
+
             if (!isNew && !("replaceWith" in definition && definition.replaceWith) && !definition.noDestroyEffect) {
                 const playSound = (name: string): void => {
                     this.playSound(name, {
@@ -339,6 +368,10 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
             this._glowTween?.kill();
             this._flickerTimeout?.kill();
             this._glow?.kill();
+        }else if(this.dead && !data.dead){
+            //Revive
+            this.dead=false
+            this.container.scale.set(this.scale)
         }
 
         this.updateZIndex();
@@ -391,7 +424,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     }
 
     override updateDebugGraphics(): void {
-        if (!HITBOX_DEBUG_MODE) return;
+        if (!this.game.console.getBuiltInCVar("db_hitbox")) return;
 
         const definition = this.definition;
         this.debugGraphics.clear();
@@ -698,6 +731,7 @@ export class Obstacle extends GameObject.derive(ObjectCategory.Obstacle) {
     override destroy(): void {
         super.destroy();
         this.image.destroy();
+        this.mountSprite?.destroy();
         this.doorMask?.destroy();
         this.smokeEmitter?.destroy();
         this._glow?.kill();

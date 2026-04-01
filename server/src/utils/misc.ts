@@ -5,7 +5,7 @@ import { NullString, type ObjectDefinition, type ReferenceTo } from "@common/uti
 import { weightedRandom } from "@common/utils/random";
 import { Vec, type Vector } from "@common/utils/vector";
 import { Config } from "../config";
-
+import fs from "node:fs"
 export const Logger = {
     log(...message: string[]): void {
         internalLog(message.join(" "));
@@ -17,11 +17,15 @@ export const Logger = {
 
 function internalLog(...message: string[]): void {
     const date = new Date();
-
+    const msg=message.join(" ")
     console.log(
         styleText(`[${date.toLocaleDateString("en-US")} ${date.toLocaleTimeString("en-US")}]`, ColorStyles.foreground.green.bright),
-        message.join(" ")
+        msg
     );
+
+    if(Config.logsFile){
+        fs.appendFileSync(`logs/${date.getUTCFullYear()}-${date.getUTCMonth()}-${date.getDate()}.log`,msg+"\n")
+    }
 }
 
 export function cleanUsername(name?: string | null): string {

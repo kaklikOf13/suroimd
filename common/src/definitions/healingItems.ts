@@ -1,10 +1,11 @@
-import { ItemType, ObjectDefinitions, type ItemDefinition } from "../utils/objectDefinitions";
+import { ItemRarity, ItemType, ObjectDefinitions, type ItemDefinition } from "../utils/objectDefinitions";
 
 export interface HealingItemDefinition extends ItemDefinition {
     readonly itemType: ItemType.Healing
     readonly healType: HealType
     readonly restoreAmount: number
     readonly useTime: number
+    readonly size:number
 }
 
 export enum HealType {
@@ -37,28 +38,36 @@ export const HealingItems = ObjectDefinitions.withDefault<HealingItemDefinition>
                 ["Gauze"],
                 {
                     restoreAmount: 15,
-                    useTime: 3
+                    useTime: 3,
+                    size:0.25,
+                    rarity:ItemRarity.Common
                 }
             ),
             healing(
                 ["Medikit"],
                 {
                     restoreAmount: 100,
-                    useTime: 6
+                    useTime: 6,
+                    size:0.9,
+                    rarity:ItemRarity.Uncommon
                 }
             ),
             adren(
                 ["Cola"],
                 {
                     restoreAmount: 25,
-                    useTime: 3
+                    useTime: 3,
+                    size:.4,
+                    rarity:ItemRarity.Uncommon
                 }
             ),
             adren(
                 ["Tablets"],
                 {
                     restoreAmount: 50,
-                    useTime: 5
+                    useTime: 5,
+                    size:.15,
+                    rarity:ItemRarity.Rare
                 }
             )
         ];

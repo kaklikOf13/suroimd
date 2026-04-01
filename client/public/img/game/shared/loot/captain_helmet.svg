@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="100.0203"
+   height="75.099022"
+   xml:space="preserve"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="captain_helmet.svg"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><sodipodi:namedview
+   id="namedview1"
+   pagecolor="#ffffff"
+   bordercolor="#000000"
+   borderopacity="0.25"
+   inkscape:showpageshadow="2"
+   inkscape:pageopacity="0.0"
+   inkscape:pagecheckerboard="0"
+   inkscape:deskcolor="#d1d1d1"
+   inkscape:zoom="4.0337093"
+   inkscape:cx="12.395539"
+   inkscape:cy="82.430333"
+   inkscape:window-width="1920"
+   inkscape:window-height="1009"
+   inkscape:window-x="-8"
+   inkscape:window-y="-8"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="svg1" />
+ <defs
+   id="defs12">
+  <radialGradient
+   fy="193.51105"
+   fx="244.17558"
+   gradientTransform="matrix(0.97519478,0,0,0.6470966,5.6754059,56.302564)"
+   id="color-1"
+   gradientUnits="userSpaceOnUse"
+   r="23.545139"
+   cy="193.51105"
+   cx="244.17558">
+   <stop
+   id="stop2"
+   stop-color="#222222"
+   offset="0" />
+   <stop
+   id="stop4"
+   stop-color="#151515"
+   offset="1" />
+  </radialGradient>
+  <radialGradient
+   gradientUnits="userSpaceOnUse"
+   gradientTransform="matrix(-0.00635499,-0.54108093,0.87916612,-0.0103258,5.9671429,74.0497)"
+   r="54.161831"
+   fy="44.75174"
+   fx="70.614807"
+   cy="44.75174"
+   cx="70.614807"
+   id="radialGradient6"
+   xlink:href="#color-1" />
+ </defs>
+ <g
+   id="g1"
+   transform="rotate(90,50.016,50.016)">
+  <title
+   id="title1">Layer 1</title>
+  <g
+   stroke-width="0.78602"
+   id="g32"
+   transform="matrix(1.2847794,0,0,1.901718,-275.99017,-299.81455)">
+   <g
+   stroke-width="0.77899"
+   transform="matrix(1,0,0,1.018134,0,-2.8831074)"
+   id="g30"
+   stroke-dashoffset="0"
+   stroke-miterlimit="10"
+   fill-rule="nonzero"
+   data-paper-data="{'isPaintingLayer':true}" />
+  </g>
+  <path
+   stroke-linecap="round"
+   stroke-width="16"
+   stroke="#000000"
+   fill="url(#radialGradient6)"
+   d="M 45.52851,92.032 C 24.80208,92.032 8,73.22842 8,50.03303 8,26.83765 24.84624,9.38081 45.52851,8.03406 c 26.63886,-1.73461 30.80175,83.99794 0,83.99794 z"
+   id="path5"
+   style="fill:url(#radialGradient6);paint-order:stroke fill markers"
+   sodipodi:nodetypes="sscs" />
+  <path
+   transform="rotate(-90,43.8425,49.1751)"
+   id="svg_1"
+   d="m 40.84249,48.50231 h 2.29181 l 0.70819,-2.17721 0.70819,2.17721 h 2.29181 l -1.85411,1.34558 0.70822,2.17721 -1.85411,-1.34561 -1.85411,1.34561 0.70822,-2.17721 z"
+   stroke-width="8"
+   stroke="#fce500"
+   fill="#000000" />
+ </g>
+</svg>

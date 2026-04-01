@@ -1,7 +1,7 @@
-import { GameConstants, InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize } from "@common/constants";
+import { GameConstants, InputActions, InventoryMessages, Layer, ObjectCategory, TeamSize, ZIndexes } from "@common/constants";
 import { ArmorType } from "@common/definitions/armors";
-import { Badges, type BadgeDefinition } from "@common/definitions/badges";
-import { Emotes } from "@common/definitions/emotes";
+import { Badges, type BadgeDefinition } from "@common/definitions/loadout/badges";
+import { Emotes } from "@common/definitions/loadout/emotes";
 import { type DualGunNarrowing } from "@common/definitions/guns";
 import { Loots } from "@common/definitions/loots";
 import { Scopes } from "@common/definitions/scopes";
@@ -19,18 +19,16 @@ import { ReportPacket } from "@common/packets/reportPacket";
 import { UpdatePacket, type UpdatePacketDataOut } from "@common/packets/updatePacket";
 import { CircleHitbox } from "@common/utils/hitbox";
 import { adjacentOrEqualLayer } from "@common/utils/layer";
-import { EaseFunctions, Geometry } from "@common/utils/math";
+import { EaseFunctions, Geometry, Numeric } from "@common/utils/math";
 import { Timeout } from "@common/utils/misc";
 import { ItemType, ObstacleSpecialRoles } from "@common/utils/objectDefinitions";
 import { ObjectPool } from "@common/utils/objectPool";
 import { type ObjectsNetData } from "@common/utils/objectsSerializations";
-import { randomFloat, randomVector } from "@common/utils/random";
-import { Vec, type Vector } from "@common/utils/vector";
 import { sound, type Sound } from "@pixi/sound";
 import $ from "jquery";
 import { Application, Color } from "pixi.js";
 import "pixi.js/prepare";
-import { getTranslatedString, initTranslation } from "../translations";
+import { getTranslatedString, initTranslation } from "./utils/translations/translations";
 import { type TranslationKeys } from "../typings/translations";
 import { InputManager } from "./managers/inputManager";
 import { GameSound, SoundManager } from "./managers/soundManager";
@@ -56,9 +54,15 @@ import { autoPickup, resetPlayButtons, setUpUI, teamSocket, unlockPlayButtons, u
 import { setUpCommands } from "./utils/console/commands";
 import { defaultClientCVars } from "./utils/console/defaultClientCVars";
 import { GameConsole } from "./utils/console/gameConsole";
-import { COLORS, EMOTE_SLOTS, LAYER_TRANSITION_DELAY, MODE, PIXI_SCALE, UI_DEBUG_MODE } from "./utils/constants";
-import { loadTextures, SuroiSprite } from "./utils/pixi";
+import { COLORS, EMOTE_SLOTS, LAYER_TRANSITION_DELAY, Biome, PIXI_SCALE, UI_DEBUG_MODE, Set_Biome } from "./utils/constants";
+import { loadTextures, SuroiSprite, unloadTextures } from "./utils/pixi";
 import { Tween } from "./utils/tween";
+import { randomVector, randomFloat, pickRandomInArray, random } from "../../../common/src/utils/random";
+import { Vec, type Vector } from "../../../common/src/utils/vector";
+import { FloorNames } from "@common/utils/terrain";
+import { PerkIds } from "@common/definitions/perks";
+import { Maps, type MapDefinition, type MapName } from "@common/definitions/maps/maps";
+export { showStatus } from "./status"
 
 /* eslint-disable @stylistic/indent */
 
@@ -112,8 +116,11 @@ export class Game {
 
     activePlayerID = -1;
     teamID = -1;
+    groupID=-1;
 
     teamMode = false;
+    groupMode = false;
+
 
     /**
      * proxy for `activePlayer`'s layer
@@ -128,6 +135,8 @@ export class Game {
 
     gameStarted = false;
     gameOver = false;
+    startedOn:number=0;
+    playing=false;
     spectating = false;
     error = false;
 
@@ -147,7 +156,102 @@ export class Game {
     readonly gasRender = new GasRender(PIXI_SCALE);
     readonly gas = new Gas(this);
 
-    music!: Sound;
+    _ilumination:number=1
+
+    get ilumination():number{
+        return this._ilumination
+    }
+    set ilumination(v:number){
+        if(this.pixi.renderer&&this.console.getBuiltInCVar("cv_brighteffects")){
+            this.pixi.renderer.canvas.style.filter=`brightness(${v})`
+            this._ilumination=v
+        }
+    }
+    thundersSFX:Sound[]=[]
+
+    /*bolt():Promise<void>{
+        return new Promise<void>((resolve, reject) => {
+            let stage=true
+            const t=pickRandomInArray(this.thundersSFX)
+            t.play()
+            const f=()=>{
+                if(stage){
+                    if(this.extra_ilum<2){
+                        this.extra_ilum+=0.15
+                    }else{
+                        this.extra_ilum=2
+                        stage=false
+                    }
+                }else{
+                    this.extra_ilum-=0.17
+                    if(this.extra_ilum<=0){
+                        this.extra_ilum=0
+                        clearInterval(inter)
+                        resolve()
+                        return
+                    }
+                }
+                this.updateIlumin()
+            }
+            const inter=setInterval(f,11)
+        })
+    }*/
+
+    music:Sound|undefined=undefined;
+
+    stop_music(changeVal:number=0.01,volume:number=1):Promise<void>{
+        return new Promise<void>((resolve, _reject) => {
+            const f=()=>{
+                if(this.music){
+                    this.music.volume=Numeric.clamp(this.music.volume-changeVal,0,volume*this.console.getBuiltInCVar("cv_music_volume"))
+                    if(this.music.volume==0){
+                        this.music.stop()
+                        this.music.volume=volume*this.console.getBuiltInCVar("cv_music_volume")
+                        this.music=undefined
+                        resolve()
+                        return
+                    }
+                    self.requestAnimationFrame(f)
+                }else{
+                    resolve()
+                    return
+                }
+            }
+            f()
+        })
+    }
+    async play_music(music:Sound,changeVal:number=0.01,volume:number=1){
+        if(this.music!=undefined){
+            return
+        }
+        this.music=music
+        this.music.volume=0
+        const f=()=>{
+            if(this.music){
+                this.music.volume=Numeric.clamp(this.music.volume+changeVal,0,volume*this.console.getBuiltInCVar("cv_music_volume"))
+                if(this.music.volume==this.console.getBuiltInCVar("cv_music_volume")){
+                    return
+                }
+                self.requestAnimationFrame(f)
+            }else{
+                return
+            }
+        }
+        await this.music.play()
+        f()
+    }
+    async change_music(music:Sound,changeVal:number=0.01,volume:number=1){
+        if(this.music==music){
+            return
+        }
+        await this.stop_music(changeVal,volume)
+        await this.play_music(music,changeVal,volume)
+    }
+
+    menu_music!: Sound;
+    win_music!: Sound;
+
+    gameplay_musics:Sound[]=[];
 
     readonly tweens = new Set<Tween<unknown>>();
 
@@ -179,7 +283,7 @@ export class Game {
 
             await game.pixi.init({
                 resizeTo: window,
-                background: COLORS.grass,
+                background: COLORS.void,
                 antialias: game.console.getBuiltInCVar("cv_antialias"),
                 autoDensity: true,
                 preferWebGLVersion: renderMode === "webgl1" ? 1 : 2,
@@ -198,12 +302,6 @@ export class Game {
             });
 
             const pixi = game.pixi;
-            await loadTextures(
-                pixi.renderer,
-                game.inputManager.isMobile
-                    ? game.console.getBuiltInCVar("mb_high_res_textures")
-                    : game.console.getBuiltInCVar("cv_high_res_textures")
-            );
 
             // HACK: the game ui covers the canvas
             // so send pointer events manually to make clicking to spectate players work
@@ -250,14 +348,126 @@ export class Game {
         setUpCommands(game);
         game.inputManager.generateBindsConfigScreen();
 
-        game.music = sound.add("menu_music", {
-            url: `./audio/music/menu_music${game.console.getBuiltInCVar("cv_use_old_menu_music") ? "_old" : MODE.specialMenuMusic ? `_${GameConstants.modeName}` : ""}.mp3`,
+        game.menu_music = sound.add("menu_music", {
+            url: `./audio/music/menu_music${game.console.getBuiltInCVar("cv_use_old_menu_music") ? "_old" : ""}.mp3`,
             singleInstance: true,
             preload: true,
-            autoPlay: true,
+            autoPlay: false,
             volume: game.console.getBuiltInCVar("cv_music_volume")
         });
-        return game;
+        setTimeout(game.play_music.bind(game,game.menu_music),2000)
+        game.win_music = sound.add("win_music", {
+            url:  `./audio/music/win_music.mp3`,
+            singleInstance: true,
+            preload: true,
+            autoPlay: false,
+            volume: game.console.getBuiltInCVar("cv_music_volume")
+        });
+
+        game.gameplay_musics.push(sound.add("gameplay_music-1", {
+            url: `./audio/music/gameplay_music-1.mp3`,
+            singleInstance: true,
+            preload: true,
+            autoPlay: false,
+            volume: game.console.getBuiltInCVar("cv_music_volume")
+        }));
+        game.gameplay_musics.push(sound.add("gameplay_music-2", {
+            url: `./audio/music/gameplay_music-2.mp3`,
+            singleInstance: true,
+            preload: true,
+            autoPlay: false,
+            volume: game.console.getBuiltInCVar("cv_music_volume")
+        }));
+        game.gameplay_musics.push(sound.add("gameplay_music-3", {
+            url: `./audio/music/gameplay_music-3.mp3`,
+            singleInstance: true,
+            preload: true,
+            autoPlay: false,
+            volume: game.console.getBuiltInCVar("cv_music_volume")
+        }));
+
+        game.thundersSFX.push(sound.find("thunder_1"));
+        game.thundersSFX.push(sound.find("thunder_2"));
+        game.thundersSFX.push(sound.find("thunder_3"));
+
+        game.music=undefined
+
+        return game
+    }
+    raining=0
+    thunderstorm=false
+    bolt=false
+    boltR=false
+    /*updateIlumin(){
+        this.ilumination=Numeric.clamp(1-(this.raining/4)-(this.night/3),.2,1)+this.extra_ilum
+    }*/
+    updateVisualEvents(){
+        if(this.playing){
+            /*this.night=Numeric.clamp(this.night+((this.day?1:-1)/GameConstants.natural_events.daynightDelay),0,1)
+            if((this.night==1&&this.day)||(this.night==0&&!this.day)){
+                this.day=!this.day
+            }*/
+            //this.updateIlumin()
+            if(this.bolt&&!this.boltR){
+                const t=pickRandomInArray(this.thundersSFX)
+                this.boltR=true
+                t.play(undefined,()=>{
+                    this.boltR=false
+                })
+            }
+
+            if(this.raining>0){
+                if(this.thunderstorm){
+                    if(this.ambience?.name!==GameConstants.rain.storm_ambience){
+                        this.ambience?.stop()
+                        this.ambience=this.soundManager.play(GameConstants.rain.storm_ambience, { loop: true, ambient: true })
+                    }
+                }else{
+                    if(this.ambience?.name!==GameConstants.rain.ambience){
+                        this.ambience?.stop()
+                        this.ambience=this.soundManager.play(GameConstants.rain.ambience, { loop: true, ambient: true })
+                    }
+                }
+                if(this.map.terrainGraphics.visible&&this.console.getBuiltInCVar("cv_ambient_particles")){
+                    const zoom=this.camera.zoom/70
+                    const count=Math.ceil(this.raining*GameConstants.rain.raindropsCount*zoom)
+                    const This=this
+                    for(let i=0;i<count;i++){
+                        this.particleManager.spawnParticle({
+                            get position(): Vector {
+                                const width = (This.camera.width / PIXI_SCALE)*zoom;
+                                const height = (This.camera.height / PIXI_SCALE)*zoom;
+                                const player = This.activePlayer;
+                                if (!player) return Vec.create(0, 0);
+                                const { x, y } = player.position;
+                                return randomVector(x - width, x + width, y - height, y + height);
+                            },
+                            frames:[
+                                GameConstants.rain.raindrop,
+                            ],
+                            lifetime:Math.floor(Math.random()*(500-200)+200),
+                            speed:Vec.create(0,0),
+                            zIndex:ZIndexes.ObstaclesLayer2,
+                            alpha: {
+                                start: 1,
+                                end: 0
+                            },
+                            scale:{
+                                start:0,
+                                end:randomFloat(1.4,1.9),
+                            },
+                            layer:Layer.Ground,
+                        })
+                    }
+                }
+            }else{
+                if(Biome.ambience&&this.ambience?.name!==Biome.ambience){
+                    this.ambience?.stop()
+                    this.ambience = this.soundManager.play(Biome.ambience, { loop: true, ambient: true });
+                }
+            }
+        }
+        this.addTimeout(this.updateVisualEvents.bind(this),300)
     }
 
     resize(): void {
@@ -274,11 +484,10 @@ export class Game {
         this._socket.binaryType = "arraybuffer";
 
         this._socket.onopen = (): void => {
-            if (this.music) {
-                this.music.stop();
-            }
+            this.soundManager.stopAll()
             this.gameStarted = true;
             this.gameOver = false;
+            this.startedOn=Date.now()
             this.spectating = false;
             this.disconnectReason = "";
 
@@ -301,6 +510,7 @@ export class Game {
             const joinPacket: JoinPacketCreation = {
                 isMobile: this.inputManager.isMobile,
                 name: this.console.getBuiltInCVar("cv_player_name"),
+                role:this.console.getBuiltInCVar("cv_loadout_role"),
                 skin: Loots.fromStringSafe(
                     this.console.getBuiltInCVar("cv_loadout_skin")
                 ) ?? Loots.fromString(
@@ -311,56 +521,21 @@ export class Game {
                 badge: Badges.fromStringSafe(this.console.getBuiltInCVar("cv_loadout_badge")),
                 emotes: EMOTE_SLOTS.map(
                     slot => Emotes.fromStringSafe(this.console.getBuiltInCVar(`cv_loadout_${slot}_emote`))
-                )
+                ),
+                gun1:this.console.getBuiltInCVar("cv_loadout_gun1"),
+                gun2:this.console.getBuiltInCVar("cv_loadout_gun2"),
+                melee:this.console.getBuiltInCVar("cv_loadout_melee"),
             };
 
             this.sendPacket(JoinPacket.create(joinPacket));
 
             this.camera.addObject(this.gasRender.graphics);
             this.map.indicator.setFrame("player_indicator");
-
-            const particleEffects = MODE.particleEffects;
-
-            if (particleEffects !== undefined) {
-                const This = this;
-                const gravityOn = particleEffects.gravity;
-                this.particleManager.addEmitter(
-                    {
-                        delay: particleEffects.delay,
-                        active: this.console.getBuiltInCVar("cv_ambient_particles"),
-                        spawnOptions: () => ({
-                            frames: particleEffects.frames,
-                            get position(): Vector {
-                                const width = This.camera.width / PIXI_SCALE;
-                                const height = This.camera.height / PIXI_SCALE;
-                                const player = This.activePlayer;
-                                if (!player) return Vec.create(0, 0);
-                                const { x, y } = player.position;
-                                return randomVector(x - width, x + width, y - height, y + height);
-                            },
-                            speed: randomVector(-10, 10, gravityOn ? 10 : -10, 10),
-                            lifetime: randomFloat(12000, 50000),
-                            zIndex: Number.MAX_SAFE_INTEGER - 5,
-                            alpha: {
-                                start: this.layer === Layer.Ground ? 0.7 : 0,
-                                end: 0
-                            },
-                            rotation: {
-                                start: randomFloat(0, 36),
-                                end: randomFloat(40, 80)
-                            },
-                            scale: {
-                                start: randomFloat(0.8, 1.1),
-                                end: randomFloat(0.7, 0.8)
-                            }
-                        })
-                    }
-                );
-            }
+            this.stop_music()
         };
 
         // Handle incoming messages
-        this._socket.onmessage = (message: MessageEvent<ArrayBuffer>): void => {
+        this._socket.onmessage = async(message: MessageEvent<ArrayBuffer>): Promise<void> => {
             const stream = new PacketStream(message.data);
             let iterationCount = 0;
             while (true) {
@@ -369,7 +544,7 @@ export class Game {
                 }
                 const packet = stream.deserializeServerPacket();
                 if (packet === undefined) break;
-                this.onPacket(packet);
+                await this.onPacket(packet);
             }
         };
 
@@ -385,6 +560,8 @@ export class Game {
         this._socket.onclose = (): void => {
             resetPlayButtons();
 
+            this.playing=false
+
             const reason = this.disconnectReason || "Connection lost";
 
             if (!this.gameOver) {
@@ -397,6 +574,9 @@ export class Game {
                 if (!this.error) void this.endGame();
             }
 
+            if(this.music!=this.win_music)this.change_music(this.menu_music)
+            
+
             if (reason.startsWith("Invalid game version")) {
                 alert(reason);
                 // reload the page with a time stamp to try clearing cache
@@ -406,20 +586,99 @@ export class Game {
     }
 
     inventoryMsgTimeout: number | undefined;
+    map_id:MapName="normal"
 
-    onPacket(packet: OutputPacket): void {
+    loadingProm:Promise<void>|undefined
+
+    async handleMapSet(mapDef:MapDefinition){
+        Set_Biome(mapDef.biome)
+        const particleEffects = Biome.particleEffects;
+
+        if (particleEffects !== undefined) {
+            const This = this;
+            const gravityOn = particleEffects.gravity;
+            this.particleManager.addEmitter(
+                {
+                    delay: particleEffects.delay,
+                    active: this.console.getBuiltInCVar("cv_ambient_particles"),
+                    spawnOptions: () => ({
+                        frames: particleEffects.frames,
+                        get position(): Vector {
+                            const width = This.camera.width / PIXI_SCALE;
+                            const height = This.camera.height / PIXI_SCALE;
+                            const player = This.activePlayer;
+                            if (!player) return Vec.create(0, 0);
+                            const { x, y } = player.position;
+                            return randomVector(x - width, x + width, y - height, y + height);
+                        },
+                        speed: randomVector(-10, 10, gravityOn ? 10 : -10, 10),
+                        lifetime: randomFloat(12000, 50000),
+                        zIndex: Number.MAX_SAFE_INTEGER - 5,
+                        alpha: {
+                            start: this.layer === Layer.Ground ? 0.7 : 0,
+                            end: 0
+                        },
+                        rotation: {
+                            start: randomFloat(0, 36),
+                            end: randomFloat(40, 80)
+                        },
+                        scale: {
+                            start: randomFloat(0.8, 1.1),
+                            end: randomFloat(0.7, 0.8)
+                        }
+                    })
+                }
+            );
+        }
+
+        this.loadingProm=loadTextures(
+            this.pixi.renderer,
+            this.inputManager.isMobile
+                ? this.console.getBuiltInCVar("mb_high_res_textures")
+                : this.console.getBuiltInCVar("cv_high_res_textures"),
+            mapDef.atlas
+        );
+        await this.loadingProm;
+        this.loadingProm=undefined
+    }
+
+    async onPacket(packet: OutputPacket): Promise<void> {
+        if(this.loadingProm){
+            await this.loadingProm
+        }
         switch (true) {
             case packet instanceof JoinedPacket:
-                this.startGame(packet.output);
+                if(this.loadingProm){
+                    await this.loadingProm
+                }
+                await this.startGame(packet.output);
+                if(packet.output.date>0){
+                    const inventoryMsg = this.uiManager.ui.inventoryMsg;
+                    const date=new Date(Number(packet.output.date))
+                    inventoryMsg.text(date.toUTCString()).fadeIn(250);
+
+                    clearTimeout(this.inventoryMsgTimeout);
+                    this.inventoryMsgTimeout = window.setTimeout(() => inventoryMsg.fadeOut(250), 2500);
+                }
                 break;
             case packet instanceof MapPacket:
+                this.map_id=packet.output.map as MapName
+                await this.handleMapSet(Maps[this.map_id])
                 this.map.updateFromPacket(packet.output);
                 break;
             case packet instanceof UpdatePacket:
                 this.processUpdate(packet.output);
                 break;
             case packet instanceof GameOverPacket:
-                this.uiManager.showGameOverScreen(packet.output);
+                if(packet.output.won&&packet.output.wonToo){
+                    this.change_music(this.win_music,0.1)
+                }
+                const gs=this.startedOn
+                setTimeout(()=>{
+                    if(gs!=this.startedOn)
+                    this.playing=false
+                    this.uiManager.showGameOverScreen(packet.output);
+                },packet.output.stopAfter)
                 break;
             case packet instanceof KillFeedPacket:
                 this.uiManager.processKillFeedPacket(packet.output);
@@ -503,13 +762,15 @@ export class Game {
         [InventoryMessages.RadioOverused]: "msg_radio_overused"
     };
 
-    startGame(packet: JoinedPacketData): void {
+    async startGame(packet: JoinedPacketData): Promise<void> {
+        this.stop_music()
+        this.playing=true
         // Sound which notifies the player that the
         // game started if page is out of focus.
         if (!document.hasFocus()) this.soundManager.play("join_notification");
 
-        if (MODE.ambience) {
-            this.ambience = this.soundManager.play(MODE.ambience, { loop: true, ambient: true });
+        if (Biome.ambience) {
+            this.ambience = this.soundManager.play(Biome.ambience, { loop: true, ambient: true });
         }
 
         this.uiManager.emotes = packet.emotes;
@@ -521,6 +782,8 @@ export class Game {
             this.teamID = packet.teamID;
         }
 
+        this.groupMode = packet.groupMode;
+
         ui.canvas.addClass("active");
         ui.splashUi.fadeOut(400, resetPlayButtons);
 
@@ -529,20 +792,25 @@ export class Game {
         ui.spectateKillLeader.addClass("btn-disabled");
 
         ui.teamContainer.toggle(this.teamMode);
+
+        this.ilumination=1
+
+        this.updateVisualEvents()
+        this.map.indicator.setFrame("player_indicator")
+        //for(const at of Maps[this.map_id].atlas)
     }
 
     async endGame(): Promise<void> {
         const ui = this.uiManager.ui;
+        this.ambience?.stop()
+        unloadTextures(this.pixi.renderer)
 
         return await new Promise(resolve => {
             ui.splashOptions.addClass("loading");
 
-            this.soundManager.stopAll();
-
+            this.playing=false
             ui.splashUi.fadeIn(400, () => {
-                if (this.music) {
-                    void this.music.play();
-                }
+                if(this.music!=this.win_music)this.change_music(this.menu_music)
                 ui.teamContainer.html("");
                 ui.actionContainer.hide();
                 ui.gameMenu.hide();
@@ -563,6 +831,8 @@ export class Game {
                 this.camera.container.removeChildren();
                 this.particleManager.clear();
                 this.uiManager.clearTeammateCache();
+                this.uiManager.clearGroupCache();
+                this.uiManager.clearAnotherIndicCache();
 
                 const map = this.map;
                 map.safeZone.clear();
@@ -571,6 +841,8 @@ export class Game {
                 map.pingsContainer.removeChildren();
                 map.teammateIndicators.clear();
                 map.teammateIndicatorContainer.removeChildren();
+                map.groupIndicators.clear();
+                map.groupIndicatorContainer.removeChildren();
 
                 this.playerNames.clear();
                 this._timeouts.clear();
@@ -665,7 +937,7 @@ export class Game {
         this.gasRender.update(this.gas);
 
         for (const plane of this.planes) plane.update();
-
+        
         this.camera.update();
     }
 
@@ -745,7 +1017,6 @@ export class Game {
                 console.warn(`Trying to partially update non-existant object with ID ${id}`);
                 continue;
             }
-
             (object as GameObject).updateFromData(data, false);
         }
 
@@ -787,6 +1058,13 @@ export class Game {
             }
         }
 
+        if(this.console.getBuiltInCVar("cv_brighteffects")&&updateData.nature){
+            this.thunderstorm=updateData.nature.thunderstorm
+            this.raining=updateData.nature.rain
+            this.ilumination=updateData.nature.brightness
+            this.bolt=updateData.nature.bolt
+        }
+
         for (const bullet of updateData.deserializedBullets ?? []) {
             this.bullets.add(new Bullet(this, bullet));
         }
@@ -815,7 +1093,7 @@ export class Game {
         }
 
         for (const plane of updateData.planes ?? []) {
-            this.planes.add(new Plane(this, plane.position, plane.direction));
+            this.planes.add(new Plane(this, plane.position, plane.direction,plane.airstrike??false));
         }
 
         for (const ping of updateData.mapPings ?? []) {
@@ -847,7 +1125,7 @@ export class Game {
         this.map.terrainGraphics.visible = !basement;
         const { red, green, blue } = this.pixi.renderer.background.color;
         const color = { r: red * 255, g: green * 255, b: blue * 255 };
-        const targetColor = basement ? COLORS.void : COLORS.grass;
+        const targetColor = this.map.getFloorColor(FloorNames.Void);
 
         this.backgroundTween?.kill();
         this.backgroundTween = this.addTween({
@@ -903,9 +1181,20 @@ export class Game {
         let detonateBindIcon: JQuery<HTMLImageElement> | undefined;
 
         return () => {
+            if(this.music&&this.music.instances.length!=0){
+                if(this.music.instances[0].progress==1){
+                    this.music=undefined
+                }
+            }else if(this.playing&&this.gameStarted&&Math.random()<=GameConstants.music_chance){
+                if(this.music&&this.music.instances.length==0){
+                    this.music=undefined
+                }
+                //Ambientation Music
+                this.change_music(pickRandomInArray(this.gameplay_musics),undefined,0.6)
+            }
             if (!this.gameStarted || (this.gameOver && !this.spectating)) return;
-            this.inputManager.update();
             this.soundManager.update();
+            this.inputManager.update();
 
             const player = this.activePlayer;
             if (!player) return;
@@ -956,7 +1245,10 @@ export class Game {
                     object.toggleCeiling();
                 }
             }
-
+            if(this.uiManager.perks.hasPerk(PerkIds.SelfRevive)&&player.downed){
+                interactable.object=player
+                interactable.dist=0
+            }
             const object = interactable.object ?? uninteractable.object;
             const offset = object?.isObstacle ? object.door?.offset : undefined;
             canInteract = interactable.object !== undefined;
@@ -1061,11 +1353,14 @@ export class Game {
                     }
 
                     if (
-                        !player.downed
+                        (!player.downed||this.uiManager.perks.hasPerk(PerkIds.SelfRevive))
                         && (!object?.isObstacle
                             || !object.definition.isActivatable
                             || !object.definition.noInteractMessage)
-                    ) interactMsg.show();
+                    ) {
+                        interactMsg.show();
+                        if (player.downed && (object?.isLoot || (object?.isObstacle && object.definition.noInteractMessage))) interactMsg.hide();
+                    }
                 } else {
                     interactMsg.hide();
                 }

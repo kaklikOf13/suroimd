@@ -2,13 +2,13 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="155.47325"
-   height="147.76265"
-   viewBox="0 0 41.135633 39.095538"
+   width="53.632mm"
+   height="39.095535mm"
+   viewBox="0 0 53.632002 39.095539"
    version="1.1"
    id="svg1"
    sodipodi:docname="chainsaw_used.svg"
-   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -24,15 +24,15 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      showguides="false"
-     inkscape:zoom="7.1092519"
-     inkscape:cx="116.53828"
-     inkscape:cy="48.31732"
+     inkscape:zoom="2.5135001"
+     inkscape:cx="101.85001"
+     inkscape:cy="120.74796"
      inkscape:window-width="1920"
-     inkscape:window-height="1001"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g16" />
+     inkscape:current-layer="layer1" />
   <defs
      id="defs1">
     <inkscape:path-effect
@@ -74,7 +74,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0.01142171,9.1470429)">
+     transform="rotate(44,12.297318,22.518854)">
     <g
        id="g17"
        transform="matrix(1.4078943,0,0,1.3049465,-167.51554,-84.085452)">
@@ -96,15 +96,15 @@
            id="path11"
            cx="44.087517"
            cy="129.61336"
-           r="1.3461835"
-           transform="rotate(-45)" />
+           transform="rotate(-45)"
+           r="1.3461835" />
         <circle
            style="fill:#3c3c3a;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.577905;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
            id="path11-9"
            cx="44.087517"
            cy="129.61336"
-           r="0.8430438"
-           transform="rotate(-45)" />
+           transform="rotate(-45)"
+           r="0.8430438" />
         <path
            sodipodi:type="star"
            style="opacity:1;fill:#979794;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.05833;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"

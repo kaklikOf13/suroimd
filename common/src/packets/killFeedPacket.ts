@@ -1,6 +1,7 @@
 import { KillfeedEventSeverity, KillfeedEventType, KillfeedMessageType } from "../constants";
 import { type ExplosionDefinition } from "../definitions/explosions";
 import { type GunDefinition } from "../definitions/guns";
+import { BadgeDefinition, Badges } from "../definitions/loadout/badges";
 import { type MeleeDefinition } from "../definitions/melees";
 import { type ThrowableDefinition } from "../definitions/throwables";
 import { GlobalRegistrar } from "../utils/definitionRegistry";
@@ -72,6 +73,16 @@ export type KillFeedPacketData = ({
     readonly victimId: number
     readonly attackerId: number
     readonly disconnected?: boolean
+}|{
+    readonly messageType: KillfeedMessageType.Promotion
+    readonly playerId: number
+    readonly role: {
+        readonly color:number
+        readonly sound:string
+        readonly name:string
+        readonly hasBadge:boolean
+        readonly badge:string|undefined
+    }
 };
 
 const attackerFilter: readonly IncludeAttacker[] = [
@@ -314,6 +325,42 @@ const factories = Object.freeze({
         };
 
         return obj;
+    },
+    [KillfeedMessageType.Promotion](){
+        const msg:Partial<Mutable<KillFeedPacketData>> = {
+            messageType: KillfeedMessageType.Promotion,
+            playerId:0,
+            role:{
+                color:0,
+                name:"",
+                sound:"",
+                badge:undefined,
+                hasBadge:false
+            }
+        };
+
+        const obj = {
+            setPlayerId(id:number){
+                msg.playerId = id;
+                return obj;
+            },
+            setRole(color:number,name:string,sound?:string,badge?:string){
+                const b=badge?Badges.fromStringSafe(badge):undefined
+                msg.role={
+                    color:color,
+                    name:name,
+                    sound:sound??"",
+                    badge:b?.idString,
+                    hasBadge:b!==undefined
+                }
+                return obj
+            },
+            build() {
+                return msg as KillFeedPacketData;
+            }
+        };
+
+        return obj;
     }
 });
 
@@ -346,26 +393,21 @@ export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>
                     weaponUsed
                 */
                 stream.writeObjectId(data.victimId);
-
-                // eventType is 3 bits, make it take up the next 3 LSB
-                kfData += data.eventType << 2;
-                if (hasAttackerData(data)) {
+                stream.writeUint8(data.eventType);
+                stream.writeUint8(data.severity);
+                const hasA=hasAttackerData(data)
+                const weaponWasUsed = !noWeaponData(data) && data.weaponUsed !== undefined;
+                stream.writeBooleanGroup(hasA,weaponWasUsed)
+                if (hasA) {
                     const hasAttacker = data.attackerId !== undefined;
                     // next LSB is the 6th one (000e eemm, with 'e' for event type and 'm' for message type)
-                    kfData += hasAttacker ? 32 : 0;
                     if (hasAttacker) {
                         stream.writeObjectId(data.attackerId);
                         stream.writeUint8(data.attackerKills);
                     }
                 }
-                // the 6th LSB is off-limits (used by thing above)
-                // use the 7th LSB for this (severity is effectively a boolean)
-                kfData += data.severity ? 64 : 0;
-
-                const weaponWasUsed = !noWeaponData(data) && data.weaponUsed !== undefined;
 
                 // and our last bit is for this
-                kfData += weaponWasUsed ? 128 : 0;
                 if (weaponWasUsed) {
                     GlobalRegistrar.writeToStream(stream, data.weaponUsed);
                     if ("killstreak" in data.weaponUsed && data.weaponUsed.killstreak) {
@@ -399,6 +441,18 @@ export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>
                 stream.writeObjectId(data.victimId);
                 stream.writeObjectId(data.attackerId);
                 break;
+            case KillfeedMessageType.Promotion:
+                stream.writeBooleanGroup(data.role.hasBadge)
+                stream.writeObjectId(data.playerId)
+                .writeUint32(data.role.color)
+                .writeUint8(data.role.name.length)
+                .writeString(data.role.name.length,data.role.name)
+                .writeUint8(data.role.sound.length)
+                .writeString(data.role.sound.length,data.role.sound)
+                if(data.role.hasBadge){
+                    stream.writeString(15,data.role.badge!)
+                }
+                break
         }
 
         // now we go back to our saved index
@@ -414,29 +468,30 @@ export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>
 
     deserialize(stream) {
         const kfData = stream.readUint8();
-        const messageType = (kfData & 3) as KillfeedMessageType;
+        const messageType = (kfData & 7) as KillfeedMessageType; // agora usa 3 bits
 
         const data = {
             messageType
         } as DeepMutable<KillFeedPacketData>;
+
 
         switch (data.messageType) {
             case KillfeedMessageType.DeathOrDown: {
                 // see the comments in the serialization method to
                 // understand the format and what's going on
                 data.victimId = stream.readObjectId();
-                data.eventType = (kfData & 0b11100) >> 2;
-
+                data.eventType = stream.readUint8();
+                data.severity = stream.readUint8();
+                const bg=stream.readBooleanGroup()
                 if (
                     hasAttackerData(data)
-                    && ((kfData & 32) !== 0) // attacker present
+                    && bg[0]
                 ) {
                     data.attackerId = stream.readObjectId();
                     (data as KillFeedPacketData & { attackerKills: number }).attackerKills = stream.readUint8();
                 }
-                data.severity = (kfData >> 6) & 1;
 
-                if ((kfData & 128) !== 0) { // used a weapon
+                if (bg[1]) {
                     type WithWeapon = KillFeedPacketData & {
                         weaponUsed: KillDamageSources
                         killstreak?: number
@@ -450,7 +505,6 @@ export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>
                 }
                 break;
             }
-
             case KillfeedMessageType.KillLeaderAssigned:
                 data.victimId = stream.readObjectId();
                 data.attackerKills = stream.readUint8();
@@ -465,6 +519,17 @@ export const KillFeedPacket = createPacket("KillFeedPacket")<KillFeedPacketData>
                 data.victimId = stream.readObjectId();
                 data.attackerId = stream.readObjectId();
                 data.disconnected = (kfData & 128) !== 0;
+                break;
+            case KillfeedMessageType.Promotion:
+                const b=stream.readBooleanGroup()
+                data.playerId=stream.readObjectId()
+                data.role={
+                    color:stream.readUint32(),
+                    name:stream.readString(stream.readUint8()),
+                    sound:stream.readString(stream.readUint8()),
+                    hasBadge:b[0],
+                    badge:b[0]?stream.readString(15): undefined
+                }
                 break;
         }
 

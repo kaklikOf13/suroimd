@@ -100,6 +100,11 @@ export class SuroiByteStream extends ByteStream {
         this.writeUint16((vector.y / Constants.MAX_POSITION) * 65535 + 0.5);
         return this;
     }
+    writeFullPosition(vector: Vector):this{
+        this.writeFloat32(vector.x);
+        this.writeFloat32(vector.y);
+        return this;
+    }
 
     /**
      * Reads a position from the stream, using {@link GameConstants.maxPosition} as an upper bound.
@@ -110,6 +115,12 @@ export class SuroiByteStream extends ByteStream {
         return {
             x: Constants.MAX_POSITION * this.readUint16() / 65535,
             y: Constants.MAX_POSITION * this.readUint16() / 65535
+        };
+    }
+    readFullPosition(): Vector {
+        return {
+            x: this.readFloat32(),
+            y: this.readFloat32()
         };
     }
 

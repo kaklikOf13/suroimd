@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="6.1302009mm"
+   height="8.5819321mm"
+   viewBox="0 0 6.1302009 8.5819321"
+   version="1.1"
+   id="svg886"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   sodipodi:docname="bottle.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview888"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="14.52593"
+     inkscape:cx="24.645582"
+     inkscape:cy="14.456905"
+     inkscape:window-width="1920"
+     inkscape:window-height="996"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs883" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-144.64078,-278.81198)">
+    <g
+       id="g1892-2"
+       transform="translate(-1.006683,157.12851)">
+      <rect
+         width="7.5237918"
+         height="5.0720611"
+         x="122.21254"
+         y="-151.2486"
+         fill="#692516"
+         fill-opacity="0.74902"
+         fill-rule="evenodd"
+         stroke="#2a0f09"
+         stroke-width="1.05814"
+         rx="0.40217099"
+         transform="rotate(90)"
+         id="rect905-9"
+         style="stroke-linecap:round;stroke-linejoin:round" />
+      <rect
+         width="2.6725371"
+         height="1.7406991"
+         x="124.63813"
+         y="-149.58282"
+         fill="#323232"
+         fill-rule="evenodd"
+         stroke="#1a1a1a"
+         stroke-width="1.05814"
+         rx="0"
+         transform="rotate(90)"
+         id="rect907-1"
+         style="stroke-linecap:round;stroke-linejoin:round" />
+    </g>
+  </g>
+</svg>
